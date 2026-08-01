@@ -1,0 +1,2351 @@
+---
+import Base from "../../layouts/Base.astro";
+import fs from "node:fs";
+import path from "node:path";
+
+const ROOT  = path.resolve(process.cwd(), "..");  // cwd() = web/, ROOT = semantic-retrieval/
+const base  = import.meta.env.BASE_URL;
+
+function loadJson(p: string): any {
+  return fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, "utf8")) : [];
+}
+
+// Load SG routing results from eval_sg_routing (method-independent)
+function loadSgCases(): any[] {
+  const routingDir = path.join(ROOT, "results", "runtime", "skill_guided", "routing");
+  if (!fs.existsSync(routingDir)) return [];
+  return fs.readdirSync(routingDir)
+    .filter(f => f.match(/^sg-\d+\.json$/))
+    .sort()
+    .map(f => JSON.parse(fs.readFileSync(path.join(routingDir, f), "utf8")));
+}
+
+const sgRoutingSummary: any = loadJson(path.join(ROOT, "results", "runtime", "skill_guided", "routing", "summary.json"));
+const sgCases = loadSgCases();
+
+const dtResults: any[]  = loadJson(path.join(ROOT, "results", "design-time", "summary.json"));
+const dtByProc: any[]   = loadJson(path.join(ROOT, "results", "design-time", "by_process.json"));
+const dtByModel: any[]  = loadJson(path.join(ROOT, "results", "design-time", "by_modeling_notation.json"));
+const rtResults: any[]  = loadJson(path.join(ROOT, "results", "runtime", "summary.json"));
+const postHoc: any      = loadJson(path.join(ROOT, "results", "runtime", "post_hoc_metrics.json"));
+const postHocDy: Record<string, any> = postHoc.dy_metrics ?? {};
+const postHocSa: Record<string, any> = postHoc.sa_metrics ?? {};
+const postHocTerm: Record<string, any> = postHoc.termination ?? {};
+const dyDecompRouting: Record<string, any> = loadJson(path.join(ROOT, "results", "runtime", "dynamic", "decomposer_routing.json")) ?? {};
+
+// Load per-mode RT summaries
+function loadRtMode(mode: string): any[] {
+  return loadJson(path.join(ROOT, "results", "runtime", mode, "summary.json"));
+}
+const rtSA  = loadRtMode("skill_adjusted");
+const rtDY  = loadRtMode("dynamic");
+const rtOOS = loadRtMode("out_of_scope");
+
+// Count records per mode for progress indicator (exclude forced 'f' records)
+function countRecords(mode: string): number {
+  const p = path.join(ROOT, "results", "runtime", mode, "records.jsonl");
+  if (!fs.existsSync(p)) return 0;
+  const lines = fs.readFileSync(p, "utf8").split("\n").filter(l => l.trim());
+  // Count non-forced records (A-S) + F forced records (F0f/F1f)
+  return lines.filter(l => {
+    try {
+      const r = JSON.parse(l);
+      const cond = r.condition ?? '';
+      if (cond.startsWith('F') && cond.endsWith('f')) return true; // F forced = primary
+      return !cond.endsWith('f'); // A-S regular records
+    } catch { return false; }
+  }).length;
+}
+
+// SA split metrics: orchestration (method-agnostic) + retrieval (per condition)
+function loadSaMetrics(records: any[]): { orch: any[]; retrieval: any[]; traces: any[] } {
+  if (!records.length) return { orch: [], retrieval: [], traces: [] };
+
+  // Merge gf (gap-forced) records into their base condition.
+  // PREFER gf over regular: planner said "full coverage" → 0 gap steps → gf record
+  // runs retrieval independently. Same principle as DY forced records.
+  const regular: Map<string, any> = new Map();
+  const forced: Map<string, any> = new Map();
+  for (const r of records) {
+    const k = `${r.case_id}|${r.method}|${r.state}`;
+    if (r.condition?.endsWith('gf')) forced.set(k, { ...r, condition: r.condition.replace('gf','') });
+    else regular.set(k, r);
+  }
+  // Build merged: gf wins where it exists, regular otherwise
+  const merged: Map<string, any> = new Map(regular);
+  for (const [k, r] of forced) merged.set(k, r);
+  const cleanRecords = [...merged.values()];
+
+  // Table 1: orchestration — just routing (gap_found === routing always)
+  const byState: Record<string, any[]> = {};
+  for (const r of cleanRecords) {
+    (byState[r.state] = byState[r.state] || []).push(r);
+  }
+  const orch = Object.entries(byState).map(([state, recs]) => {
+    const n = recs.length;
+    const routing = recs.filter((r: any) => r.metrics.mode_routing_ok).length / n;
+    return { state, n, routing: round3(routing) };
+  }).sort((a, b) => a.state.localeCompare(b.state));
+  // Table 2: retrieval — Top-1 and Top-5 per condition
+  const byCond: Record<string, any[]> = {};
+  for (const r of cleanRecords) {
+    const baseCond = r.condition?.replace('gf','') || r.condition;
+    (byCond[baseCond] = byCond[baseCond] || []).push(r);
+  }
+  const retrieval = Object.entries(byCond).map(([cond, recs]) => {
+    const n = recs.length;
+    // n(gap) = planner naturally produced gap steps; n(gap-forced) = retrieval run independently
+    const gapFoundRecs  = recs.filter((r: any) => (r.plan?.steps ?? []).some((s: any) => s.source === 'gap'));
+    const gapForcedRecs = recs.filter((r: any) => (r.plan?.steps ?? []).some((s: any) => s.source === 'gap_forced'));
+    let top1sum = 0, top5sum = 0, top1foundsum = 0, top5foundsum = 0, toksum = 0;
+    for (const r of recs) {
+      const expected = new Set(r.expected_gaps ?? []);
+      const gapSteps = (r.plan?.steps ?? []).filter((s: any) => s.source === 'gap' || s.source === 'gap_forced');
+      const hasNaturalGap = (r.plan?.steps ?? []).some((s: any) => s.source === 'gap');
+      if (expected.size > 0) {
+        const t1 = [...expected].filter(eid =>
+          gapSteps.some((s: any) => s.candidates?.[0]?.ordId === eid)
+        ).length / expected.size;
+        const t5 = [...expected].filter(eid =>
+          gapSteps.some((s: any) => (s.candidates ?? []).slice(0,5).some((c: any) => c.ordId === eid))
+        ).length / expected.size;
+        top1sum += t1; top5sum += t5;
+        if (hasNaturalGap) top1foundsum += t1;
+        if (hasNaturalGap) top5foundsum += t5;
+      }
+      toksum += r.trace?.tokens ?? 0;
+    }
+    const nGap = gapFoundRecs.length;
+    const nGapForced = gapForcedRecs.length;
+    return {
+      condition: cond, method: recs[0].method, state: recs[0].state, n, nGap, nGapForced,
+      top1: round3(top1sum / n),
+      top1found: nGap > 0 ? round3(top1foundsum / nGap) : null,
+      top5found: nGap > 0 ? round3(top5foundsum / nGap) : null,
+      top5: round3(top5sum / n),
+      tok: Math.round(toksum / n),
+    };
+  }).sort((a, b) => a.condition.localeCompare(b.condition));
+  // All A0 traces (use cleanRecords, exclude gf)
+  const a0 = cleanRecords.filter((r: any) => r.method === 'A' && r.state === 'clean');
+  const traces = a0.map((r: any) => ({
+    case_id: r.case_id,
+    prompt: r.user_prompt?.slice(0, 150),
+    skill: r.skill_expected,
+    expected_gaps: r.expected_gaps ?? [],
+    gap_steps: (r.plan?.steps ?? []).filter((s: any) => s.source === 'gap' || s.source === 'gap_forced').map((s: any) => ({
+      name: s.step_name?.slice(0, 60),
+      top1: s.candidates?.[0]?.ordId ?? 'none',
+    })),
+    gap_detection: r.metrics.gap_detection,
+    routing_ok: r.metrics.mode_routing_ok,
+  }));
+  return { orch, retrieval, traces };
+}
+function round3(v: number) { return Math.round(v * 1000) / 1000; }
+const rtProgress = {
+  skill_guided:   { done: 30, total: 30 },
+  skill_adjusted: { done: countRecords("skill_adjusted"), total: 280 },
+  dynamic:        { done: 560, total: 560 },
+  out_of_scope:   { done: countRecords("out_of_scope"),   total: 280 },
+};
+
+// Load per-case traces for the process detail box (sample: first case per method per process)
+const traceDir = path.join(ROOT, "results", "design-time", "traces");
+function loadProcessTraces(procId: string): Record<string, any> {
+  const result: Record<string, any> = {};
+  // Load ALL steps for a process (s01–s08), not just s01
+  for (const method of ["A","B","C","D","E","S","F"]) {
+    const steps: any[] = [];
+    for (let s = 1; s <= 8; s++) {
+      const traceFile = path.join(traceDir, method, `${procId}_s${String(s).padStart(2,"0")}.json`);
+      if (fs.existsSync(traceFile)) {
+        steps.push(JSON.parse(fs.readFileSync(traceFile, "utf8")));
+      }
+    }
+    if (steps.length > 0) result[method] = steps;
+  }
+  return result;
+}
+
+const METHODS = ["A", "B", "C", "D", "E", "S", "F"];
+const METHOD_DESC: Record<string, string> = {
+  A: "Embedding cosine",
+  B: "Progressive Disclosure",
+  C: "Graph Walk",
+  D: "Agentic Tool Use",
+  E: "Filesystem Agent",
+  S: "Baseline-Solver (no-retrieval)",
+  F: "Hybrid (A+D+B+C)",
+};
+
+// Load SA records for split metrics
+function loadRecords(mode: string): any[] {
+  const p = path.join(ROOT, "results", "runtime", mode, "records.jsonl");
+  if (!fs.existsSync(p)) return [];
+  const lines = fs.readFileSync(p, "utf8").split("\n").filter(l => l.trim());
+  return lines.flatMap(l => { try { return [JSON.parse(l)]; } catch { return []; } });
+}
+const saRecords = loadRecords("skill_adjusted");
+const saMetrics = loadSaMetrics(saRecords);
+
+// Gap-Count-Acc: did the planner infer exactly the right number of gap steps?
+// Computed method-independently from A0 (clean) records
+const saCasesGt = loadJson(path.join(ROOT, "data", "test_cases", "runtime", "output", "skill_adjusted.json"));
+const saGtCount: Record<string, number> = {};
+for (const c of saCasesGt) saGtCount[c.case_id] = (c.expected_gap_ordIds ?? []).length;
+const saA0 = saRecords.filter((r: any) => r.condition === 'A0' && !r.condition?.endsWith?.('gf'));
+const saGapCountExact = saA0.filter((r: any) => {
+  const found = (r.plan?.steps ?? []).filter((s: any) => s.source === 'gap' || s.source === 'gap_forced').length;
+  return found === (saGtCount[r.case_id] ?? 0);
+}).length;
+const saGapCountAcc = saA0.length > 0 ? Math.round(saGapCountExact / saA0.length * 1000) / 1000 : null;
+const saGapFound = saA0.filter((r: any) =>
+  (r.plan?.steps ?? []).some((s: any) => s.source === 'gap' || s.source === 'gap_forced')
+).length;
+const saGapFoundRate = saA0.length > 0 ? Math.round(saGapFound / saA0.length * 1000) / 1000 : null;
+
+// SA routing traces: one per case from condition A0
+// SA uses hint_skill_id so routing_ok is always 1 — trace shows gaps expected
+const saRoutingCases = saRecords
+  .filter((r: any) => r.condition === 'A0' && !r.condition?.endsWith('gf'))
+  .sort((a: any, b: any) => a.case_id.localeCompare(b.case_id))
+  .map((r: any) => ({
+    case_id: r.case_id,
+    user_prompt: r.user_prompt,
+    skill_expected: r.skill_expected,
+    expected_gaps: r.expected_gaps ?? [],
+    expected_gap_count: saGtCount[r.case_id] ?? 0,
+    predicted_gap_steps: (r.plan?.steps ?? [])
+      .filter((s: any) => s.source === 'gap' || s.source === 'gap_forced')
+      .map((s: any) => s.step_name),
+    predicted_gap_count: (r.plan?.steps ?? []).filter((s: any) => s.source === 'gap' || s.source === 'gap_forced').length,
+    gap_detection: r.metrics.gap_detection,
+    routing_ok: r.metrics.mode_routing_ok,
+  }));
+
+// DY routing traces: one per case from condition A0 (method-independent for routing)
+const dyAllRecords = loadRecords("dynamic");
+const dyByCaseId: Record<string, any> = {};
+for (const r of dyAllRecords.filter((r: any) => r.condition === 'A0')) {
+  dyByCaseId[r.case_id] = r;
+}
+const dyRoutingCases = Object.values(dyByCaseId)
+  .sort((a: any, b: any) => a.case_id.localeCompare(b.case_id))
+  .map((r: any) => {
+    const orch = r.orchestration_trace ?? {};
+    const intent = orch.intent_trace ?? orch.intent_resolver ?? {};
+    return {
+      case_id: r.case_id,
+      user_prompt: r.user_prompt,
+      routing_ok: r.metrics.mode_routing_ok,
+      predicted_mode: r.metrics.predicted_mode,
+      skill_picked: r.skill_picked,
+      reason: intent.reason ?? '',
+    };
+  });
+
+// Best P@1 for highlight
+const bestDtP1 = dtResults.length > 0
+  ? Math.max(...dtResults.filter((r: any) => r.method !== "S").map((r: any) => r["P@1"] ?? 0))
+  : 0;
+
+// Group by_process by process for table
+const procGroups: Record<string, Record<string, any>> = {};
+for (const r of dtByProc) {
+  if (!procGroups[r.process]) procGroups[r.process] = {};
+  procGroups[r.process][r.method] = r;
+}
+const procList = Object.entries(procGroups).sort(([a],[b]) => a.localeCompare(b));
+const sgTracesJson = JSON.stringify(sgCases);
+
+const saTracesJson = JSON.stringify(saMetrics.traces);
+
+// DY traces for viewer (Method A, clean + enriched)
+function loadModeTraces(mode: string, condition: string): any[] {
+  const records = loadRecords(mode).filter((r: any) => r.condition === condition && !r.condition?.endsWith('f'));
+  const cases = json.loads? [] : [];
+  const byCase: Record<string, any> = {};
+  for (const r of records) byCase[r.case_id] = r;
+  return Object.values(byCase).sort((a: any, b: any) => a.case_id.localeCompare(b.case_id)).map((r: any) => {
+    const step = r.plan?.steps?.[0] ?? {};
+    const expected = step.expected?.expected_ordIds ?? [];
+    const top1 = step.candidates?.[0]?.ordId ?? null;
+    return {
+      case_id: r.case_id,
+      user_prompt: r.user_prompt?.slice(0, 150),
+      top1_correct: r.metrics.top1_acc === 1,
+      routing_ok: r.metrics.mode_routing_ok === 1,
+      expected_ordIds: expected,
+      top1_candidate: top1,
+      skill_picked: r.skill_picked,
+    };
+  });
+}
+
+// OOS traces for viewer (Method A, clean + enriched)
+function loadOosTraces(condition: string): any[] {
+  const records = loadRecords("out_of_scope").filter((r: any) => r.condition === condition);
+  const byCase: Record<string, any> = {};
+  for (const r of records) byCase[r.case_id] = r;
+  return Object.values(byCase).sort((a: any, b: any) => a.case_id.localeCompare(b.case_id)).map((r: any) => ({
+    case_id: r.case_id,
+    user_prompt: r.user_prompt?.slice(0, 150),
+    topic: r.topic,
+    correctly_refused: r.metrics.correctly_refused === 1,
+    falsely_picked_ord_id: r.metrics.falsely_picked_ord_id,
+  }));
+}
+
+// Precompute — DY Method A uses top1_acc; OOS uses correctly_refused
+// DY: merge forced records for wrong-routed cases so n=40 with fair retrieval
+function mergeDyRecords(condition: string): any[] {
+  const allDy = loadRecords("dynamic");
+  const real = allDy.filter((r: any) => r.condition === condition);
+  const forced = allDy.filter((r: any) => r.condition === condition + 'f');
+  const forcedMap: Record<string, any> = {};
+  for (const r of forced) forcedMap[r.case_id] = r;
+  const realMap: Record<string, any> = {};
+  for (const r of real) realMap[r.case_id] = r;
+  // For each case: use forced record if real was wrong-routed AND forced exists
+  const merged: any[] = [];
+  for (const [cid, r] of Object.entries(realMap)) {
+    if ((r as any).metrics.mode_routing_ok === 0 && forcedMap[cid]) {
+      merged.push({ ...(forcedMap[cid] as any), _was_forced: true, condition });
+    } else {
+      merged.push({ ...(r as any), _was_forced: false });
+    }
+  }
+  return merged;
+}
+
+const dyA0merged = mergeDyRecords('A0');
+const dyA1merged = mergeDyRecords('A1');
+// Also keep raw (for routing viz)
+const dyA0 = loadRecords("dynamic").filter((r: any) => r.condition === 'A0' && !r.condition?.endsWith('f'));
+const dyA1 = loadRecords("dynamic").filter((r: any) => r.condition === 'A1' && !r.condition?.endsWith('f'));
+const oosA0 = loadRecords("out_of_scope").filter((r: any) => r.condition === 'A0');
+const oosA1 = loadRecords("out_of_scope").filter((r: any) => r.condition === 'A1');
+
+function toTraceList(records: any[], type: 'dy'|'oos'): any[] {
+  const byCase: Record<string, any> = {};
+  for (const r of records) byCase[r.case_id] = r;
+  return Object.values(byCase).sort((a: any, b: any) => a.case_id.localeCompare(b.case_id)).map((r: any) => {
+    if (type === 'dy') {
+      const step = r.plan?.steps?.[0] ?? {};
+      const candidates = (step.candidates ?? []).slice(0, 5).map((c: any) => c.ordId);
+      return {
+        case_id: r.case_id, user_prompt: r.user_prompt?.slice(0,150),
+        top1_correct: r.metrics.top1_acc === 1,
+        top5_correct: r.metrics.candidate_recall === 1,
+        routing_ok: r.metrics.mode_routing_ok === 1,
+        was_forced: r._was_forced ?? false,
+        expected_ordIds: step.expected?.expected_ordIds ?? [],
+        top1_candidate: step.candidates?.[0]?.ordId ?? null,
+        top5_candidates: candidates,
+        skill_picked: r.skill_picked,
+      };
+    } else {
+      return {
+        case_id: r.case_id, user_prompt: r.user_prompt?.slice(0,150),
+        topic: (r as any).topic,
+        correctly_refused: r.metrics.correctly_refused === 1,
+        falsely_picked_ord_id: r.metrics.falsely_picked_ord_id,
+      };
+    }
+  });
+}
+const dyTracesClean = toTraceList(dyA0merged, 'dy');
+const dyTracesEnriched = toTraceList(dyA1merged, 'dy');
+const oosTracesClean = toTraceList(oosA0, 'oos');
+const oosTracesEnriched = toTraceList(oosA1, 'oos');
+
+// All OOS traces for all methods × states
+const oosAllTraces: Record<string, any[]> = {};
+for (const m of ["A","B","C","D","E","S","F"]) {
+  for (const st of ["clean","enriched"]) {
+    const key = m + (st === "clean" ? "0" : "1");
+    const recs = loadRecords("out_of_scope").filter((r: any) => r.condition === key);
+    const byCase: Record<string, any> = {};
+    for (const r of recs) byCase[r.case_id] = r;
+    oosAllTraces[key] = Object.values(byCase).sort((a: any, b: any) => a.case_id.localeCompare(b.case_id)).map((r: any) => ({
+      case_id: r.case_id,
+      user_prompt: r.user_prompt?.slice(0, 150),
+      topic: r.topic,
+      correctly_refused: r.metrics.correctly_refused === 1,
+      falsely_picked_ord_id: r.metrics.falsely_picked_ord_id,
+    }));
+  }
+}
+
+// Compute merged DY summary (all methods × states) using forced records for wrong-routed cases
+function buildDyMergedSummary(caseClasses: Record<string,string>, dyCombinedData: any[], mhRaw: any[]): any[] {
+  const allDy = loadRecords("dynamic");
+  const methods = ["A","B","C","D","E","S","F"];
+  const states = ["clean","enriched"];
+  const rows: any[] = [];
+  for (const method of methods) {
+    for (const state of states) {
+      const cond = method + (state === "clean" ? "0" : "1");
+      const real = allDy.filter((r: any) => r.condition === cond);
+      const forced = allDy.filter((r: any) => r.condition === cond + 'f');
+      const forcedMap: Record<string, any> = {};
+      for (const r of forced) forcedMap[r.case_id] = r;
+
+      // UNIFIED for all methods: single-intent from *f records,
+      // multi-intent from *mh records (per-case partial credit).
+      const singleForced = forced.filter((r: any) =>
+        caseClasses[r.case_id] === "single_intent");
+      const mhCond = cond + "mh";
+      const mhRecords = mhRaw.filter((r: any) => r.condition === mhCond);
+      const byCase: Record<string, any[]> = {};
+      for (const r of mhRecords) {
+        (byCase[r.case_id] = byCase[r.case_id] || []).push(r);
+      }
+      const multiSynth = Object.entries(byCase).map(([cid, subs]) => {
+        const n = subs.length;
+        const t1 = subs.reduce((s: number, x: any) => s + (x.top1_acc || 0), 0) / n;
+        const t5 = subs.reduce((s: number, x: any) => s + (x.candidate_recall || 0), 0) / n;
+        const tok = subs.reduce((s: number, x: any) => s + (x.tokens || 0), 0);
+        return {
+          case_id: cid, condition: cond,
+          metrics: {
+            top1_acc: t1 >= 1 ? 1 : 0,
+            candidate_recall: t5 >= 0.5 ? 1 : 0,
+            top1_partial: t1, top5_partial: t5,
+            mode_routing_ok: 1,
+          },
+          trace: { tokens: tok },
+          _from_mh: true,
+        };
+      });
+      const merged = [...singleForced, ...multiSynth];
+
+      if (!merged.length) continue;
+      const n = merged.length;
+      const nForced = merged.filter((r: any) => !r._from_mh).length;
+      // Top-1 with partial credit on multi (per-sub-query mean)
+      const top1 = merged.reduce((s: number, r: any) =>
+        s + (r._from_mh ? (r.metrics.top1_partial || 0)
+                        : (r.metrics?.top1_acc === 1 ? 1 : 0)), 0) / n;
+      const top5 = merged.reduce((s: number, r: any) =>
+        s + (r._from_mh ? (r.metrics.top5_partial || 0)
+                        : (r.metrics?.candidate_recall === 1 ? 1 : 0)), 0) / n;
+      // Routing accuracy: from regular (router-on) records — kept as is for context
+      const nRouted = real.filter((r: any) => r.metrics?.mode_routing_ok === 1).length;
+      const routing = real.length ? nRouted / real.length : 0;
+      const tok = merged.reduce((s: number, r: any) => s + (r.trace?.tokens ?? 0), 0) / n;
+      // Single / multi split
+      const singleRows = merged.filter((r: any) => !r._from_mh);
+      const top1Single = singleRows.length
+        ? singleRows.filter((r: any) => r.metrics?.top1_acc === 1).length / singleRows.length
+        : null;
+      const multiRows = merged.filter((r: any) => r._from_mh);
+      const top1Multi = multiRows.length
+        ? multiRows.reduce((s: number, r: any) => s + (r.metrics.top1_partial || 0), 0) / multiRows.length
+        : null;
+      rows.push({ condition: cond, method, state, cases: n, nForced, nRouted,
+        "Top-1": Math.round(top1*10000)/10000,
+        "Top-5": Math.round(top5*10000)/10000,
+        "Routing-Acc": Math.round(routing*10000)/10000,
+        top1_single: top1Single != null ? Math.round(top1Single*10000)/10000 : null,
+        top1_multi: top1Multi != null ? Math.round(top1Multi*10000)/10000 : null,
+        total_tokens: Math.round(tok * n) });
+    }
+  }
+  return rows;
+}
+const dyCombined: any[] = loadJson(path.join(ROOT, "results", "runtime", "dynamic", "summary_combined.json"))?.conditions ?? [];
+const dyMhSummary: any[] = loadJson(path.join(ROOT, "results", "runtime", "dynamic", "summary_mh.json"))?.conditions ?? [];
+// dyCasesRaw loaded below — build caseClasses after it
+const dyCasesRaw: any[] = loadJson(path.join(ROOT, "data", "test_cases", "runtime", "output", "dynamic.json")) ?? [];
+const _dyCC: Record<string,string> = {};
+for (const c of dyCasesRaw) _dyCC[c.case_id] = c.query_class ?? "single_intent";
+// Load mh records early so buildDyMergedSummary can use them for F's multi-intent
+function loadMhRecordsEarly(): any[] {
+  const p = path.join(ROOT, "results", "runtime", "dynamic", "records_mh.jsonl");
+  if (!fs.existsSync(p)) return [];
+  const out: any[] = [];
+  for (const l of fs.readFileSync(p, "utf8").split("\n")) {
+    if (!l.trim()) continue;
+    try { out.push(JSON.parse(l)); } catch {}
+  }
+  return out;
+}
+const _mhRawEarly = loadMhRecordsEarly();
+const dyMergedSummary = buildDyMergedSummary(_dyCC, dyCombined, _mhRawEarly);
+
+// Build forced-only summary (A0f-F1f, all 40 cases)
+function buildDyForcedSummary(): any[] {
+  const allDy = loadRecords("dynamic");
+  const methods = ["A","B","C","D","E","S","F"];
+  const rows: any[] = [];
+  for (const method of methods) {
+    for (const suf of ["0f","1f"]) {
+      const cond = method + suf;
+      const recs = allDy.filter((r: any) => r.condition === cond);
+      if (!recs.length) continue;
+      const n = recs.length;
+      const top1 = recs.filter((r: any) => r.metrics?.top1_acc === 1).length / n;
+      const top5 = recs.filter((r: any) => r.metrics?.candidate_recall === 1).length / n;
+      const tok = recs.reduce((s: number, r: any) => s + (r.trace?.tokens ?? 0), 0) / n;
+      rows.push({ condition: cond, method, state: suf[0] === '0' ? 'clean' : 'enriched',
+        n, "Top-1": Math.round(top1*10000)/10000,
+        "Top-5": Math.round(top5*10000)/10000,
+        total_tokens: Math.round(tok) });
+    }
+  }
+  return rows;
+}
+const dyForcedSummary = buildDyForcedSummary();
+
+// query_class per case_id (single_intent / multi_intent)
+const dyQueryClass: Record<string, string> = {};
+const dyExpectedAll: Record<string, string[]> = {};
+const dyUserPromptAll: Record<string, string> = {};
+for (const c of dyCasesRaw) {
+  dyQueryClass[c.case_id] = c.query_class ?? "single_intent";
+  dyExpectedAll[c.case_id] = c.expected_ordIds ?? [];
+  dyUserPromptAll[c.case_id] = c.user_prompt ?? "";
+}
+
+function buildDyClassSummary(qclass: string): any[] {
+  const allDy = loadRecords("dynamic");
+  const caseIds = new Set(Object.entries(dyQueryClass).filter(([,v]) => v === qclass).map(([k]) => k));
+  const methods = ["A","B","C","D","E","S","F"];
+  const rows: any[] = [];
+  for (const method of methods) {
+    for (const state of ["clean","enriched"]) {
+      const cond = method + (state === "clean" ? "0" : "1");
+      const mhCond = cond + "mh";
+
+      if (qclass === "multi_intent") {
+        // Always use *mh records for multi-intent — per-case partial credit,
+        // matching the summary table and detail view exactly.
+        const mhRecs = (_mhRawEarly as any[]).filter(
+          (r: any) => r.condition === mhCond && caseIds.has(r.case_id)
+        );
+        if (!mhRecs.length) continue;
+        // Group by case, compute per-case mean top1 (partial credit)
+        const byCase: Record<string, any[]> = {};
+        for (const r of mhRecs) {
+          if (!byCase[r.case_id]) byCase[r.case_id] = [];
+          byCase[r.case_id].push(r);
+        }
+        const caseList = Object.values(byCase);
+        const n = caseList.length;
+        // top1 = mean of per-case mean(sub top1) — partial credit
+        const top1 = caseList.reduce((s: number, subs: any[]) =>
+          s + subs.reduce((ss: number, x: any) => ss + (x.top1_acc || 0), 0) / subs.length, 0) / n;
+        // top5 = fraction of cases where ≥1 sub-query GT in top-5
+        const top5 = caseList.filter((subs: any[]) => subs.some((x: any) => x.candidate_recall === 1)).length / n;
+        const tok = mhRecs.reduce((s: number, r: any) => s + (r.tokens ?? 0), 0) / mhRecs.length;
+        const nRouted = method === "F" ? n : allDy.filter((r: any) => r.condition === cond && caseIds.has(r.case_id) && r.metrics.mode_routing_ok === 1).length;
+        const nForced = method === "F" ? n : allDy.filter((r: any) => r.condition === cond + 'f' && caseIds.has(r.case_id)).length;
+        rows.push({ condition: cond, method, state, cases: n, nForced, nRouted,
+          "Top-1": Math.round(top1*10000)/10000,
+          "Top-5": Math.round(top5*10000)/10000,
+          "Top-1-routed": null, "Top-5-routed": null, "Routing-Acc": 1,
+          total_tokens: Math.round(tok * mhRecs.length) });
+        continue;
+      }
+
+      // single_intent: use *f records (forced, router bypassed)
+      const forced = allDy.filter((r: any) => r.condition === cond + 'f' && caseIds.has(r.case_id));
+      let merged: any[];
+      if (method === "F") {
+        merged = forced;
+      } else {
+        // For A-S: use *f records for single-intent (same as summary table)
+        merged = forced;
+      }
+      if (!merged.length) continue;
+      const n = merged.length;
+      const nForced = n;
+      const top1 = merged.filter((r: any) => r.metrics.top1_acc === 1).length / n;
+      const top5 = merged.filter((r: any) => r.metrics.candidate_recall === 1).length / n;
+      const nRouted = method === "F" ? n : allDy.filter((r: any) => r.condition === cond && caseIds.has(r.case_id) && r.metrics.mode_routing_ok === 1).length;
+      const tok = merged.reduce((s: number, r: any) => s + (r.trace?.tokens ?? 0), 0) / n;
+      rows.push({ condition: cond, method, state, cases: n, nForced, nRouted,
+        "Top-1": Math.round(top1*10000)/10000,
+        "Top-5": Math.round(top5*10000)/10000,
+        "Top-1-routed": null, "Top-5-routed": null,
+        "Routing-Acc": method === "F" ? 1 : Math.round((nRouted/(allDy.filter((r: any) => r.condition === cond && caseIds.has(r.case_id)).length||1))*10000)/10000,
+        total_tokens: Math.round(tok * n) });
+    }
+  }
+  return rows;
+}
+const dySingleSummary = buildDyClassSummary("single_intent");
+const dyMultiSummary  = buildDyClassSummary("multi_intent");
+
+// All DY traces for all methods × states
+// UNIFIED: single-intent (dy-01..20) always from *f, multi-intent (dy-21..40) always from *mh
+const dyAllTraces: Record<string, any[]> = {};
+const _allDyRecs = loadRecords("dynamic");
+for (const m of ["A","B","C","D","E","S","F"]) {
+  for (const st of ["clean","enriched"]) {
+    const key = m + (st === "clean" ? "0" : "1");
+    const mhCondKey = key + "mh";
+
+    // Single-intent: *f records for dy-01..dy-20
+    const singleRecs = _allDyRecs.filter((r: any) =>
+      r.condition === key + "f" && (dyQueryClass[r.case_id] ?? "single_intent") === "single_intent"
+    );
+
+    // Multi-intent: one synthetic record per case from *mh sub-records
+    const mhByCaseLocal: Record<string, any[]> = {};
+    for (const r of (_mhRawEarly as any[])) {
+      if (r.condition === mhCondKey) {
+        if (!mhByCaseLocal[r.case_id]) mhByCaseLocal[r.case_id] = [];
+        mhByCaseLocal[r.case_id].push(r);
+      }
+    }
+    // Build one trace entry per multi-intent case from mh records
+    const multiRecs: any[] = Object.entries(mhByCaseLocal)
+      .filter(([cid]) => (dyQueryClass[cid] ?? "single_intent") === "multi_intent")
+      .map(([cid, subs]) => ({
+        case_id: cid,
+        user_prompt: dyUserPromptAll[cid] ?? (subs[0] as any).sub_query,
+        condition: key + "f",
+        _from_mh: true,
+        _mh_subs: (subs as any[]).sort((a: any, b: any) => a.sub_idx - b.sub_idx),
+        metrics: { mode_routing_ok: 1 },
+        plan: { steps: [{ candidates: [] }] },
+        skill_picked: null,
+      }));
+
+    const allRecs = [...singleRecs, ...multiRecs]
+      .sort((a: any, b: any) => a.case_id.localeCompare(b.case_id));
+
+    dyAllTraces[key] = allRecs.map((r: any) => {
+      const qc = dyQueryClass[r.case_id] ?? "single_intent";
+
+      // Badge: top1/top5 from mh for multi-intent, from record for single
+      let recomputedTop1: boolean;
+      let recomputedTop5: boolean;
+      let top5Candidates: string[];
+      let top1Candidate: string | null;
+
+      if (qc === "multi_intent") {
+        const mhSubs: any[] = r._mh_subs ?? [];
+        const top1Hits = mhSubs.filter((s: any) => s.top1_acc === 1).length;
+        const top5Hits = mhSubs.filter((s: any) => s.candidate_recall === 1).length;
+        recomputedTop1 = top1Hits === mhSubs.length && mhSubs.length > 0;
+        recomputedTop5 = top5Hits > 0;
+        top5Candidates = [];
+        top1Candidate = null;
+      } else {
+        const step = r.plan?.steps?.[0] ?? {};
+        const candidates = (step.candidates ?? []).slice(0, 5).map((c: any) => c.ordId);
+        const currentGt = dyExpectedAll[r.case_id] ?? step.expected?.expected_ordIds ?? [];
+        const gtSet = new Set(currentGt);
+        recomputedTop1 = candidates.length > 0 && gtSet.has(candidates[0]);
+        recomputedTop5 = candidates.some((c: string) => gtSet.has(c));
+        top5Candidates = candidates;
+        top1Candidate = step.candidates?.[0]?.ordId ?? null;
+      }
+
+      const mt = (r.plan?.steps?.[0]?.method_trace) ?? {};
+      return {
+        case_id: r.case_id,
+        user_prompt: r.user_prompt?.slice(0, 150),
+        top1_correct: recomputedTop1,
+        top5_correct: recomputedTop5,
+        routing_ok: true,
+        was_forced: false,
+        expected_ordIds: dyExpectedAll[r.case_id] ?? [],
+        query_class: qc,
+        top1_candidate: top1Candidate,
+        top5_candidates: top5Candidates,
+        skill_picked: r.skill_picked,
+        f_sub_traces: mt.sub_traces ?? null,
+        f_unified_picks: mt.unified_rerank?.picks ?? null,
+      };
+    });
+  }
+}
+
+// mh records lookup: {A0mh: {dy-21: [{sub_idx,top5_candidates,gt_id,top1_acc},...], ...}}
+function loadMhRecords(): any[] {
+  const p = path.join(ROOT, "results", "runtime", "dynamic", "records_mh.jsonl");
+  if (!fs.existsSync(p)) return [];
+  const out: any[] = [];
+  for (const l of fs.readFileSync(p, "utf8").split("\n")) {
+    if (!l.trim()) continue;
+    try { out.push(JSON.parse(l)); } catch {}
+  }
+  return out;
+}
+const _mhRaw = loadMhRecords();
+// Build lookup: condition → case_id → sorted sub-records
+const dyMhByCase: Record<string, Record<string, any[]>> = {};
+for (const r of _mhRaw) {
+  const cond = r.condition as string;
+  const cid = r.case_id as string;
+  if (!dyMhByCase[cond]) dyMhByCase[cond] = {};
+  if (!dyMhByCase[cond][cid]) dyMhByCase[cond][cid] = [];
+  dyMhByCase[cond][cid].push(r);
+}
+// Sort each case's subs by sub_idx
+for (const cond of Object.keys(dyMhByCase)) {
+  for (const cid of Object.keys(dyMhByCase[cond])) {
+    dyMhByCase[cond][cid].sort((a: any, b: any) => a.sub_idx - b.sub_idx);
+  }
+}
+
+
+// For cases where planner produced 0 gap steps (sa-07, sa-15), prefer the gf record
+// (gap-forced retrieval, independent of router) — same principle as DY forced records.
+const saAllTraces: Record<string, any[]> = {};
+for (const m of ["A","B","C","D","E","S","F"]) {
+  for (const st of ["clean","enriched"]) {
+    const key = m + (st === "clean" ? "0" : "1");
+    const real   = saRecords.filter((r: any) => r.condition === key);
+    const forced = saRecords.filter((r: any) => r.condition === key + "gf");
+    const forcedMap: Record<string, any> = {};
+    for (const r of forced) forcedMap[r.case_id] = r;
+    // Prefer gf when it exists (planner had 0 gap steps → use forced retrieval)
+    const recs = real.map((r: any) =>
+      forcedMap[r.case_id] ? { ...forcedMap[r.case_id], _was_forced: true, condition: key } : r
+    );
+    saAllTraces[key] = recs.sort((a: any, b: any) => a.case_id.localeCompare(b.case_id)).map((r: any) => {
+      const gapSteps = (r.plan?.steps ?? []).filter((s: any) => s.source === 'gap' || s.source === 'gap_forced');
+      const expectedGaps = r.expected_gaps ?? [];
+      const top1Correct = expectedGaps.length > 0
+        ? gapSteps.some((s: any) => expectedGaps.includes(s.candidates?.[0]?.ordId))
+        : null;
+      const top5Correct = expectedGaps.length > 0
+        ? gapSteps.some((s: any) => (s.candidates ?? []).slice(0,5).some((c: any) => expectedGaps.includes(c.ordId)))
+        : null;
+      return {
+        case_id: r.case_id,
+        user_prompt: r.user_prompt?.slice(0, 150),
+        skill: r.skill_expected,
+        expected_gaps: expectedGaps,
+        gap_detection: r.metrics.gap_detection,
+        routing_ok: r.metrics.mode_routing_ok,
+        was_forced: r._was_forced ?? false,
+        top1_correct: top1Correct,
+        top5_correct: top5Correct,
+        gap_steps: gapSteps.map((s: any) => ({
+          name: s.step_name?.slice(0, 60),
+          top1: s.candidates?.[0]?.ordId ?? 'none',
+          top5: (s.candidates ?? []).slice(0,5).map((c: any) => c.ordId),
+        })),
+      };
+    });
+  }
+}
+---
+
+<Base title="Results" subtitle="Evaluation metrics across all methods and ORD states">
+  <div class="font-mono text-xs text-ink-subtle mb-6 flex items-center gap-2">
+    <a href={`${base}`} class="hover:text-ink underline-offset-2 hover:underline">ORD-Bench</a>
+    <span>·</span><span class="text-ink">Results</span>
+    <span class="ml-auto">
+      <span class="font-mono text-[10px] text-ink-subtle">→ construction logs: see ord-bench</span>
+    </span>
+  </div>
+
+  <!-- Tabs -->
+  <div class="flex gap-0 mb-8 border-b border-rule">
+    {[
+      { id: "design-time", label: "Design-Time", badge: dtResults.length > 0 ? `${dtResults.length} methods` : "no data" },
+      { id: "runtime", label: "Run-Time", badge: "SG✓ SA✓ DY… OOS…" },
+    ].map((t, i) => (
+      <button data-tab={t.id} class={`res-tab px-5 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${i === 0 ? "border-accent text-ink" : "border-transparent text-ink-subtle"}`}>
+        {t.label}
+        <span class="ml-1.5 font-mono text-xs text-ink-subtle">{t.badge}</span>
+      </button>
+    ))}
+  </div>
+  <div data-panel="design-time" class="res-panel">
+  <section class="mb-14">
+    <h2 class="font-serif text-xl font-semibold mb-1">Design-Time Evaluation</h2>
+    <p class="text-xs text-ink-muted mb-6 max-w-2xl">
+      Activity → Resource · Clean-ORD only · 240 cases (120 GT-eligible) · 30 process models (15 BPMN + 15 CMMN)
+    </p>
+
+    {dtResults.length > 0 ? (
+      <div>
+        <!-- Summary table -->
+        <div class="overflow-x-auto mb-8">
+          <table class="w-full text-sm border-collapse">
+            <thead>
+              <tr class="border-b-2 border-rule text-xs font-mono uppercase tracking-wider text-ink-subtle">
+                <th class="text-left py-2 pr-4">Method</th>
+                <th class="text-left py-2 pr-4 hidden sm:table-cell">Description</th>
+                <th class="text-right py-2 pr-3">n</th>
+                <th class="text-right py-2 pr-3 text-ink">P@1</th>
+                <th class="text-right py-2 pr-3">P@1 GT</th>
+                <th class="text-right py-2 pr-3">P@1 non-GT</th>
+                <th class="text-right py-2 pr-3">R@5</th>
+                <th class="text-right py-2 pr-3">R@5 GT</th>
+                <th class="text-right py-2 pr-3">R@5 non-GT</th>
+                <th class="text-right py-2 pr-3">MRR</th>
+                <th class="text-right py-2">Tokens/case</th>
+              </tr>
+            </thead>
+            <tbody>
+              {METHODS.map((m) => {
+                const r = dtResults.find((x: any) => x.method === m);
+                if (!r) return null;
+                const isBest = (r["P@1"] ?? 0) === bestDtP1 && m !== "S";
+                const r5meaningful = m !== "E"; // E returns only 1 candidate, R@5 = P@1
+                return (
+                  <tr class={`border-b border-rule/50 hover:bg-rule/20 ${m === "S" ? "opacity-70" : ""}`}>
+                    <td class="py-2.5 pr-4 font-semibold font-mono">{m}</td>
+                    <td class="py-2.5 pr-4 text-xs text-ink-muted hidden sm:table-cell">{METHOD_DESC[m]}</td>
+                    <td class="py-2.5 pr-3 text-right font-mono text-xs text-ink-subtle">{r.cases}</td>
+                    <td class={`py-2.5 pr-3 text-right font-mono font-bold ${isBest ? "text-green-700 text-base" : "text-sm"}`}>
+                      {r["P@1"] != null ? r["P@1"].toFixed(3) : "—"}
+                    </td>
+                    <td class="py-2.5 pr-3 text-right font-mono text-sm text-ink-muted">
+                      {r["P@1_gt"] != null ? r["P@1_gt"].toFixed(3) : "—"}
+                    </td>
+                    <td class="py-2.5 pr-3 text-right font-mono text-sm text-ink-muted">
+                      {r["P@1_ngt"] != null ? r["P@1_ngt"].toFixed(3) : "—"}
+                    </td>
+                    <td class="py-2.5 pr-3 text-right font-mono text-sm">
+                      {r5meaningful ? (r["R@5"] != null ? r["R@5"].toFixed(3) : "—") : <span class="text-ink-subtle text-[10px]">= P@1</span>}
+                    </td>
+                    <td class="py-2.5 pr-3 text-right font-mono text-sm text-ink-muted">
+                      {r5meaningful ? (r["R@5_gt"] != null ? r["R@5_gt"].toFixed(3) : "—") : <span class="text-ink-subtle text-[10px]">= P@1 GT</span>}
+                    </td>
+                    <td class="py-2.5 pr-3 text-right font-mono text-sm text-ink-muted">
+                      {r5meaningful ? (r["R@5_ngt"] != null ? r["R@5_ngt"].toFixed(3) : "—") : <span class="text-ink-subtle text-[10px]">= P@1 non-GT</span>}
+                    </td>
+                    <td class="py-2.5 pr-3 text-right font-mono text-sm">{r["MRR"] != null ? r["MRR"].toFixed(3) : "—"}</td>
+                    <td class="py-2.5 text-right font-mono text-xs text-ink-subtle">
+                      {r.avg_tokens_per_case != null ? Math.round(r.avg_tokens_per_case).toLocaleString() : "—"}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <p class="text-[10px] font-mono text-ink-subtle mt-2">
+            Best non-baseline in bold. Method S = Baseline-Solver (no retrieval, single LLM call). Method E R@5 ≡ P@1 by design: the filesystem agent commits to a single pick — additional candidates are incidental ordIds seen during file reads, not a ranked shortlist.
+          </p>
+        </div>
+
+        <!-- BPMN vs CMMN split — two collapsible cards -->
+        {dtByModel.length > 0 && (
+          <div class="mb-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {(["BPMN", "CMMN"] as const).map((notation) => {
+                const rows = dtByModel.filter((r: any) => r.notation === notation);
+                if (!rows.length) return null;
+                const bestP1 = Math.max(...rows.filter((r: any) => r.method !== "S").map((r: any) => r["P@1"] ?? 0));
+                return (
+                  <div class="border border-rule rounded-xl overflow-hidden">
+                    <button
+                      class="notation-toggle w-full flex items-center justify-between px-5 py-3.5 bg-paper hover:bg-rule/30 transition text-left"
+                      data-notation={notation}
+                    >
+                      <div class="flex items-center gap-3">
+                        <span class="font-mono text-[10px] text-ink-subtle toggle-arrow">▸</span>
+                        <span class="font-serif text-base font-semibold">{notation}</span>
+                        <span class="text-[10px] font-mono text-ink-subtle">
+                          {notation === "BPMN" ? "structured flows" : "knowledge-intensive cases"}
+                        </span>
+                      </div>
+                      <span class="font-mono text-xs text-ink-subtle">{rows[0]?.cases} cases · best P@1 {bestP1.toFixed(3)}</span>
+                    </button>
+                    <div class="notation-panel hidden border-t border-rule">
+                      <div class="overflow-x-auto">
+                        <table class="w-full text-sm border-collapse">
+                          <thead>
+                            <tr class="border-b-2 border-rule text-xs font-mono uppercase tracking-wider text-ink-subtle">
+                              <th class="text-left py-2 px-5">Method</th>
+                              <th class="text-left py-2 pr-4 hidden sm:table-cell">Description</th>
+                              <th class="text-right py-2 pr-3">n</th>
+                              <th class="text-right py-2 pr-3 text-ink">P@1</th>
+                              <th class="text-right py-2 pr-3">R@5</th>
+                              <th class="text-right py-2 pr-5">MRR</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {METHODS.map((m) => {
+                              const r = rows.find((x: any) => x.method === m);
+                              if (!r) return null;
+                              const isBest = (r["P@1"] ?? 0) === bestP1 && m !== "S";
+                              const r5meaningful = m !== "E";
+                              return (
+                                <tr class={`border-b border-rule/50 hover:bg-rule/20 ${m === "S" ? "opacity-70" : ""}`}>
+                                  <td class="py-2.5 pl-5 pr-4 font-semibold font-mono">{m}</td>
+                                  <td class="py-2.5 pr-4 text-xs text-ink-muted hidden sm:table-cell">{METHOD_DESC[m]}</td>
+                                  <td class="py-2.5 pr-3 text-right font-mono text-xs text-ink-subtle">{r.cases}</td>
+                                  <td class={`py-2.5 pr-3 text-right font-mono font-bold ${isBest ? "text-green-700 text-base" : "text-sm"}`}>
+                                    {r["P@1"] != null ? r["P@1"].toFixed(3) : "—"}
+                                  </td>
+                                  <td class="py-2.5 pr-3 text-right font-mono text-sm">
+                                    {r5meaningful ? (r["R@5"] != null ? r["R@5"].toFixed(3) : "—") : <span class="text-ink-subtle text-[10px]">= P@1</span>}
+                                  </td>
+                                  <td class="py-2.5 pr-5 text-right font-mono text-sm">{r["MRR"] != null ? r["MRR"].toFixed(3) : "—"}</td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        <!-- Per-process breakdown — clickable rows with step-level detail -->
+        {procList.length > 0 && (
+          <div>
+            <h3 class="font-mono text-xs uppercase tracking-wider text-ink-subtle mb-3">
+              Per-process breakdown — click a row to see step details
+            </h3>
+            <div class="space-y-1" id="proc-breakdown">
+              {procList.map(([proc, byMethod]) => {
+                const traces = loadProcessTraces(proc);
+                const traceJson = JSON.stringify(traces);
+                return (
+                  <div class="border border-rule rounded-lg overflow-hidden">
+                    <button
+                      class="proc-row w-full flex items-center gap-3 px-4 py-2.5 hover:bg-rule/30 transition text-left"
+                      data-traces={traceJson}
+                      data-proc={proc}
+                    >
+                      <span class="font-mono text-[10px] text-ink-subtle w-4 shrink-0">▸</span>
+                      <a href={`${base}processes/${proc}/`}
+                         class="font-mono text-xs text-accent-ink hover:underline shrink-0"
+                         onclick="event.stopPropagation()">
+                        {proc}
+                      </a>
+                      <div class="flex gap-3 ml-2 flex-wrap">
+                        {METHODS.map((m) => {
+                          const r = (byMethod as any)[m];
+                          const v = r?.["P@1"];
+                          return (
+                            <span class={`font-mono text-[10px] ${v != null && v >= 0.5 ? "text-green-700 font-semibold" : v != null && v === 0 ? "text-red-500" : "text-ink-subtle"}`}>
+                              {m}:{v != null ? v.toFixed(2) : "—"}
+                            </span>
+                          );
+                        })}
+                      </div>
+                    </button>
+                    <div class="proc-detail hidden px-4 pb-4 pt-2 border-t border-rule/50 bg-rule/10">
+                      <p class="font-mono text-[10px] text-ink-subtle mb-3">Step s01 traces — label, prediction, correct?</p>
+                      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" id={`detail-${proc}`}></div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* DT case trace viewer removed */}
+      </div>
+    ) : (
+      <div class="border border-rule rounded-lg p-6 text-center bg-rule/20">
+        <p class="text-sm text-ink-muted mb-2">No design-time results yet.</p>
+        <code class="font-mono text-xs text-ink-subtle">python3 -m src.design_time.dt_benchmark --methods A B C D E S --state clean</code>
+      </div>
+    )}
+  </section>
+  </div>  {/* end design-time panel */}
+
+  <div data-panel="runtime" class="res-panel">
+  <section>
+    <h2 class="font-serif text-xl font-semibold mb-1">Run-Time Evaluation</h2>
+    <p class="text-xs text-ink-muted mb-4 max-w-2xl">
+      Query → Resources · Clean-ORD (0) vs. Enriched-ORD (1) · 110 cases (SG+SA+DY+OOS) · Δ = enrichment gain
+    </p>
+
+    <!-- Progress bar row -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+      {([
+        { key: "skill_guided",   label: "Skill-Guided",   primary: "Routing-Acc", tabId: "sg",  formula: "30 cases · resolver only" },
+        { key: "skill_adjusted", label: "Skill-Adjusted", primary: "Gap-Detection", tabId: "sa", formula: "20 cases × 7 methods × 2 states" },
+        { key: "dynamic",        label: "Dynamic",        primary: "Top-1",        tabId: "dy",  formula: "40 cases × 7 methods × 2 states" },
+        { key: "out_of_scope",   label: "Out-of-Scope",   primary: "Refusal-Rate", tabId: "oos", formula: "20 cases × 7 methods × 2 states" },
+      ] as const).map(({ key, label, primary, tabId, formula }) => {
+        const prog = rtProgress[key];
+        const pct = Math.round((prog.done / prog.total) * 100);
+        const done = pct >= 100;
+        return (
+          <button
+            data-jump={tabId}
+            class={`rounded-lg border p-3 text-left transition hover:shadow-sm ${done ? "border-green-300 bg-green-50 hover:bg-green-100/60" : "border-rule bg-rule/20 hover:bg-rule/40"}`}
+          >
+            <div class="font-mono text-[10px] uppercase tracking-wider text-ink-subtle mb-1">{label}</div>
+            <div class="flex items-end justify-between mb-1">
+              <span class={`font-mono text-sm font-semibold ${done ? "text-green-700" : "text-ink-muted"}`}>
+                {prog.done}/{prog.total}
+              </span>
+              <span class="font-mono text-[9px] text-ink-subtle">{primary}</span>
+            </div>
+            <div class="font-mono text-[9px] text-ink-subtle mb-1.5">{formula}</div>
+            <div class="h-1 rounded-full bg-rule overflow-hidden">
+              <div class={`h-full rounded-full ${done ? "bg-green-500" : "bg-accent"}`} style={`width:${pct}%`}></div>
+            </div>
+          </button>
+        );
+      })}
+    </div>
+
+    <!-- Component tabs -->
+    <div class="flex gap-0 mb-6 border-b border-rule">
+      {([
+        { id: "router",    label: "Router" },
+        { id: "retriever", label: "Retriever" },
+      ] as const).map((t, i) => (
+        <button data-rtmode={t.id} class={`rt-tab px-5 py-2.5 text-sm font-medium border-b-2 -mb-px transition-colors ${i === 0 ? "border-accent text-ink" : "border-transparent text-ink-subtle"}`}>
+          {t.label}
+        </button>
+      ))}
+    </div>
+
+    {/* ROUTER panel */}
+    <div data-rtpanel="router" class="rt-panel">
+      <p class="text-xs text-ink-muted mb-5 max-w-2xl">
+        The router (intent resolver) decides which orchestration mode applies — skill match, skill+gap, ad-hoc, or nothing. It runs once per request, independent of retrieval method and ORD state. All 30 skills are loaded into the LLM context in a single call (~1,600 tokens).
+      </p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b-2 border-rule text-xs font-mono uppercase tracking-wider text-ink-subtle">
+              <th class="text-left py-2 pr-4">Scenario</th>
+              <th class="text-left py-2 pr-4">Question</th>
+              <th class="text-right py-2 pr-3">Cases</th>
+              <th class="text-right py-2 pr-3 text-ink">Routing-Acc</th>
+              <th class="text-right py-2 pr-3">Gap-Found</th>
+              <th class="text-right py-2 pr-3">Gap-Count-Acc</th>
+              <th class="text-right py-2 pr-3">Decomp-Acc</th>
+              <th class="text-right py-2">Tokens/call</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-rule/40 hover:bg-rule/20">
+              <td class="py-2.5 pr-4 font-mono text-xs font-semibold">Skill-Guided</td>
+              <td class="py-2.5 pr-4 text-xs text-ink-muted">Found correct skill?</td>
+              <td class="py-2.5 pr-3 text-right font-mono text-xs text-ink-subtle">30</td>
+              <td class={`py-2.5 pr-3 text-right font-mono font-bold text-base ${(sgRoutingSummary["Routing-Acc"] ?? 0) >= 0.7 ? "text-green-700" : "text-red-500"}`}>
+                {sgRoutingSummary["Routing-Acc"] != null ? sgRoutingSummary["Routing-Acc"].toFixed(3) : "—"}
+              </td>
+              <td class="py-2.5 pr-3 text-right font-mono text-xs text-ink-subtle">—</td>
+              <td class="py-2.5 pr-3 text-right font-mono text-xs text-ink-subtle">—</td>
+              <td class="py-2.5 pr-3 text-right font-mono text-xs text-ink-subtle">—</td>
+              <td class="py-2.5 text-right font-mono text-xs text-ink-subtle">
+                {sgRoutingSummary.total_tokens && sgRoutingSummary.cases ? Math.round(sgRoutingSummary.total_tokens / sgRoutingSummary.cases).toLocaleString() : "—"}
+              </td>
+            </tr>
+            {(() => {
+              const saR = saRoutingCases.length ? (saRoutingCases.filter((r: any) => r.routing_ok).length / saRoutingCases.length) : null;
+              const saTok = saRecords.filter((r: any) => r.condition === 'A0').length
+                ? Math.round(saRecords.filter((r: any) => r.condition === 'A0').reduce((s: number, r: any) => s + (r.trace?.tokens ?? 0), 0) / saRecords.filter((r: any) => r.condition === 'A0').length)
+                : null;
+              return (
+                <tr class="border-b border-rule/40 hover:bg-rule/20">
+                  <td class="py-2.5 pr-4 font-mono text-xs font-semibold">Skill-Adjusted</td>
+                  <td class="py-2.5 pr-4 text-xs text-ink-muted">Recognised as skill+gap?</td>
+                  <td class="py-2.5 pr-3 text-right font-mono text-xs text-ink-subtle">{saRoutingCases.length}</td>
+                  <td class={`py-2.5 pr-3 text-right font-mono font-bold text-base ${(saR ?? 0) >= 0.7 ? "text-green-700" : "text-red-500"}`}>
+                    {saR != null ? saR.toFixed(3) : "—"}
+                  </td>
+                  <td class={`py-2.5 pr-3 text-right font-mono text-sm ${(saGapFoundRate ?? 0) >= 0.7 ? "text-green-700 font-semibold" : "text-ink-muted"}`}>
+                    {saGapFoundRate != null ? saGapFoundRate.toFixed(3) : "—"}
+                  </td>
+                  <td class={`py-2.5 pr-3 text-right font-mono text-sm ${(saGapCountAcc ?? 0) >= 0.5 ? "text-green-700 font-semibold" : "text-red-500"}`}>
+                    {saGapCountAcc != null ? saGapCountAcc.toFixed(3) : "—"}
+                  </td>
+                  <td class="py-2.5 pr-3 text-right font-mono text-xs text-ink-subtle">—</td>
+                  <td class="py-2.5 text-right font-mono text-xs text-ink-subtle">{saTok != null ? saTok.toLocaleString() : "—"}</td>
+                </tr>
+              );
+            })()}
+            {(() => {
+              const dyR = dyRoutingCases.length ? (dyRoutingCases.filter((r: any) => r.routing_ok).length / dyRoutingCases.length) : null;
+              const decomp = Object.values(dyDecompRouting);
+              const green = decomp.filter((d: any) => d.verdict === 'green').length;
+              const yellow = decomp.filter((d: any) => d.verdict === 'yellow').length;
+              const decompAcc = decomp.length ? green / decomp.length : null;
+              return (
+                <tr class="border-b border-rule/40 hover:bg-rule/20">
+                  <td class="py-2.5 pr-4 font-mono text-xs font-semibold">Dynamic</td>
+                  <td class="py-2.5 pr-4 text-xs text-ink-muted">Correctly returned no skill?</td>
+                  <td class="py-2.5 pr-3 text-right font-mono text-xs text-ink-subtle">{dyRoutingCases.length}</td>
+                  <td class={`py-2.5 pr-3 text-right font-mono font-bold text-base ${(dyR ?? 0) >= 0.7 ? "text-green-700" : "text-red-500"}`}>
+                    {dyR != null ? dyR.toFixed(3) : "—"}
+                  </td>
+                  <td class="py-2.5 pr-3 text-right font-mono text-xs text-ink-subtle">—</td>
+                  <td class="py-2.5 pr-3 text-right font-mono text-xs text-ink-subtle">—</td>
+                  <td class="py-2.5 pr-3 text-right font-mono text-sm">
+                    {decompAcc != null ? (
+                      <span class={`font-bold ${decompAcc >= 0.6 ? "text-green-700" : decompAcc >= 0.4 ? "text-yellow-600" : "text-red-500"}`}>
+                        {decompAcc.toFixed(3)}
+                      </span>
+                    ) : "—"}
+                  </td>
+                  <td class="py-2.5 text-right font-mono text-xs text-ink-subtle">—</td>
+                </tr>
+              );
+            })()}
+          </tbody>
+        </table>
+        <p class="text-[10px] font-mono text-ink-subtle mt-2">
+          Method-independent · ORD-state-independent · 1 evaluation per case from Method A (clean-ORD)
+        </p>
+      </div>
+
+      {/* SG case selector */}
+      {sgCases.length > 0 && (
+        <div class="mt-8">
+          <h3 class="font-mono text-xs uppercase tracking-wider text-ink-subtle mb-3">Skill-Guided — resolver traces (30 cases)</h3>
+          <div class="flex flex-wrap gap-1.5 mb-4" id="sg-trace-btns">
+            {sgCases.map((c: any, i: number) => (
+              <button
+                data-sg-trace={i}
+                class={"sg-trace-btn font-mono text-[10px] px-2 py-1 rounded border transition " + (c.routing_ok ? "border-green-300 bg-green-50 text-green-700" : "border-red-200 bg-red-50/50 text-red-700") + (i === 0 ? " ring-1 ring-accent" : "")}
+              >
+                {c.case_id} {c.routing_ok ? "✓" : "✗"}
+              </button>
+            ))}
+          </div>
+          <div id="sg-trace-detail" class="rounded-lg border border-rule p-4 text-xs">
+            <p class="text-ink-subtle font-mono text-[10px]">Select a case above</p>
+          </div>
+        </div>
+      )}
+
+      {/* SA routing case selector */}
+      {saRoutingCases.length > 0 && (
+        <div class="mt-8">
+          <h3 class="font-mono text-xs uppercase tracking-wider text-ink-subtle mb-3">Skill-Adjusted — routing traces ({saRoutingCases.length} cases, hint provided → always routed)</h3>
+          <div class="flex flex-wrap gap-1.5 mb-4" id="sa-routing-btns">
+            {saRoutingCases.map((c: any, i: number) => {
+              const exact = c.predicted_gap_count === c.expected_gap_count && c.predicted_gap_count > 0;
+              const partial = c.predicted_gap_count > 0 && !exact;
+              const none = c.predicted_gap_count === 0;
+              const cls = exact ? "border-green-300 bg-green-50 text-green-700"
+                : partial ? "border-yellow-300 bg-yellow-50 text-yellow-700"
+                : "border-red-200 bg-red-50/50 text-red-700";
+              const icon = exact ? "✓" : partial ? "~" : "✗";
+              return (
+                <button
+                  data-sa-routing-trace={i}
+                  class={"sa-routing-btn font-mono text-[10px] px-2 py-1 rounded border transition " + cls + (i === 0 ? " ring-1 ring-accent" : "")}
+                >
+                  {c.case_id} {icon}
+                </button>
+              );
+            })}
+          </div>
+          <div id="sa-routing-detail" class="rounded-lg border border-rule p-4 text-xs">
+            <p class="text-ink-subtle font-mono text-[10px]">Select a case above</p>
+          </div>
+        </div>
+      )}
+
+      {/* DY routing case selector */}
+      {dyRoutingCases.length > 0 && (
+        <div class="mt-8">
+          <h3 class="font-mono text-xs uppercase tracking-wider text-ink-subtle mb-3">Dynamic — routing traces ({dyRoutingCases.length} cases, resolver runs freely)</h3>
+          <div class="flex flex-wrap gap-1.5 mb-4" id="dy-routing-btns">
+            {dyRoutingCases.map((c: any, i: number) => {
+              const dr = dyDecompRouting[c.case_id];
+              const verdict = dr?.verdict ?? 'red';
+              // Color: router correct AND decomp correct = green
+              //        one of the two correct = yellow
+              //        neither = red
+              const bothOk = c.routing_ok && verdict === 'green';
+              const oneOk  = c.routing_ok || verdict !== 'red';
+              const btnColor = bothOk
+                ? "border-green-300 bg-green-50 text-green-700"
+                : oneOk
+                ? "border-yellow-300 bg-yellow-50 text-yellow-700"
+                : "border-red-200 bg-red-50/50 text-red-700";
+              const icon = bothOk ? "✓" : oneOk ? "~" : "✗";
+              return (
+                <button
+                  data-dy-routing-trace={i}
+                  class={"dy-routing-btn font-mono text-[10px] px-2 py-1 rounded border transition " + btnColor + (i === 0 ? " ring-1 ring-accent" : "")}
+                >
+                  {c.case_id} {icon}
+                </button>
+              );
+            })}
+          </div>
+          <div id="dy-routing-detail" class="rounded-lg border border-rule p-4 text-xs">
+            <p class="text-ink-subtle font-mono text-[10px]">Select a case above</p>
+          </div>
+        </div>
+      )}
+    </div>
+
+    {/* RETRIEVER panel — sub-tabs for SA / DY / OOS */}
+    <div data-rtpanel="retriever" class="rt-panel hidden">
+      <p class="text-xs text-ink-muted mb-4">The retriever finds the actual ORD resources. Evaluated per method × ORD state.</p>
+      <div class="flex gap-0 mb-5 border-b border-rule">
+        {([
+          { id: "sa",  label: "Skill-Adjusted" },
+          { id: "dy",  label: "Dynamic" },
+          { id: "oos", label: "Out-of-Scope" },
+        ] as const).map((t, i) => (
+          <button data-submode={t.id} class={`sub-tab px-4 py-2 text-xs font-medium border-b-2 -mb-px transition-colors ${i === 0 ? "border-accent text-ink" : "border-transparent text-ink-subtle"}`}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+    <!-- Helper: reusable metric table -->
+
+    {/* SA panel */}
+    <div data-subpanel="sa" class="sub-panel">
+      <p class="text-xs text-ink-muted mb-5">
+        Skill provided via <code class="font-mono text-[10px] bg-rule px-1 rounded">hint_skill_id</code> — routing is already evaluated in the Router tab. Here: did the retrieval method find the right resource for the gap?
+      </p>
+
+      {/* Retrieval */}
+      <h3 class="font-mono text-xs uppercase tracking-wider text-ink-subtle mb-2">Retrieval — were the right resources found for the gap?</h3>
+      <p class="text-[10px] text-ink-subtle mb-3">n = all cases · n(gap) = planner naturally inferred gap steps · n(forced) = gap-forced (planner said full, retrieval run independently) · Top-1(gap) / Top-5(gap) over natural-gap cases only.</p>
+      {saMetrics.retrieval.length > 0 ? (
+        <div class="overflow-x-auto mb-8">
+          <table class="w-full text-sm border-collapse">
+            <thead>
+              <tr class="border-b-2 border-rule text-xs font-mono uppercase tracking-wider text-ink-subtle">
+                <th class="text-left py-2 pr-3">Cond</th>
+                <th class="text-left py-2 pr-4 hidden sm:table-cell">Method</th>
+                <th class="text-left py-2 pr-3">State</th>
+                <th class="text-right py-2 pr-3">n</th>
+                <th class="text-right py-2 pr-3 text-ink">Top-1</th>
+                <th class="text-right py-2 pr-3">Top-5</th>
+                <th class="text-right py-2 pr-3">n(gap)</th>
+                <th class="text-right py-2 pr-3">Top-1(gap)</th>
+                <th class="text-right py-2 pr-3">Top-5(gap)</th>
+                <th class="text-right py-2 pr-3">n(forced)</th>
+                <th class="text-right py-2">Tokens/case</th>
+              </tr>
+            </thead>
+            <tbody>
+              {saMetrics.retrieval.map((r: any) => (
+                <tr class={`border-b border-rule/40 hover:bg-rule/20 ${r.state === "enriched" ? "bg-blue-50/20" : ""}`}>
+                  <td class="py-2 pr-3 font-mono text-xs font-semibold">{r.condition}</td>
+                  <td class="py-2 pr-4 text-xs text-ink-muted hidden sm:table-cell">{METHOD_DESC[r.method]}</td>
+                  <td class="py-2 pr-3 font-mono text-[10px] text-ink-subtle">{r.state === "clean" ? "0" : "1"}</td>
+                  <td class="py-2 pr-3 text-right font-mono text-xs text-ink-subtle">{r.n}</td>
+                  <td class={`py-2 pr-3 text-right font-mono font-bold ${r.top1 >= 0.3 ? "text-green-700" : r.top1 < 0.1 ? "text-red-500" : ""}`}>{r.top1.toFixed(3)}</td>
+                  <td class="py-2 pr-3 text-right font-mono text-sm">{r.top5.toFixed(3)}</td>
+                  <td class="py-2 pr-3 text-right font-mono text-xs text-ink-subtle">{r.nGap}</td>
+                  <td class="py-2 pr-3 text-right font-mono text-sm text-ink-muted">{r.top1found != null ? r.top1found.toFixed(3) : "—"}</td>
+                  <td class="py-2 pr-3 text-right font-mono text-sm text-ink-muted">{r.top5found != null ? r.top5found.toFixed(3) : "—"}</td>
+                  <td class="py-2 pr-3 text-right font-mono text-xs text-orange-500">{r.nGapForced > 0 ? r.nGapForced : "—"}</td>
+                  <td class="py-2 text-right font-mono text-xs text-ink-subtle">{r.tok.toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <p class="text-[10px] font-mono text-ink-subtle mt-2">0 = clean-ORD · 1 = enriched-ORD · blue rows = enriched</p>
+        </div>
+      ) : <p class="text-sm text-ink-muted mb-8">No results yet.</p>}
+
+      {/* Trace viewer — all methods × states */}
+      <div>
+        <h3 class="font-mono text-xs uppercase tracking-wider text-ink-subtle mb-3">Traces — select method and state</h3>
+        <div class="flex flex-wrap gap-2 mb-4">
+          {["A","B","C","D","E","S","F"].flatMap(m => ["0","1"].map(st => {
+            const key = m + st;
+            const traces = saAllTraces[key] ?? [];
+            const label = `${m} · ${st === "0" ? "Clean" : "Enrich"}`;
+            return (
+              <button
+                data-sa-ms={key}
+                class={"sa-ms-btn font-mono text-[10px] px-3 py-1.5 rounded border transition hover:border-accent " + (key === "A0" ? "border-accent bg-accent-soft/40 text-accent-ink" : "border-rule bg-paper text-ink-muted")}
+              >
+                {label}
+                <span class="ml-1 text-[9px] opacity-60">{traces.length}</span>
+              </button>
+            );
+          }))}
+        </div>
+        <div class="flex flex-wrap gap-1.5 mb-4" id="sa-ms-case-btns"></div>
+        <div id="sa-ms-trace-detail" class="rounded-lg border border-rule p-4 text-xs">
+          <p class="text-ink-subtle font-mono text-[10px]">Select a method above, then a case to inspect</p>
+        </div>
+      </div>
+    </div>
+
+    {/* DY panel — orchestration + retrieval */}
+    <div data-subpanel="dy" class="sub-panel hidden">
+      <p class="text-xs text-ink-muted mb-5">
+        Ad-hoc retrieval — no matching skill. Routing is evaluated in the Router tab. Here: did the retrieval method find the right resource?
+      </p>
+
+      {/* Retrieval */}
+      <h3 class="font-mono text-xs uppercase tracking-wider text-ink-subtle mb-2">Retrieval — per method × state</h3>
+      <p class="text-[10px] text-ink-subtle mb-3">n=40 · Top-1/Top-5 computed over all 40 cases (forced retrieval used for the 15 wrong-routed cases) · n(routed) = correctly routed without forcing · Tokens/case include full pipeline.</p>
+      {dyMergedSummary.length > 0 ? (
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm border-collapse">
+            <thead>
+              <tr class="border-b-2 border-rule text-xs font-mono uppercase tracking-wider text-ink-subtle">
+                <th class="text-left py-2 pr-3">Cond</th>
+                <th class="text-left py-2 pr-4 hidden sm:table-cell">Method</th>
+                <th class="text-left py-2 pr-3">State</th>
+                <th class="text-right py-2 pr-3">n</th>
+                <th class="text-right py-2 pr-3 text-ink">Top-1 [95% CI]</th>
+                <th class="text-right py-2 pr-3">Top-5</th>
+                <th class="text-right py-2 pr-3">Top-1 single</th>
+                <th class="text-right py-2 pr-3">Top-1 multi</th>
+                <th class="text-right py-2 pr-3" title="All expected_ordIds in top-5 (multi-intent only)">Recall-all multi</th>
+                <th class="text-right py-2 pr-3">n(routed)</th>
+                <th class="text-right py-2 pr-3">n(forced)</th>
+                <th class="text-right py-2">Tokens/case</th>
+              </tr>
+            </thead>
+            <tbody>
+              {METHODS.map((m) => ["clean","enriched"].map((s) => {
+                const r = dyMergedSummary.find((x: any) => x.method === m && x.state === s);
+                if (!r) return null;
+                const ph = postHocDy[r.condition] ?? {};
+                const ci = ph.top1_ci;
+                return (
+                  <tr class={`border-b border-rule/40 hover:bg-rule/20 ${(m === "S" || m === "F") ? "opacity-60 bg-gray-50/50" : ""} ${s === "enriched" ? "bg-blue-50/20" : ""}`}>
+                    <td class="py-2 pr-3 font-mono text-xs font-semibold">{r.condition}{m === "F" ? <span class="ml-1 text-[9px] font-mono text-ink-subtle">(f)</span> : ""}</td>
+                    <td class="py-2 pr-4 text-xs text-ink-muted hidden sm:table-cell">{METHOD_DESC[m]}</td>
+                    <td class="py-2 pr-3 font-mono text-[10px] text-ink-subtle">{s === "clean" ? "0" : "1"}</td>
+                    <td class="py-2 pr-3 text-right font-mono text-xs text-ink-subtle">{r.cases}</td>
+                    <td class={`py-2 pr-3 text-right font-mono font-bold ${(r["Top-1"]??0) >= 0.4 ? "text-green-700" : (r["Top-1"]??0) < 0.1 ? "text-red-500" : ""}`}>
+                      {r["Top-1"] != null ? r["Top-1"].toFixed(3) : "—"}
+                      {ci && <span class="block text-[9px] text-ink-subtle font-normal">[{ci[0].toFixed(2)}, {ci[1].toFixed(2)}]</span>}
+                    </td>
+                    <td class="py-2 pr-3 text-right font-mono text-sm">
+                      {r["Top-5"] != null ? r["Top-5"].toFixed(3) : "—"}
+                    </td>
+                    <td class="py-2 pr-3 text-right font-mono text-sm text-ink-muted">
+                      {(m === "F" ? r.top1_single : ph.top1_single) != null ? (m === "F" ? r.top1_single : ph.top1_single).toFixed(3) : "—"}
+                    </td>
+                    <td class="py-2 pr-3 text-right font-mono text-sm text-ink-muted">
+                      {(m === "F" ? r.top1_multi : ph.top1_multi) != null ? (m === "F" ? r.top1_multi : ph.top1_multi).toFixed(3) : "—"}
+                    </td>
+                    <td class="py-2 pr-3 text-right font-mono text-sm text-purple-700">
+                      {ph.recall_all_multi != null ? ph.recall_all_multi.toFixed(3) : "—"}
+                    </td>
+                    <td class="py-2 pr-3 text-right font-mono text-xs text-ink-subtle">{m === "F" ? "40" : (r.nRouted ?? "—")}</td>
+                    <td class="py-2 pr-3 text-right font-mono text-xs text-orange-500">{m !== "F" && r.nForced > 0 ? r.nForced : "—"}</td>
+                    <td class="py-2 text-right font-mono text-xs text-ink-subtle">
+                      {r.total_tokens ? Math.round(r.total_tokens / r.cases).toLocaleString() : "—"}
+                    </td>
+                  </tr>
+                );
+              }))}
+            </tbody>
+          </table>
+          <p class="text-[10px] font-mono text-ink-subtle mt-2">
+            0 = clean · 1 = enriched · n(routed) = correctly routed by intent resolver · n(forced) orange = wrong-routed cases re-evaluated with force_mode=dynamic and merged into Top-1.
+            <strong>Top-1 single/multi</strong> splits by query_class (original prompt, recall_any).
+            <strong>Recall-all multi</strong> = all expected_ordIds in top-5. CI: 95% bootstrap.
+            F uses forced records only (no router). See split below for single/multi breakdown.
+          </p>
+
+          {/* ── Forced + Split (collapsible) ── */}
+          <div class="mt-6 border border-rule rounded-xl overflow-hidden">
+            <button id="dy-forced-toggle" class="w-full flex items-center justify-between px-4 py-3 bg-rule/30 hover:bg-rule/50 transition text-left">
+              <div class="flex items-center gap-3">
+                <span class="font-mono text-xs font-semibold uppercase tracking-wider text-ink">Single-Intent / Multi-Intent split</span>
+                <span class="text-[10px] font-mono text-ink-subtle bg-white px-2 py-0.5 rounded border border-rule">single: n=20 · multi: n=20 split-prompt · router bypassed</span>
+              </div>
+              <span id="dy-forced-arrow" class="text-ink-subtle text-sm">▸</span>
+            </button>
+            <div id="dy-forced-panel" class="hidden p-4">
+
+              {/* Forced table — all 40 */}
+              <div class="overflow-x-auto mb-6">
+                <p class="text-[10px] font-mono text-ink-subtle mb-2">All 40 cases, router bypassed (force_mode=dynamic). F uses its own decomposer for multi-intent.</p>
+                <table class="w-full text-xs border-collapse">
+                  <thead>
+                    <tr class="border-b-2 border-rule text-[10px] font-mono uppercase tracking-wider text-ink-subtle">
+                      <th class="text-left py-2 pr-4">Cond</th>
+                      <th class="text-left py-2 pr-4">Method</th>
+                      <th class="text-right py-2 pr-3">n</th>
+                      <th class="text-right py-2 pr-3 text-ink">Top-1</th>
+                      <th class="text-right py-2 pr-3">Top-5</th>
+                      <th class="text-right py-2">Tokens/case</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dyForcedSummary.map((r: any) => {
+                      const isF = r.method === 'F';
+                      const rowBg = isF ? 'bg-gray-50' : (r.state === 'enriched' ? 'bg-blue-50/20' : '');
+                      const t1 = r['Top-1'];
+                      const t1Color = t1 >= 0.35 ? 'text-green-700 font-bold' : t1 >= 0.20 ? 'text-ink' : 'text-red-500';
+                      return (
+                        <tr class={`border-b border-rule/30 hover:bg-rule/20 ${rowBg}`}>
+                          <td class="py-2 pr-4 font-mono text-[10px]">{r.condition}</td>
+                          <td class="py-2 pr-4 text-ink-muted">{isF ? 'Hybrid (F)' : r.method}</td>
+                          <td class="py-2 pr-3 text-right font-mono text-ink-subtle">{r.n}</td>
+                          <td class={`py-2 pr-3 text-right font-mono text-base ${t1Color}`}>{t1.toFixed(3)}</td>
+                          <td class="py-2 pr-3 text-right font-mono text-ink-muted">{r['Top-5'].toFixed(3)}</td>
+                          <td class="py-2 text-right font-mono text-ink-subtle">{Math.round(r.total_tokens).toLocaleString()}</td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Single / Multi split */}
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Single-Intent: forced *f, n=20 */}
+                <div>
+                  <div class="font-mono text-[10px] uppercase tracking-wider text-ink-subtle mb-2">Single-Intent — forced *f (n=20)</div>
+                  <table class="w-full text-xs border-collapse">
+                    <thead>
+                      <tr class="border-b border-rule text-[10px] font-mono uppercase text-ink-subtle">
+                        <th class="text-left py-1.5 pr-3">Cond</th>
+                        <th class="text-right py-1.5 pr-3 text-ink">Top-1</th>
+                        <th class="text-right py-1.5">Top-5</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dyCombined.map((r: any) => {
+                        if (r.single_top1 == null) return null;
+                        const t1c = r.single_top1 >= 0.40 ? 'text-green-700 font-bold' : r.single_top1 >= 0.20 ? 'text-ink' : 'text-red-500';
+                        return (
+                          <tr class="border-b border-rule/20 hover:bg-rule/20">
+                            <td class="py-1.5 pr-3 font-mono text-[10px]">{r.condition}</td>
+                            <td class={`py-1.5 pr-3 text-right font-mono ${t1c}`}>{r.single_top1.toFixed(3)}</td>
+                            <td class="py-1.5 text-right font-mono text-ink-muted">{r.single_top5?.toFixed(3) ?? '—'}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Multi-Intent: mh partial credit, n=20 cases */}
+                <div>
+                  <div class="font-mono text-[10px] uppercase tracking-wider text-ink-subtle mb-2">Multi-Intent — mh split prompt (n=20 cases · partial credit)</div>
+                  <table class="w-full text-xs border-collapse">
+                    <thead>
+                      <tr class="border-b border-rule text-[10px] font-mono uppercase text-ink-subtle">
+                        <th class="text-left py-1.5 pr-3">Cond</th>
+                        <th class="text-right py-1.5 pr-3 text-ink">Top-1 partial</th>
+                        <th class="text-right py-1.5">Strict</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {dyCombined.map((r: any) => {
+                        if (r.mh_top1_partial == null) return null;
+                        const t1c = r.mh_top1_partial >= 0.30 ? 'text-green-700 font-bold' : r.mh_top1_partial >= 0.15 ? 'text-ink' : 'text-red-500';
+                        return (
+                          <tr class="border-b border-rule/20 hover:bg-rule/20">
+                            <td class="py-1.5 pr-3 font-mono text-[10px]">{r.condition}</td>
+                            <td class={`py-1.5 pr-3 text-right font-mono ${t1c}`}>{r.mh_top1_partial.toFixed(3)}</td>
+                            <td class="py-1.5 text-right font-mono text-ink-subtle">{r.mh_top1_strict?.toFixed(3) ?? '—'}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                  <p class="text-[9px] font-mono text-ink-subtle mt-1">partial = mean(per-sub-query top1) · strict = both GTs top-1</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          {/* Termination breakdown for D/E across all RT modes */}
+          {Object.keys(postHocTerm).length > 0 && (
+            <div class="mt-6 border border-rule rounded-lg p-4 bg-paper">
+              <div class="font-mono text-[10px] uppercase tracking-wider text-ink-subtle mb-3">Termination — agentic methods (D, E) across all RT modes</div>
+              <table class="w-full text-xs">
+                <thead>
+                  <tr class="border-b border-rule text-[10px] font-mono uppercase tracking-wider text-ink-subtle">
+                    <th class="text-left py-1 pr-3">Method · State</th>
+                    <th class="text-right py-1 pr-3 text-green-700">picked</th>
+                    <th class="text-right py-1 pr-3 text-blue-700">refused</th>
+                    <th class="text-right py-1 pr-3 text-orange-600">budget exhausted</th>
+                    <th class="text-right py-1 pr-1 text-ink-subtle">total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(postHocTerm).sort(([a],[b]) => a.localeCompare(b)).map(([key, v]: [string, any]) => {
+                    const total = v.picked + v.refused + v.budget_exhausted;
+                    return (
+                      <tr class="border-b border-rule/40">
+                        <td class="py-1 pr-3 font-mono">{key}</td>
+                        <td class="py-1 pr-3 text-right font-mono text-green-700">{v.picked}</td>
+                        <td class="py-1 pr-3 text-right font-mono text-blue-700">{v.refused}</td>
+                        <td class="py-1 pr-3 text-right font-mono text-orange-600">{v.budget_exhausted}</td>
+                        <td class="py-1 pr-1 text-right font-mono text-ink-subtle">{total}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <p class="text-[10px] font-mono text-ink-subtle mt-2">
+                Budget exhausted = agent ran out of tool calls (D: 8, E: 10) without an explicit pick or refuse — counted as ``no candidate'' in Top-1.
+              </p>
+            </div>
+          )}
+        </div>
+      ) : <p class="text-sm text-ink-muted">No results yet.</p>}
+
+      {/* Single-Intent / Multi-Intent split cards */}
+      {(dySingleSummary.length > 0 || dyMultiSummary.length > 0) && (
+        <div class="mt-6 mb-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {([
+            { key: "single", label: "Single-Intent", desc: "1 resource needed", data: dySingleSummary },
+            { key: "multi",  label: "Multi-Intent",  desc: "2–3 resources needed", data: dyMultiSummary },
+          ] as const).map(({ key, label, desc, data }) => {
+            const bestTop1 = Math.max(...data.filter((r: any) => r.method !== "S").map((r: any) => r["Top-1"] ?? 0));
+            return (
+              <div class="border border-rule rounded-xl overflow-hidden">
+                <button
+                  class="dy-class-toggle w-full flex items-center justify-between px-5 py-3.5 bg-paper hover:bg-rule/30 transition text-left"
+                  data-dy-class={key}
+                >
+                  <div class="flex items-center gap-3">
+                    <span class="font-mono text-[10px] text-ink-subtle dy-class-arrow">▸</span>
+                    <span class="font-serif text-base font-semibold">{label}</span>
+                    <span class="text-[10px] font-mono text-ink-subtle">{desc}</span>
+                  </div>
+                  <span class="font-mono text-xs text-ink-subtle">n=20 · best P@1 {bestTop1.toFixed(3)}</span>
+                </button>
+                <div class="dy-class-panel hidden border-t border-rule">
+                  <div class="overflow-x-auto">
+                    <table class="w-full text-sm border-collapse">
+                      <thead>
+                        <tr class="border-b-2 border-rule text-xs font-mono uppercase tracking-wider text-ink-subtle">
+                          <th class="text-left py-2 px-5">Cond</th>
+                          <th class="text-left py-2 pr-4 hidden sm:table-cell">Method</th>
+                          <th class="text-left py-2 pr-3">State</th>
+                          <th class="text-right py-2 pr-3">n</th>
+                          <th class="text-right py-2 pr-3 text-ink">Top-1</th>
+                          <th class="text-right py-2 pr-3">Top-5</th>
+                          <th class="text-right py-2 pr-3">n(routed)</th>
+                          <th class="text-right py-2 pr-3">n(forced)</th>
+                          <th class="text-right py-2 pr-5">Tokens/case</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {METHODS.map((m) => ["clean","enriched"].map((s) => {
+                          const r = data.find((x: any) => x.method === m && x.state === s);
+                          if (!r) return null;
+                          const isBest = (r["Top-1"] ?? 0) === bestTop1 && m !== "S";
+                          return (
+                            <tr class={`border-b border-rule/40 hover:bg-rule/20 ${m === "S" ? "opacity-60" : ""} ${s === "enriched" ? "bg-blue-50/20" : ""}`}>
+                              <td class="py-2 pl-5 pr-3 font-mono text-xs font-semibold">{r.condition}</td>
+                              <td class="py-2 pr-4 text-xs text-ink-muted hidden sm:table-cell">{METHOD_DESC[m]}</td>
+                              <td class="py-2 pr-3 font-mono text-[10px] text-ink-subtle">{s === "clean" ? "0" : "1"}</td>
+                              <td class="py-2 pr-3 text-right font-mono text-xs text-ink-subtle">{r.cases}</td>
+                              <td class={`py-2 pr-3 text-right font-mono font-bold ${isBest ? "text-green-700 text-base" : "text-sm"}`}>
+                                {r["Top-1"] != null ? r["Top-1"].toFixed(3) : "—"}
+                              </td>
+                              <td class="py-2 pr-3 text-right font-mono text-sm">{r["Top-5"] != null ? r["Top-5"].toFixed(3) : "—"}</td>
+                              <td class="py-2 pr-3 text-right font-mono text-xs text-ink-subtle">{r.nRouted ?? "—"}</td>
+                              <td class="py-2 pr-3 text-right font-mono text-xs text-orange-500">{r.nForced > 0 ? r.nForced : "—"}</td>
+                              <td class="py-2 pr-5 text-right font-mono text-xs text-ink-subtle">
+                                {r.cases > 0 ? Math.round(r.total_tokens / r.cases).toLocaleString() : "—"}
+                              </td>
+                            </tr>
+                          );
+                        }))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* DY trace viewer — method × state */}
+      <div class="mt-8">
+        <h3 class="font-mono text-xs uppercase tracking-wider text-ink-subtle mb-3">Traces — select method and state</h3>
+        <div class="flex flex-wrap gap-2 mb-4" id="dy-method-state-btns">
+          {/* 12 buttons: A0, A1, B0, B1, C0, C1, D0, D1, E0, E1, S0, S1 */}
+          {METHODS.map((m) => (
+            <>
+              <button data-dy-ms={m + "0"} class={"dy-ms-btn font-mono text-[10px] px-2.5 py-1 rounded border transition " + (m === "A" ? "border-accent bg-accent/10 text-ink" : "border-rule text-ink-subtle hover:bg-rule/30")}>
+                {m} · Clean
+              </button>
+              <button data-dy-ms={m + "1"} class="dy-ms-btn font-mono text-[10px] px-2.5 py-1 rounded border border-rule text-ink-subtle hover:bg-rule/30 transition">
+                {m} · Enrich
+              </button>
+            </>
+          ))}
+        </div>
+        <div class="flex flex-wrap gap-1.5 mb-4" id="dy-trace-btns"></div>
+        <div id="dy-trace-detail" class="rounded-lg border border-rule p-4 text-xs">
+          <p class="text-ink-subtle font-mono text-[10px]">Select a method+state above, then a case</p>
+        </div>
+      </div>
+    </div>
+
+    {([
+      {
+        id: "oos", data: rtOOS,
+        cols: [
+          { key: "Refusal-Rate",    label: "Refusal-Rate", primary: true },
+          { key: "False-Pick-Rate", label: "False-Pick",   primary: false },
+          { key: "total_tokens",    label: "Tokens",       primary: false, tok: true },
+        ],
+        desc: "Refusal test — no resource in landscape matches. Refusal-Rate = primary. Routing-Acc omitted: the orchestrator never outputs mode=out_of_scope, that decision happens at retrieval level (refuse() call).",
+      },
+    ] as any[]).map(({ id, data, cols, desc }) => (
+      <div data-subpanel={id} class={`sub-panel ${id === "oos" ? "hidden" : "hidden"}`}>
+        <p class="text-xs text-ink-muted mb-4">{desc}</p>
+        {data.length > 0 ? (
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm border-collapse">
+              <thead>
+                <tr class="border-b-2 border-rule text-xs font-mono uppercase tracking-wider text-ink-subtle">
+                  <th class="text-left py-2 pr-3">Cond</th>
+                  <th class="text-left py-2 pr-4 hidden sm:table-cell">Method</th>
+                  <th class="text-left py-2 pr-4 hidden md:table-cell">State</th>
+                  <th class="text-right py-2 pr-3">n</th>
+                  {cols.map((c: any) => (
+                    <th class={`text-right py-2 pr-3 ${c.primary ? "text-ink" : ""}`}>{c.label}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {METHODS.map((m) =>
+                  ["clean","enriched"].map((s) => {
+                    const r = data.find((x: any) => x.method === m && x.state === s);
+                    if (!r) return null;
+                    return (
+                      <tr class={`border-b border-rule/40 hover:bg-rule/20 ${m === "S" ? "opacity-60" : ""} ${s === "enriched" ? "bg-blue-50/20" : ""}`}>
+                        <td class="py-2 pr-3 font-mono text-xs font-semibold">{r.condition}</td>
+                        <td class="py-2 pr-4 text-xs text-ink-muted hidden sm:table-cell">{METHOD_DESC[m]}</td>
+                        <td class="py-2 pr-4 font-mono text-[10px] text-ink-subtle hidden md:table-cell">{s}</td>
+                        <td class="py-2 pr-3 text-right font-mono text-xs text-ink-subtle">{r.cases}</td>
+                        {cols.map((c: any) => {
+                          const v = r[c.key];
+                          const display = c.tok
+                            ? (v != null ? Math.round(v / (r.cases || 1)).toLocaleString() : "—")
+                            : (v != null ? v.toFixed(3) : "—");
+                          return (
+                            <td class={`py-2 pr-3 text-right font-mono text-sm ${c.primary && v != null && v >= 0.7 ? "text-green-700 font-bold" : c.primary && v != null && v < 0.3 ? "text-red-500" : ""}`}>
+                              {display}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })
+                )}
+              </tbody>
+            </table>
+            <p class="text-[10px] font-mono text-ink-subtle mt-2">
+              0 = clean-ORD · 1 = enriched-ORD · blue rows = enriched. Primary metric in bold if ≥ 0.7.
+            </p>
+          </div>
+        ) : (
+          <div class="border border-rule rounded-lg p-6 text-center bg-rule/20">
+            <p class="text-sm text-ink-muted">No results yet — benchmark running.</p>
+          </div>
+        )}
+
+        {/* OOS trace viewer — method × state like DY */}
+        {id === "oos" && (
+          <div class="mt-8">
+            <h3 class="font-mono text-xs uppercase tracking-wider text-ink-subtle mb-3">Traces — select method and state</h3>
+            <div class="flex flex-wrap gap-2 mb-4">
+              {["A","B","C","D","E","S","F"].flatMap(m => ["0","1"].map(st => {
+                const key = m + st;
+                const count = (oosAllTraces[key] ?? []).length;
+                const label = `${m} · ${st === "0" ? "Clean" : "Enrich"}`;
+                return (
+                  <button
+                    data-oos-ms={key}
+                    class={"oos-ms-btn font-mono text-[10px] px-3 py-1.5 rounded border transition hover:border-accent " + (key === "A0" ? "border-accent bg-accent-soft/40 text-accent-ink" : "border-rule bg-paper text-ink-muted")}
+                  >
+                    {label}
+                    <span class="ml-1 text-[9px] opacity-60">{count}</span>
+                  </button>
+                );
+              }))}
+            </div>
+            <div class="flex flex-wrap gap-1.5 mb-4" id="oos-ms-case-btns"></div>
+            <div id="oos-ms-trace-detail" class="rounded-lg border border-rule p-4 text-xs">
+              <p class="text-ink-subtle font-mono text-[10px]">Select a method above, then a case to inspect</p>
+            </div>
+          </div>
+        )}
+      </div>
+    ))}
+    </div>  {/* end retriever panel */}
+  </section>
+  </div>  {/* end runtime panel */}
+</Base>
+
+<script define:vars={{ _sg: sgCases, _sa: saMetrics.traces, _saRouting: saRoutingCases, _dyRouting: dyRoutingCases, _base: base, _dyC: dyTracesClean, _dyE: dyTracesEnriched, _oosC: oosTracesClean, _oosE: oosTracesEnriched, _dyAll: dyAllTraces, _saAll: saAllTraces, _oosAll: oosAllTraces, _dyDecompRouting: dyDecompRouting, _dyMhByCase: dyMhByCase }} is:inline>
+  window.__sgTraces = _sg;
+  window.__saTraces = _sa;
+  window.__saAllTraces = _saAll;
+  window.__saRouting = _saRouting;
+  window.__dyRouting = _dyRouting;
+  window.__dyDecompRouting = _dyDecompRouting;
+  window.__dyMhByCase = _dyMhByCase;
+  window.__base = _base;
+  window.__dyTracesClean = _dyC;
+  window.__dyTracesEnriched = _dyE;
+  window.__oosTracesClean = _oosC;
+  window.__oosTracesEnriched = _oosE;
+  window.__oosAllTraces = _oosAll;
+  window.__dyAllTraces = _dyAll;
+</script>
+
+<script>
+  // ── Sub-tabs (Retriever: SA / DY / OOS) ──────────────────────────────────
+  const subTabs = document.querySelectorAll<HTMLButtonElement>(".sub-tab");
+  const subPanels = document.querySelectorAll<HTMLElement>("[data-subpanel]");
+  function activateSub(id: string) {
+    subTabs.forEach((t) => {
+      const on = t.dataset.submode === id;
+      t.classList.toggle("border-accent", on);
+      t.classList.toggle("text-ink", on);
+      t.classList.toggle("border-transparent", !on);
+      t.classList.toggle("text-ink-subtle", !on);
+    });
+    subPanels.forEach((p) => { p.classList.toggle("hidden", p.dataset.subpanel !== id); });
+    sessionStorage.setItem("rt-sub-tab", id);
+  }
+  subPanels.forEach((p) => { if (p.dataset.subpanel !== "sa") p.classList.add("hidden"); });
+  const savedSub = sessionStorage.getItem("rt-sub-tab");
+  if (savedSub) activateSub(savedSub);
+  subTabs.forEach((t) => t.addEventListener("click", () => activateSub(t.dataset.submode!)));
+
+  // ── Progress card → jump ─────────────────────────────────────────────────
+  document.querySelectorAll<HTMLButtonElement>("[data-jump]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const jump = btn.dataset.jump!;
+      activate("runtime");
+      if (jump === "sg") { activateRt("router"); }
+      else { activateRt("retriever"); activateSub(jump); }
+      document.querySelector(".rt-tab")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  // ── Tab switcher ──────────────────────────────────────────────────────────
+  const tabs = document.querySelectorAll<HTMLButtonElement>(".res-tab");
+  const panels = document.querySelectorAll<HTMLElement>(".res-panel");
+  function activate(id: string) {
+    tabs.forEach((t) => {
+      const on = t.dataset.tab === id;
+      t.classList.toggle("border-accent", on);
+      t.classList.toggle("text-ink", on);
+      t.classList.toggle("border-transparent", !on);
+      t.classList.toggle("text-ink-subtle", !on);
+    });
+    panels.forEach((p) => { p.classList.toggle("hidden", p.dataset.panel !== id); });
+    sessionStorage.setItem("results-tab", id);
+  }
+  // init: hide all except default
+  panels.forEach((p) => { if (p.dataset.panel !== "design-time") p.classList.add("hidden"); });
+  const savedTab = sessionStorage.getItem("results-tab");
+  if (savedTab) activate(savedTab);
+  tabs.forEach((t) => t.addEventListener("click", () => activate(t.dataset.tab!)));
+
+  // ── RT mode tabs ─────────────────────────────────────────────────────────
+  const rtTabs = document.querySelectorAll<HTMLButtonElement>(".rt-tab");
+  const rtPanels = document.querySelectorAll<HTMLElement>(".rt-panel");
+  function activateRt(id: string) {
+    rtTabs.forEach((t) => {
+      const on = t.dataset.rtmode === id;
+      t.classList.toggle("border-accent", on);
+      t.classList.toggle("text-ink", on);
+      t.classList.toggle("border-transparent", !on);
+      t.classList.toggle("text-ink-subtle", !on);
+    });
+    rtPanels.forEach((p) => { p.classList.toggle("hidden", p.dataset.rtpanel !== id); });
+    sessionStorage.setItem("rt-mode-tab", id);
+  }
+  rtPanels.forEach((p) => { if (p.dataset.rtpanel !== "router") p.classList.add("hidden"); });
+  const savedRt = sessionStorage.getItem("rt-mode-tab");
+  if (savedRt) activateRt(savedRt);
+  rtTabs.forEach((t) => t.addEventListener("click", () => activateRt(t.dataset.rtmode!)));
+
+  // ── DY Single/Multi-Intent class toggles ────────────────────────────────
+  document.querySelectorAll<HTMLElement>(".dy-class-toggle").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const panel = btn.nextElementSibling as HTMLElement;
+      const arrow = btn.querySelector(".dy-class-arrow")!;
+      const isOpen = !panel.classList.contains("hidden");
+      panel.classList.toggle("hidden", isOpen);
+      arrow.textContent = isOpen ? "▸" : "▾";
+    });
+  });
+
+  // ── BPMN / CMMN notation toggles ─────────────────────────────────────────
+  document.querySelectorAll<HTMLElement>(".notation-toggle").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const panel = btn.nextElementSibling as HTMLElement;
+      const arrow = btn.querySelector(".toggle-arrow")!;
+      const isOpen = !panel.classList.contains("hidden");
+      panel.classList.toggle("hidden", isOpen);
+      arrow.textContent = isOpen ? "▸" : "▾";
+    });
+  });
+
+  // ── Process detail rows ───────────────────────────────────────────────────
+  document.querySelectorAll<HTMLElement>(".proc-row").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const proc = btn.dataset.proc!;
+      const detail = btn.nextElementSibling as HTMLElement;
+      const arrow = btn.querySelector("span:first-child")!;
+      const isOpen = !detail.classList.contains("hidden");
+
+      if (isOpen) {
+        detail.classList.add("hidden");
+        arrow.textContent = "▸";
+        return;
+      }
+
+      // Render trace cards — one card per method, showing all steps
+      const detailGrid = document.getElementById(`detail-${proc}`)!;
+      if (!detailGrid.children.length) {
+        let traces: Record<string, any[]> = {};
+        try { traces = JSON.parse(btn.dataset.traces ?? "{}"); } catch {}
+
+        const METHODS = ["A","B","C","D","E","S","F"];
+        const DESC: Record<string,string> = {A:"Embedding",B:"Prog. Disclosure",C:"Graph Walk",D:"Agentic",E:"Filesystem",S:"Baseline",F:"Hybrid (A+B+D)"};
+
+        detailGrid.innerHTML = METHODS.map((m) => {
+          const steps: any[] = traces[m] ?? [];
+          if (!steps.length) return `<div class="border border-rule rounded p-3 bg-white opacity-40 text-[10px] font-mono text-ink-subtle">${m} — no trace</div>`;
+
+          const hits = steps.filter((s) => (s.candidates?.[0]?.ordId ?? "") === (s.expected_ordIds?.[0] ?? "xx")).length;
+          const p1 = steps.length > 0 ? (hits / steps.length).toFixed(2) : "—";
+          const allCorrect = hits === steps.length;
+          const noneCorrect = hits === 0;
+
+          const stepRows = steps.map((s, i) => {
+            const top1 = s.candidates?.[0]?.ordId ?? "";
+            const expected = s.expected_ordIds?.[0] ?? "";
+            const correct = top1 === expected;
+            const label = (s.label ?? "").split(" — ")[0].substring(0, 35);
+            const score = s.candidates?.[0]?.score;
+            return `<div class="flex items-center gap-1.5 text-[9px] border-b border-rule/30 py-0.5 last:border-0">
+              <span class="${correct ? "text-green-600" : "text-red-500"}">${correct ? "✓" : "✗"}</span>
+              <span class="text-ink-subtle w-4 shrink-0">s${String(i+1).padStart(2,"0")}</span>
+              <span class="truncate text-ink-muted flex-1">${label}</span>
+              <span class="shrink-0 text-[8px] ${correct ? "text-green-600" : "text-red-500"}">${(top1.split(":")[2] ?? top1).substring(0,18)}</span>
+              ${score != null ? `<span class="shrink-0 text-[8px] text-ink-subtle">${typeof score === "number" ? score.toFixed(2) : ""}</span>` : ""}
+            </div>`;
+          }).join("");
+
+          return `<div class="border ${allCorrect ? "border-green-300 bg-green-50" : noneCorrect ? "border-red-200 bg-red-50/30" : "border-rule bg-white"} rounded-lg p-3">
+            <div class="flex items-center justify-between mb-2">
+              <span class="font-mono text-[10px] font-bold">${m}</span>
+              <span class="text-[9px] font-mono text-ink-subtle">${DESC[m]}</span>
+              <span class="font-mono text-[10px] font-bold ${allCorrect ? "text-green-700" : noneCorrect ? "text-red-600" : "text-yellow-600"}">P@1=${p1}</span>
+            </div>
+            <div class="space-y-0">${stepRows}</div>
+          </div>`;
+        }).join("");
+      }
+
+      detail.classList.remove("hidden");
+      arrow.textContent = "▾";
+    });
+  });
+
+  // ── SG trace viewer ───────────────────────────────────────────────────────
+  const sgTr = (window as any).__sgTraces ?? [];
+  const sgDet = document.getElementById("sg-trace-detail");
+  function renderSgTrace(i: number) {
+    const c = sgTr[i]; if (!c || !sgDet) return;
+    sgDet.innerHTML = `<div class="flex flex-wrap items-center gap-2 mb-2"><span class="font-mono text-[10px] text-ink-subtle">${c.case_id}</span><span class="font-mono text-[10px] px-1.5 py-0.5 rounded ${c.routing_ok ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}">${c.routing_ok ? "✓ routed" : "✗ wrong skill"}</span><span class="font-mono text-[10px] text-ink-subtle">expected: <strong>${c.skill_expected}</strong></span>${!c.routing_ok && c.skill_picked ? `<span class="font-mono text-[10px] text-red-600">picked: ${c.skill_picked}</span>` : ""}</div><p class="text-ink-muted text-[11px] mb-2 leading-relaxed">${c.user_prompt}</p>${c.reason ? `<p class="text-ink-subtle text-[10px] italic border-t border-rule pt-2">"${c.reason}"</p>` : ""}`;
+    document.querySelectorAll<HTMLButtonElement>(".sg-trace-btn").forEach((b, j) => { b.classList.toggle("ring-1", j===i); b.classList.toggle("ring-accent", j===i); });
+  }
+  document.querySelectorAll<HTMLButtonElement>(".sg-trace-btn").forEach((btn, i) => btn.addEventListener("click", () => renderSgTrace(i)));
+  if (sgTr.length) renderSgTrace(0);
+
+  // ── SA trace viewer ───────────────────────────────────────────────────────
+  // ── SA method×state trace viewer ─────────────────────────────────────────
+  const saAllTr = (window as any).__saAllTraces ?? {};
+  let _currentSaMs = "A0";
+
+  function renderSaMsCaseBtns(ms: string) {
+    _currentSaMs = ms;
+    const traces = saAllTr[ms] ?? [];
+    const caseBtns = document.getElementById("sa-ms-case-btns")!;
+
+    const natural = traces.filter((t: any) => !t.was_forced);
+    const forced  = traces.filter((t: any) => t.was_forced);
+
+    function btnHtml(t: any, i: number) {
+      const cls = t.gap_detection === 1
+        ? "border-green-300 bg-green-50 text-green-700"
+        : t.gap_detection > 0
+          ? "border-yellow-300 bg-yellow-50 text-yellow-700"
+          : "border-red-200 bg-red-50/50 text-red-700";
+      const icon = t.gap_detection === 1 ? "✓" : t.gap_detection > 0 ? "~" : "✗";
+      const sup = t.was_forced ? " ᶠ" : "";
+      return `<button data-sa-ms-case="${i}" class="sa-ms-case-btn font-mono text-[10px] px-2 py-1 rounded border transition hover:border-accent ${cls}">${t.case_id} ${icon}${sup}</button>`;
+    }
+
+    let html = natural.map((t: any) => btnHtml(t, traces.indexOf(t))).join("");
+    if (forced.length) {
+      html += `<span class="font-mono text-[9px] text-orange-500 self-center px-1">— forced (planner said full) —</span>`;
+      html += forced.map((t: any) => btnHtml(t, traces.indexOf(t))).join("");
+    }
+    caseBtns.innerHTML = html;
+
+    document.querySelectorAll<HTMLButtonElement>(".sa-ms-case-btn").forEach((btn, i) =>
+      btn.addEventListener("click", () => renderSaMsTrace(parseInt(btn.dataset.saMsCase!), _currentSaMs)));
+    if (traces.length) renderSaMsTrace(0, ms);
+  }
+
+  function renderSaMsTrace(i: number, ms: string) {
+    const traces = saAllTr[ms] ?? [];
+    const t = traces[i];
+    const det = document.getElementById("sa-ms-trace-detail")!;
+    if (!t || !det) return;
+    const base = (window as any).__base ?? "/";
+    const gapRows = (t.gap_steps ?? []).map((s: any) => {
+      const hit = (t.expected_gaps ?? []).includes(s.top1);
+      const t5hit = !hit && (t.expected_gaps ?? []).some((g: string) => (s.top5 ?? []).includes(g));
+      const ico = hit ? "✓" : t5hit ? "~" : "✗";
+      const col = hit ? "text-green-600" : t5hit ? "text-yellow-600" : "text-red-500";
+      const short = (id: string) => id.split(":")[2] ?? id;
+      const ns1 = s.top1.split(":")[0]; const slug1 = s.top1.replace(/[:.]/g,"-");
+      return `<div class="font-mono text-[10px] flex gap-1.5 mb-1">
+        <span class="${col} w-3">${ico}</span>
+        <span class="text-ink-subtle flex-1 truncate">${s.name}</span>
+        <a href="${base}landscape/${ns1}/${slug1}/" class="text-accent hover:underline truncate max-w-[140px]">${short(s.top1)}</a>
+      </div>`;
+    }).join("") || '<div class="text-[10px] text-ink-subtle italic">no gap steps produced</div>';
+    const expectedRows = (t.expected_gaps ?? []).map((g: string) => {
+      const short = g.split(":")[2] ?? g;
+      const ns = g.split(":")[0]; const slug = g.replace(/[:.]/g,"-");
+      return `<div><a href="${base}landscape/${ns}/${slug}/" class="font-mono text-[10px] text-green-700 hover:underline">${short}</a></div>`;
+    }).join("") || '<div class="text-[10px] text-ink-subtle italic">none</div>';
+    const badge = t.gap_detection === 1
+      ? `<span class="px-1.5 py-0.5 rounded bg-green-100 text-green-700 font-mono text-[10px]">✓ correct</span>`
+      : t.gap_detection > 0
+        ? `<span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700 font-mono text-[10px]">~ partial</span>`
+        : `<span class="px-1.5 py-0.5 rounded bg-red-100 text-red-700 font-mono text-[10px]">✗ wrong</span>`;
+    const forcedBadge = t.was_forced
+      ? `<span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-orange-50 border border-orange-200 text-orange-700">ᶠ gap-forced (planner said full)</span>`
+      : '';
+    det.innerHTML = `
+      <div class="flex flex-wrap items-center gap-2 mb-2">
+        <span class="font-mono text-[10px] text-ink-subtle">${t.case_id}</span>
+        ${badge}
+        ${forcedBadge}
+        <a href="${base}processes/${t.skill}/" class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-green-50 border border-green-200 text-green-700 hover:underline">${t.skill ?? "—"}</a>
+      </div>
+      <p class="text-ink-muted text-[11px] mb-3 leading-relaxed">${t.user_prompt ?? ""}…</p>
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <p class="font-mono text-[9px] text-ink-subtle uppercase mb-1">Expected gaps (${(t.expected_gaps??[]).length})</p>
+          ${expectedRows}
+        </div>
+        <div>
+          <p class="font-mono text-[9px] text-ink-subtle uppercase mb-1">Gap steps → top-1</p>
+          ${gapRows}
+        </div>
+      </div>`;
+    document.querySelectorAll<HTMLButtonElement>(".sa-ms-case-btn").forEach((b, j) =>
+      b.classList.toggle("ring-1", j === i));
+    document.querySelectorAll<HTMLButtonElement>(".sa-ms-case-btn").forEach((b, j) =>
+      b.classList.toggle("ring-accent", j === i));
+  }
+
+  document.querySelectorAll<HTMLButtonElement>(".sa-ms-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const ms = btn.dataset.saMs!;
+      document.querySelectorAll<HTMLButtonElement>(".sa-ms-btn").forEach((b) => {
+        const active = b.dataset.saMs === ms;
+        b.className = "sa-ms-btn font-mono text-[10px] px-3 py-1.5 rounded border transition hover:border-accent "
+          + (active ? "border-accent bg-accent-soft/40 text-accent-ink" : "border-rule bg-paper text-ink-muted");
+      });
+      renderSaMsCaseBtns(ms);
+    });
+  });
+  renderSaMsCaseBtns("A0");
+
+  // ── SA routing trace viewer ───────────────────────────────────────────────
+  const saRTr = (window as any).__saRouting ?? [];
+  const saRDet = document.getElementById("sa-routing-detail");
+  function renderSaRoutingTrace(i: number) {
+    const c = saRTr[i]; if (!c || !saRDet) return;
+    const exact = c.predicted_gap_count === c.expected_gap_count && c.predicted_gap_count > 0;
+    const partial = c.predicted_gap_count > 0 && !exact;
+    const badge = exact ? `<span class="px-1.5 py-0.5 rounded bg-green-100 text-green-700">✓ exact (${c.predicted_gap_count}/${c.expected_gap_count})</span>`
+      : partial ? `<span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700">~ partial (${c.predicted_gap_count} found, ${c.expected_gap_count} expected)</span>`
+      : `<span class="px-1.5 py-0.5 rounded bg-red-100 text-red-700">✗ no gap found (0/${c.expected_gap_count})</span>`;
+    const expectedRows = (c.expected_gaps ?? []).map((g: string) =>
+      `<div class="font-mono text-[10px] text-green-700">${g.split(':')[2] ?? g}</div>`).join('');
+    const predictedRows = (c.predicted_gap_steps ?? []).map((s: string) =>
+      `<div class="font-mono text-[10px] text-ink-muted">${s}</div>`).join('') || '<div class="text-[10px] text-red-500 italic">none</div>';
+    saRDet.innerHTML = `
+      <div class="flex flex-wrap items-center gap-2 mb-2">
+        <span class="font-mono text-[10px] text-ink-subtle">${c.case_id}</span>
+        ${badge}
+        <a href="${(window).__base}processes/${c.skill_expected}/" class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-green-50 border border-green-200 text-green-700">${c.skill_expected}</a>
+      </div>
+      <p class="text-ink-muted text-[11px] mb-3 leading-relaxed">${c.user_prompt?.slice(0,150)}…</p>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <p class="font-mono text-[9px] text-ink-subtle uppercase mb-1">Expected gaps (${c.expected_gap_count})</p>
+          ${expectedRows}
+        </div>
+        <div>
+          <p class="font-mono text-[9px] text-ink-subtle uppercase mb-1">Planner predicted (${c.predicted_gap_count})</p>
+          ${predictedRows}
+        </div>
+      </div>`;
+    document.querySelectorAll<HTMLButtonElement>(".sa-routing-btn").forEach((b, j) => {
+      const exact2 = saRTr[j]?.predicted_gap_count === saRTr[j]?.expected_gap_count && saRTr[j]?.predicted_gap_count > 0;
+      const partial2 = saRTr[j]?.predicted_gap_count > 0 && !exact2;
+      const cls2 = exact2 ? "border-green-300 bg-green-50 text-green-700" : partial2 ? "border-yellow-300 bg-yellow-50 text-yellow-700" : "border-red-200 bg-red-50/50 text-red-700";
+      b.className = "sa-routing-btn font-mono text-[10px] px-2 py-1 rounded border transition " + cls2 + (j===i ? " ring-1 ring-accent" : "");
+    });
+  }
+  document.querySelectorAll<HTMLButtonElement>(".sa-routing-btn").forEach((btn, i) => btn.addEventListener("click", () => renderSaRoutingTrace(i)));
+  if (saRTr.length) renderSaRoutingTrace(0);
+
+  // ── DY forced collapsible ─────────────────────────────────────────────────
+  const dyForcedToggle = document.getElementById("dy-forced-toggle");
+  const dyForcedPanel = document.getElementById("dy-forced-panel");
+  const dyForcedArrow = document.getElementById("dy-forced-arrow");
+  dyForcedToggle?.addEventListener("click", () => {
+    const open = !dyForcedPanel!.classList.contains("hidden");
+    dyForcedPanel!.classList.toggle("hidden", open);
+    dyForcedArrow!.textContent = open ? "▸" : "▾";
+  });
+
+  // ── DY routing trace viewer ───────────────────────────────────────────────
+  const dyRTr = (window as any).__dyRouting ?? [];
+  const dyDecompR = (window as any).__dyDecompRouting ?? {};
+  const dyRDet = document.getElementById("dy-routing-detail");
+  function renderDyRoutingTrace(i: number) {
+    const c = dyRTr[i]; if (!c || !dyRDet) return;
+    const ok = c.routing_ok;
+    const dr = dyDecompR[c.case_id] ?? {};
+    const verdict = dr.verdict ?? 'red';
+    const bothOk = ok && verdict === 'green';
+    const oneOk  = ok || verdict !== 'red';
+    const summaryBadge = bothOk
+      ? '<span class="bg-green-100 text-green-700 px-1.5 py-0.5 rounded font-mono text-[10px]">✓ routed + decomp correct</span>'
+      : oneOk
+      ? `<span class="bg-yellow-100 text-yellow-700 px-1.5 py-0.5 rounded font-mono text-[10px]">~ ${ok ? 'routed ok' : 'not routed'} · decomp det=${dr.n_detected} gt=${dr.gt_n}</span>`
+      : `<span class="bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-mono text-[10px]">✗ not routed · decomp det=${dr.n_detected} gt=${dr.gt_n}</span>`;
+    const subQueriesHtml = dr.sub_queries?.length
+      ? `<div class="mt-2 border-t border-rule pt-2">
+          <div class="text-[10px] font-mono text-ink-subtle mb-1">decomposer sub-queries (n_detected=${dr.n_detected}):</div>
+          ${dr.sub_queries.map((sq: string, j: number) => `<div class="text-[10px] text-ink-muted pl-2 mb-0.5">${j+1}. ${sq}</div>`).join('')}
+        </div>`
+      : '';
+    dyRDet.innerHTML = `
+      <div class="flex flex-wrap items-center gap-2 mb-2">
+        <span class="font-mono text-[10px] text-ink-subtle">${c.case_id}</span>
+        <span class="font-mono text-[10px] px-1.5 py-0.5 rounded ${ok ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">${ok ? '✓ dynamic' : '✗ routed to skill'}</span>
+        ${!ok && c.skill_picked ? `<a href="${(window as any).__base}processes/${c.skill_picked}/" class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-red-50 border border-red-200 text-red-700">${c.skill_picked}</a>` : ''}
+        ${summaryBadge}
+      </div>
+      <p class="text-ink-muted text-[11px] mb-2 leading-relaxed">${c.user_prompt}</p>
+      ${c.reason ? `<p class="text-ink-subtle text-[10px] italic border-t border-rule pt-2">"${c.reason}"</p>` : ''}
+      ${subQueriesHtml}
+    `;
+    document.querySelectorAll<HTMLButtonElement>(".dy-routing-btn").forEach((b, j) => { b.classList.toggle("ring-1", j===i); b.classList.toggle("ring-accent", j===i); });
+  }
+  document.querySelectorAll<HTMLButtonElement>(".dy-routing-btn").forEach((btn, i) => btn.addEventListener("click", () => renderDyRoutingTrace(i)));
+  if (dyRTr.length) renderDyRoutingTrace(0);
+
+
+  // ── DY method×state trace viewer ─────────────────────────────────────────
+  const dyAllTr = (window as any).__dyAllTraces ?? {};
+  let dyCurrentMs = 'A0';
+  const dyBtnsEl = document.getElementById("dy-trace-btns");
+  const dyDetEl = document.getElementById("dy-trace-detail");
+
+  function renderDyMsButtons(ms: string) {
+    const traces = dyAllTr[ms] ?? [];
+    if (!dyBtnsEl) return;
+
+    const natural = traces.filter((t: any) => !t.was_forced);
+    const forced  = traces.filter((t: any) => t.was_forced);
+
+    function btnHtml(t: any) {
+      const i = traces.indexOf(t);
+      const top1 = t.top1_correct; const top5 = t.top5_correct;
+      const cls = top1 ? "border-green-300 bg-green-50 text-green-700"
+        : top5 ? "border-yellow-300 bg-yellow-50 text-yellow-700"
+        : "border-red-200 bg-red-50/50 text-red-700";
+      const icon = top1 ? "✓" : top5 ? "~" : "✗";
+      const sup = t.was_forced ? " ᶠ" : "";
+      return `<button data-dy-trace-idx="${i}" class="dy-trace-btn font-mono text-[10px] px-2 py-1 rounded border transition ${cls} ${i===0?"ring-1 ring-accent":""}">${t.case_id} ${icon}${sup}</button>`;
+    }
+
+    let html = natural.map(btnHtml).join('');
+    if (forced.length) {
+      html += `<span class="font-mono text-[9px] text-orange-500 self-center px-1">— forced (wrong-routed) —</span>`;
+      html += forced.map(btnHtml).join('');
+    }
+    dyBtnsEl.innerHTML = html;
+
+    document.querySelectorAll<HTMLButtonElement>(".dy-trace-btn").forEach((btn) => {
+      btn.addEventListener("click", () => renderDyMsTrace(parseInt(btn.dataset.dyTraceIdx!), ms));
+    });
+    if (traces.length) renderDyMsTrace(0, ms);
+  }
+
+  function renderDyMsTrace(i: number, ms: string) {
+    const traces = dyAllTr[ms] ?? [];
+    const t = traces[i]; if (!t || !dyDetEl) return;
+    const base2 = (window as any).__base ?? '/';
+    const top1ok = t.top1_correct; const top5ok = t.top5_correct;
+    const cands: string[] = t.top5_candidates ?? [];
+    const badge = top1ok ? '<span class="px-1.5 py-0.5 rounded bg-green-100 text-green-700">✓ top-1</span>'
+      : top5ok ? '<span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700">~ top-5</span>'
+      : '<span class="px-1.5 py-0.5 rounded bg-red-100 text-red-700">✗ not found</span>';
+    const forcedBadge = t.was_forced ? `<span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-orange-50 border border-orange-200 text-orange-700">forced (was→${t.skill_picked||'?'})</span>` : '';
+    const classBadge = t.query_class === 'multi_intent' ? `<span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-purple-50 border border-purple-200 text-purple-700">multi-intent (${(t.expected_ordIds??[]).length} GT)</span>` : '';
+
+    const mkLink = (id: string, highlight: boolean) => {
+      const ns = id.split(':')[0]; const slug = id.replace(/[:.]/g, '-'); const lbl = id.split(':')[2] ?? id;
+      return `<a href="${base2}landscape/${ns}/${slug}/" class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-rule border border-rule/80 ${highlight ? 'text-green-700 font-semibold' : 'text-ink-muted'} hover:text-ink">${lbl}</a>`;
+    };
+    const mkCandRow = (c: string, n: number, gtSet: Set<string>) => {
+      const isExp = gtSet.has(c); const ns = c.split(':')[0]; const slug = c.replace(/[:.]/g, '-'); const lbl = c.split(':')[2] ?? c;
+      return `<div class="flex items-center gap-1.5 py-0.5"><span class="font-mono text-[9px] text-ink-subtle w-4">${n+1}.</span><a href="${base2}landscape/${ns}/${slug}/" class="font-mono text-[10px] ${isExp ? 'text-green-700 font-semibold' : 'text-ink-muted'} hover:underline">${lbl}</a>${isExp ? '<span class="text-green-600 text-[9px]">✓</span>' : ''}</div>`;
+    };
+
+    const header = `<div class="flex flex-wrap items-center gap-2 mb-2"><span class="font-mono text-[10px] text-ink-subtle">${t.case_id}</span>${badge}${classBadge}${forcedBadge}</div><p class="text-ink-muted text-[11px] mb-3 leading-relaxed">${t.user_prompt}…</p>`;
+
+    let body = '';
+
+    if (t.query_class === 'multi_intent') {
+      const dr = ((window as any).__dyDecompRouting ?? {})[t.case_id] ?? {};
+      const mhByCase = (window as any).__dyMhByCase ?? {};
+      // Derive mh condition key: e.g. ms="A0" → "A0mh", ms="F0" → "F0mh"
+      const mhCond = ms + "mh";
+      const mhSubs: any[] = mhByCase[mhCond]?.[t.case_id] ?? [];
+      const subQueries: string[] = mhSubs.length
+        ? mhSubs.map((s: any) => s.sub_query)
+        : (dr.sub_queries ?? []);
+      const gtIds: string[] = t.expected_ordIds ?? [];
+      const n_gt = gtIds.length;
+      const fSubTraces = t.f_sub_traces ?? null;
+      const fUnifiedPicks: string[] = t.f_unified_picks ?? [];
+
+      const cols = gtIds.map((gt, idx) => {
+        const sq = subQueries[idx] ?? '—';
+        const expLink = mkLink(gt, false);
+        const gtSet = new Set([gt]);
+
+        let top5Html = '';
+        const mhRec = mhSubs[idx];
+        if (mhRec) {
+          // Always use mh record for Top-5 (full 5 candidates, all methods incl. F)
+          const mhCands: string[] = mhRec.top5_candidates ?? [];
+          const refused = mhRec.refused ?? false;
+          const top1ok = mhRec.top1_acc === 1;
+          const top5ok = mhRec.candidate_recall === 1;
+          const statusBadge = refused
+            ? '<span class="text-[9px] text-orange-600 font-mono">refused</span>'
+            : top1ok ? '<span class="text-[9px] text-green-600">✓ top-1</span>'
+            : top5ok ? '<span class="text-[9px] text-yellow-600">~ top-5</span>'
+            : '<span class="text-[9px] text-red-500">✗</span>';
+          const rows = mhCands.map((c, n) => mkCandRow(c, n, gtSet)).join('');
+          top5Html = `<div class="flex items-center gap-2 mb-1"><span class="font-mono text-[9px] uppercase text-ink-subtle">Top-5</span>${statusBadge}</div>
+            <div>${rows || '<div class="italic text-[10px] text-ink-subtle">none</div>'}</div>`;
+          // F: show unified re-rank pick as additional info
+          if (fUnifiedPicks.length) {
+            const uPick = fUnifiedPicks[idx];
+            const uLabel = uPick ? uPick.split(':')[2] ?? uPick : '—';
+            const uCorrect = uPick === gt;
+            top5Html += `<div class="font-mono text-[9px] uppercase text-ink-subtle mt-2 mb-1">Unified pick (F)</div>
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono text-[10px] ${uCorrect ? 'text-green-700 font-semibold' : 'text-orange-600'}">${uLabel}</span>
+                ${uCorrect ? '<span class="text-green-600 text-[9px]">✓</span>' : ''}
+              </div>`;
+          }
+        } else {
+          // Fallback: shared pool (no mh record available)
+          const top5h = cands.map((c, n) => mkCandRow(c, n, gtSet)).join('');
+          top5Html = `<div class="font-mono text-[9px] uppercase text-ink-subtle mb-1">Top-5 (shared)</div>
+            <div>${top5h || '<div class="italic text-[10px] text-ink-subtle">none</div>'}</div>`;
+        }
+
+        return `<div class="border border-rule rounded-lg p-3">
+          <div class="font-mono text-[9px] uppercase text-ink-subtle mb-1">Sub-query ${idx+1}</div>
+          <p class="text-[10px] text-ink-muted mb-2 leading-relaxed">${sq}</p>
+          <div class="font-mono text-[9px] uppercase text-ink-subtle mb-1">Expected GT</div>
+          <div class="mb-2">${expLink}</div>
+          ${top5Html}
+        </div>`;
+      });
+      body = `<div class="grid gap-3" style="grid-template-columns: repeat(${Math.min(n_gt, 3)}, 1fr)">${cols.join('')}</div>`;
+    } else {
+      // Single-intent: standard 2-col layout
+      const exp = (t.expected_ordIds ?? []).map((g: string) => mkLink(g, false)).join(' ');
+      const gtSet = new Set<string>(t.expected_ordIds ?? []);
+      const top5rows = cands.map((c: string, n: number) => mkCandRow(c, n, gtSet)).join('');
+      // D and E commit via pick_resource → only 1 candidate by design
+      const isCommitMethod = ms.startsWith('D') || ms.startsWith('E');
+      const top5Label = (isCommitMethod && cands.length <= 1)
+        ? 'Pick (commits one)' : 'Top-5';
+      body = `<div class="grid grid-cols-2 gap-4"><div><p class="font-mono text-[9px] uppercase text-ink-subtle mb-1">Expected</p><div class="flex flex-wrap gap-1">${exp || '<span class="italic text-[10px] text-ink-subtle">—</span>'}</div></div><div><p class="font-mono text-[9px] uppercase text-ink-subtle mb-1">${top5Label}</p>${top5rows || '<div class="italic text-[10px] text-ink-subtle">none</div>'}</div></div>`;
+    }
+
+    dyDetEl.innerHTML = header + body;
+    document.querySelectorAll<HTMLButtonElement>(".dy-trace-btn").forEach((b, j) => { b.classList.toggle("ring-1", j===i); b.classList.toggle("ring-accent", j===i); });
+  }
+
+  document.querySelectorAll<HTMLButtonElement>(".dy-ms-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      dyCurrentMs = btn.dataset.dyMs!;
+      document.querySelectorAll<HTMLButtonElement>(".dy-ms-btn").forEach(b => {
+        const on = b.dataset.dyMs === dyCurrentMs;
+        b.className = `dy-ms-btn font-mono text-[10px] px-2.5 py-1 rounded border transition ${on ? "border-accent bg-accent/10 text-ink" : "border-rule text-ink-subtle hover:bg-rule/30"}`;
+      });
+      renderDyMsButtons(dyCurrentMs);
+    });
+  });
+  if (dyBtnsEl) renderDyMsButtons('A0');
+
+  // ── OOS retrieval trace viewer ────────────────────────────────────────────
+
+  function ordLink(ordId: string) {
+    if (!ordId) return '';
+    const base = (window as any).__base ?? '/';
+    const slug = ordId.replace(/[:]/g, '-').replace(/\//g, '-');
+    const parts = ordId.split(':');
+    const ns = parts[0] ?? '';
+    const label = parts[2] ?? ordId;
+    return `<a href="${base}landscape/${ns}/${slug}/" class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-rule border border-rule/80 text-ink-muted hover:text-ink hover:border-accent">${label}</a>`;
+  }
+
+  // ── OOS method×state trace viewer ────────────────────────────────────────
+  const oosAllTr = (window as any).__oosAllTraces ?? {};
+  let _currentOosMs = "A0";
+  const oosMsCaseBtns = document.getElementById("oos-ms-case-btns");
+  const oosMsDet     = document.getElementById("oos-ms-trace-detail");
+
+  function renderOosMsCaseBtns(ms: string) {
+    _currentOosMs = ms;
+    const traces = oosAllTr[ms] ?? [];
+    if (!oosMsCaseBtns) return;
+    oosMsCaseBtns.innerHTML = traces.map((t: any, i: number) => {
+      const ok = t.correctly_refused;
+      const cls = ok ? "border-green-300 bg-green-50 text-green-700" : "border-red-200 bg-red-50/50 text-red-700";
+      const icon = ok ? "✓" : "✗";
+      return `<button data-oos-ms-case="${i}" class="oos-ms-case-btn font-mono text-[10px] px-2 py-1 rounded border transition hover:border-accent ${cls} ${i===0?"ring-1 ring-accent":""}">${t.case_id} ${icon}</button>`;
+    }).join('');
+    document.querySelectorAll<HTMLButtonElement>(".oos-ms-case-btn").forEach((btn) =>
+      btn.addEventListener("click", () => renderOosMsTrace(parseInt(btn.dataset.oosMsCase!), _currentOosMs)));
+    if (traces.length) renderOosMsTrace(0, ms);
+  }
+
+  function renderOosMsTrace(i: number, ms: string) {
+    const traces = oosAllTr[ms] ?? [];
+    const t = traces[i];
+    if (!t || !oosMsDet) return;
+    const base = (window as any).__base ?? '/';
+    const ok = t.correctly_refused;
+    const badge = ok
+      ? '<span class="px-1.5 py-0.5 rounded bg-green-100 text-green-700 font-mono text-[10px]">✓ correctly refused</span>'
+      : '<span class="px-1.5 py-0.5 rounded bg-red-100 text-red-700 font-mono text-[10px]">✗ falsely picked</span>';
+    let picked = '<div class="font-mono text-[10px] text-green-700 italic">— (refused)</div>';
+    if (!ok && t.falsely_picked_ord_id) {
+      const ns   = t.falsely_picked_ord_id.split(':')[0];
+      const slug = t.falsely_picked_ord_id.replace(/[:.]/g, '-');
+      const lbl  = t.falsely_picked_ord_id.split(':')[2] ?? t.falsely_picked_ord_id;
+      picked = `<a href="${base}landscape/${ns}/${slug}/" class="font-mono text-[10px] text-red-600 hover:underline">${lbl}</a>`;
+    }
+    oosMsDet.innerHTML = `
+      <div class="flex flex-wrap items-center gap-2 mb-2">
+        <span class="font-mono text-[10px] text-ink-subtle">${t.case_id}</span>
+        ${badge}
+        ${t.topic ? `<span class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-rule text-ink-subtle">${t.topic}</span>` : ''}
+      </div>
+      <p class="text-ink-muted text-[11px] mb-3 leading-relaxed">${t.user_prompt ?? ''}…</p>
+      <div>
+        <p class="font-mono text-[9px] uppercase text-ink-subtle mb-1">What the method returned</p>
+        ${picked}
+      </div>`;
+    document.querySelectorAll<HTMLButtonElement>(".oos-ms-case-btn").forEach((b, j) => {
+      b.classList.toggle("ring-1", j === i);
+      b.classList.toggle("ring-accent", j === i);
+    });
+  }
+
+  document.querySelectorAll<HTMLButtonElement>(".oos-ms-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const ms = btn.dataset.oosMs!;
+      document.querySelectorAll<HTMLButtonElement>(".oos-ms-btn").forEach((b) => {
+        const on = b.dataset.oosMs === ms;
+        b.className = "oos-ms-btn font-mono text-[10px] px-3 py-1.5 rounded border transition hover:border-accent "
+          + (on ? "border-accent bg-accent-soft/40 text-accent-ink" : "border-rule bg-paper text-ink-muted");
+      });
+      renderOosMsCaseBtns(ms);
+    });
+  });
+  const oosMsInitEl = document.querySelector<HTMLElement>("[data-oos-ms='A0']");
+  if (oosMsInitEl) renderOosMsCaseBtns("A0");
+
+  // ── DT case trace viewer ──────────────────────────────────────────────────
+  const dtCasesAll = (window as any).__dtCases ?? {};
+  let dtCurrentMethod = 'A';
+  const dtBtnsEl = document.getElementById("dt-case-btns");
+  const dtDetEl = document.getElementById("dt-case-detail");
+
+  function renderDtCases(method: string) {
+    const cases = dtCasesAll[method] ?? [];
+    if (!dtBtnsEl) return;
+    dtBtnsEl.innerHTML = cases.map((c: any, i: number) => {
+      const cls = c.p_at_1 === 1 ? "border-green-300 bg-green-50 text-green-700"
+        : c.r_at_5 === 1 ? "border-yellow-300 bg-yellow-50 text-yellow-700"
+        : "border-red-200 bg-red-50/50 text-red-700";
+      const icon = c.p_at_1 === 1 ? "✓" : c.r_at_5 === 1 ? "~" : "✗";
+      return `<button data-dt-case-idx="${i}" class="dt-case-btn font-mono text-[10px] px-2 py-1 rounded border transition ${cls} ${i===0?"ring-1 ring-accent":""}">${c.case_id.replace(/_s0?/,'s')} ${icon}</button>`;
+    }).join('');
+    document.querySelectorAll<HTMLButtonElement>(".dt-case-btn").forEach((btn, i) => {
+      btn.addEventListener("click", () => renderDtCase(i, method));
+    });
+    if (cases.length) renderDtCase(0, method);
+  }
+
+  function renderDtCase(i: number, method: string) {
+    const cases = dtCasesAll[method] ?? [];
+    const c = cases[i]; if (!c || !dtDetEl) return;
+    const b = (window as any).__base ?? '/';
+    const top1ok = c.p_at_1 === 1;
+    const top5ok = c.r_at_5 === 1;
+    const badge = top1ok ? '<span class="px-1.5 py-0.5 rounded bg-green-100 text-green-700">✓ P@1</span>'
+      : top5ok ? '<span class="px-1.5 py-0.5 rounded bg-yellow-100 text-yellow-700">~ in R@5</span>'
+      : '<span class="px-1.5 py-0.5 rounded bg-red-100 text-red-700">✗ not found</span>';
+    const expLinks = (c.expected_ordIds ?? []).map((g: string) => {
+      const ns = g.split(':')[0]; const slug = g.replace(/[:.]/g,'-'); const lbl = g.split(':')[2]??g;
+      return `<a href="${b}landscape/${ns}/${slug}/" class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-rule border border-rule/80 text-ink-muted hover:text-ink">${lbl}</a>`;
+    }).join(' ');
+    const top5rows = (c.top5 ?? []).map((oid: string, idx: number) => {
+      const isExp = (c.expected_ordIds ?? []).includes(oid);
+      const ns = oid.split(':')[0]; const slug = oid.replace(/[:.]/g,'-'); const lbl = oid.split(':')[2]??oid;
+      return `<div class="flex items-center gap-1.5 py-0.5"><span class="font-mono text-[9px] text-ink-subtle w-4">${idx+1}.</span><a href="${b}landscape/${ns}/${slug}/" class="font-mono text-[10px] ${isExp?'text-green-700 font-semibold':'text-ink-muted'} hover:underline">${lbl}</a>${isExp?'<span class="text-green-600 text-[9px]">✓</span>':''}</div>`;
+    }).join('');
+    dtDetEl.innerHTML = `<div class="flex flex-wrap items-center gap-2 mb-2"><span class="font-mono text-[10px] text-ink-subtle">${c.case_id}</span>${badge}<a href="${b}processes/${c.process}/" class="font-mono text-[10px] px-1.5 py-0.5 rounded bg-rule text-ink-subtle hover:text-ink border border-rule">${c.process}</a></div><p class="text-ink-muted text-[11px] mb-3 leading-relaxed">${c.label}…</p><div class="grid grid-cols-2 gap-4"><div><p class="font-mono text-[9px] uppercase text-ink-subtle mb-1">Expected</p><div class="flex flex-wrap gap-1">${expLinks||'<span class="text-ink-subtle italic text-[10px]">—</span>'}</div></div><div><p class="font-mono text-[9px] uppercase text-ink-subtle mb-1">Top-5 candidates</p>${top5rows||'<div class="text-[10px] text-ink-subtle italic">none</div>'}</div></div>`;
+    document.querySelectorAll<HTMLButtonElement>(".dt-case-btn").forEach((b, j) => { b.classList.toggle("ring-1", j===i); b.classList.toggle("ring-accent", j===i); });
+  }
+
+  document.querySelectorAll<HTMLButtonElement>(".dt-method-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      dtCurrentMethod = btn.dataset.dtMethod!;
+      document.querySelectorAll<HTMLButtonElement>(".dt-method-btn").forEach(b => {
+        const on = b.dataset.dtMethod === dtCurrentMethod;
+        b.className = `dt-method-btn font-mono text-[10px] px-3 py-1.5 rounded border transition ${on ? "border-accent bg-accent/10 text-ink" : "border-rule text-ink-subtle hover:bg-rule/30"}`;
+      });
+      renderDtCases(dtCurrentMethod);
+    });
+  });
+  if (dtBtnsEl) renderDtCases('A');
+</script>

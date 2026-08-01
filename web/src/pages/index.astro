@@ -1,0 +1,86 @@
+---
+import Base from "../layouts/Base.astro";
+import fs from "node:fs";
+import path from "node:path";
+
+const ROOT = path.resolve(process.cwd(), "..");  // cwd() = web/, ROOT = semantic-retrieval/
+const base = import.meta.env.BASE_URL;
+
+function loadJson(p: string): any {
+  return fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, "utf8")) : [];
+}
+
+const dtResults: any[] = loadJson(path.join(ROOT, "results", "design-time", "summary.json"));
+const rtResults: any[] = loadJson(path.join(ROOT, "results", "runtime", "summary.json"));
+
+const bestDtP1 = dtResults.length > 0
+  ? Math.max(...dtResults.filter((r: any) => r.method !== "S").map((r: any) => r["P@1"] ?? 0))
+  : null;
+
+const bestRtTop1 = rtResults.length > 0
+  ? Math.max(...rtResults.filter((r: any) => r.method !== "S").map((r: any) => r["Top-1"] ?? 0))
+  : null;
+
+const sections = [
+  {
+    href: "architecture",
+    title: "Architecture",
+    count: "3",
+    countLabel: "stages",
+    subtitle: "Orchestration · Methods · Data Flow",
+    blurb: "Visual overview of the benchmark pipeline — orchestration stages, retrieval methods, system prompts, and data flow.",
+    group: "nav",
+  },
+  {
+    href: "results",
+    title: "Results",
+    count: bestDtP1 != null ? bestDtP1.toFixed(3) : "—",
+    countLabel: "best P@1 (DT)",
+    subtitle: `${dtResults.length > 0 ? dtResults.length : "—"} methods · Clean vs. Enriched`,
+    blurb: "Evaluation metrics across all retrieval methods and ORD states. Design-time P@1/MRR and runtime routing, gap-detection, Top-1.",
+    group: "nav",
+  },
+];
+---
+
+<Base
+  hero={true}
+  title="Semantic Retrieval"
+  subtitle="Results browser for the benchmark evaluation of semantically-grounded agent orchestration."
+>
+  <div class="text-center mb-14">
+    <p class="text-base text-ink-muted max-w-3xl mx-auto leading-relaxed">
+      Browse evaluation results and the system architecture for the thesis
+      <em>Semantically-Grounded Agent Orchestration</em>.
+      For the benchmark dataset (landscape, processes, skills, test cases) see the
+      <span class="font-mono text-accent">ord-bench</span> browser.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    {sections.map((s) => (
+      <a
+        href={`${base}${s.href}/`}
+        class="group block border border-rule rounded-lg p-7 bg-white hover:border-accent hover:shadow-md hover:-translate-y-0.5 transition"
+      >
+        <div class="flex items-baseline justify-between mb-4">
+          <h2 class="font-serif text-2xl font-semibold group-hover:text-accent-ink transition">{s.title}</h2>
+          <div class="text-right">
+            <div class="font-serif text-3xl font-semibold text-accent leading-none">{s.count}</div>
+            <div class="text-[10px] uppercase tracking-wider text-ink-subtle font-mono mt-1">{s.countLabel}</div>
+          </div>
+        </div>
+        <div class="text-xs text-ink-subtle font-mono mb-3">{s.subtitle}</div>
+        <p class="text-sm text-ink-muted leading-relaxed">{s.blurb}</p>
+        <div class="mt-5 text-xs font-mono text-accent opacity-0 group-hover:opacity-100 transition">browse →</div>
+      </a>
+    ))}
+  </div>
+
+  {(dtResults.length === 0 && rtResults.length === 0) && (
+    <div class="mt-10 border border-rule rounded-lg p-6 bg-rule/20 text-center">
+      <p class="text-sm text-ink-muted mb-2">No results found yet.</p>
+      <code class="font-mono text-xs text-ink-subtle">Run the benchmark to generate results/</code>
+    </div>
+  )}
+</Base>

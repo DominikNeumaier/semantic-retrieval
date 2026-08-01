@@ -1,0 +1,1199 @@
+---
+import Base from "../../layouts/Base.astro";
+import methodTracesJson from "../../data/method_traces.json";
+const base = import.meta.env.BASE_URL;
+const EXAMPLE_TRACES: Record<string, string> = methodTracesJson as Record<string, string>;
+
+// Source file links (relative to repo root — used for "view source" links)
+const src = (path: string) =>
+  `https://github.tools.sap/I750252/MasterThesis/blob/main/${path}`;
+
+// ── System Prompts ────────────────────────────────────────────────────────
+const PROMPTS: Record<string, { label: string; file: string; prompts: { name: string; content: string }[] }> = {
+  intent_resolver: {
+    label: "Intent Resolver",
+    file: "src/runtime/intent_resolver.py",
+    prompts: [{ name: "_SYS", content: `You decide whether any registered skill covers a user request end-to-end.
+
+Each skill is a named multi-step process with a short description. Your task: find the single skill whose process completely covers the user's request from start to finish — or report null if no skill applies.
+
+Return null when:
+- The request is a one-off, ad-hoc lookup (e.g. "find the status of order X", "who handles vendor invoices?")
+- The request only overlaps with part of a skill but doesn't need the full process
+- The request mentions a topic that a skill covers but the user's intent is clearly narrower
+- You are not confident — when in doubt, return null
+
+Only return a skill_id if the skill is a strong, complete match for the user's stated need.
+
+Respond with one JSON object:
+{"best_skill_id": "<id or null>", "reason": "<one short sentence>"}` }],
+  },
+  planner: {
+    label: "Planner",
+    file: "src/runtime/planner.py",
+    prompts: [{ name: "_SYS", content: `You evaluate whether a registered skill covers a user request end-to-end.
+
+You are given:
+- the user request,
+- one specific skill with its full ordered step list.
+
+Inspect the steps and decide:
+- coverage = "full"    if the skill's steps cover the core intent of the request.
+                       Vague or general phrasing in the request does NOT imply extra steps.
+                       Only mark "partial" if the request EXPLICITLY names concrete activities
+                       that are clearly absent from the skill's step list.
+- coverage = "partial" if the request explicitly requires one or more concrete activities
+                       that are NOT represented anywhere in the step list.
+                       In this case list only the concretely missing activities as gap_steps.
+
+Default to "full" when in doubt. A skill covers a request if its steps address the main
+business goal — minor wording differences or implied sub-tasks do not make it "partial".
+
+Respond with one JSON object:
+{
+  "coverage":  "full" | "partial",
+  "gap_steps": ["<short imperative step label>", ...],
+  "reason":    "<one sentence: what the skill covers and why it is full or what is concretely missing>"
+}
+
+Use an empty gap_steps list when coverage is "full".` }],
+  },
+  method_b: {
+    label: "Method B · Progressive Disclosure",
+    file: "src/methods/method_b.py",
+    prompts: [
+      { name: "_NS_SYS — Stage 1: Namespace", content: `You select up to two ORD namespaces that most likely contain the resources for an activity. Most activities sit in one namespace; some genuinely span two (e.g. HR + IT for onboarding). Respond with one JSON object:\n{"namespaces": ["<ns1>", "<ns2 if needed>"], "reason": "<one short sentence>"}` },
+      { name: "_MOD_SYS — Stage 2: Modality", content: `You decide the modality of an activity:
+
+  - "operational"  the activity drives live execution: an agent does work, or an API reads / writes master data. Pick this whenever the activity creates, updates, approves, screens, notifies, or otherwise acts.
+  - "analytical"   the activity is purely analytical or event-driven: read-only KPIs, dashboards, telemetry, asynchronous notifications.
+
+Most enterprise activities are operational. Return both modalities only if the activity genuinely needs an analytical lookup alongside the operational work.
+
+Respond with one JSON object:
+{"modalities": ["operational"], "reason": "<one short sentence>"}` },
+      { name: "_ET_SYS — Stage 3: Entity Types", content: `You decide which ODM entity types the activity primarily concerns. Pick up to 3 from the listed entity types — these are the business objects the activity reads or writes. Respond with one JSON object:\n{"entity_types": ["sap.odm:entityType:Machine:v1", ...], "reason": "<one short sentence>"}\n\nUse an empty list if no entity type clearly applies (the activity will then pass through this stage unfiltered).` },
+      { name: "_TOOL_SYS — Stage 4: Final Selection", content: `You select up to {k} ORD resource IDs that best match the activity. Respond with a JSON array of ORD IDs ordered by relevance, no other text.\n\nIf NONE of the candidates is a meaningful match for the activity (e.g. the activity asks for a capability that is genuinely not in the landscape such as translation, weather data, room booking, e-signature, sentiment analysis), return an empty array [] instead of picking a tangentially related resource.` },
+    ],
+  },
+  method_c: {
+    label: "Method C · Graph Walk",
+    file: "src/methods/method_c.py",
+    prompts: [
+      { name: "_ANCHOR_SYS — Stage 1: Anchor", content: `You map an activity to anchor concept nodes from ORD vocabularies so a graph walk can start from there.
+
+Pick up to 4 entity types, up to 3 business process groups, and up to 2 lines of business that the activity touches. Empty list when unsure; do not guess.
+
+Respond with one JSON object:
+{
+  "entity_types":      [...],
+  "business_groups":   [...],
+  "lines_of_business": [...],
+  "reason":            "<one short sentence>"
+}` },
+      { name: "_RERANK_SYS — Stage 2: Rerank", content: `You re-rank candidate ORD resources for an activity. The candidates were surfaced by a knowledge-graph walk and are all topically relevant; your job is to decide which one the activity verb most directly points to.
+
+Prefer Agents when the activity describes a worker doing something, APIs when the activity is pure CRUD on master data, dataProducts for analytical reads. Use the resource's title, type, capabilities and shortDescription as your evidence.
+
+Respond with a JSON array of ORD IDs ordered by relevance, no other text.
+
+If NONE of the candidates is a meaningful match for the activity (e.g. the activity asks for a capability that the graph walk surfaced only because of topical overlap, but none of the candidates actually fulfils the activity --- think translation, weather data, room booking, e-signature, sentiment analysis), return an empty array [] instead of picking a tangentially related one.` },
+    ],
+  },
+  method_d: {
+    label: "Method D · Agentic Tool Use",
+    file: "src/methods/method_d.py",
+    prompts: [{ name: "_SYSTEM", content: `You are an ORD discovery agent. Given a business activity (a step in a plan, or an ad-hoc user request), you select the single ORD resource that best fulfils that activity. End every session with EITHER the pick_resource tool (a suitable resource exists in the landscape) OR the refuse tool (no resource in this landscape fulfils the activity — do not pick a tangentially related one to be polite).
+
+ORD GROUNDING
+ORD (Open Resource Discovery) is a typed metadata protocol. Each resource has:
+  - ordId in the format <namespace>:<type>:<localId>:<version>
+  - type ∈ {apiResource, agent, dataProduct}
+  - entityTypes — ODM business objects it operates on (e.g. Customer, Machine)
+  - lineOfBusiness — functional domain (e.g. Human Resources, Manufacturing)
+  - capabilities — verb-noun tokens (e.g. skill-matching, fault-diagnosis)
+  - partOfGroups — business processes the resource participates in (DT-enriched)
+  - processNext — typical successor resources in a plan (DT-enriched)
+  - integrationDependencies — which API/agent resources this resource calls
+
+ARCHITECTURE CONTEXT
+You operate as the retrieval stage of a planner. The mode (skill_guided / skill_adjusted / dynamic) and any matching skill have already been decided by an upstream router. If a skill_id is provided to you, you may inspect it with describe_skill — its pinned ord_confirmed resources are usually a strong signal.
+
+TOOL USAGE GUIDANCE
+A productive pattern:
+  1. Vocabulary first: call list_entity_types or list_lines_of_business to know what you can filter on.
+  2. Narrow the pool by combining filters (resources_exposing × resources_in_lob × resources_in_group). Intersect their outputs in your reasoning.
+  3. Inspect typed metadata of the survivors with get_resource.
+  4. Use integration_dependencies(namespace) to see cross-system calls declared by a system, and resources_next_after when the activity follows a known prior resource.
+  5. When one candidate clearly dominates, call pick_resource with the best match. Before calling pick_resource, use get_resource on your top 2-3 candidates so they appear in the tool history for ranking analysis.
+
+Prefer Agent resources when the activity describes a worker performing something (resolve, diagnose, screen, notify). Prefer apiResource for pure CRUD on master data. Prefer dataProduct for analytical reads.
+
+REFUSAL
+If you have explored the landscape and found that no resource fulfils the activity in a substantive way, call the refuse tool with a short reason. Refusing is correct when the activity asks for a capability outside this landscape (e.g. translation, weather data, room booking, payment processing). Refusing is incorrect if there is a plausible ORD resource that just isn't a perfect fit — in that case, pick the best available match.
+
+You have at most 8 tool calls. Be efficient.` }],
+  },
+  method_e: {
+    label: "Method E · Filesystem Agent",
+    file: "src/methods/method_e.py",
+    prompts: [{ name: "_SYSTEM_BASE", content: `You are an ORD discovery agent operating directly on the filesystem. You have five tools:
+  - list_dir(path) : list entries in a directory under the project landscape.
+  - read_file(path): read the contents of an ORD JSON file (capped at 200 lines).
+  - read_notes()   : read your persistent notes from previous sessions.
+  - write_notes(content): overwrite your persistent notes (max 4KB).
+  - pick_resource(ord_id, reason) OR refuse(reason): final action.
+
+End EITHER with pick_resource (a resource in the landscape fulfils the activity) OR with refuse (no resource in this landscape fulfils the activity — do not pick a tangentially related one).
+
+ORD GROUNDING
+ORD (Open Resource Discovery) is a typed metadata protocol. The landscape lives under benchmark/landscape/systems/<system>/ord.json (clean state) and benchmark/landscape/systems_enriched/<system>/ord_enriched.json (enriched state, with partOfGroups, processNext, capabilities).
+
+Each ORD document has top-level arrays: apiResources, agents, dataProducts, entityTypes, integrationDependencies, packages. A resource has an ordId in the form <namespace>:<type>:<localId>:<version> plus title, shortDescription, description, entityTypes (or exposedEntityTypes / relatedEntityTypes), lineOfBusiness, capabilities, tags, partOfGroups, processNext.
+
+PERSISTENT NOTES
+You have a notebook that survives across queries. Use it to record what you have learned about the landscape — system inventory, which entity types live where, useful navigation patterns, recurring distractors. On every new query, the notes are shown to you below; use them to skip re-discovery. After resolving a query, update the notes with anything new and useful you learned. Keep notes concise — every wasted byte is a future read cost. Maximum 4KB.
+
+YOUR JOB
+Given a business activity, navigate the landscape directory (or trust your notes when they cover the question), and either pick the single ORD resource that best fulfils the activity, or refuse if none does.
+
+REFUSAL
+If you have explored the landscape and confirmed that no resource fulfils the activity in a substantive way, call refuse(reason). Refusing is correct when the activity asks for a capability outside this landscape (e.g. translation, weather data, room booking, payment processing). Refusing is incorrect if there is a plausible ORD resource that just isn't a perfect fit — in that case, pick the best available match.
+
+EFFICIENCY
+You have at most 10 tool calls. If your notes already cover the activity, you may pick or refuse directly. Otherwise read 1-3 system documents — there are 10 systems and reading them all would exhaust your budget.` }],
+  },
+  method_s: {
+    label: "Method S · Baseline Solver",
+    file: "src/methods/method_s.py",
+    prompts: [
+      { name: "_SYSTEM_SINGLE (top_k=1)", content: `You are a resource selector. Given a business activity and a list of ORD resources, return the single ordId that best fulfils the activity. Respond with a JSON object: {"ordId": "<best match>"}` },
+      { name: "_SYSTEM_RANKED (top_k>1)", content: `You are a resource ranker. Given a business activity and a list of ORD resources, return the top-{k} ordIds in order of relevance (best first). Respond with a JSON array of strings: ["<best>", "<second>", ...]` },
+    ],
+  },
+};
+
+---
+
+<Base title="Architecture" subtitle="System overview, data-flow, and source references for the benchmark pipeline.">
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     OVERVIEW DIAGRAM — two columns: Design-Time | Run-Time
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="mb-16">
+  <div class="flex items-center gap-3 mb-6">
+    <h2 class="font-serif text-2xl font-semibold">Pipeline Overview</h2>
+    <span class="text-xs font-mono text-ink-subtle bg-rule px-2 py-0.5 rounded">click any component to jump to details</span>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-0 border border-rule rounded-xl overflow-hidden">
+
+    <!-- ── Design-Time column ── -->
+    <div class="bg-white p-6 border-r border-rule">
+      <div class="font-mono text-[10px] uppercase tracking-widest text-accent mb-5">Design-Time</div>
+
+      <!-- ORD Landscape -->
+      <a href="#dt-landscape" class="arch-node group block border border-rule rounded-lg p-4 mb-3 hover:border-accent hover:shadow-sm transition cursor-pointer bg-paper">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="arch-icon text-accent">🗂️</span>
+          <span class="font-medium text-sm">ORD Landscape</span>
+        </div>
+        <div class="text-xs text-ink-subtle">273 resources · 11 systems · 2 states (Clean / Enriched)</div>
+      </a>
+
+      <!-- arrow -->
+      <div class="flex justify-center my-1 text-ink-subtle text-xl">↓</div>
+
+      <!-- DT Benchmark -->
+      <a href="#dt-benchmark" class="arch-node group block border border-rule rounded-lg p-4 mb-3 hover:border-accent hover:shadow-sm transition cursor-pointer bg-paper">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="arch-icon text-accent">⚙️</span>
+          <span class="font-medium text-sm">DT Benchmark</span>
+          <code class="text-[10px] font-mono text-ink-subtle ml-auto">dt_benchmark.py</code>
+        </div>
+        <div class="text-xs text-ink-subtle">30 processes × 6 methods → P@1 · R@5 · MRR</div>
+      </a>
+
+      <!-- arrow -->
+      <div class="flex justify-center my-1 text-ink-subtle text-xl">↓</div>
+
+      <!-- Skills generated -->
+      <a href="#dt-skills" class="arch-node group block border border-rule rounded-lg p-4 mb-3 hover:border-accent hover:shadow-sm transition cursor-pointer bg-paper">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="arch-icon text-teal-600">📋</span>
+          <span class="font-medium text-sm">Skill Registry</span>
+          <code class="text-[10px] font-mono text-ink-subtle ml-auto">skill_registry.py</code>
+        </div>
+        <div class="text-xs text-ink-subtle">12 SKILL.md files · process-pinned ORD steps</div>
+      </a>
+
+      <!-- DT Results box -->
+      <div class="mt-4 rounded-lg bg-accent-soft/30 border border-accent/20 p-3 text-xs text-ink-muted font-mono">
+        results/design-time/ → summary.json · by_process.json · traces/
+      </div>
+    </div>
+
+    <!-- ── Run-Time column ── -->
+    <div class="bg-white p-6">
+      <div class="font-mono text-[10px] uppercase tracking-widest text-accent mb-5">Run-Time</div>
+
+      <!-- Test Cases -->
+      <a href="#rt-cases" class="arch-node group block border border-rule rounded-lg p-4 mb-3 hover:border-accent hover:shadow-sm transition cursor-pointer bg-paper">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="arch-icon">🧪</span>
+          <span class="font-medium text-sm">Test Cases</span>
+        </div>
+        <div class="text-xs text-ink-subtle">30 SG · 20 SA · 40 DY · 10 OOS = 100 runtime cases</div>
+      </a>
+
+      <!-- arrow -->
+      <div class="flex justify-center my-1 text-ink-subtle text-xl">↓</div>
+
+      <!-- RT Planner pipeline -->
+      <a href="#rt-pipeline" class="arch-node group block border border-rule rounded-lg p-4 mb-3 hover:border-accent hover:shadow-sm transition cursor-pointer bg-paper">
+        <div class="flex items-center gap-2 mb-2">
+          <span class="arch-icon text-accent">🧠</span>
+          <span class="font-medium text-sm">Orchestration Pipeline</span>
+          <code class="text-[10px] font-mono text-ink-subtle ml-auto">rt_planner.py</code>
+        </div>
+        <!-- 3-stage mini flow -->
+        <div class="flex items-center gap-1 text-[10px] font-mono text-ink-subtle flex-wrap">
+          <span class="bg-teal-50 border border-teal-200 rounded px-1.5 py-0.5">1 · Intent Resolver</span>
+          <span>→</span>
+          <span class="bg-teal-50 border border-teal-200 rounded px-1.5 py-0.5">2 · Planner</span>
+          <span>→</span>
+          <span class="bg-teal-50 border border-teal-200 rounded px-1.5 py-0.5">3 · Retrieval</span>
+        </div>
+      </a>
+
+      <!-- arrow -->
+      <div class="flex justify-center my-1 text-ink-subtle text-xl">↓</div>
+
+      <!-- RT Benchmark -->
+      <a href="#rt-benchmark" class="arch-node group block border border-rule rounded-lg p-4 mb-3 hover:border-accent hover:shadow-sm transition cursor-pointer bg-paper">
+        <div class="flex items-center gap-2 mb-1">
+          <span class="arch-icon text-accent">📊</span>
+          <span class="font-medium text-sm">RT Benchmark</span>
+          <code class="text-[10px] font-mono text-ink-subtle ml-auto">rt_benchmark.py</code>
+        </div>
+        <div class="text-xs text-ink-subtle">6 methods × 4 modes × 2 states → records.jsonl</div>
+      </a>
+
+      <!-- RT Results box -->
+      <div class="mt-4 rounded-lg bg-accent-soft/30 border border-accent/20 p-3 text-xs text-ink-muted font-mono">
+        results/runtime/ → skill_guided/ · skill_adjusted/ · dynamic/ · out_of_scope/
+      </div>
+    </div>
+  </div>
+
+  <!-- Methods strip below both columns -->
+  <div class="border border-t-0 border-rule rounded-b-xl bg-paper px-6 py-4 flex flex-wrap gap-3 items-center">
+    <span class="text-xs font-mono text-ink-subtle mr-2">retrieval methods:</span>
+    {[
+      { id: "A", label: "Embedding Cosine", file: "method_a.py", color: "bg-blue-50 border-blue-200 text-blue-800" },
+      { id: "B", label: "Progressive Disclosure", file: "method_b.py", color: "bg-purple-50 border-purple-200 text-purple-800" },
+      { id: "C", label: "Graph Walk", file: "method_c.py", color: "bg-green-50 border-green-200 text-green-800" },
+      { id: "D", label: "Agentic Tool Use", file: "method_d.py", color: "bg-orange-50 border-orange-200 text-orange-800" },
+      { id: "E", label: "Filesystem Agent", file: "method_e.py", color: "bg-red-50 border-red-200 text-red-800" },
+      { id: "S", label: "Baseline Solver", file: "method_s.py", color: "bg-gray-50 border-gray-300 text-gray-700" },
+    ].map(m => (
+      <a href={`#method-${m.id.toLowerCase()}`}
+         class={`inline-flex items-center gap-1.5 border rounded px-2.5 py-1 text-xs font-mono cursor-pointer hover:shadow-sm transition ${m.color}`}>
+        <span class="font-bold">{m.id}</span>
+        <span class="hidden sm:inline text-[10px]">{m.label}</span>
+      </a>
+    ))}
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     INTERACTIVE ORCHESTRATION FLOW
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="mb-16">
+  <div class="flex items-center gap-3 mb-4">
+    <h2 class="font-serif text-2xl font-semibold">Orchestration Flow</h2>
+    <span class="text-xs font-mono text-ink-subtle bg-rule px-2 py-0.5 rounded">select an input type to see which components activate</span>
+  </div>
+
+  <!-- Input selector -->
+  <div class="flex flex-wrap gap-2 mb-6">
+    {[
+      { id: "single",  label: "Single-Intent",  desc: "1 resource needed",          color: "bg-blue-50 border-blue-300 text-blue-800" },
+      { id: "multi",   label: "Multi-Intent",   desc: "2+ independent resources",   color: "bg-purple-50 border-purple-300 text-purple-800" },
+      { id: "skill",   label: "Skill-Guided",   desc: "known process end-to-end",   color: "bg-teal-50 border-teal-300 text-teal-800" },
+      { id: "sa",      label: "Skill-Adjusted", desc: "known process + gap steps",  color: "bg-orange-50 border-orange-300 text-orange-800" },
+      { id: "oos",     label: "Out-of-Scope",   desc: "no matching resource",       color: "bg-red-50 border-red-300 text-red-800" },
+    ].map(t => (
+      <button
+        data-flow-input={t.id}
+        class={`flow-input-btn border rounded-lg px-3 py-2 text-xs font-mono cursor-pointer hover:shadow transition ${t.color}`}
+      >
+        <div class="font-bold">{t.label}</div>
+        <div class="opacity-70 mt-0.5">{t.desc}</div>
+      </button>
+    ))}
+  </div>
+
+  <!-- Flow chart -->
+  <div class="border border-rule rounded-xl bg-white p-6 overflow-x-auto">
+    <div class="min-w-[700px]">
+
+      <!-- User input -->
+      <div class="flex justify-center mb-2">
+        <div id="flow-user" class="flow-node border-2 border-rule rounded-xl px-6 py-3 text-sm font-medium bg-paper text-center min-w-[180px] transition-all duration-300">
+          <div class="text-xs font-mono text-ink-subtle mb-1">input</div>
+          User Prompt
+        </div>
+      </div>
+      <div class="flex justify-center mb-2"><div class="flow-arrow text-ink-subtle text-xl">↓</div></div>
+
+      <!-- Intent Resolver — full width, always active -->
+      <div class="flex justify-center mb-3">
+        <div id="flow-resolver" class="flow-node border-2 border-rule rounded-xl px-6 py-3 text-sm font-medium bg-paper text-center min-w-[260px] transition-all duration-300">
+          <div class="text-xs font-mono text-ink-subtle mb-1">stage 1 · 1 LLM call</div>
+          Intent Resolver
+          <div class="text-[10px] text-ink-subtle mt-1">skill_id matched  OR  null → dynamic</div>
+        </div>
+      </div>
+
+      <!-- Branch labels -->
+      <div class="grid grid-cols-2 gap-4 mb-1 px-8">
+        <div class="text-center">
+          <span id="flow-branch-skill" class="flow-branch text-xs font-mono text-ink-subtle opacity-30 transition-all duration-300">skill matched ↓</span>
+        </div>
+        <div class="text-center">
+          <span id="flow-branch-dynamic" class="flow-branch text-xs font-mono text-ink-subtle opacity-30 transition-all duration-300">null → dynamic ↓</span>
+        </div>
+      </div>
+
+      <!-- Two-column branch: Planner (left) | Decomposer (right) -->
+      <div class="grid grid-cols-2 gap-4 mb-3 px-4">
+
+        <!-- Left: Planner / Gap Resolver -->
+        <div class="flex flex-col items-center gap-2">
+          <div id="flow-planner" class="flow-node border-2 border-rule rounded-xl px-4 py-3 text-sm font-medium bg-paper text-center w-full transition-all duration-300">
+            <div class="text-xs font-mono text-ink-subtle mb-1">stage 2 · 1 LLM call if skill</div>
+            Planner / Gap Resolver
+            <div class="text-[10px] text-ink-subtle mt-1">full · partial coverage</div>
+          </div>
+          <div class="text-ink-subtle text-xl">↓</div>
+          <div class="flex gap-2 w-full justify-center">
+            <div id="flow-step-skill" class="flow-node border-2 border-teal-300 rounded-lg px-3 py-2 text-xs font-mono text-teal-800 bg-teal-50 text-center opacity-20 transition-all duration-300 flex-1">
+              skill steps<br/><span class="opacity-70">pinned</span>
+            </div>
+            <div id="flow-step-gap" class="flow-node border-2 border-orange-300 rounded-lg px-3 py-2 text-xs font-mono text-orange-800 bg-orange-50 text-center opacity-20 transition-all duration-300 flex-1">
+              gap steps<br/><span class="opacity-70">→ retrieval</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Intent Decomposer -->
+        <div class="flex flex-col items-center gap-2">
+          <div id="flow-decomposer" class="flow-node border-2 border-dashed border-purple-300 rounded-xl px-4 py-3 text-sm font-medium bg-purple-50 text-center w-full transition-all duration-300 opacity-20">
+            <div class="text-xs font-mono text-purple-500 mb-1">stage 1b · 1 LLM call</div>
+            Intent Decomposer
+            <div class="text-[10px] text-purple-600 mt-1">single → 1 step · multi → N sub-queries</div>
+          </div>
+          <div class="text-ink-subtle text-xl">↓</div>
+          <div class="flex gap-2 w-full justify-center">
+            <div id="flow-step-adhoc" class="flow-node border-2 border-blue-300 rounded-lg px-3 py-2 text-xs font-mono text-blue-800 bg-blue-50 text-center opacity-20 transition-all duration-300 flex-1">
+              adhoc step(s)<br/><span class="opacity-70">→ retrieval</span>
+            </div>
+            <div id="flow-step-refuse" class="flow-node border-2 border-red-300 rounded-lg px-3 py-2 text-xs font-mono text-red-800 bg-red-50 text-center opacity-20 transition-all duration-300 flex-1">
+              refuse<br/><span class="opacity-70">D/E only</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Merge back to Retrieval -->
+      <div class="flex justify-center mb-2 text-ink-subtle text-sm font-mono gap-16">
+        <span>↘</span><span>↙</span>
+      </div>
+
+      <!-- Retrieval methods -->
+      <div class="flex justify-center mb-1">
+        <div id="flow-retrieval" class="flow-node border-2 border-rule rounded-xl px-6 py-3 text-sm font-medium bg-paper text-center min-w-[280px] transition-all duration-300">
+          <div class="text-xs font-mono text-ink-subtle mb-2">stage 3 · per unbound step</div>
+          <div class="flex gap-1 flex-wrap justify-center">
+            {["A","B","C","D","E","S"].map(m => (
+              <span class="border border-rule rounded px-1.5 py-0.5 text-xs font-mono text-ink-subtle bg-rule/40">{m}</span>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div class="flex justify-center mb-2"><div class="flow-arrow text-ink-subtle text-xl">↓</div></div>
+
+      <!-- Output -->
+      <div class="flex justify-center">
+        <div id="flow-output" class="flow-node border-2 border-rule rounded-xl px-6 py-3 text-sm font-medium bg-accent-soft/30 text-center min-w-[220px] transition-all duration-300">
+          <div class="text-xs font-mono text-ink-subtle mb-1">output</div>
+          Scored Record
+          <div class="text-[10px] text-ink-subtle mt-1">top1_acc · recall · tokens · latency</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Status line -->
+  <div id="flow-status" class="mt-3 text-xs font-mono text-ink-subtle text-center h-5"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     ORD ACCESS CHART (per method)
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="mb-16">
+  <div class="flex items-center gap-3 mb-4">
+    <h2 class="font-serif text-2xl font-semibold">ORD Access by Method</h2>
+    <span class="text-xs font-mono text-ink-subtle bg-rule px-2 py-0.5 rounded">how each method reads the ORD landscape</span>
+  </div>
+
+  <div class="border border-rule rounded-xl overflow-hidden">
+    <!-- Header -->
+    <div class="grid bg-accent-soft/40 border-b border-rule text-[10px] font-mono uppercase tracking-widest text-ink-subtle"
+         style="grid-template-columns: 120px repeat(6, 1fr)">
+      <div class="p-3 border-r border-rule">ORD Layer</div>
+      {[
+        { id:"A", color:"text-blue-700" },
+        { id:"B", color:"text-purple-700" },
+        { id:"C", color:"text-green-700" },
+        { id:"D", color:"text-orange-700" },
+        { id:"E", color:"text-red-700" },
+        { id:"S", color:"text-gray-600" },
+      ].map(m => (
+        <div class={`p-3 border-r border-rule text-center font-bold ${m.color}`}>{m.id}</div>
+      ))}
+    </div>
+
+    <!-- Rows: one per ORD access pattern -->
+    {[
+      {
+        layer: "All 273 IDs + descriptions",
+        sub: "title · shortDescription",
+        a: "embed", b: "—", c: "—", d: "—", e: "—", s: "flat-list",
+      },
+      {
+        layer: "Namespace index",
+        sub: "ordId prefix",
+        a: "—", b: "filter", c: "—", d: "tool", e: "—", s: "—",
+      },
+      {
+        layer: "Modality / resource type",
+        sub: "agent · apiResource · dataProduct",
+        a: "—", b: "filter", c: "—", d: "tool", e: "—", s: "—",
+      },
+      {
+        layer: "Entity Types",
+        sub: "relatedEntityTypes · exposedEntityTypes",
+        a: "embed", b: "filter", c: "anchor", d: "tool", e: "scan", s: "—",
+      },
+      {
+        layer: "Line of Business",
+        sub: "lineOfBusiness",
+        a: "embed", b: "—", c: "anchor", d: "tool", e: "scan", s: "—",
+      },
+      {
+        layer: "Capability Labels",
+        sub: "capabilities (enriched only)",
+        a: "embed", b: "—", c: "anchor", d: "tool", e: "scan", s: "—",
+      },
+      {
+        layer: "Graph edges",
+        sub: "co_exposes · co_partOf · calls · processNext",
+        a: "—", b: "—", c: "walk", d: "—", e: "—", s: "—",
+      },
+      {
+        layer: "Tool API",
+        sub: "list_lob · resources_exposing · get_resource · pick",
+        a: "—", b: "—", c: "—", d: "tool", e: "—", s: "—",
+      },
+      {
+        layer: "File system",
+        sub: "ord_enriched.json per system",
+        a: "—", b: "—", c: "—", d: "—", e: "read", s: "—",
+      },
+      {
+        layer: "Persistent notes",
+        sub: "agent memory across cases",
+        a: "—", b: "—", c: "—", d: "—", e: "notes", s: "—",
+      },
+    ].map((row, i) => {
+      const cells = [row.a, row.b, row.c, row.d, row.e, row.s];
+      const cellColors = {
+        "embed":     "bg-blue-50   text-blue-700   border-blue-200",
+        "filter":    "bg-purple-50 text-purple-700 border-purple-200",
+        "anchor":    "bg-green-50  text-green-700  border-green-200",
+        "walk":      "bg-green-100 text-green-800  border-green-300 font-bold",
+        "tool":      "bg-orange-50 text-orange-700 border-orange-200",
+        "read":      "bg-red-50    text-red-700    border-red-200",
+        "scan":      "bg-red-50    text-red-700    border-red-200",
+        "notes":     "bg-red-100   text-red-800    border-red-300 font-bold",
+        "flat-list": "bg-gray-50   text-gray-600   border-gray-200",
+        "—":         "text-ink-subtle/30",
+      };
+      return (
+        <div class={`grid border-b border-rule last:border-b-0 ${i % 2 === 0 ? "bg-white" : "bg-paper/60"}`}
+             style="grid-template-columns: 120px repeat(6, 1fr)">
+          <div class="p-3 border-r border-rule">
+            <div class="text-xs font-medium text-ink leading-tight">{row.layer}</div>
+            <div class="text-[10px] text-ink-subtle mt-0.5">{row.sub}</div>
+          </div>
+          {cells.map(c => (
+            <div class={`p-2 border-r border-rule last:border-r-0 flex items-center justify-center`}>
+              {c !== "—" ? (
+                <span class={`border rounded px-1.5 py-0.5 text-[10px] font-mono ${cellColors[c] ?? ""}`}>{c}</span>
+              ) : (
+                <span class="text-ink-subtle/20 text-xs">—</span>
+              )}
+            </div>
+          ))}
+        </div>
+      );
+    })}
+
+    <!-- Legend -->
+    <div class="bg-paper/60 border-t border-rule p-4 flex flex-wrap gap-3">
+      <span class="text-[10px] font-mono text-ink-subtle mr-2">legend:</span>
+      {[
+        { label:"embed",     color:"bg-blue-50 text-blue-700 border-blue-200",     desc:"cosine similarity over all vectors" },
+        { label:"filter",    color:"bg-purple-50 text-purple-700 border-purple-200", desc:"LLM-driven namespace/modality/ET filter" },
+        { label:"anchor",    color:"bg-green-50 text-green-700 border-green-200",  desc:"graph walk entry point" },
+        { label:"walk",      color:"bg-green-100 text-green-800 border-green-300", desc:"weighted graph traversal (4 edge types)" },
+        { label:"tool",      color:"bg-orange-50 text-orange-700 border-orange-200", desc:"agentic tool call" },
+        { label:"read/scan", color:"bg-red-50 text-red-700 border-red-200",        desc:"file read or section scan" },
+        { label:"flat-list", color:"bg-gray-50 text-gray-600 border-gray-200",     desc:"single LLM call over all descriptions" },
+      ].map(l => (
+        <div class="flex items-center gap-1.5">
+          <span class={`border rounded px-1.5 py-0.5 text-[10px] font-mono ${l.color}`}>{l.label}</span>
+          <span class="text-[10px] text-ink-subtle">{l.desc}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     DETAIL SECTIONS
+     ═══════════════════════════════════════════════════════════════════ -->
+
+<!-- ── Orchestration Data Flow ── -->
+<section id="rt-pipeline" class="mb-14 scroll-mt-20">
+  <h2 class="font-serif text-2xl font-semibold mb-1">Orchestration Pipeline</h2>
+  <p class="text-sm text-ink-muted mb-6">
+    Every runtime test case passes through three sequential stages before producing a scored record.
+    The stages are implemented in
+    <a href={src("src/runtime/rt_planner.py")} target="_blank" class="text-accent hover:underline font-mono text-xs">rt_planner.py</a>.
+  </p>
+
+  <!-- Flow diagram -->
+  <div class="border border-rule rounded-xl overflow-hidden mb-6">
+    <!-- Header row -->
+    <div class="grid grid-cols-3 bg-accent-soft/40 border-b border-rule text-xs font-mono uppercase tracking-widest text-ink-subtle">
+      <div class="p-3 border-r border-rule text-center">Stage 1 · Intent Resolver</div>
+      <div class="p-3 border-r border-rule text-center">Stage 2 · Planner</div>
+      <div class="p-3 text-center">Stage 3 · Retrieval</div>
+    </div>
+    <!-- Content row -->
+    <div class="grid grid-cols-3 bg-white divide-x divide-rule">
+      <div class="p-4">
+        <div class="text-xs text-ink-muted mb-3 leading-relaxed">
+          LLM call: does the request match a known <em>Skill</em>?
+        </div>
+        <div class="space-y-2 text-xs font-mono">
+          <div class="flex gap-2 items-start">
+            <span class="text-accent mt-0.5">→</span>
+            <span><span class="text-ink">skill_id</span> <span class="text-ink-subtle">(match)</span></span>
+          </div>
+          <div class="flex gap-2 items-start">
+            <span class="text-ink-subtle mt-0.5">→</span>
+            <span><span class="text-ink-subtle">None</span> <span class="text-ink-subtle">(dynamic)</span></span>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-rule">
+          <a href={src("src/runtime/intent_resolver.py")} target="_blank"
+             class="text-[10px] font-mono text-accent hover:underline">intent_resolver.py ↗</a>
+        </div>
+        <!-- Bypass notes -->
+        <div class="mt-3 bg-amber-50 border border-amber-200 rounded p-2 text-[10px] font-mono text-amber-800">
+          SA cases: <code>hint_skill_id</code> bypasses resolver<br/>
+          Force-mode: <code>force_mode="dynamic"</code> skips both stages 1+2
+        </div>
+      </div>
+
+      <div class="p-4">
+        <div class="text-xs text-ink-muted mb-3 leading-relaxed">
+          LLM call (if skill found): full or partial coverage? Infer gap steps.
+        </div>
+        <div class="space-y-2 text-xs font-mono">
+          <div class="flex gap-2 items-start">
+            <span class="text-accent mt-0.5">→</span>
+            <span><span class="text-ink">skill_guided</span> <span class="text-ink-subtle">full match</span></span>
+          </div>
+          <div class="flex gap-2 items-start">
+            <span class="text-accent mt-0.5">→</span>
+            <span><span class="text-ink">skill_adjusted</span> <span class="text-ink-subtle">+ gap steps</span></span>
+          </div>
+          <div class="flex gap-2 items-start">
+            <span class="text-ink-subtle mt-0.5">→</span>
+            <span><span class="text-ink-subtle">dynamic</span> <span class="text-ink-subtle">no skill</span></span>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-rule">
+          <a href={src("src/runtime/planner.py")} target="_blank"
+             class="text-[10px] font-mono text-accent hover:underline">planner.py ↗</a>
+        </div>
+      </div>
+
+      <div class="p-4">
+        <div class="text-xs text-ink-muted mb-3 leading-relaxed">
+          Per unbound step: call chosen method (A–S) against 273 resources.
+        </div>
+        <div class="space-y-1 text-[10px] font-mono text-ink-subtle">
+          <div>skill steps → <span class="text-ink">pinned</span> (no LLM)</div>
+          <div>gap / adhoc → <span class="text-accent">method.retrieve()</span></div>
+          <div class="mt-2">prev top-1 ordId passed as<br/><code>previous_resolved_ord_ids</code></div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-rule text-[10px] font-mono text-ink-subtle">
+          Methods A/B/C/D/E/S — see below
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mode routing table -->
+  <h3 class="font-mono text-xs uppercase tracking-widest text-ink-subtle mb-3">Mode Routing Matrix</h3>
+  <div class="overflow-x-auto rounded-lg border border-rule">
+    <table class="w-full text-xs font-mono">
+      <thead class="bg-paper border-b border-rule">
+        <tr>
+          <th class="px-4 py-2 text-left text-ink-subtle font-medium">Mode</th>
+          <th class="px-4 py-2 text-left text-ink-subtle font-medium">Resolver result</th>
+          <th class="px-4 py-2 text-left text-ink-subtle font-medium">Planner output</th>
+          <th class="px-4 py-2 text-left text-ink-subtle font-medium">Step sources</th>
+          <th class="px-4 py-2 text-left text-ink-subtle font-medium">Primary metric</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-rule">
+        {[
+          ["SG · Skill-Guided",   "skill_id match",  "mode=skill_guided",   "skill (pinned)",         "Routing-Acc"],
+          ["SA · Skill-Adjusted", "skill_id + hint",  "mode=skill_adjusted", "skill + gap (retrieved)","Gap-Detection"],
+          ["DY · Dynamic",        "None",             "mode=dynamic",        "adhoc (retrieved)",      "Top-1"],
+          ["OOS · Out-of-Scope",  "None",             "mode=dynamic",        "adhoc → refuse",         "Refusal-Rate"],
+        ].map(([mode, resolver, planner, steps, metric]) => (
+          <tr class="hover:bg-paper transition">
+            <td class="px-4 py-2 font-semibold text-ink">{mode}</td>
+            <td class="px-4 py-2 text-ink-muted">{resolver}</td>
+            <td class="px-4 py-2 text-ink-muted">{planner}</td>
+            <td class="px-4 py-2 text-ink-muted">{steps}</td>
+            <td class="px-4 py-2 text-accent font-semibold">{metric}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- ── Design-Time Landscape ── -->
+<section id="dt-landscape" class="mb-14 scroll-mt-20">
+  <h2 class="font-serif text-2xl font-semibold mb-1">ORD Landscape</h2>
+  <p class="text-sm text-ink-muted mb-6">
+    The synthetic enterprise metadata graph. Two states are loaded depending on the
+    <code class="font-mono text-xs bg-rule px-1 rounded">ORD_STATE</code> config variable.
+  </p>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+    <div class="border border-rule rounded-lg p-5 bg-white">
+      <div class="font-mono text-[10px] uppercase tracking-widest text-ink-subtle mb-3">Clean-ORD</div>
+      <div class="text-sm text-ink-muted leading-relaxed mb-3">
+        Mandatory ORD v1.16 fields only: <code class="text-xs font-mono">ordId</code>,
+        <code class="text-xs font-mono">title</code>, <code class="text-xs font-mono">shortDescription</code>,
+        entity types, lineOfBusiness, tags, apiProtocol.
+      </div>
+      <div class="text-xs font-mono text-ink-subtle">
+        baseline for retrieval — no process context
+      </div>
+    </div>
+    <div class="border border-accent/30 rounded-lg p-5 bg-accent-soft/10">
+      <div class="font-mono text-[10px] uppercase tracking-widest text-accent mb-3">Enriched-ORD</div>
+      <div class="text-sm text-ink-muted leading-relaxed mb-3">
+        Adds process-derived fields: <code class="text-xs font-mono">capabilities</code>,
+        <code class="text-xs font-mono">useCases</code>, <code class="text-xs font-mono">processNext</code>,
+        <code class="text-xs font-mono">partOfGroups</code>.
+      </div>
+      <div class="text-xs font-mono text-accent">
+        experimental variable — enables graph walk (C) + group filter (D)
+      </div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    {[
+      ["273", "total resources"],
+      ["11", "namespaces / systems"],
+      ["~50%", "apiResource"],
+      ["~25% / ~25%", "agent / dataProduct"],
+    ].map(([n, l]) => (
+      <div class="border border-rule rounded-lg p-4 bg-white text-center">
+        <div class="font-serif text-2xl font-semibold text-accent">{n}</div>
+        <div class="text-[10px] font-mono text-ink-subtle mt-1">{l}</div>
+      </div>
+    ))}
+  </div>
+
+  <div class="mt-4 flex gap-3 flex-wrap text-[10px] font-mono">
+    <a href={src("src/core/ord_loader.py")} target="_blank" class="text-accent hover:underline">ord_loader.py ↗</a>
+    <a href={src("src/core/config.py")} target="_blank" class="text-accent hover:underline">config.py ↗</a>
+    <span class="text-ink-subtle font-mono text-[10px]">landscape browser: see ord-bench/web</span>
+  </div>
+</section>
+
+<!-- ── DT Benchmark ── -->
+<section id="dt-benchmark" class="mb-14 scroll-mt-20">
+  <h2 class="font-serif text-2xl font-semibold mb-1">Design-Time Benchmark</h2>
+  <p class="text-sm text-ink-muted mb-6">
+    Evaluates how well each retrieval method matches individual process-step labels to ground-truth ORD resources.
+    Source: <a href={src("src/design_time/dt_benchmark.py")} target="_blank" class="text-accent hover:underline font-mono text-xs">dt_benchmark.py</a>
+  </p>
+
+  <div class="border border-rule rounded-xl overflow-hidden mb-6">
+    <div class="grid grid-cols-4 bg-paper border-b border-rule text-[10px] font-mono uppercase tracking-widest text-ink-subtle">
+      <div class="p-3 border-r border-rule">Input</div>
+      <div class="p-3 border-r border-rule">Scoring</div>
+      <div class="p-3 border-r border-rule">Aggregation</div>
+      <div class="p-3">Output</div>
+    </div>
+    <div class="grid grid-cols-4 bg-white divide-x divide-rule text-xs">
+      <div class="p-4 text-ink-muted leading-relaxed">
+        Process step <em>label</em> string<br/>
+        + 273 resources<br/>
+        + method choice (A–S)
+      </div>
+      <div class="p-4 text-ink-muted leading-relaxed">
+        <code class="font-mono">P@1</code> — top-1 exact hit<br/>
+        <code class="font-mono">R@5</code> — recall in top-5<br/>
+        <code class="font-mono">MRR</code> — mean reciprocal rank<br/>
+        OOS: <code class="font-mono">correctly_refused</code>
+      </div>
+      <div class="p-4 text-ink-muted leading-relaxed">
+        per method (overall)<br/>
+        per process<br/>
+        BPMN vs CMMN split
+      </div>
+      <div class="p-4 font-mono text-ink-subtle text-[10px] leading-relaxed">
+        results/design-time/<br/>
+        ├── summary.json<br/>
+        ├── by_process.json<br/>
+        ├── by_modeling_notation.json<br/>
+        └── traces/&lt;method&gt;/
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4 flex gap-3 text-[10px] font-mono">
+    <a href={`${base}results/`} class="text-accent hover:underline">View DT results →</a>
+    <a href={src("src/design_time/dt_cases.py")} target="_blank" class="text-accent hover:underline">dt_cases.py ↗</a>
+  </div>
+</section>
+
+<!-- ── Skill Registry ── -->
+<section id="dt-skills" class="mb-14 scroll-mt-20">
+  <h2 class="font-serif text-2xl font-semibold mb-1">Skill Registry</h2>
+  <p class="text-sm text-ink-muted mb-6">
+    The Intent Resolver consults the skill registry to match incoming requests to pre-defined process flows.
+    Source: <a href={src("src/runtime/skill_registry.py")} target="_blank" class="text-accent hover:underline font-mono text-xs">skill_registry.py</a>
+  </p>
+
+  <div class="border border-rule rounded-lg p-5 bg-white mb-4">
+    <div class="font-mono text-xs text-ink-subtle mb-3">Skill structure (SKILL.md)</div>
+    <pre class="text-[11px] font-mono text-ink leading-relaxed bg-paper rounded p-4 overflow-x-auto border border-rule">{`skill_id: proc_machine_breakdown
+description: Handle the full machine breakdown resolution process
+steps:
+  - name: Diagnose equipment failure
+    ord_confirmed:
+      - sap.mes:agent:EquipmentDiagnosticAgent:v1
+  - name: Retrieve maintenance manual
+    ord_confirmed:
+      - sap.doc:apiResource:MaintenanceManualAPI:v1
+  ...`}</pre>
+  </div>
+
+  <p class="text-sm text-ink-muted">
+    Each step carries <code class="font-mono text-xs bg-rule px-1 rounded">ord_confirmed</code> —
+    ordIds pinned at design-time via the DT benchmark. At runtime, skill steps bypass retrieval entirely;
+    only <em>gap</em> steps (SA mode) or <em>adhoc</em> steps (DY mode) trigger the retrieval method.
+  </p>
+
+  <div class="mt-4 flex gap-3 text-[10px] font-mono">
+    <span class="text-ink-subtle font-mono text-[10px]">skills browser: see ord-bench/web</span>
+    <a href={src("benchmark/test_cases/runtime/skill_guided.json")} target="_blank" class="text-accent hover:underline">skill_guided.json ↗</a>
+  </div>
+</section>
+
+<!-- ── RT Benchmark ── -->
+<section id="rt-benchmark" class="mb-14 scroll-mt-20">
+  <h2 class="font-serif text-2xl font-semibold mb-1">Runtime Benchmark</h2>
+  <p class="text-sm text-ink-muted mb-6">
+    Drives <code class="font-mono text-xs">plan_and_resolve()</code> for every (case, method, state) combination and scores the result.
+    Source: <a href={src("src/runtime/rt_benchmark.py")} target="_blank" class="text-accent hover:underline font-mono text-xs">rt_benchmark.py</a>
+  </p>
+
+  <!-- Key implementation notes -->
+  <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+    <div class="border border-rule rounded-lg p-4 bg-white">
+      <div class="font-mono text-[10px] uppercase tracking-widest text-ink-subtle mb-2">Records</div>
+      <div class="text-xs text-ink-muted leading-relaxed">
+        Written incrementally to <code class="font-mono">records.jsonl</code> after each case.
+        4-tuple key <code class="font-mono">(case_id, method, state, force_mode)</code> for dedup.
+      </div>
+    </div>
+    <div class="border border-rule rounded-lg p-4 bg-white">
+      <div class="font-mono text-[10px] uppercase tracking-widest text-ink-subtle mb-2">Forced Records</div>
+      <div class="text-xs text-ink-muted leading-relaxed">
+        15 wrong-routed DY cases re-run with <code class="font-mono">--force-mode dynamic</code>.
+        Stored with <code class="font-mono">f</code> suffix (e.g. <code class="font-mono">A0f</code>).
+        Merged into DY table for honest n=40 Top-1.
+      </div>
+    </div>
+    <div class="border border-rule rounded-lg p-4 bg-white">
+      <div class="font-mono text-[10px] uppercase tracking-widest text-ink-subtle mb-2">Scoring</div>
+      <div class="text-xs text-ink-muted leading-relaxed">
+        SG/SA skip top1_acc (routing / gap-detection instead).
+        OOS: refusal = no candidates returned.
+        SA gap-detection compares top-1 to <code class="font-mono">expected_gap_ordIds</code>.
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-4 flex gap-3 text-[10px] font-mono">
+    <a href={`${base}results/`} class="text-accent hover:underline">View RT results →</a>
+    <a href={src("src/runtime/rt_benchmark.py")} target="_blank" class="text-accent hover:underline">rt_benchmark.py ↗</a>
+  </div>
+</section>
+
+<!-- ── RT Test Cases ── -->
+<section id="rt-cases" class="mb-14 scroll-mt-20">
+  <h2 class="font-serif text-2xl font-semibold mb-1">Runtime Test Cases</h2>
+  <p class="text-sm text-ink-muted mb-6">
+    Four orchestration modes, each with adversarially constructed ground truth.
+  </p>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    {[
+      {
+        mode: "SG · Skill-Guided",
+        n: "30",
+        desc: "Natural-language requests that match an existing skill end-to-end. Resolver must identify the correct skill_id without hints.",
+        metric: "Routing-Acc",
+        file: "skill_guided.json",
+      },
+      {
+        mode: "SA · Skill-Adjusted",
+        n: "20",
+        desc: "Requests that extend a skill with 1–3 gap steps not covered by the skill. Planner must detect partial coverage and infer gaps.",
+        metric: "Gap-Detection",
+        file: "skill_adjusted.json",
+      },
+      {
+        mode: "DY · Dynamic",
+        n: "40",
+        desc: "Ad-hoc requests that don't match any skill. Pure retrieval against 273 resources. Forced records handle wrong-routed cases.",
+        metric: "Top-1 / Top-5",
+        file: "dynamic.json",
+      },
+      {
+        mode: "OOS · Out-of-Scope",
+        n: "10",
+        desc: "Requests for capabilities genuinely absent from the landscape. All methods must refuse (return no candidates).",
+        metric: "Refusal-Rate",
+        file: "out_of_scope.json",
+      },
+    ].map(tc => (
+      <div class="border border-rule rounded-lg p-5 bg-white">
+        <div class="flex items-baseline justify-between mb-2">
+          <span class="font-medium text-sm">{tc.mode}</span>
+          <span class="font-serif text-xl text-accent font-semibold">{tc.n}</span>
+        </div>
+        <p class="text-xs text-ink-muted leading-relaxed mb-3">{tc.desc}</p>
+        <div class="flex items-center justify-between text-[10px] font-mono">
+          <span class="text-accent">metric: {tc.metric}</span>
+          <a href={src(`benchmark/test_cases/runtime/${tc.file}`)} target="_blank"
+             class="text-ink-subtle hover:text-accent transition">{tc.file} ↗</a>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     RETRIEVAL METHODS
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="mb-14">
+  <h2 class="font-serif text-2xl font-semibold mb-6">Retrieval Methods</h2>
+
+  <div class="space-y-4">
+    {[
+      {
+        id: "a", label: "A · Embedding Cosine", file: "src/methods/method_a.py",
+        color: "border-blue-200 bg-blue-50/50",
+        badge: "bg-blue-100 text-blue-800",
+        desc: "Encodes the query and all resource descriptions into embedding vectors, then returns top-k by cosine similarity. No LLM calls at retrieval time — fastest method.",
+        traits: ["no LLM at inference", "symmetric — description quality matters", "blind to ORD graph structure"],
+        input: "query string",
+        output: "top-k ordIds + scores",
+      },
+      {
+        id: "b", label: "B · Progressive Disclosure", file: "src/methods/method_b.py",
+        color: "border-purple-200 bg-purple-50/50",
+        badge: "bg-purple-100 text-purple-800",
+        desc: "Two-stage LLM pipeline. Stage 1: pick the most plausible namespace(s). Stage 2: within those namespace(s), identify the specific resource. Reduces search space progressively.",
+        traits: ["2 LLM calls", "namespace → resource drill-down", "B_ns_acc + B_tool|ns metrics"],
+        input: "query + all namespace metadata",
+        output: "top-k ordIds + stage traces",
+      },
+      {
+        id: "c", label: "C · Graph Walk", file: "src/methods/method_c.py",
+        color: "border-green-200 bg-green-50/50",
+        badge: "bg-green-100 text-green-800",
+        desc: "Two-stage pipeline. Stage 1: LLM extracts anchor nodes (entity types, business groups, lines of business). Stage 2: deterministic multi-hop walk over 4 edge types (co_exposes, co_partOf, calls, processNext), scoring resources by weighted accumulation. Top-8 walk results handed to LLM re-ranker. Benefits most from Enriched-ORD (partOfGroups + processNext edges).",
+        traits: ["4 edge types: co_exposes·co_partOf·calls·processNext", "2 LLM calls (anchor + rerank)", "graph structure = primary signal"],
+        input: "query + prev resolved ordIds",
+        output: "top-k ordIds + walk trace",
+      },
+      {
+        id: "d", label: "D · Agentic Tool Use", file: "src/methods/method_d.py",
+        color: "border-orange-200 bg-orange-50/50",
+        badge: "bg-orange-100 text-orange-800",
+        desc: "LLM agent with structured ORD tools: list_namespaces, list_resources_in_namespace, get_resource_detail, resources_in_group. Iteratively calls tools to navigate the landscape.",
+        traits: ["multi-turn tool loop", "uses partOfGroups (Enriched)", "most tokens / highest flexibility"],
+        input: "query + tool schema",
+        output: "selected ordId + tool call trace",
+      },
+      {
+        id: "e", label: "E · Filesystem Agent", file: "src/methods/method_e.py",
+        color: "border-red-200 bg-red-50/50",
+        badge: "bg-red-100 text-red-800",
+        desc: "Agent that reads ORD files from disk as if navigating a filesystem. Maintains persistent notes across calls within a benchmark run.",
+        traits: ["file-based navigation", "persistent notes (reset_notes() at run start)", "simulates real agent env"],
+        input: "query + filesystem path",
+        output: "selected ordId + read trace",
+      },
+      {
+        id: "s", label: "S · Baseline Solver", file: "src/methods/method_s.py",
+        color: "border-gray-200 bg-gray-50/50",
+        badge: "bg-gray-100 text-gray-700",
+        desc: "No-retrieval LLM baseline. Given query + all resource titles + shortDescriptions (flat list). Must select top-1 without structure. Difficulty certification baseline.",
+        traits: ["flat title+description only", "no graph / no embedding", "lower bound for all methods"],
+        input: "query + flat resource list",
+        output: "selected ordId",
+      },
+    ].map(m => (
+      <div id={`method-${m.id}`} class={`border rounded-xl p-5 scroll-mt-20 ${m.color}`}>
+        <div class="flex items-center gap-3 mb-3">
+          <span class={`font-mono font-bold text-sm px-2.5 py-1 rounded ${m.badge}`}>
+            Method {m.id.toUpperCase()}
+          </span>
+          <span class="font-medium">{m.label.split(" · ")[1]}</span>
+          <a href={src(m.file)} target="_blank"
+             class="ml-auto text-[10px] font-mono text-ink-subtle hover:text-accent transition">{m.file.split("/").pop()} ↗</a>
+        </div>
+        <p class="text-sm text-ink-muted leading-relaxed mb-3">{m.desc}</p>
+        <div class="flex flex-wrap gap-2 mb-3">
+          {m.traits.map(t => (
+            <span class="text-[10px] font-mono border border-current/20 rounded px-2 py-0.5 text-ink-subtle bg-white/60">{t}</span>
+          ))}
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-[10px] font-mono text-ink-subtle border-t border-current/10 pt-3">
+          <div><span class="text-ink-subtle">in:</span> {m.input}</div>
+          <div><span class="text-ink-subtle">out:</span> {m.output}</div>
+        </div>
+        {EXAMPLE_TRACES[m.id] && (
+          <details class="mt-3 border-t border-current/10 pt-3">
+            <summary class="text-[10px] font-mono text-ink-subtle cursor-pointer hover:text-accent transition select-none">
+              ▸ example trace (DT benchmark, correct prediction)
+            </summary>
+            <pre class="mt-2 text-[10px] font-mono text-ink leading-relaxed bg-white/80 rounded p-3 border border-current/10 overflow-x-auto whitespace-pre-wrap">{EXAMPLE_TRACES[m.id]}</pre>
+          </details>
+        )}
+      </div>
+    ))}
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     FILE INDEX
+     ═══════════════════════════════════════════════════════════════════ -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     SYSTEM PROMPTS
+     ═══════════════════════════════════════════════════════════════════ -->
+<section class="mb-14">
+  <h2 class="font-serif text-2xl font-semibold mb-2">System Prompts</h2>
+  <p class="text-sm text-ink-muted mb-6">Every LLM call in the pipeline has a fixed system prompt. Click a component to expand its prompt(s).</p>
+
+  <div class="space-y-3">
+    {Object.entries(PROMPTS).map(([key, comp]) => (
+      <div class="border border-rule rounded-xl overflow-hidden">
+        <button
+          class="prompt-toggle w-full flex items-center justify-between px-5 py-3.5 bg-paper hover:bg-rule/30 transition text-left"
+        >
+          <div class="flex items-center gap-3">
+            <span class="font-mono text-[10px] text-ink-subtle prompt-arrow">▸</span>
+            <span class="font-serif text-base font-semibold">{comp.label}</span>
+            <span class="text-[10px] font-mono text-ink-subtle">{comp.prompts.length} prompt{comp.prompts.length > 1 ? "s" : ""}</span>
+          </div>
+          <a href={`https://github.tools.sap/I750252/MasterThesis/blob/main/${comp.file}`}
+             target="_blank"
+             class="text-[10px] font-mono text-ink-subtle hover:text-accent transition"
+             onclick="event.stopPropagation()">
+            {comp.file.split("/").pop()} ↗
+          </a>
+        </button>
+        <div class="prompt-panel hidden border-t border-rule divide-y divide-rule">
+          {comp.prompts.map(p => (
+            <div class="p-5">
+              <div class="font-mono text-[10px] uppercase tracking-widest text-ink-subtle mb-3">{p.name}</div>
+              <pre class="text-[11px] font-mono text-ink leading-relaxed bg-white rounded-lg p-4 border border-rule overflow-x-auto whitespace-pre-wrap">{p.content}</pre>
+            </div>
+          ))}
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>(".prompt-toggle").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const panel = btn.nextElementSibling as HTMLElement;
+      const arrow = btn.querySelector(".prompt-arrow")!;
+      const isOpen = !panel.classList.contains("hidden");
+      panel.classList.toggle("hidden", isOpen);
+      arrow.textContent = isOpen ? "▸" : "▾";
+    });
+  });
+
+  // ── Interactive Orchestration Flow ──────────────────────────────────
+  const FLOW_CONFIGS = {
+    single: {
+      active: ["flow-user","flow-resolver","flow-decomposer","flow-step-adhoc","flow-retrieval","flow-output"],
+      dim: ["flow-planner","flow-step-skill","flow-step-gap","flow-step-refuse"],
+      branches: ["flow-branch-dynamic"],
+      status: "Decomposer detects single-intent → passes original prompt unchanged → 1 adhoc step → Retrieval",
+    },
+    multi: {
+      active: ["flow-user","flow-resolver","flow-decomposer","flow-step-adhoc","flow-retrieval","flow-output"],
+      dim: ["flow-planner","flow-step-skill","flow-step-gap","flow-step-refuse"],
+      branches: ["flow-branch-dynamic"],
+      status: "Decomposer detects multi-intent → splits into N sub-queries → N adhoc steps → N Retrieval calls",
+    },
+    skill: {
+      active: ["flow-user","flow-resolver","flow-planner","flow-step-skill","flow-output"],
+      dim: ["flow-decomposer","flow-step-gap","flow-step-adhoc","flow-step-refuse","flow-retrieval"],
+      branches: ["flow-branch-skill"],
+      status: "Skill matched → Planner (full coverage) → skill steps with pinned ord_confirmed → no retrieval needed",
+    },
+    sa: {
+      active: ["flow-user","flow-resolver","flow-planner","flow-step-skill","flow-step-gap","flow-retrieval","flow-output"],
+      dim: ["flow-decomposer","flow-step-adhoc","flow-step-refuse"],
+      branches: ["flow-branch-skill"],
+      status: "Skill matched → Planner (partial) → skill steps (pinned) + gap steps → Retrieval for gap steps only",
+    },
+    oos: {
+      active: ["flow-user","flow-resolver","flow-decomposer","flow-step-refuse","flow-output"],
+      dim: ["flow-planner","flow-step-skill","flow-step-gap","flow-step-adhoc","flow-retrieval"],
+      branches: ["flow-branch-dynamic"],
+      status: "Decomposer → OOS detected → D/E: refuse() · A/B/C/S: return top-k anyway (cannot refuse)",
+    },
+  };
+
+  const ACTIVE_CLASS   = "!border-accent !bg-accent-soft/30 shadow-sm";
+  const DIM_CLASS      = "opacity-20";
+  const BRANCH_ACTIVE  = "!opacity-100 font-bold text-accent";
+
+  let activeBtn: HTMLElement | null = null;
+
+  document.querySelectorAll<HTMLElement>("[data-flow-input]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const key = btn.dataset.flowInput!;
+      const cfg = FLOW_CONFIGS[key];
+      if (!cfg) return;
+
+      // Reset all nodes
+      document.querySelectorAll<HTMLElement>(".flow-node").forEach(n => {
+        n.classList.remove(...ACTIVE_CLASS.split(" "), ...DIM_CLASS.split(" "));
+      });
+      document.querySelectorAll<HTMLElement>(".flow-branch").forEach(n => {
+        n.classList.remove(...BRANCH_ACTIVE.split(" "));
+        n.classList.add("opacity-30");
+      });
+
+      // Apply active
+      cfg.active.forEach(id => {
+        document.getElementById(id)?.classList.add(...ACTIVE_CLASS.split(" "));
+      });
+      cfg.dim.forEach(id => {
+        document.getElementById(id)?.classList.add(...DIM_CLASS.split(" "));
+      });
+      cfg.branches.forEach(id => {
+        const el = document.getElementById(id);
+        el?.classList.remove("opacity-30");
+        el?.classList.add(...BRANCH_ACTIVE.split(" "));
+      });
+
+      // Status
+      const status = document.getElementById("flow-status");
+      if (status) status.textContent = cfg.status;
+
+      // Button highlight
+      if (activeBtn) activeBtn.classList.remove("ring-2","ring-accent");
+      btn.classList.add("ring-2","ring-accent");
+      activeBtn = btn;
+    });
+  });
+</script>
+
+<section class="mb-14">
+  <h2 class="font-serif text-2xl font-semibold mb-6">Source File Index</h2>
+  <div class="border border-rule rounded-xl overflow-hidden">
+    <table class="w-full text-xs font-mono">
+      <thead class="bg-paper border-b border-rule">
+        <tr>
+          <th class="px-4 py-2 text-left text-ink-subtle font-medium">File</th>
+          <th class="px-4 py-2 text-left text-ink-subtle font-medium">Role</th>
+          <th class="px-4 py-2 text-left text-ink-subtle font-medium">Relevant section</th>
+        </tr>
+      </thead>
+      <tbody class="bg-white divide-y divide-rule">
+        {[
+          ["src/runtime/rt_planner.py", "3-stage orchestration pipeline", "Orchestration Pipeline"],
+          ["src/runtime/intent_resolver.py", "Stage 1: skill matching LLM call", "Stage 1"],
+          ["src/runtime/planner.py", "Stage 2: coverage + gap inference", "Stage 2"],
+          ["src/runtime/rt_benchmark.py", "Benchmark driver + scoring + records.jsonl", "RT Benchmark"],
+          ["src/runtime/skill_registry.py", "Load SKILL.md files from disk", "Skill Registry"],
+          ["src/runtime/eval_sg_routing.py", "Standalone SG routing eval (no hint)", "SG mode"],
+          ["src/design_time/dt_benchmark.py", "DT benchmark: P@1 / R@5 / MRR per step", "DT Benchmark"],
+          ["src/design_time/dt_cases.py", "Build DT case list from process traces", "DT Benchmark"],
+          ["src/methods/method_a.py", "Method A: embedding cosine retrieval", "Method A"],
+          ["src/methods/method_b.py", "Method B: progressive disclosure (2-stage LLM)", "Method B"],
+          ["src/methods/method_c.py", "Method C: processNext graph walk", "Method C"],
+          ["src/methods/method_d.py", "Method D: agentic tool use", "Method D"],
+          ["src/methods/method_e.py", "Method E: filesystem agent + persistent notes", "Method E"],
+          ["src/methods/method_s.py", "Method S: no-retrieval LLM baseline", "Method S"],
+          ["src/core/ord_loader.py", "Load & filter ORD landscape JSON files", "ORD Landscape"],
+          ["src/core/config.py", "TOP_K, ORD_STATE, result paths", "Config"],
+        ].map(([file, role, section]) => (
+          <tr class="hover:bg-paper transition">
+            <td class="px-4 py-2">
+              <a href={src(file)} target="_blank" class="text-accent hover:underline">{file}</a>
+            </td>
+            <td class="px-4 py-2 text-ink-muted">{role}</td>
+            <td class="px-4 py-2 text-ink-subtle">{section}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+</Base>
