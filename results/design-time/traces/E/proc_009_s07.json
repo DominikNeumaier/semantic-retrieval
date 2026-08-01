@@ -1,0 +1,165 @@
+{
+  "case_id": "proc_009_s07",
+  "process": "proc_009",
+  "label": "supplychain risk compliance process: Review Employee Compensation and Labor Costs \u2014 Confirm workforce compensation structures are aligned with labor cost budgets for the procurement order execution.",
+  "method": "E",
+  "expected_ordIds": [
+    "workday.hcm:apiResource:CompensationStructureDataExposure:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.sf:package:Core:v1",
+      "score": null
+    },
+    {
+      "ordId": "workday.hcm:package:Core:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_dir",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched",
+          "entries": [
+            {
+              "name": "corp.itsm",
+              "kind": "dir"
+            },
+            {
+              "name": "emarsys.cx",
+              "kind": "dir"
+            },
+            {
+              "name": "my.mes",
+              "kind": "dir"
+            },
+            {
+              "name": "sap.ariba",
+              "kind": "dir"
+            },
+            {
+              "name": "sap.crm",
+              "kind": "dir"
+            },
+            {
+              "name": "sap.ehs",
+              "kind": "dir"
+            },
+            {
+              "name": "sap.s4",
+              "kind": "dir"
+            },
+            {
+              "name": "sap.sf",
+              "kind": "dir"
+            },
+            {
+              "name": "siemens.plm",
+              "kind": "dir"
+            },
+            {
+              "name": "workday.hcm",
+              "kind": "dir"
+            }
+          ],
+          "entries_count": 10
+        }
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "read_file",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json",
+          "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.sf:package:Core:v1\",\n      \"title\": \"sap.sf Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+          "truncated": true,
+          "total_lines": 1072
+        }
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "read_file",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+          "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+          "truncated": true,
+          "total_lines": 1099
+        }
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "read_file",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+          "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+          "truncated": true,
+          "total_lines": 1296
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "write_notes",
+        "args": {
+          "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nSUPPLY CHAIN WORKFLOW INITIATION:\n\u2713 BEST: sap.s4:agent:OpportunityToOrderAutomationEngine:v1\n  - Monitors sales opportunities (incoming customer requests)\n  - Automates order creation & logging\n  - Initiates supply chain via procurement/production coordination\n  - Processes credit limits & inventory availability\n  - Related entity types: SalesOpportunity, CustomerAccount\n\nSUPPLY CHAIN CONTINUITY & RESILIENCE VALIDATION:\n\u2713 BEST: sap.s4:agent:ProcurementMatchingAgent:v1\n  - Analyzes vendor lead times (capacity), delivery performance (resilience)\n  - Evaluates historical performance metrics for supply chain resilience\n  - Matches requisitions to vendors considering cost, quality, delivery\n  - Confirms material availability through vendor/material specification matching\n  - Related entity types: Material, Vendor\n  - Line of Business: Procurement, Finance, ERP\n\nSUPPLY CHAIN OPERATIONS:\nAgent: sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 - 3-way matching\nAgent: sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1 - material updates\nAgent: sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1 - PO management\nAgent: sap.s4:agent:BOMComplianceAutomationAgent:v1 - BOM validation & supplier compliance\n\nCOMPLIANCE & SAFETY (SAP.EHS):\n\u2713 COMPLIANCE GATING: sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1\n  - Validates vendor safety certifications & compliance status BEFORE PO creation\n  - Monitors vendor adherence to EHS requirements & contracts\n  - Related entity types: Vendor, PurchaseOrder, Contract\n\n\u2713 MATERIAL SAFETY: sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\n  - Enforces safety compliance on engineering changes, materials, product items\n\n\u2713 INCIDENT ANALYSIS: sap.ehs:agent:IncidentRootCauseAnalyzer:v1\n  - Analyzes safety incidents to identify root causes & recommend corrective actions\n  - Processes incident data, environmental factors, historical patterns\n  - Related entity types: SafetyIncident, Incident, HazardousSubstance\n\nMANUFACTURING EXECUTION (my.mes):\nAgent: my.mes:agent:SupplierQualityComplianceOrchestrator:v1 - supplier quality/compliance monitoring\nAgent: my.mes:agent:ProductionChangeOrchestrator:v1 - engineering change orchestration\nAgent: my.mes:agent:BillOfMaterialsComplianceValidator:v1 - BOM validation\nAgent: my.mes:agent:ProductionQualityMonitor:v1 - quality monitoring, defect detection\n\nWORKFORCE & CAPACITY PLANNING (SAP.SF):\n\u2713 BEST: sap.sf:agent:SkillsAndCapabilityMatchingOrchestrator:v1\n  - Monitors employee competencies & engineering change requests\n  - Coordinates optimal resource allocation & dynamic workforce planning\n  - Processes material & product item requirements to match personnel skills to organizational needs\n  - Facilitates workforce capability assessment & recommends development/reassignment\n  - Related entity types: EngineeringChange, Material, ProductItem\n  - Line of Business: Human Capital Management\n\nCOMPENSATION & LABOR COSTS:\n\u2713 BEST: workday.hcm:agent:CompensationStructureAutomationEngine:v1\n  - Automates compensation adjustments tied to organizational changes & material cost fluctuations\n  - Processes engineering changes affecting job families\n  - Automates benefit structure recalibration based on material sourcing updates & product portfolio shifts\n  - Ensures compensation competitiveness & budget alignment\n  - Related entity types: EngineeringChange, Material, ProductItem\n  - Line of Business: Human Capital Management\n  - Tags: compensation-automation, organizational-change-management, payroll-integration\n  - KEY: Directly links material/product changes to compensation structure updates\n\n\u2713 WORKDAY COMPENSATION AGENTS:\n  - workday.hcm:agent:CompensationAdjustmentAutomation:v1 - merit increases based on performance\n  - workday.hcm:agent:CompensationChangeProcessor:v1 - compensation adjustments tied to org changes & material/product updates\n\n\u2713 SAP.SF COMPENSATION AGENTS:\n  - sap.sf:agent:CompensationPolicyAutomationEngine:v1 - policy-driven salary adjustments\n\nACTIVITY MATCHES:\nActivity \"Receive and Log Customer Service Request\": sap.s4:agent:OpportunityToOrderAutomationEngine:v1\nActivity \"Assess Vendor and Material Compliance Risk\": sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1\nActivity \"Validate Supply Chain Continuity\": sap.s4:agent:ProcurementMatchingAgent:v1\nActivity \"Analyze Production Incidents and Safety Records\": sap.ehs:agent:IncidentRootCauseAnalyzer:v1\nActivity \"Assess Production Workforce and Capacity\": sap.sf:agent:SkillsAndCapabilityMatchingOrchestrator:v1\nActivity \"Review Employee Compensation and Labor Costs\": workday.hcm:agent:CompensationStructureAutomationEngine:v1\n"
+        },
+        "result_preview": {
+          "stored_bytes": 4096,
+          "truncated": true,
+          "cap_bytes": 4096
+        }
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+          "reason": "Automates compensation structure adjustments tied to material cost fluctuations and organizational changes, ensuring labor cost budgets align with procurement and product operations."
+        },
+        "result_preview": {
+          "committed": "workday.hcm:agent:CompensationStructureAutomationEngine:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+    "picked_reason": "Automates compensation structure adjustments tied to material cost fluctuations and organizational changes, ensuring labor cost budgets align with procurement and product operations.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 6,
+    "tokens": 38571,
+    "latency_s": 25.077,
+    "llm_calls": 6
+  },
+  "wall_s": 25.103
+}

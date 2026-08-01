@@ -1,0 +1,128 @@
+{
+  "case_id": "proc_015_s07",
+  "process": "proc_015",
+  "label": "supply production compliance process: Request and Track Production Orders \u2014 Translate campaign demand into machine production orders and monitor manufacturing execution.",
+  "method": "F",
+  "expected_ordIds": [
+    "siemens.plm:apiResource:MachineProductionOrderIntegration:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.crm:apiResource:ProductionOrderMachineInventoryService:v1",
+      "score": null
+    },
+    {
+      "ordId": "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+      "score": null
+    },
+    {
+      "ordId": "siemens.plm:apiResource:MachineProductionOrderIntegration:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 1,
+    "mrr": 0.2,
+    "first_hit_rank": 5,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "tokens": 9109,
+    "latency_s": 9.417,
+    "llm_calls": 6,
+    "use_graph": false,
+    "picked_ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+    "picked_reason": "Directly manages production orders and machine assignments for real-time scheduling. Exposes both ProductionOrder and Machine entities to enable translation of campaign demand into production orders and monitoring of manufacturing execution across facilities. Tags include production-planning and order-execution, matching the full scope of the activity.",
+    "refused": false,
+    "refuse_reason": "",
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "embedding_search",
+        "args": {
+          "query": "Request Track Production Orders campaign demand machine production manufacturing execution",
+          "top_k": 10
+        },
+        "result_summary": "10 items",
+        "result_ord_ids": [
+          "sap.crm:apiResource:ProductionOrderMachineInventoryService:v1",
+          "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+          "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1",
+          "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+          "siemens.plm:apiResource:MachineProductionOrderIntegration:v1",
+          "sap.s4:apiResource:ProductionExecutionAPI:v1",
+          "sap.crm:apiResource:ProductionOrderAndMachineAllocationService:v1",
+          "sap.crm:apiResource:MachineProductionOrderIntegration:v1",
+          "my.mes:apiResource:CustomerOrderAndAccountManagement:v1",
+          "sap.sf:apiResource:RecruitmentWorkforceAllocationEngine:v1"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "progressive_filter",
+        "args": {
+          "query": "Request and Track Production Orders manufacturing",
+          "top_k": 5
+        },
+        "result_summary": "3 items",
+        "result_ord_ids": [
+          "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+          "sap.s4:apiResource:ProductionExecutionAPI:v1",
+          "sap.s4:apiResource:ProductionPerformanceAPI:v1"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+        },
+        "result_summary": "object"
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1"
+        },
+        "result_summary": "object"
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.s4:apiResource:ProductionExecutionAPI:v1"
+        },
+        "result_summary": "object"
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+          "reason": "Directly manages production orders and machine assignments for real-time scheduling. Exposes both ProductionOrder and Machine entities to enable translation of campaign demand into production orders and monitoring of manufacturing execution across facilities. Tags include production-planning and order-execution, matching the full scope of the activity."
+        },
+        "result": {
+          "committed": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+        }
+      }
+    ]
+  },
+  "wall_s": 15.99
+}

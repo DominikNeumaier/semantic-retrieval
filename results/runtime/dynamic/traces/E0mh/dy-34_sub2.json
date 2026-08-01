@@ -1,0 +1,113 @@
+{
+  "case_id": "dy-34",
+  "sub_idx": 1,
+  "sub_query": "Grant marketing team access to manage client engagement initiatives across accounts",
+  "gt_id": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0mh",
+  "top1_acc": 0,
+  "candidate_recall": 0,
+  "top5_candidates": [
+    "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1",
+    "sap.crm:package:Core:v1",
+    "emarsys.cx:package:Core:v1"
+  ],
+  "refused": false,
+  "tokens": 22732,
+  "wall_s": 19.222,
+  "plan": {
+    "request": "Grant marketing team access to manage client engagement initiatives across accounts",
+    "mode": "dynamic",
+    "skill_id": null,
+    "coverage": "none",
+    "method": "E",
+    "steps": [
+      {
+        "step_name": "Grant marketing team access to manage client engagement initiatives across accounts",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1"
+          },
+          {
+            "ordId": "sap.crm:package:Core:v1"
+          },
+          {
+            "ordId": "emarsys.cx:package:Core:v1"
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.crm:package:Core:v1\",\n      \"title\": \"sap.crm Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1080
+              }
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/emarsys.cx/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/emarsys.cx/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"emarsys.cx:package:Core:v1\",\n      \"title\": \"emarsys.cx Core Package\",\n      \"shortDescri \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1221
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE SYSTEMS (10 visible):\n- workday.hcm: HCM - compensation agents only, NO REST API for staffing data\n- sap.sf: SuccessFactors HCM - REST API: EmployeeCompensationManagement:v1. KEY AGENTS:\n  * SkillsAndCapabilityMatchingOrchestrator:v1 - workforce skills analysis & training recommendations\n  * PerformanceReviewCycleCoordinator:v1\n  * CompensationPolicyAutomationEngine:v1\n- sap.s4: ERP - MaterialReceiptInboundAPI, Procurement agents, OpportunityToOrderAutomationEngine\n- sap.crm: CRM - CAMPAIGN ENGAGEMENT TRACKING & MANAGEMENT:\n  * CampaignAudienceOptimizationCoordinator:v1 - ORCHESTRATES campaign execution & coordinates across customer accounts & segments; manages engagement across accounts \u2192 USE FOR GRANTING MARKETING ACCESS TO MANAGE CLIENT ENGAGEMENT INITIATIVES ACROSS ACCOUNTS\n  * CampaignAudienceOptimizationAgent:v1 - analyzes customer segments & real-time engagement metrics\n  * OpportunityQualificationAdvisor, SalesProductChangeCoordinator, SalesCompensationOrchestrator\n- sap.ehs: Safety/health - KEY AGENTS FOR SAFETY ANALYSIS:\n  * IncidentRootCauseAnalyzer:v1 - ANALYZES SAFETY INCIDENTS & TRENDS\n  * IncidentResponseCoordinator:v1\n  * SafetyComplianceAutomationCoordinator:v1\n- sap.ariba: Procurement - KEY AGENTS:\n  * VendorInvoiceReconciliationAutomation:v1 - 3-way matching\n  * SupplierComplianceAndIncidentMonitor:v1 - hazmat tracking\n  * MaterialAndEngineeringChangeCoordinator:v1\n  * **PurchaseOrderNetworkAPI:v1 (REST) - exposes Vendor & PurchaseOrder entities, enables vendor detail retrieval**\n- corp.itsm: IT service mgmt - agents ONLY\n- emarsys.cx: CX/marketing - agents ONLY:\n  * SegmentDrivenCampaignOptimizer:v1 - analyzes engagement metrics, optimizes targeting\n  * OpportunityEngagementOrchestrator, VendorProcurementAutomationOrchestrator, ProductLifecycleOrchestrator\n- my.mes: Manufacturing - KEY AGENTS:\n  * EquipmentOEEAnalytics (REST API) - machine performance metrics\n  * ProductionQualityMonitor - quality inspection monitoring\n  * ProductionChangeOrchestrator:v1 - EQUIPMENT UPGRADE TRACKING\n  * BillOfMaterialsComplianceValidator:v1\n- siemens.plm: PLM - KEY AGENTS:\n  * SupplierQualificationAndMaterialCoordinator:v1 - vendor assessment & material qualification\n  * BOMComplianceValidator:v1\n  * EngineeringChangeAndMaterialProvisioning:v1 - tracks engineering changes, material provisioning\n- sap.odm: Data model (entity taxonomy only)\n\nKEY FINDINGS:\n- Equipment upgrade logging & tracking (audit-ready) \u2192 my.mes:agent:ProductionChangeOrchestrator:v1\n- Safety incident analysis \u2192 sap.ehs:agent:IncidentRootCauseAnalyzer:v1\n- Supplier qualification & regulatory compliance verification \u2192 siemens.plm:agent:SupplierQualificationAndMaterialCoordinator:v1\n- Invoice reconciliation (3-way matching) \u2192 sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n- **Pull vendor specifications & details for order processing \u2192 sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1** \u2190 REST API exposes Vendor & PurchaseOrder entities\n- **Grant marketing team access to manage client engagement initiatives across accounts \u2192 sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1** \u2190 ORCHESTRATES campaign execution & coordinates across customer accounts/segments\n"
+              },
+              "result_preview": {
+                "stored_bytes": 3208,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1",
+                "reason": "This agent orchestrates campaign execution and coordinates engagement across customer accounts and segments, providing the management interface marketing teams need for multi-account client engagement initiatives."
+              },
+              "result_preview": {
+                "committed": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1",
+          "picked_reason": "This agent orchestrates campaign execution and coordinates engagement across customer accounts and segments, providing the management interface marketing teams need for multi-account client engagement initiatives.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 4,
+          "tokens": 22732,
+          "latency_s": 19.219,
+          "llm_calls": 4
+        }
+      }
+    ],
+    "trace": {
+      "total_tokens": 22732,
+      "total_latency_s": 0,
+      "total_llm_calls": 4
+    }
+  }
+}

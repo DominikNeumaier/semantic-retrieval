@@ -1,0 +1,838 @@
+{
+  "case_id": "dy-32",
+  "user_prompt": "I need to pull together our current inventory specifications alongside the vendor details we have on file, and simultaneously check on the status of our pending maintenance requests and any open change orders we've submitted to understand our full operational picture.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull our current inventory specifications",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Material:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                  "type": "agent",
+                  "title": "Change Release Coordinator",
+                  "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+                },
+                "... (55 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Inventory Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorMasterData:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Material and Vendor Master Data API",
+                "shortDescription": "Retrieves and manages material specifications and vendor information for production planning.",
+                "description": "This API exposes material master records and vendor data to support production scheduling and supply chain operations. It provides access to material attributes, vendor qualifications, and supply chain relationships that drive manufacturing execution decisions. The resource manages material classifications and vendor performance indicators used across production workflows.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "material-master",
+                  "vendor-management",
+                  "supply-chain"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.ariba",
+                "title": "Material and Vendor Master Data API",
+                "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations.",
+                "description": "This API exposes comprehensive material and vendor master data, enabling systems to retrieve standardized product information, vendor attributes, and procurement-relevant classifications. It provides access to material hierarchies, vendor certifications, compliance statuses, and sourcing preferences to support goods receipt workflows and inbound logistics processing.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement",
+                  "Inventory Management",
+                  "Manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "goods-receipt",
+                  "inbound-logistics",
+                  "material-management",
+                  "procurement-integration"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                "reason": "This API resource retrieves material specifications and vendor master data, directly fulfilling the need to pull current inventory specifications from master data."
+              },
+              "result": {
+                "committed": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+          "picked_reason": "This API resource retrieves material specifications and vendor master data, directly fulfilling the need to pull current inventory specifications from master data.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 19510,
+          "latency_s": 8.976,
+          "llm_calls": 8
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Retrieve vendor details we have on file",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Vendor:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Vendor Management API",
+                  "shortDescription": "Exposes purchase orders and vendor data for ITSM procurement workflows."
+                },
+                {
+                  "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Contract Compliance Orchestrator",
+                  "shortDescription": "Automates vendor contract and purchase order compliance monitoring across procurement lifecycle."
+                },
+                "... (39 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.ariba",
+                "title": "Material and Vendor Master Data API",
+                "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations.",
+                "description": "This API exposes comprehensive material and vendor master data, enabling systems to retrieve standardized product information, vendor attributes, and procurement-relevant classifications. It provides access to material hierarchies, vendor certifications, compliance statuses, and sourcing preferences to support goods receipt workflows and inbound logistics processing.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement",
+                  "Inventory Management",
+                  "Manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "goods-receipt",
+                  "inbound-logistics",
+                  "material-management",
+                  "procurement-integration"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                "reason": "This API directly retrieves vendor master records and vendor attributes for procurement operations, fulfilling the activity to retrieve vendor details on file."
+              },
+              "result": {
+                "committed": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+          "picked_reason": "This API directly retrieves vendor master records and vendor attributes for procurement operations, fulfilling the activity to retrieve vendor details on file.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 7,
+          "tokens": 21980,
+          "latency_s": 10.843,
+          "llm_calls": 7
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Check the status of our pending maintenance requests",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ServiceTicket:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                  "type": "apiResource",
+                  "title": "Change Request Approval Workflow API",
+                  "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Provisioning Integration API",
+                  "shortDescription": "Manages equipment provisioning requests linked to service tickets and change approvals."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                  "type": "agent",
+                  "title": "Incident Root Cause Analysis Agent",
+                  "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "IT Service Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                  "type": "apiResource",
+                  "title": "Change Request Approval Workflow API",
+                  "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Customer Account Lifecycle API",
+                  "shortDescription": "Manages campaign-driven customer account provisioning and lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                  "type": "agent",
+                  "title": "Incident Root Cause Analysis Agent",
+                  "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+                },
+                "... (6 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Service Ticket & Change Request Management API",
+                "shortDescription": "Manages and retrieves service tickets, change requests, and equipment maintenance records.",
+                "description": "Exposes endpoints to retrieve, create, and update service tickets and engineering change requests tied to manufacturing equipment. Provides access to maintenance workflows, change request status tracking, and equipment diagnostics correlation for compliance and supplier management purposes.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "supplier-management",
+                  "service-operations",
+                  "compliance-tracking"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Equipment Service and Change Management API",
+                "shortDescription": "Manages equipment maintenance requests, change orders, and service tickets for production assets.",
+                "description": "This API exposes equipment-related service tickets, captures change requests for production line modifications, and retrieves diagnostic data from manufacturing equipment. It provides access to the complete lifecycle of equipment maintenance events, compliance documentation, and supplier service coordination across the production facility.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "supplier-management",
+                  "service-operations",
+                  "compliance-tracking"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                "reason": "This API explicitly manages and retrieves service tickets and maintenance records with status tracking capabilities, making it ideal for checking pending maintenance request statuses."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+          "picked_reason": "This API explicitly manages and retrieves service tickets and maintenance records with status tracking capabilities, making it ideal for checking pending maintenance request statuses.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 22901,
+          "latency_s": 13.164,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Get information on any open change orders we've submitted",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Service Ticket & Change Request Management API",
+                "shortDescription": "Manages and retrieves service tickets, change requests, and equipment maintenance records.",
+                "description": "Exposes endpoints to retrieve, create, and update service tickets and engineering change requests tied to manufacturing equipment. Provides access to maintenance workflows, change request status tracking, and equipment diagnostics correlation for compliance and supplier management purposes.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "supplier-management",
+                  "service-operations",
+                  "compliance-tracking"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                  "type": "apiResource",
+                  "title": "Change Request Approval Workflow API",
+                  "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Provisioning Integration API",
+                  "shortDescription": "Manages equipment provisioning requests linked to service tickets and change approvals."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                  "type": "agent",
+                  "title": "Incident Root Cause Analysis Agent",
+                  "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+              },
+              "result_preview": {
+                "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                "type": "apiResource",
+                "namespace": "corp.itsm",
+                "title": "Change Request Approval Workflow API",
+                "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment.",
+                "description": "Exposes change request lifecycle management including approval routing, scheduling validation, and rollback planning. Enables IT governance teams to automate change controls and track approval chains across dependent service tickets and IT equipment impacts.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ServiceTicket:v1",
+                  "sap.odm:entityType:ITEquipment:v1"
+                ],
+                "lineOfBusiness": [
+                  "IT Service Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "change-management",
+                  "approval-workflow",
+                  "governance",
+                  "risk-assessment"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "corp.itsm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Equipment Service and Change Management API",
+                "shortDescription": "Manages equipment maintenance requests, change orders, and service tickets for production assets.",
+                "description": "This API exposes equipment-related service tickets, captures change requests for production line modifications, and retrieves diagnostic data from manufacturing equipment. It provides access to the complete lifecycle of equipment maintenance events, compliance documentation, and supplier service coordination across the production facility.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "supplier-management",
+                  "service-operations",
+                  "compliance-tracking"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+                "reason": "This API directly manages change orders and service tickets for production assets, enabling retrieval of open change request information submitted through the manufacturing system."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+          "picked_reason": "This API directly manages change orders and service tickets for production assets, enabling retrieval of open change request information submitted through the manufacturing system.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 7,
+          "tokens": 17541,
+          "latency_s": 10.568,
+          "llm_calls": 7
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 82275,
+    "latency_s": 43.551,
+    "llm_calls": 32
+  },
+  "wall_s": 43.593
+}

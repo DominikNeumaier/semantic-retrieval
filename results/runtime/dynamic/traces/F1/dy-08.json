@@ -1,0 +1,263 @@
+{
+  "case_id": "dy-08",
+  "user_prompt": "I need to pull together all our hazardous material inventory data to verify we're compliant with the latest regulations, and I'm not sure if I should be querying the system that gives me the actual substance records or the one that validates them against requirements. Can you help me figure out which endpoint I should be hitting to get the master list of substances we're tracking?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to pull together all our hazardous material inventory data to verify we're compliant with the latest regulations, and I'm not sure if I should be querying the system that gives me the actual substance records or the one that validates them against requirements. Can you help me figure out which endpoint I should be hitting to get the master list of substances we're tracking?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceInventoryExchange:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:SubstanceComplianceDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:HazardousSubstanceComplianceManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 45280,
+          "latency_s": 10.999,
+          "llm_calls": 8,
+          "confidence": 0.92,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 25,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 783,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "sap.ehs",
+                "entity_types": [
+                  "sap.odm:entityType:HazardousSubstance:v1",
+                  "sap.odm:entityType:Material:v1"
+                ],
+                "action_verb": "retrieve",
+                "resource_type_hint": "apiResource"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29336,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 8803,
+              "latency_s": 5.306929111480713,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:HazardousSubstance:v1"
+                  },
+                  "n_results": 23
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:Material:v1"
+                  },
+                  "n_results": 58
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:agent:ChangeReleaseCoordinator:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 81
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "sap.ehs": 5,
+                "emarsys.cx": 4,
+                "corp.itsm": 3,
+                "my.mes": 3,
+                "sap.s4": 1,
+                "sap.ariba": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:HazardousSubstance:v1": 16,
+                "sap.odm:entityType:Incident:v1": 5,
+                "sap.odm:entityType:SafetyIncident:v1": 5,
+                "sap.odm:entityType:Material:v1": 1,
+                "sap.odm:entityType:Vendor:v1": 1
+              },
+              "resource_types": {
+                "apiResource": 12,
+                "agent": 5
+              },
+              "top_capabilities": {
+                "assess-material-safety": 1,
+                "verify-substance-regulations": 1,
+                "evaluate-hazardous-materials": 1,
+                "validate-material-safety": 1,
+                "evaluate-compliance": 1,
+                "assess-regulatory-alignment": 1,
+                "verify-compliance": 1,
+                "validate-substance-regulations": 1
+              },
+              "n_candidates": 17
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:HazardousSubstance:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:QualityInspection:v1"
+                ],
+                "business_groups": [
+                  "proc_SafetyComplianceOrchestration_v1",
+                  "proc_ProcurementSafetyCompliance_v1",
+                  "proc_ProductComplianceManufacturing_v1"
+                ],
+                "lines_of_business": [
+                  "Environment, Health & Safety",
+                  "Manufacturing"
+                ],
+                "reason": "Activity requires accessing master hazardous substance records and validating regulatory compliance, anchored to HazardousSubstance entity with safety and manufacturing compliance processes."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:HazardousSubstance:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:QualityInspection:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_SafetyComplianceOrchestration_v1\",\n    \"proc_ProcurementSafetyCompliance_v1\",\n    \"proc_ProductComplianceManufacturing_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Environment, Health & Safety\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Activity requires accessing master hazardous substance records and validating regulatory compliance, anchored to HazardousSubstance entity with safety and manufacturing compliance processes.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+                "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1\"\n]\n```\n\n**Reasoning:**\n\nYour activity requires two things: (1) **querying the master list of hazardous substances** and (2) **validating them against compliance requirements**. You explicitly asked \"which endpoint I should be hitting to get the master list of substances we're tracking.\"\n\n**Top picks:**\n\n1. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning** - Best match. Directly manages material provisioning and allocates inventory. Capability `allocate-inventory` and `manage-material-provisioning` align with retrieving the master substance list. The useCase \"Production planners retrieve updated bills-of-material with real-time material availability\" directly addresses your need.\n\n2. **my.mes:agent:BillOfMaterialsComplianceValidator** - Perfect for the validation half. Validates material compliance and audits component materials against standards\u2014exactly what you need for regulatory verification.\n\n3. **sap.ehs:agent:SafetyComplianceAutomationCoordinator** - Automates compliance checks and assesses material safety against regulatory requirements. Directly addresses hazardous material compliance validation.\n\n4. **sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics** - Data product that analyzes material requirements and inventory updates; useful for the analytical/inventory review aspect of your compliance audit.\n\nThe remaining candidates support adjacent concerns (workforce, general asset provisioning, change orchestration) but are less directly relevant to querying substance records and validating them against regulations.",
+              "refused": false,
+              "previous_resolved": [
+                "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+                "emarsys.cx:apiResource:SubstanceComplianceDataAPI:v1",
+                "emarsys.cx:apiResource:HazardousSubstanceComplianceManagementAPI:v1",
+                "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+                "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1"
+              ],
+              "tokens": 4213,
+              "latency_s": 5.692,
+              "llm_calls": 2,
+              "n_new_from_graph": 8
+            },
+            "phase3_rerank": {
+              "tokens": 2145,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "sap.ehs:apiResource:HazardousSubstanceInventoryExchange:v1",
+              "confidence": 0.92
+            }
+          },
+          "decomp_trace": {
+            "tokens": 485,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 1,
+            "sub_queries": [
+              "I need to pull together all our hazardous material inventory data to verify we're compliant with the latest regulations. Can you help me determine which endpoint I should use to get the master list of substances we're tracking - should I query the system that gives me the actual substance records or the one that validates them against requirements?"
+            ],
+            "original_prompt": "I need to pull together all our hazardous material inventory data to verify we're compliant with the latest regulations, and I'm not sure if I should be querying the system that gives me the actual substance records or the one that validates them against requirements. Can you help me figure out which endpoint I should be hitting to get the master list of substances we're tracking?"
+          },
+          "n_detected": 1
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user is asking for technical guidance on which API endpoint to query for hazardous material inventory data\u2014a one-off technical lookup\u2014rather than requesting execution of a complete business process.\"\n}\n```",
+      "reason": "The user is asking for technical guidance on which API endpoint to query for hazardous material inventory data\u2014a one-off technical lookup\u2014rather than requesting execution of a complete business process.",
+      "tokens": 1695,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 47460,
+    "latency_s": 10.999,
+    "llm_calls": 10
+  },
+  "wall_s": 14.672
+}

@@ -1,0 +1,78 @@
+{
+  "case_id": "proc_033_s02",
+  "process": "proc_033",
+  "label": "procure fulfill process: Enrich customer order context \u2014 Augment incoming customer orders with account history and order enrichment data to ensure fulfillment accuracy.",
+  "method": "C",
+  "expected_ordIds": [
+    "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+      "score": 65.5
+    },
+    {
+      "ordId": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+      "score": 65.5
+    },
+    {
+      "ordId": "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+      "score": 65.0
+    },
+    {
+      "ordId": "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+      "score": 65.0
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "anchors": {
+      "entity_types": [
+        "sap.odm:entityType:CustomerOrder:v1",
+        "sap.odm:entityType:CustomerAccount:v1",
+        "sap.odm:entityType:ProductItem:v1",
+        "sap.odm:entityType:Invoice:v1"
+      ],
+      "business_groups": [],
+      "lines_of_business": [
+        "Sales and Order Management",
+        "Procurement"
+      ],
+      "reason": "Activity enriches customer orders with account history to improve fulfillment accuracy, requiring CustomerOrder and CustomerAccount entities within sales/order management and procurement domains."
+    },
+    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:Invoice:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Sales and Order Management\",\n    \"Procurement\"\n  ],\n  \"reason\": \"Activity enriches customer orders with account history to improve fulfillment accuracy, requiring CustomerOrder and CustomerAccount entities within sales/order management and procurement domains.\"\n}\n```",
+    "max_hops": 2,
+    "hop_decay": 0.5,
+    "edge_weights": {
+      "co_exposes": 1.0,
+      "co_partOf": 2.0,
+      "calls": 3.0,
+      "processNext": 3.0
+    },
+    "scored_resources": 205,
+    "walk_top_ids": [
+      "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+      "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+      "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+      "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+      "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+      "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+      "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1"
+    ],
+    "rerank_raw": "```json\n[\n  \"sap.ariba:dataProduct:SupplyChainProductIntelligence:v1\",\n  \"sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1\",\n  \"emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1\",\n  \"emarsys.cx:agent:ProductLifecycleOrchestrator:v1\"\n]\n```\n\n**Reasoning:**\n\n1. **SupplyChainProductIntelligence (dataProduct)** - Best match. This is an analytical read that \"aggregates engineering changes, materials, and product data\" \u2014 exactly what's needed to enrich customer orders with account history and order context in a procurement/fulfillment workflow.\n\n2. **MaterialAndEngineeringChangeCoordinator (agent)** - Strong secondary. Directly relevant to procurement workflows and coordinates material/engineering updates that would inform order enrichment decisions.\n\n3. **ProductChangeAndInventoryAnalytics (dataProduct)** - Relevant for enrichment insights, aggregating product and material metrics that support fulfillment accuracy.\n\n4. **ProductLifecycleOrchestrator (agent)** - Supports inventory synchronization and product coordination, useful for order context augmentation.\n\nThe other agents (AccessProvisioning, AssetProvisioning, ChangeAutomation, ChangeReleaseCoordinator) focus on IT/organizational change management rather than customer order enrichment or procurement fulfillment operations.",
+    "refused": false,
+    "previous_resolved": [],
+    "tokens": 2142,
+    "latency_s": 5.558,
+    "llm_calls": 2
+  },
+  "wall_s": 5.569
+}

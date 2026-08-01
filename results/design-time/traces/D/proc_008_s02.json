@@ -1,0 +1,275 @@
+{
+  "case_id": "proc_008_s02",
+  "process": "proc_008",
+  "label": "order compliance fulfillment process: Evaluate customer engagement state \u2014 Check customer journey status and campaign participation to determine personalized fulfillment approach.",
+  "method": "D",
+  "expected_ordIds": [
+    "emarsys.cx:apiResource:JourneyContactStateAPI:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 1,
+    "r_at_5": 1,
+    "mrr": 1.0,
+    "first_hit_rank": 1,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_capabilities",
+        "args": {},
+        "result_preview": [
+          "activate-campaigns",
+          "activate-contact-engagement",
+          "activate-customer-accounts",
+          "... (337 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_lines_of_business",
+        "args": {},
+        "result_preview": [
+          "ERP",
+          "Environment, Health & Safety",
+          "Environment, Health and Safety",
+          "... (44 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_entity_types",
+        "args": {},
+        "result_preview": [
+          "sap.odm:entityType:Campaign:v1",
+          "sap.odm:entityType:ChangeRequest:v1",
+          "sap.odm:entityType:Compensation:v1",
+          "... (23 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:Campaign:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+            "type": "apiResource",
+            "title": "Campaign Access Management API",
+            "shortDescription": "Manages provisioning and access control for campaign-related customer accounts."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "type": "apiResource",
+            "title": "Vendor Campaign Account Retrieval API",
+            "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1",
+            "type": "apiResource",
+            "title": "Campaign Customer Account Lifecycle API",
+            "shortDescription": "Manages campaign-driven customer account provisioning and lifecycle operations."
+          },
+          "... (29 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:CustomerAccount:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+            "type": "apiResource",
+            "title": "Campaign Access Management API",
+            "shortDescription": "Manages provisioning and access control for campaign-related customer accounts."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "type": "apiResource",
+            "title": "Service Ticket and Order Management API",
+            "shortDescription": "Retrieves and manages customer service tickets and orders with status tracking."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+            "type": "apiResource",
+            "title": "Customer Provisioning Order API",
+            "shortDescription": "Exposes and manages customer account orders for ITSM provisioning workflows."
+          },
+          "... (54 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "track-campaign-engagement"
+        },
+        "result_preview": [
+          {
+            "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+            "type": "apiResource",
+            "title": "Journey Contact State API",
+            "shortDescription": "REST API for querying and updating real-time contact engagement state within active customer journeys."
+          }
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "assess-engagement"
+        },
+        "result_preview": [
+          {
+            "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+            "type": "apiResource",
+            "title": "Journey Contact State API",
+            "shortDescription": "REST API for querying and updating real-time contact engagement state within active customer journeys."
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "emarsys.cx:apiResource:JourneyContactStateAPI:v1"
+        },
+        "result_preview": {
+          "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+          "type": "apiResource",
+          "namespace": "emarsys.cx",
+          "title": "Journey Contact State API",
+          "shortDescription": "REST API for querying and updating real-time contact engagement state within active customer journeys.",
+          "description": "Exposes real-time contact state data for customers currently enrolled in active journeys, including engagement metrics, journey step progress, and interaction history. Enables external systems to query contact journey status, update custom attributes mid-journey, and trigger journey state changes based on external events. Essential for omnichannel orchestration and real-time personalization decisions.",
+          "entityTypes": [
+            "sap.odm:entityType:CustomerAccount:v1",
+            "sap.odm:entityType:Campaign:v1"
+          ],
+          "lineOfBusiness": [
+            "Marketing and Customer Experience"
+          ],
+          "capabilities": [
+            "assess-engagement",
+            "update-contact-state",
+            "manage-compliance-communications",
+            "determine-communication-path",
+            "track-campaign-engagement",
+            "query-campaign-status"
+          ],
+          "useCases": [
+            "Maintain audit trail of customer communication for regulatory reporting",
+            "Ensure customers receive targeted safety compliance notifications at optimal touchpoints",
+            "Track customer engagement with mandatory safety training and awareness campaigns",
+            "Marketing validates that customer is in appropriate engagement stage for order fulfillment communications"
+          ],
+          "tags": [
+            "journey-orchestration",
+            "contact-state",
+            "real-time-engagement",
+            "omnichannel"
+          ],
+          "partOfGroups": [
+            "proc_order_compliance_fulfillment_v1",
+            "proc_SafetyComplianceOrchestration_v1"
+          ],
+          "processNext": [
+            "emarsys.cx:apiResource:HazardousSubstanceComplianceManagementAPI:v1"
+          ],
+          "partOfPackage": "emarsys.cx:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.crm:apiResource:CampaignContactStateOrchestration:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.crm:apiResource:CampaignContactStateOrchestration:v1",
+          "type": "apiResource",
+          "namespace": "sap.crm",
+          "title": "Customer Interaction Journey API",
+          "shortDescription": "Retrieves and synchronizes customer touchpoint data across marketing campaigns and multi-channel communications.",
+          "description": "Exposes customer interaction records and engagement metadata from campaigns to support dynamic orchestration of personalized marketing experiences. Enables access to contact journey progression, historical engagement patterns, and account attributes for real-time routing decisions across marketing channels. Facilitates unified view of customer communications to drive consistent omnichannel messaging and campaign performance optimization.",
+          "entityTypes": [
+            "sap.odm:entityType:Campaign:v1",
+            "sap.odm:entityType:CustomerAccount:v1"
+          ],
+          "lineOfBusiness": [
+            "Marketing and Customer Experience"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "campaign-orchestration",
+            "customer-interactions",
+            "multi-channel-marketing",
+            "engagement-routing"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "sap.crm:package:Core:v1"
+        }
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+          "reason": "Journey Contact State API directly evaluates customer engagement state, tracks campaign participation, and queries journey status in real-time to determine personalized order fulfillment approach."
+        },
+        "result": {
+          "committed": "emarsys.cx:apiResource:JourneyContactStateAPI:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+    "picked_reason": "Journey Contact State API directly evaluates customer engagement state, tracks campaign participation, and queries journey status in real-time to determine personalized order fulfillment approach.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 10,
+    "tokens": 30651,
+    "latency_s": 11.564,
+    "llm_calls": 10
+  },
+  "wall_s": 11.572
+}

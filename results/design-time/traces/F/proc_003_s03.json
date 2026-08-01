@@ -1,0 +1,130 @@
+{
+  "case_id": "proc_003_s03",
+  "process": "proc_003",
+  "label": "order to production process: Procure required materials from vendors \u2014 Execute purchase orders with selected vendors and manage vendor relationships to ensure material availability.",
+  "method": "F",
+  "expected_ordIds": [
+    "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.crm:agent:VendorMaterialProcurementCoordinator:v1",
+      "score": null
+    },
+    {
+      "ordId": "emarsys.cx:apiResource:VendorMaterialSupplyChainAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.sf:apiResource:ProcurementVendorManagement:v1",
+      "score": null
+    },
+    {
+      "ordId": "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "tokens": 8973,
+    "latency_s": 8.449,
+    "llm_calls": 6,
+    "use_graph": false,
+    "picked_ord_id": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+    "picked_reason": "Directly supports executing purchase orders with vendors and managing vendor relationships with explicit capabilities (execute-procurement-orders, manage-vendor-orders, track-purchase-fulfillment) to ensure material availability for order-to-production workflows.",
+    "refused": false,
+    "refuse_reason": "",
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "embedding_search",
+        "args": {
+          "query": "procure materials from vendors execute purchase orders vendor relationships material availability",
+          "top_k": 10
+        },
+        "result_summary": "10 items",
+        "result_ord_ids": [
+          "sap.crm:agent:VendorMaterialProcurementCoordinator:v1",
+          "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+          "emarsys.cx:apiResource:VendorMaterialSupplyChainAPI:v1",
+          "sap.sf:apiResource:ProcurementVendorManagement:v1",
+          "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+          "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+          "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+          "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+          "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+          "siemens.plm:apiResource:MaterialInventoryAndSupplierCatalogManagement:v1"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "progressive_filter",
+        "args": {
+          "query": "procure materials vendors purchase orders",
+          "top_k": 5
+        },
+        "result_summary": "5 items",
+        "result_ord_ids": [
+          "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+          "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+          "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+          "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+          "sap.ehs:apiResource:VendorSafetyComplianceOrders:v1"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1"
+        },
+        "result_summary": "object"
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+        },
+        "result_summary": "object"
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.crm:agent:VendorMaterialProcurementCoordinator:v1"
+        },
+        "result_summary": "object"
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+          "reason": "Directly supports executing purchase orders with vendors and managing vendor relationships with explicit capabilities (execute-procurement-orders, manage-vendor-orders, track-purchase-fulfillment) to ensure material availability for order-to-production workflows."
+        },
+        "result": {
+          "committed": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1"
+        }
+      }
+    ]
+  },
+  "wall_s": 15.782
+}

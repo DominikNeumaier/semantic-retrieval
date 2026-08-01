@@ -1,0 +1,171 @@
+{
+  "case_id": "dy-29",
+  "sub_idx": 0,
+  "sub_query": "Pull current production queue status and identify items scheduled for the next shift",
+  "gt_id": "siemens.plm:apiResource:MachineProductionOrderIntegration:v1",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1mh",
+  "top1_acc": 0,
+  "candidate_recall": 0,
+  "top5_candidates": [
+    "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+    "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+    "sap.crm:apiResource:ProductionOrderMachineInventoryService:v1",
+    "my.mes:apiResource:WorkforceScheduleAndAbsenceManagement:v1",
+    "sap.s4:apiResource:ProductionExecutionAPI:v1"
+  ],
+  "refused": false,
+  "tokens": 15508,
+  "wall_s": 167.088,
+  "plan": {
+    "request": "Pull current production queue status and identify items scheduled for the next shift",
+    "mode": "dynamic",
+    "skill_id": null,
+    "coverage": "none",
+    "method": "F",
+    "steps": [
+      {
+        "step_name": "Pull current production queue status and identify items scheduled for the next shift",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:ProductionOrderMachineInventoryService:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:WorkforceScheduleAndAbsenceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:ProductionExecutionAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 15508,
+          "latency_s": 165.292,
+          "llm_calls": 10,
+          "use_graph": true,
+          "picked_ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+          "picked_reason": "Directly supports retrieving and managing production orders with machine assignments for real-time scheduling. Exposes production order status, machine availability, and scheduling constraints needed to pull current queue status and identify next shift items.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "production queue status next shift scheduled items",
+                "top_k": 10
+              },
+              "result_summary": "10 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "retrieve-production-queue"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-production-queue"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "get-queue-status"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "retrieve-shift-queue"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "graph_walk",
+              "args": {
+                "anchor_ord_ids": [
+                  "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+                ],
+                "top_k": 8
+              },
+              "result_summary": "8 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "queue status shift scheduling work order",
+                "top_k": 10
+              },
+              "result_summary": "10 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+              },
+              "result_summary": "20 items"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+                "reason": "Directly supports retrieving and managing production orders with machine assignments for real-time scheduling. Exposes production order status, machine availability, and scheduling constraints needed to pull current queue status and identify next shift items."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "trace": {
+      "total_tokens": 15508,
+      "total_latency_s": 0,
+      "total_llm_calls": 10
+    }
+  }
+}

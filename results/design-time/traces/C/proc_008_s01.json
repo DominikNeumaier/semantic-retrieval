@@ -1,0 +1,83 @@
+{
+  "case_id": "proc_008_s01",
+  "process": "proc_008",
+  "label": "order compliance fulfillment process: Receive and validate customer order \u2014 Capture incoming customer orders and validate order completeness against account eligibility criteria.",
+  "method": "C",
+  "expected_ordIds": [
+    "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+      "score": 49.5
+    },
+    {
+      "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+      "score": 53.5
+    },
+    {
+      "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+      "score": 51.0
+    },
+    {
+      "ordId": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+      "score": 49.5
+    },
+    {
+      "ordId": "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+      "score": 49.5
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "anchors": {
+      "entity_types": [
+        "sap.odm:entityType:CustomerOrder:v1",
+        "sap.odm:entityType:CustomerAccount:v1"
+      ],
+      "business_groups": [
+        "proc_order_compliance_fulfillment_v1",
+        "proc_order_to_production_v1"
+      ],
+      "lines_of_business": [
+        "Sales and Order Management",
+        "Operations"
+      ],
+      "reason": "Activity directly receives and validates customer orders against account eligibility, mapping to order and account entities within order fulfillment and production processes."
+    },
+    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\",\n    \"proc_order_to_production_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Sales and Order Management\",\n    \"Operations\"\n  ],\n  \"reason\": \"Activity directly receives and validates customer orders against account eligibility, mapping to order and account entities within order fulfillment and production processes.\"\n}\n```",
+    "max_hops": 2,
+    "hop_decay": 0.5,
+    "edge_weights": {
+      "co_exposes": 1.0,
+      "co_partOf": 2.0,
+      "calls": 3.0,
+      "processNext": 3.0
+    },
+    "scored_resources": 274,
+    "walk_top_ids": [
+      "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+      "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+      "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+      "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+      "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+      "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+      "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+      "sap.crm:agent:CampaignAudienceOptimizationAgent:v1"
+    ],
+    "rerank_raw": "```json\n[\n  \"corp.itsm:apiResource:CampaignAccessManagementAPI:v1\",\n  \"emarsys.cx:apiResource:JourneyContactStateAPI:v1\",\n  \"emarsys.cx:apiResource:CampaignContactEngagementAPI:v1\",\n  \"emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1\",\n  \"corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1\"\n]\n```\n\n**Rationale:**\n\n1. **CampaignAccessManagementAPI** (rank 1): Best match. The activity explicitly requires \"validate order completeness against account eligibility criteria\" \u2014 this API's core strength is validating customer account permissions and eligibility (`validate-customer-account-permissions`, `configure-audience-segmentation`). It directly supports the compliance validation step.\n\n2. **JourneyContactStateAPI** (rank 2): Strong secondary match. Directly supports order fulfillment compliance through audit trails, compliance notifications, and engagement state management \u2014 essential for validating customer eligibility in a regulated order process.\n\n3. **CampaignContactEngagementAPI** (rank 3): Relevant for the engagement and communication aspects of order fulfillment, though less focused on eligibility validation than the top candidates.\n\n4. **SegmentDrivenCampaignOptimizer** (rank 4): Agent that autonomously identifies customer segments and optimizes targeting \u2014 useful for identifying eligible customer segments during order validation, though more proactive than reactive.\n\n5. **CustomerEngagementServiceMetrics** (rank 5): Provides analytical visibility into customer engagement patterns that could inform eligibility assessment decisions, though it's read-only and less directly applicable than the APIs above.",
+    "refused": false,
+    "previous_resolved": [],
+    "tokens": 3122,
+    "latency_s": 7.014,
+    "llm_calls": 2
+  },
+  "wall_s": 7.036
+}

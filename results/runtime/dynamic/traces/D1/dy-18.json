@@ -1,0 +1,356 @@
+{
+  "case_id": "dy-18",
+  "user_prompt": "I need to check the status of an order we placed last month and see if we can adjust the production schedule to move up the delivery date. Can you help me find where that information is tracked?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to check the status of an order we placed last month and see if we can adjust the production schedule to move up the delivery date. Can you help me find where that information is tracked?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:CustomerOrder:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Service Ticket and Order Management API",
+                  "shortDescription": "Retrieves and manages customer service tickets and orders with status tracking."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Provisioning Order API",
+                  "shortDescription": "Exposes and manages customer account orders for ITSM provisioning workflows."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Account Order Enrichment API",
+                  "shortDescription": "Retrieves and manages integrated customer account and order data for engagement targeting."
+                },
+                "... (12 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                  "type": "apiResource",
+                  "title": "Equipment OEE Analytics API",
+                  "shortDescription": "REST API for real-time machine performance metrics and OEE calculations."
+                },
+                {
+                  "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+                  "type": "agent",
+                  "title": "Production Quality Monitor Agent",
+                  "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Production Order Quality Metrics",
+                  "shortDescription": "Aggregated quality performance and defect rates per production order."
+                },
+                "... (20 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Sales and Order Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:agent:OpportunityToOrderAutomationEngine:v1",
+                  "type": "agent",
+                  "title": "Opportunity-to-Order Automation Engine",
+                  "shortDescription": "Monitors sales opportunities and automates order creation workflows."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Production Order and Machine Scheduling API",
+                "shortDescription": "Retrieves and manages production orders and machine assignments for real-time scheduling.",
+                "description": "Exposes production order details and machine capacity information to enable dynamic scheduling and order execution. Provides access to machine availability, production order status, and scheduling constraints. Manages updates to order sequencing and machine allocations across manufacturing facilities.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "production-planning",
+                  "machine-scheduling",
+                  "order-execution"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+                "type": "apiResource",
+                "namespace": "sap.crm",
+                "title": "Customer Order Fulfillment Tracking API",
+                "shortDescription": "Retrieves and manages customer order status, fulfillment milestones, and delivery tracking data.",
+                "description": "This API exposes real-time customer order fulfillment data, enabling applications to retrieve order details, track shipment progress, and manage delivery status updates. It provides access to comprehensive order lifecycle information across customer accounts, supporting both order status queries and fulfillment event management for seamless customer service operations.",
+                "entityTypes": [
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Sales and Customer"
+                ],
+                "capabilities": [
+                  "validate-order",
+                  "track-fulfillment",
+                  "retrieve-customer-account"
+                ],
+                "useCases": [
+                  "Sales team receives a new customer order and confirms it can be fulfilled based on account standing and delivery capability.",
+                  "Order fulfillment process begins by validating customer eligibility and order specifications."
+                ],
+                "tags": [
+                  "dispute-resolution",
+                  "customer-service",
+                  "account-management",
+                  "crm"
+                ],
+                "partOfGroups": [
+                  "proc_order_to_production_v1"
+                ],
+                "processNext": [
+                  "corp.itsm:dataProduct:VendorSpendIntelligence:v1"
+                ],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:CustomerOrderAndAccountManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:CustomerOrderAndAccountManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Customer Order and Account Management API",
+                "shortDescription": "Exposes customer accounts and orders for production scheduling and fulfillment tracking.",
+                "description": "This API provides access to customer account master data and production orders, enabling real-time retrieval of customer information and order status throughout the manufacturing execution lifecycle. The resource manages customer account hierarchies, order details, and fulfillment status to support production scheduling, quality inspection workflows, and OEE correlation analysis.",
+                "entityTypes": [
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "customer-management",
+                  "order-fulfillment",
+                  "sales-operations"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+                "reason": "This API manages production orders and machine scheduling with dynamic sequencing capabilities, enabling both order status retrieval and schedule adjustments for accelerated delivery dates."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+          "picked_reason": "This API manages production orders and machine scheduling with dynamic sequencing capabilities, enabling both order status retrieval and schedule adjustments for accelerated delivery dates.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 27224,
+          "latency_s": 12.319,
+          "llm_calls": 10
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"This is an ad-hoc lookup request (checking order status) combined with a one-off adjustment need, not a full end-to-end process that any skill completely covers.\"\n}\n```",
+      "reason": "This is an ad-hoc lookup request (checking order status) combined with a one-off adjustment need, not a full end-to-end process that any skill completely covers.",
+      "tokens": 1659,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "I need to check the status of an order we placed last month and see if we can adjust the production schedule to move up the delivery date. Can you help me find where that information is tracked?"
+      ],
+      "original_prompt": "I need to check the status of an order we placed last month and see if we can adjust the production schedule to move up the delivery date. Can you help me find where that information is tracked?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 2,
+      "sub_queries": [
+        "Check the status of an order we placed last month",
+        "Adjust the production schedule to move up the delivery date for that order"
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 28883,
+    "latency_s": 12.319,
+    "llm_calls": 11
+  },
+  "wall_s": 12.326
+}

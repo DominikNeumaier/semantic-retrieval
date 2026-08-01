@@ -1,0 +1,588 @@
+{
+  "case_id": "dy-30",
+  "user_prompt": "Can you pull up the current status of ticket #12847 and check who our top-performing sales representative is in the Northeast region so I can route this escalation appropriately, then also retrieve what products that employee is certified to sell?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull up the current status of ticket #12847 and identify who our top-performing sales representative is in the Northeast region.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ServiceTicket:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                  "type": "apiResource",
+                  "title": "Change Request Approval Workflow API",
+                  "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Provisioning Integration API",
+                  "shortDescription": "Manages equipment provisioning requests linked to service tickets and change approvals."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                  "type": "agent",
+                  "title": "Incident Root Cause Analysis Agent",
+                  "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Sales"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                  "type": "agent",
+                  "title": "Change Release Coordinator",
+                  "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Sales Capacity and Time Off Management API",
+                  "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:HazardousSubstanceComplianceManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Compliance Management API",
+                  "shortDescription": "Manages and exposes hazardous substance data for regulatory compliance in sales operations."
+                },
+                "... (12 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Service Ticket & Change Request Management API",
+                "shortDescription": "Manages and retrieves service tickets, change requests, and equipment maintenance records.",
+                "description": "Exposes endpoints to retrieve, create, and update service tickets and engineering change requests tied to manufacturing equipment. Provides access to maintenance workflows, change request status tracking, and equipment diagnostics correlation for compliance and supplier management purposes.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "supplier-management",
+                  "service-operations",
+                  "compliance-tracking"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:ProductChangeImpactAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:dataProduct:ProductChangeImpactAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.crm",
+                "title": "Product Change Impact Analytics",
+                "shortDescription": "Aggregates engineering changes and material impacts on sales inventory and customer offerings.",
+                "description": "This data product synthesizes engineering change orders, material specifications, and product item configurations to provide comprehensive metrics on how product modifications influence sales opportunities and customer account strategies. It summarizes the ripple effects of engineering changes across the product portfolio, enabling sales teams to proactively communicate product updates and adjust pricing strategies.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Sales"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "product-management",
+                  "impact-analysis",
+                  "sales-intelligence"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "People Analytics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Compliance and Risk Profile Analytics",
+                  "shortDescription": "Consolidates occupational safety data and incident patterns to assess employee risk exposure and safety culture maturity."
+                },
+                {
+                  "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trend Analytics",
+                  "shortDescription": "Aggregated performance metrics and trend analysis across employee populations and review cycles."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "type": "dataProduct",
+                "namespace": "sap.crm",
+                "title": "Employee Performance Trending and Insights",
+                "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics.",
+                "description": "This data product synthesizes employee performance review data to summarize key talent trends, capability gaps, and performance patterns across the sales organization. It delivers actionable insights on workforce development, engagement trajectories, and high-potential employee identification to support strategic people analytics and succession planning initiatives.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:PerformanceReview:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources",
+                  "People Analytics"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "performance-management",
+                  "workforce-analytics",
+                  "talent-insights",
+                  "trending"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                "reason": "This API directly retrieves and manages service tickets, enabling lookup of ticket #12847 status, though it does not address the sales rep performance analytics portion of the request."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+          "picked_reason": "This API directly retrieves and manages service tickets, enabling lookup of ticket #12847 status, though it does not address the sales rep performance analytics portion of the request.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 29052,
+          "latency_s": 16.167,
+          "llm_calls": 10
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Retrieve what products our top-performing Northeast sales representative is certified to sell.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:HazardousSubstanceComplianceManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:OpportunityEngagementOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Sales"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                  "type": "agent",
+                  "title": "Change Release Coordinator",
+                  "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Sales Capacity and Time Off Management API",
+                  "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:HazardousSubstanceComplianceManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Compliance Management API",
+                  "shortDescription": "Manages and exposes hazardous substance data for regulatory compliance in sales operations."
+                },
+                "... (12 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Sales and Customer Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:OpportunityEngagementOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Opportunity Engagement Orchestrator",
+                  "shortDescription": "Automates personalized engagement workflows to accelerate opportunity progression and sales velocity."
+                },
+                {
+                  "ordId": "emarsys.cx:agent:OpportunityScoringOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Opportunity Scoring Orchestrator",
+                  "shortDescription": "Automates lead qualification and opportunity prioritization using behavioral and account signals."
+                },
+                {
+                  "ordId": "emarsys.cx:agent:OpportunityEnrichmentOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Opportunity Enrichment Orchestrator",
+                  "shortDescription": "Automates lead scoring and opportunity prioritization through intelligent customer data correlation."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ProductItem:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Change Lifecycle API",
+                  "shortDescription": "Exposes engineering changes and product items for workforce asset management."
+                },
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                "... (37 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Employee:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Sales Capacity and Time Off Management API",
+                  "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning."
+                },
+                {
+                  "ordId": "my.mes:apiResource:WorkforceScheduleAndAbsenceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Workforce Schedule and Absence Management API",
+                  "shortDescription": "Manages employee shift assignments and time-off requests in production operations."
+                },
+                "... (41 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                "type": "apiResource",
+                "namespace": "sap.crm",
+                "title": "Sales Employee Hierarchy and Capability Directory API",
+                "shortDescription": "Exposes employee organizational structure and sales capabilities for CRM operations.",
+                "description": "This API provides access to employee hierarchical relationships and workforce capabilities within the sales organization. It retrieves detailed employee profiles, reporting structures, and skill inventories to support sales team composition and resource allocation. The service manages workforce person records and organizational mappings essential for sales planning and opportunity assignment.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Capital Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "workforce-management",
+                  "organizational-structure",
+                  "employee-hierarchy"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                "reason": "This API provides access to employee sales capabilities and skill inventories, enabling retrieval of product certifications for a specific sales representative."
+              },
+              "result": {
+                "committed": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+          "picked_reason": "This API provides access to employee sales capabilities and skill inventories, enabling retrieval of product certifications for a specific sales representative.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 35788,
+          "latency_s": 12.638,
+          "llm_calls": 10
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request combines three ad-hoc lookups (ticket status, top sales rep identification, employee certifications) that don't align with any registered process\u2014none of the skills cover sales performance analytics, employee certification management, or general ticket triage workflows.\"\n}\n```",
+      "reason": "The request combines three ad-hoc lookups (ticket status, top sales rep identification, employee certifications) that don't align with any registered process\u2014none of the skills cover sales performance analytics, employee certification management, or general ticket triage workflows.",
+      "tokens": 1682,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 3,
+      "sub_queries": [
+        "Pull up the current status of ticket #12847",
+        "Identify the top-performing sales representative in the Northeast region",
+        "Retrieve what products that top-performing Northeast sales representative is certified to sell"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 66794,
+    "latency_s": 28.805,
+    "llm_calls": 22
+  },
+  "wall_s": 28.816
+}

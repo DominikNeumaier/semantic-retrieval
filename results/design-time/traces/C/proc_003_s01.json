@@ -1,0 +1,76 @@
+{
+  "case_id": "proc_003_s01",
+  "process": "proc_003",
+  "label": "order to production process: Receive and validate customer order \u2014 Capture incoming customer order and verify fulfillment eligibility against customer master data and order history.",
+  "method": "C",
+  "expected_ordIds": [
+    "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+      "score": 50.5
+    },
+    {
+      "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+      "score": 53.5
+    },
+    {
+      "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+      "score": 51.0
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "anchors": {
+      "entity_types": [
+        "sap.odm:entityType:CustomerOrder:v1",
+        "sap.odm:entityType:CustomerAccount:v1",
+        "sap.odm:entityType:ProductionOrder:v1"
+      ],
+      "business_groups": [
+        "proc_order_to_production_v1",
+        "proc_order_compliance_fulfillment_v1"
+      ],
+      "lines_of_business": [
+        "Sales and Order Management",
+        "Manufacturing"
+      ],
+      "reason": "Activity captures incoming customer orders and validates against customer master data, directly involving CustomerOrder and CustomerAccount entities within order-to-production and compliance fulfillment processes."
+    },
+    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_to_production_v1\",\n    \"proc_order_compliance_fulfillment_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Sales and Order Management\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Activity captures incoming customer orders and validates against customer master data, directly involving CustomerOrder and CustomerAccount entities within order-to-production and compliance fulfillment processes.\"\n}\n```",
+    "max_hops": 2,
+    "hop_decay": 0.5,
+    "edge_weights": {
+      "co_exposes": 1.0,
+      "co_partOf": 2.0,
+      "calls": 3.0,
+      "processNext": 3.0
+    },
+    "scored_resources": 274,
+    "walk_top_ids": [
+      "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+      "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+      "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+      "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+      "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+      "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+      "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+      "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1"
+    ],
+    "rerank_raw": "```json\n[\n  \"corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1\",\n  \"emarsys.cx:apiResource:JourneyContactStateAPI:v1\",\n  \"emarsys.cx:apiResource:CampaignContactEngagementAPI:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requires receiving/validating a customer order and verifying fulfillment eligibility against **customer master data and order history**.\n\n1. **SafetyComplianceCustomerAPI** (1st) - Best match. Explicitly validates customer account status, compliance obligations, and provides customer account management with compliance tracking. The capabilities \"verify-customer-compliance,\" \"validate-account-obligations,\" and \"audit-campaign-safety\" directly support eligibility verification.\n\n2. **JourneyContactStateAPI** (2nd) - Strong match for validation. Provides real-time contact state querying and the use case explicitly mentions \"Marketing validates that customer is in appropriate engagement stage for order fulfillment communications\" \u2014 directly relevant to fulfillment eligibility.\n\n3. **CampaignContactEngagementAPI** (3rd) - Reasonable fallback. While more campaign-focused, it manages customer engagement states and has capabilities to validate customer account permissions/status, though less directly aligned than the top two.\n\nExcluded candidates: Campaign performance analytics and vendor analytics are pure analytical reads (dataProducts) not suited for order validation; the Campaign Optimizer agent is too narrow for this operational task; Campaign Access Management API focuses on permission provisioning rather than customer data validation.",
+    "refused": false,
+    "previous_resolved": [],
+    "tokens": 3215,
+    "latency_s": 7.239,
+    "llm_calls": 2
+  },
+  "wall_s": 7.253
+}

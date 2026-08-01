@@ -1,0 +1,372 @@
+{
+  "case_id": "oos-07",
+  "user_prompt": "We need a way to automatically flag travel expense reports that violate our policy thresholds\u2014like when someone books a flight that's more than 15% above the lowest available option or books a hotel outside our preferred vendor list\u2014so our finance team can route those for manager pre-approval before they hit the approval workflow instead of catching violations after the fact.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "sap.s4:agent:ProcurementMatchingAgent:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "We need a way to automatically flag travel expense reports that violate our policy thresholds\u2014like when someone books a flight that's more than 15% above the lowest available option or books a hotel outside our preferred vendor list\u2014so our finance team can route those for manager pre-approval before they hit the approval workflow instead of catching violations after the fact.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:agent:ProcurementMatchingAgent:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "automate-compliance-checks"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                  "type": "agent",
+                  "title": "Safety Compliance Automation Coordinator",
+                  "shortDescription": "Automates safety validation across engineering changes, materials, and product items."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "escalate-compliance-issues"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+                  "type": "dataProduct",
+                  "title": "Incident Engagement Reliability Analytics",
+                  "shortDescription": "Aggregates incident and safety incident data to measure engagement reliability and compliance metrics."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Finance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Procurement Automation Orchestrator",
+                  "shortDescription": "Automates vendor engagement and procurement workflows through targeted marketing communications."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                "... (10 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-approval-workflows"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                  "type": "apiResource",
+                  "title": "Service Ticket & Change Request Management API",
+                  "shortDescription": "Manages and retrieves service tickets, change requests, and equipment maintenance records."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Invoice:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                {
+                  "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Invoice and Material Procurement Analytics",
+                  "shortDescription": "Aggregates invoice and material procurement metrics for spend analysis."
+                },
+                "... (4 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:agent:ProcurementMatchingAgent:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:agent:ProcurementMatchingAgent:v1",
+                "type": "agent",
+                "namespace": "sap.s4",
+                "title": "Procurement Matching Agent",
+                "shortDescription": "Autonomously matches purchase requisitions to optimal vendors based on cost, quality, and delivery performance.",
+                "description": "This agent analyzes open purchase requisitions against vendor master data, historical performance metrics, and material specifications to automatically recommend and create purchase orders. It evaluates vendor pricing, lead times, quality ratings, and contract terms to optimize procurement decisions, reducing manual effort and ensuring compliance with preferred vendor agreements.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement",
+                  "Finance",
+                  "ERP"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "procurement",
+                  "vendor-management",
+                  "purchasing",
+                  "automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "orchestrate-compliance-checks"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                  "type": "agent",
+                  "title": "Safety Compliance Automation Coordinator",
+                  "shortDescription": "Automates safety validation across engineering changes, materials, and product items."
+                }
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "type": "agent",
+                "namespace": "sap.ehs",
+                "title": "Safety Compliance Automation Coordinator",
+                "shortDescription": "Automates safety validation across engineering changes, materials, and product items.",
+                "description": "Monitors and processes engineering changes, materials, and product items to enforce safety compliance requirements and automate BOM validation workflows. Coordinates supplier qualification assessments and initiates compliance remediation actions when safety risks or regulatory gaps are detected. Automates incident prevention through continuous validation of product configurations against safety standards.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [
+                  "assess-material-safety",
+                  "automate-safety-assessments",
+                  "automate-compliance-checks",
+                  "coordinate-compliance-workflow",
+                  "validate-engineering-changes",
+                  "orchestrate-compliance-checks",
+                  "coordinate-safety-compliance"
+                ],
+                "useCases": [
+                  "Safety officers ensure all engineering changes trigger integrated compliance assessments across the organization.",
+                  "EHS team automates review of engineering changes to ensure material and product modifications meet safety and regulatory requirements before production",
+                  "Compliance automation prevents unsafe or non-compliant product items from advancing to manufacturing",
+                  "Compliance teams automate material and process safety validation to reduce manual review time.",
+                  "Operations leadership maintains consistent safety standards across all product variants and manufacturing locations."
+                ],
+                "tags": [
+                  "compliance",
+                  "bom-validation",
+                  "supplier-qualification",
+                  "automation"
+                ],
+                "partOfGroups": [
+                  "proc_ProductComplianceManufacturing_v1",
+                  "proc_talent_compliance_ops_v1"
+                ],
+                "processNext": [
+                  "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+                ],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "detect-anomalies"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Engagement Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues."
+                }
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:agent:ProcurementMatchingAgent:v1",
+                "reason": "Best available agent for automatically validating expense transactions against policy thresholds (cost vs. alternatives, vendor preferences) and routing violations for manager pre-approval before approval workflow."
+              },
+              "result": {
+                "committed": "sap.s4:agent:ProcurementMatchingAgent:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:agent:ProcurementMatchingAgent:v1",
+          "picked_reason": "Best available agent for automatically validating expense transactions against policy thresholds (cost vs. alternatives, vendor preferences) and routing violations for manager pre-approval before approval workflow.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 13,
+          "tokens": 41050,
+          "latency_s": 16.698,
+          "llm_calls": 13
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"This request is for a financial controls system (travel expense policy enforcement) that doesn't match any of the registered manufacturing, procurement, product launch, or operations management skills.\"\n}\n```",
+      "reason": "This request is for a financial controls system (travel expense policy enforcement) that doesn't match any of the registered manufacturing, procurement, product launch, or operations management skills.",
+      "tokens": 1688,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 43228,
+    "latency_s": 16.698,
+    "llm_calls": 15
+  },
+  "wall_s": 16.707
+}

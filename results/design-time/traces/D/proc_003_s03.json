@@ -1,0 +1,349 @@
+{
+  "case_id": "proc_003_s03",
+  "process": "proc_003",
+  "label": "order to production process: Procure required materials from vendors \u2014 Execute purchase orders with selected vendors and manage vendor relationships to ensure material availability.",
+  "method": "D",
+  "expected_ordIds": [
+    "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_entity_types",
+        "args": {},
+        "result_preview": [
+          "sap.odm:entityType:Campaign:v1",
+          "sap.odm:entityType:ChangeRequest:v1",
+          "sap.odm:entityType:Compensation:v1",
+          "... (23 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_lines_of_business",
+        "args": {},
+        "result_preview": [
+          "ERP",
+          "Environment, Health & Safety",
+          "Environment, Health and Safety",
+          "... (44 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_capabilities",
+        "args": {},
+        "result_preview": [
+          "activate-campaigns",
+          "activate-contact-engagement",
+          "activate-customer-accounts",
+          "... (337 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "type": "apiResource",
+            "title": "Vendor Procurement Order API",
+            "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+            "type": "apiResource",
+            "title": "Procurement Vendor Management API",
+            "shortDescription": "Exposes purchase orders and vendor data for ITSM procurement workflows."
+          },
+          {
+            "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+            "type": "agent",
+            "title": "Vendor Contract Compliance Orchestrator",
+            "shortDescription": "Automates vendor contract and purchase order compliance monitoring across procurement lifecycle."
+          },
+          "... (18 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_in_lob",
+        "args": {
+          "line_of_business": "Procurement"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "type": "apiResource",
+            "title": "Vendor Campaign Account Retrieval API",
+            "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "type": "apiResource",
+            "title": "Vendor Procurement Order API",
+            "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+            "type": "dataProduct",
+            "title": "Vendor Spend Intelligence",
+            "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+          },
+          "... (27 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "execute-purchase-orders"
+        },
+        "result_preview": [
+          {
+            "ordId": "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+            "type": "apiResource",
+            "title": "Procurement Vendor and Purchase Order Management API",
+            "shortDescription": "Retrieves and manages vendor details and purchase order data for procurement operations."
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+          "type": "apiResource",
+          "namespace": "sap.ariba",
+          "title": "Purchase Order Network API",
+          "shortDescription": "REST API for creating, updating, and monitoring purchase orders across supplier networks.",
+          "description": "Enables programmatic access to purchase order lifecycle management including creation, approval workflows, and real-time status tracking. Supports bulk operations and integration with enterprise procurement systems to streamline order-to-cash processes and improve supplier collaboration.",
+          "entityTypes": [
+            "sap.odm:entityType:PurchaseOrder:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "lineOfBusiness": [
+            "Procurement"
+          ],
+          "capabilities": [
+            "coordinate-vendor-procurement",
+            "validate-purchase-orders",
+            "verify-vendor-compliance"
+          ],
+          "useCases": [
+            "Procurement teams confirm vendors can supply materials that meet all compliance requirements before issuing purchase orders.",
+            "Supply chain partners communicate material specifications and regulatory requirements through standardized purchase order network.",
+            "Vendor management validates that suppliers maintain certification and compliance credentials for regulated materials."
+          ],
+          "tags": [
+            "purchase-orders",
+            "supplier-collaboration",
+            "order-management",
+            "procurement-automation"
+          ],
+          "partOfGroups": [
+            "proc_ProductComplianceManufacturing_v1"
+          ],
+          "processNext": [],
+          "partOfPackage": "sap.ariba:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "my.mes:apiResource:SupplierProcurementOrderManagement:v1"
+        },
+        "result_preview": {
+          "ordId": "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+          "type": "apiResource",
+          "namespace": "my.mes",
+          "title": "Supplier Procurement Order Management",
+          "shortDescription": "Manages and retrieves purchase orders and vendor data for production material procurement.",
+          "description": "Exposes purchase order creation, retrieval, and status tracking capabilities integrated with vendor information. Provides access to supplier collaboration workflows, enabling manufacturing execution systems to coordinate procurement activities and manage vendor relationships. Retrieves and manages purchase order line items, delivery schedules, and vendor performance metrics for seamless supply chain integration.",
+          "entityTypes": [
+            "sap.odm:entityType:PurchaseOrder:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "lineOfBusiness": [
+            "Procurement"
+          ],
+          "capabilities": [
+            "manage-supplier-orders",
+            "update-purchase-orders",
+            "coordinate-vendor-schedules"
+          ],
+          "useCases": [
+            "Procurement specialists revise PO quantities and dates with vendors to synchronize material availability with the new production schedule.",
+            "Supply chain controllers ensure vendor-supplied materials align with modified production timelines and specifications."
+          ],
+          "tags": [
+            "purchase-orders",
+            "supplier-collaboration",
+            "order-management",
+            "procurement-automation"
+          ],
+          "partOfGroups": [
+            "proc_ManufacturingChangeCompliance_v1"
+          ],
+          "processNext": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1"
+          ],
+          "partOfPackage": "my.mes:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.s4:agent:ProcurementMatchingAgent:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.s4:agent:ProcurementMatchingAgent:v1",
+          "type": "agent",
+          "namespace": "sap.s4",
+          "title": "Procurement Matching Agent",
+          "shortDescription": "Autonomously matches purchase requisitions to optimal vendors based on cost, quality, and delivery performance.",
+          "description": "This agent analyzes open purchase requisitions against vendor master data, historical performance metrics, and material specifications to automatically recommend and create purchase orders. It evaluates vendor pricing, lead times, quality ratings, and contract terms to optimize procurement decisions, reducing manual effort and ensuring compliance with preferred vendor agreements.",
+          "entityTypes": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "lineOfBusiness": [
+            "Procurement",
+            "Finance",
+            "ERP"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "procurement",
+            "vendor-management",
+            "purchasing",
+            "automation"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "sap.s4:package:Core:v1"
+        }
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "manage-vendor-orders"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "type": "apiResource",
+            "title": "Vendor Procurement Order API",
+            "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+          }
+        ]
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+          "type": "agent",
+          "namespace": "sap.ariba",
+          "title": "Material and Engineering Change Coordinator",
+          "shortDescription": "Automates coordination of material updates and engineering changes across procurement workflows.",
+          "description": "This agent monitors engineering changes and material modifications, automatically coordinating updates across related product items and purchase orders. It processes change requests, validates material specifications against compliance requirements, and ensures seamless propagation of updates through the procurement network to minimize disruptions and maintain data consistency.",
+          "entityTypes": [
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductItem:v1"
+          ],
+          "lineOfBusiness": [
+            "Procurement"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "material-management",
+            "engineering-changes",
+            "supply-chain-automation"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "sap.ariba:package:Core:v1"
+        }
+      },
+      {
+        "step": 4,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+          "reason": "REST API that enables creation, updating, and real-time monitoring of purchase orders across supplier networks, directly supporting material procurement execution and vendor relationship management in order-to-production workflows."
+        },
+        "result": {
+          "committed": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+    "picked_reason": "REST API that enables creation, updating, and real-time monitoring of purchase orders across supplier networks, directly supporting material procurement execution and vendor relationship management in order-to-production workflows.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 12,
+    "tokens": 40209,
+    "latency_s": 14.174,
+    "llm_calls": 12
+  },
+  "wall_s": 14.182
+}

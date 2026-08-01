@@ -1,0 +1,198 @@
+{
+  "case_id": "dy-15",
+  "user_prompt": "Our finance team is struggling to reconcile payroll data across multiple departments because we can't easily track how individual pay rates align with our established pay bands and job levels. We need to ensure our payment structures remain competitive and compliant with market rates, but right now we're manually cross-referencing spreadsheets which is error-prone and time-consuming. Can you help us integrate our payroll processes so we have a single source of truth for all employee earnings and payment configurations?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Our finance team is struggling to reconcile payroll data across multiple departments because we can't easily track how individual pay rates align with our established pay bands and job levels. We need to ensure our payment structures remain competitive and compliant with market rates, but right now we're manually cross-referencing spreadsheets which is error-prone and time-consuming. Can you help us integrate our payroll processes so we have a single source of truth for all employee earnings and payment configurations?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE INVENTORY:\n- corp.itsm: IT service management (incident analysis, asset provisioning)\n- sap.ariba: Procurement/supply chain\n  - PurchaseOrderNetworkAPI: PO lifecycle, supplier collaboration\n \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1099
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1099
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/workday.hcm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/workday.hcm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 921
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/workday.hcm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/workday.hcm",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\n- corp.itsm: IT service management (incident analysis, asset provisioning)\n- sap.ariba: Procurement/supply chain\n  - PurchaseOrderNetworkAPI: PO lifecycle, supplier collaboration\n  - VendorInvoiceReconciliationAutomation: Invoice matching to POs (THREE-WAY MATCHING - post-goods-receipt)\n  - SupplierComplianceAndIncidentMonitor: Vendor risk, hazardous materials\n- sap.s4: ERP\n  - BOMComplianceAutomationAgent: BOM validation\n  - ProcurementMatchingAgent: Vendor cost analysis\n  - MaterialReceiptInboundAPI: INBOUND GOODS RECEIPT - REST API for creating/managing goods receipt transactions against POs\n- siemens.plm: PLM systems\n- sap.ehs: Safety/EHS\n- workday.hcm: HR/HCM - PAYROLL & COMPENSATION\n  - CompensationAdjustmentAutomation: Processes merit/compensation adjustments, ensures policy consistency across org, integrates with payroll cycles\n  - CompensationChangeProcessor: Coordinates salary adjustments for org changes\n  - CompensationStructureAutomationEngine: Auto-updates compensation plans based on org structure changes\n  - PerformanceReviewCoordination: Automates review workflows\n  - PerformanceReviewOrchestrator: Manages assessment processes\n  - OccupationalSafetyIncidentMonitoring: Hazard/safety tracking\n- emarsys.cx: CX/engagement\n- my.mes: MES (manufacturing execution)\n- sap.crm: Sales/CRM\n- sap.odm: Entity type taxonomy\n\nKEY FINDINGS:\n- MaterialReceiptInboundAPI in sap.s4 handles inbound physical goods receipt logging (BEFORE invoice reconciliation)\n- CompensationAdjustmentAutomation in workday.hcm is the payroll reconciliation solution: automates compensation adjustments, ensures consistent policy application across org, integrates with payroll cycles, maintains audit trails for compliance"
+              },
+              "result_preview": {
+                "stored_bytes": 1744,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+                "reason": "This agent automates compensation adjustments across the organization, ensures consistent application of compensation policies across departments, integrates with payroll cycles, and maintains audit trails\u2014directly solving the payroll reconciliation and pay band alignment challenge."
+              },
+              "result_preview": {
+                "committed": "workday.hcm:agent:CompensationAdjustmentAutomation:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+          "picked_reason": "This agent automates compensation adjustments across the organization, ensures consistent application of compensation policies across departments, integrates with payroll cycles, and maintains audit trails\u2014directly solving the payroll reconciliation and pay band alignment challenge.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 56893,
+          "latency_s": 23.295,
+          "llm_calls": 8
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 56893,
+    "latency_s": 23.295,
+    "llm_calls": 8
+  },
+  "wall_s": 23.307
+}

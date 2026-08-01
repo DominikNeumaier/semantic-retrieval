@@ -1,0 +1,346 @@
+{
+  "case_id": "dy-17",
+  "user_prompt": "I need to get approval for some design modifications we're making to our product line, and then make sure the updated materials are ordered and tracked through our supply chain. Can you help me coordinate the engineering paperwork and inventory adjustments all in one place?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1,
+    "acceptable": 1,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to get approval for some design modifications we're making to our product line, and then make sure the updated materials are ordered and tracked through our supply chain. Can you help me coordinate the engineering paperwork and inventory adjustments all in one place?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:EngineeringChange:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Change Lifecycle API",
+                  "shortDescription": "Exposes engineering changes and product items for workforce asset management."
+                },
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                "... (37 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Product Lifecycle Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+                  "type": "apiResource",
+                  "title": "Engineering Change & Product Item Integration API",
+                  "shortDescription": "Exposes engineering changes and product items for production scheduling validation"
+                },
+                {
+                  "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+                  "type": "apiResource",
+                  "title": "Equipment Change and Service Integration API",
+                  "shortDescription": "Manages equipment changes, service requests, and diagnostics coordination."
+                },
+                {
+                  "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor information for production planning."
+                },
+                "... (17 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "coordinate-bom-updates"
+              },
+              "result_preview": [
+                {
+                  "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                  "type": "agent",
+                  "title": "Engineering Change and Material Provisioning Agent",
+                  "shortDescription": "Automates engineering change processing and material lifecycle coordination across product configurations."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:agent:EngineeringChangeOrchestrator:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:agent:EngineeringChangeOrchestrator:v1",
+                "type": "agent",
+                "namespace": "sap.s4",
+                "title": "Engineering Change Orchestrator",
+                "shortDescription": "Automates and coordinates engineering changes across materials and product items.",
+                "description": "Monitors incoming engineering change requests and automatically orchestrates the downstream provisioning of affected materials and product items. Coordinates change workflows across procurement, production planning, and asset management domains to ensure consistent application of design modifications. Processes compliance validations and triggers synchronized updates to maintain data integrity throughout the enterprise.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "IT Service Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "change-automation",
+                  "orchestration",
+                  "provisioning"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "type": "agent",
+                "namespace": "siemens.plm",
+                "title": "Engineering Change and Material Provisioning Agent",
+                "shortDescription": "Automates engineering change processing and material lifecycle coordination across product configurations.",
+                "description": "Coordinates engineering changes across product items and material specifications, automating approval workflows and synchronizing configuration updates. Monitors material lifecycle transitions and orchestrates provisioning tasks to ensure compliance documentation and cost estimation remain current throughout the product development cycle.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "it-service-management"
+                ],
+                "capabilities": [
+                  "coordinate-bom-updates",
+                  "allocate-inventory",
+                  "provision-materials",
+                  "synchronize-engineering-changes",
+                  "evaluate-change-impact",
+                  "track-change-status",
+                  "manage-material-provisioning",
+                  "assess-engineering-changes",
+                  "initiate-engineering-change"
+                ],
+                "useCases": [
+                  "Product redesign or material substitution triggered by quality, cost, or compliance needs",
+                  "Coordinate engineering changes across product lifecycle and supply chain",
+                  "Engineering teams release change orders and automatically trigger material provisioning workflows.",
+                  "Engineering changes to product designs are evaluated for material requirements and supply chain feasibility.",
+                  "Production planners retrieve updated bills-of-material with real-time material availability.",
+                  "Material handlers receive dynamic picking lists reflecting the latest design changes.",
+                  "The system determines that the equipment failure requires a component replacement and identifies available materials from inventory."
+                ],
+                "tags": [
+                  "asset-lifecycle",
+                  "change-automation",
+                  "provisioning-orchestration"
+                ],
+                "partOfGroups": [
+                  "proc_ServiceToProduction_v1",
+                  "proc_QualityDrivenMfgSupplyChain_v1",
+                  "proc_EngChangeAndProcurement_v1"
+                ],
+                "processNext": [
+                  "sap.s4:agent:OpportunityToOrderAutomationEngine:v1"
+                ],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+                "type": "agent",
+                "namespace": "sap.ariba",
+                "title": "Material and Engineering Change Coordinator",
+                "shortDescription": "Automates coordination of material updates and engineering changes across procurement workflows.",
+                "description": "This agent monitors engineering changes and material modifications, automatically coordinating updates across related product items and purchase orders. It processes change requests, validates material specifications against compliance requirements, and ensures seamless propagation of updates through the procurement network to minimize disruptions and maintain data consistency.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "material-management",
+                  "engineering-changes",
+                  "supply-chain-automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "reason": "Automates engineering change approvals, material provisioning, and supply chain coordination across the entire product lifecycle in a single orchestrated workflow."
+              },
+              "result": {
+                "committed": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+          "picked_reason": "Automates engineering change approvals, material provisioning, and supply chain coordination across the entire product lifecycle in a single orchestrated workflow.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 29123,
+          "latency_s": 10.649,
+          "llm_calls": 10
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 29123,
+    "latency_s": 10.649,
+    "llm_calls": 10
+  },
+  "wall_s": 10.658
+}

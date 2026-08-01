@@ -1,0 +1,178 @@
+{
+  "case_id": "dy-18",
+  "user_prompt": "I need to check the status of an order we placed last month and see if we can adjust the production schedule to move up the delivery date. Can you help me find where that information is tracked?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to check the status of an order we placed last month and see if we can adjust the production schedule to move up the delivery date. Can you help me find where that information is tracked?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:ProductionOrderMachineInventoryService:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 11786,
+          "latency_s": 10.671,
+          "llm_calls": 8,
+          "use_graph": true,
+          "picked_ord_id": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+          "picked_reason": "This API provides real-time customer order status tracking, fulfillment milestones, and delivery management. It directly supports checking order status and coordinating delivery date updates, which is essential for your requirement to review a placed order and adjust its delivery schedule.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "order status tracking production schedule delivery date",
+                "top_k": 5
+              },
+              "result_summary": "5 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-production-schedule"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "track-order-status"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "adjust-delivery-schedule"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "graph_walk",
+              "args": {
+                "anchor_ord_ids": [
+                  "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+                  "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+                ],
+                "top_k": 5
+              },
+              "result_summary": "5 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+                "reason": "This API provides real-time customer order status tracking, fulfillment milestones, and delivery management. It directly supports checking order status and coordinating delivery date updates, which is essential for your requirement to review a placed order and adjust its delivery schedule."
+              },
+              "result": {
+                "committed": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1"
+              }
+            }
+          ]
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 11786,
+    "latency_s": 10.671,
+    "llm_calls": 8
+  },
+  "wall_s": 15.47
+}

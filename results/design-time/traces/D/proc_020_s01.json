@@ -1,0 +1,216 @@
+{
+  "case_id": "proc_020_s01",
+  "process": "proc_020",
+  "label": "talent compliance ops process: Qualify sales opportunities for targeted engagement \u2014 Sales team needs to identify high-potential customer accounts and opportunities before initiating outreach campaigns.",
+  "method": "D",
+  "expected_ordIds": [
+    "sap.crm:agent:OpportunityQualificationAdvisor:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.crm:agent:OpportunityQualificationAdvisor:v1",
+      "score": null
+    },
+    {
+      "ordId": "emarsys.cx:agent:OpportunityEngagementOrchestrator:v1",
+      "score": null
+    },
+    {
+      "ordId": "emarsys.cx:agent:OpportunityScoringOrchestrator:v1",
+      "score": null
+    },
+    {
+      "ordId": "emarsys.cx:agent:OpportunityEnrichmentOrchestrator:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 1,
+    "r_at_5": 1,
+    "mrr": 1.0,
+    "first_hit_rank": 1,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_capabilities",
+        "args": {},
+        "result_preview": []
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_lines_of_business",
+        "args": {},
+        "result_preview": [
+          "ERP",
+          "Environment, Health & Safety",
+          "Environment, Health and Safety",
+          "... (44 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_entity_types",
+        "args": {},
+        "result_preview": [
+          "sap.odm:entityType:Campaign:v1",
+          "sap.odm:entityType:ChangeRequest:v1",
+          "sap.odm:entityType:Compensation:v1",
+          "... (23 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:SalesOpportunity:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "emarsys.cx:agent:OpportunityEngagementOrchestrator:v1",
+            "type": "agent",
+            "title": "Opportunity Engagement Orchestrator",
+            "shortDescription": "Automates personalized engagement workflows to accelerate opportunity progression and sales velocity."
+          },
+          {
+            "ordId": "emarsys.cx:agent:OpportunityScoringOrchestrator:v1",
+            "type": "agent",
+            "title": "Opportunity Scoring Orchestrator",
+            "shortDescription": "Automates lead qualification and opportunity prioritization using behavioral and account signals."
+          },
+          {
+            "ordId": "emarsys.cx:agent:OpportunityEnrichmentOrchestrator:v1",
+            "type": "agent",
+            "title": "Opportunity Enrichment Orchestrator",
+            "shortDescription": "Automates lead scoring and opportunity prioritization through intelligent customer data correlation."
+          },
+          "... (7 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:CustomerAccount:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+            "type": "apiResource",
+            "title": "Campaign Access Management API",
+            "shortDescription": "Manages provisioning and access control for campaign-related customer accounts."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "type": "apiResource",
+            "title": "Service Ticket and Order Management API",
+            "shortDescription": "Retrieves and manages customer service tickets and orders with status tracking."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+            "type": "apiResource",
+            "title": "Customer Provisioning Order API",
+            "shortDescription": "Exposes and manages customer account orders for ITSM provisioning workflows."
+          },
+          "... (54 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_in_lob",
+        "args": {
+          "line_of_business": "Sales"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "type": "agent",
+            "title": "Change Release Coordinator",
+            "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+            "type": "apiResource",
+            "title": "Sales Capacity and Time Off Management API",
+            "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning."
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:HazardousSubstanceComplianceManagementAPI:v1",
+            "type": "apiResource",
+            "title": "Hazardous Substance Compliance Management API",
+            "shortDescription": "Manages and exposes hazardous substance data for regulatory compliance in sales operations."
+          },
+          "... (12 more)"
+        ]
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.crm:agent:OpportunityQualificationAdvisor:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.crm:agent:OpportunityQualificationAdvisor:v1",
+          "type": "agent",
+          "namespace": "sap.crm",
+          "title": "Opportunity Qualification Advisor",
+          "shortDescription": "Autonomously evaluates sales opportunities against qualification criteria and recommends actions.",
+          "description": "This AI agent analyzes incoming SalesOpportunity records by examining customer account characteristics, deal value, customer history, and engagement patterns. It automatically qualifies or disqualifies opportunities based on configurable enterprise rules, prioritizes high-value prospects, and recommends next-best-actions to sales representatives. The agent reduces manual qualification overhead and ensures consistent lead scoring across the sales organization.",
+          "entityTypes": [
+            "sap.odm:entityType:SalesOpportunity:v1",
+            "sap.odm:entityType:CustomerAccount:v1"
+          ],
+          "lineOfBusiness": [
+            "Sales and Customer Management"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "opportunity-management",
+            "lead-scoring",
+            "sales-automation",
+            "ai-agent"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "sap.crm:package:Core:v1"
+        }
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "sap.crm:agent:OpportunityQualificationAdvisor:v1",
+          "reason": "This AI agent autonomously evaluates and qualifies sales opportunities against criteria, prioritizes high-potential accounts, and recommends actions\u2014directly matching the need to identify and qualify opportunities for targeted sales engagement."
+        },
+        "result": {
+          "committed": "sap.crm:agent:OpportunityQualificationAdvisor:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "sap.crm:agent:OpportunityQualificationAdvisor:v1",
+    "picked_reason": "This AI agent autonomously evaluates and qualifies sales opportunities against criteria, prioritizes high-potential accounts, and recommends actions\u2014directly matching the need to identify and qualify opportunities for targeted sales engagement.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 8,
+    "tokens": 22702,
+    "latency_s": 10.841,
+    "llm_calls": 8
+  },
+  "wall_s": 10.846
+}

@@ -1,0 +1,150 @@
+{
+  "case_id": "dy-11",
+  "user_prompt": "I need to submit a maintenance request for our server infrastructure and track its progress through approval. Can you help me get this logged in the system and see what the current status is?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "A",
+  "state": "clean",
+  "condition": "A0",
+  "skill_expected": null,
+  "skill_picked": "proc_007",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Log maintenance request in the system",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1",
+            "score": 0.3728
+          },
+          {
+            "ordId": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1",
+            "score": 0.3635
+          },
+          {
+            "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "score": 0.3361
+          },
+          {
+            "ordId": "sap.s4:dataProduct:EquipmentComplianceAndMaintenanceInsights:v1",
+            "score": 0.3205
+          },
+          {
+            "ordId": "sap.s4:dataProduct:AssetMaintenanceAndChangeAnalytics:v1",
+            "score": 0.3151
+          }
+        ],
+        "method_trace": {
+          "embedding_model": "text-embedding-3-large",
+          "resource_count": 273,
+          "tokens": 20593,
+          "latency_s": 0.46
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Check current status of submitted request",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:ServiceRequestOrderManagement:v1",
+            "score": 0.3669
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": 0.3207
+          },
+          {
+            "ordId": "workday.hcm:apiResource:EmployeeTimeOffRequestManagement:v1",
+            "score": 0.309
+          },
+          {
+            "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "score": 0.3052
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": 0.29
+          }
+        ],
+        "method_trace": {
+          "embedding_model": "text-embedding-3-large",
+          "resource_count": 273,
+          "tokens": 20593,
+          "latency_s": 0.647
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_007",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_007\",\n  \"reason\": \"proc_007 manages the complete lifecycle of service and change requests from initial capture through implementation coordination with approval workflows, which directly matches the user's need to submit a maintenance request and track its approval status.\"\n}\n```",
+      "reason": "proc_007 manages the complete lifecycle of service and change requests from initial capture through implementation coordination with approval workflows, which directly matches the user's need to submit a maintenance request and track its approval status.",
+      "tokens": 1661,
+      "latency_s": 1.648,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Log maintenance request in the system\",\n    \"Check current status of submitted request\"\n  ],\n  \"reason\": \"The skill covers the end-to-end lifecycle including approval workflows and stakeholder communication, but the step list is empty and does not include the specific operational actions needed: submitting/logging the maintenance request entry and retrieving its current status from the system.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers the end-to-end lifecycle including approval workflows and stakeholder communication, but the step list is empty and does not include the specific operational actions needed: submitting/logging the maintenance request entry and retrieving its current status from the system.",
+      "tokens": 428,
+      "latency_s": 1.859,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "I need to submit a maintenance request for our server infrastructure and track its progress through approval. Can you help me get this logged in the system and see what the current status is?"
+      ],
+      "original_prompt": "I need to submit a maintenance request for our server infrastructure and track its progress through approval. Can you help me get this logged in the system and see what the current status is?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 1,
+      "sub_queries": [
+        "I need to submit a maintenance request for our server infrastructure and track its progress through approval, including getting it logged in the system and checking the current status."
+      ],
+      "routed_ok": true,
+      "count_ok": true,
+      "verdict": "green"
+    }
+  },
+  "trace": {
+    "tokens": 43275,
+    "latency_s": 4.614,
+    "llm_calls": 2
+  },
+  "wall_s": 5.041
+}

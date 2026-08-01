@@ -1,0 +1,142 @@
+{
+  "case_id": "dy-27",
+  "user_prompt": "We need to pull together our supplier payment terms and current commitments against what we've got coming in from our clients this quarter\u2014basically reconcile who we owe and what we're expecting to collect so we can forecast our cash position accurately.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "A",
+  "state": "clean",
+  "condition": "A0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Retrieve our supplier payment terms and current payment commitments to understand our outgoing cash obligations",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+            "score": 0.4307
+          },
+          {
+            "ordId": "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+            "score": 0.3933
+          },
+          {
+            "ordId": "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1",
+            "score": 0.3713
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+            "score": 0.3656
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1",
+            "score": 0.3645
+          }
+        ],
+        "method_trace": {
+          "embedding_model": "text-embedding-3-large",
+          "resource_count": 273,
+          "tokens": 20602,
+          "latency_s": 0.75
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+            "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Get our client receivables and expected collections for this quarter to forecast incoming cash",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:dataProduct:OpportunitySalesForecasting:v1",
+            "score": 0.3502
+          },
+          {
+            "ordId": "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+            "score": 0.3207
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:CustomerAndOpportunityInsights:v1",
+            "score": 0.311
+          },
+          {
+            "ordId": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+            "score": 0.3099
+          },
+          {
+            "ordId": "sap.crm:dataProduct:SalesOpportunityPipelineAnalytics:v1",
+            "score": 0.3098
+          }
+        ],
+        "method_trace": {
+          "embedding_model": "text-embedding-3-large",
+          "resource_count": 273,
+          "tokens": 20603,
+          "latency_s": 0.481
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is a financial forecasting and cash flow analysis task (reconciling payables, receivables, and cash position) that doesn't match any registered skill, which focus on operational processes like procurement, manufacturing, product launches, and order fulfillment.\"\n}\n```",
+      "reason": "The request is a financial forecasting and cash flow analysis task (reconciling payables, receivables, and cash position) that doesn't match any registered skill, which focus on operational processes like procurement, manufacturing, product launches, and order fulfillment.",
+      "tokens": 1682,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 3,
+      "sub_queries": [
+        "Pull together our supplier payment terms and current financial commitments we owe",
+        "Pull together our client invoices and expected collections coming in this quarter",
+        "Reconcile supplier obligations against client receivables to forecast our cash position"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 43152,
+    "latency_s": 1.231,
+    "llm_calls": 2
+  },
+  "wall_s": 2.923
+}

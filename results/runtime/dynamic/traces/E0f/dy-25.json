@@ -1,0 +1,192 @@
+{
+  "case_id": "dy-25",
+  "user_prompt": "We need to reconcile our incoming supplier billing against the materials we've received this quarter, and at the same time, verify that everything we've taken in meets our regulatory obligations for restricted substances in each shipment.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Reconcile our incoming supplier billing against the materials we've received this quarter",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE SYSTEMS (11 total):\n- workday.hcm: HCM with compensation agents but NO API resources\n- sap.sf: SuccessFactors HCM - INCLUDES:\n  * apiResource:EmployeeCompensationManagement:v1 - Extract payroll/compensation records\n  * agent:CompensationPolicyAutomationEngine:v1 - Compensation policy automation\n  * agent:SkillsAndCapabilityMatchingOrchestrator:v1 - Workforce planning\n- sap.s4: ERP - agents (procurement, order automation, engineering change), MaterialReceiptInboundAPI (goods receipt inbound only)\n- sap.crm: CRM with opportunity qualification AGENTS ONLY - NO API resources for customer account/purchase data\n- sap.ehs: Safety/health - AGENTS (incident analysis, compliance automation, vendor certification)\n- sap.ariba: Procurement - AGENTS + APIs:\n  * agent:VendorInvoiceReconciliationAutomation:v1 - Matches invoices to POs/contracts, validates line-item quantities/pricing, flags discrepancies (BEST for billing reconciliation)\n  * agent:SupplierComplianceAndIncidentMonitor:v1 - Hazardous materials tracking\n  * agent:MaterialAndEngineeringChangeCoordinator:v1 - Material updates coordination\n  * apiResource:PurchaseOrderNetworkAPI:v1\n  * apiResource:SourceingCampaignAndAccountManagementAPI:v1\n  * apiResource:ProcurementWorkforceCompensationAPI:v1\n- corp.itsm: IT service management AGENTS (enterprise incident tracking)\n- emarsys.cx: Customer experience/marketing engagement AGENTS ONLY\n- my.mes: Manufacturing AGENTS ONLY\n- siemens.plm: PLM AGENTS ONLY\n- sap.odm: Entity type repository\n\nINVOICE/BILLING RECONCILIATION:\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 - BEST for reconciling supplier invoices against POs/materials received\n  * Three-way matching logic (PO, Contract, Invoice)\n  * Validates quantities, pricing, terms\n  * Flags overbilling, duplicates, policy violations\n  * Routes for payment processing"
+              },
+              "result_preview": {
+                "stored_bytes": 1855,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "reason": "This agent autonomously reconciles vendor invoices against purchase orders and contracts using three-way matching, validating quantities and pricing to flag billing discrepancies\u2014directly fulfilling the activity of reconciling supplier billing against received materials."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+          "picked_reason": "This agent autonomously reconciles vendor invoices against purchase orders and contracts using three-way matching, validating quantities and pricing to flag billing discrepancies\u2014directly fulfilling the activity of reconciling supplier billing against received materials.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 3,
+          "tokens": 16339,
+          "latency_s": 19.566,
+          "llm_calls": 3
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Verify that everything we've taken in meets our regulatory obligations for restricted substances in each shipment",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE SYSTEMS (11 total):\n- workday.hcm: HCM with compensation agents but NO API resources\n- sap.sf: SuccessFactors HCM - INCLUDES:\n  * apiResource:EmployeeCompensationManagement:v1\n  * agent:CompensationPolicyAutomationEngine:v1\n  * agent:SkillsAndCapabilityMatchingOrchestrator:v1\n- sap.s4: ERP - agents (procurement, order automation, engineering change), MaterialReceiptInboundAPI\n- sap.crm: CRM with opportunity qualification AGENTS ONLY - NO API resources\n- sap.ehs: Safety/health - AGENTS (incident analysis, compliance automation, vendor certification)\n- sap.ariba: Procurement - AGENTS + APIs:\n  * agent:VendorInvoiceReconciliationAutomation:v1 - Invoice/PO/contract 3-way matching\n  * agent:SupplierComplianceAndIncidentMonitor:v1 - RESTRICTED SUBSTANCES: Hazardous material certifications, regulatory verification, compliance flags\n  * agent:MaterialAndEngineeringChangeCoordinator:v1 - Material updates coordination\n  * apiResource:PurchaseOrderNetworkAPI:v1\n  * apiResource:SourceingCampaignAndAccountManagementAPI:v1\n  * apiResource:ProcurementWorkforceCompensationAPI:v1\n- corp.itsm: IT service management AGENTS ONLY\n- emarsys.cx: Customer experience/marketing AGENTS ONLY\n- my.mes: Manufacturing AGENTS ONLY\n- siemens.plm: PLM AGENTS ONLY\n- sap.odm: Entity type repository\n\nWORKFLOW PATTERN OBSERVED:\nVendorInvoiceReconciliationAutomation (step 1) \u2192 SupplierComplianceAndIncidentMonitor (step 2: restricted substances verification)"
+              },
+              "result_preview": {
+                "stored_bytes": 1452,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+                "reason": "Directly automates hazardous material certification oversight and regulatory verification for restricted substances compliance per shipment."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+          "picked_reason": "Directly automates hazardous material certification oversight and regulatory verification for restricted substances compliance per shipment.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 3,
+          "tokens": 14970,
+          "latency_s": 14.963,
+          "llm_calls": 3
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 31646,
+    "latency_s": 34.529,
+    "llm_calls": 7
+  },
+  "wall_s": 34.544
+}

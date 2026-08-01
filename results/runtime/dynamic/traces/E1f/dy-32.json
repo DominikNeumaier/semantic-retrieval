@@ -1,0 +1,525 @@
+{
+  "case_id": "dy-32",
+  "user_prompt": "I need to pull together our current inventory specifications alongside the vendor details we have on file, and simultaneously check on the status of our pending maintenance requests and any open change orders we've submitted to understand our full operational picture.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "enriched",
+  "condition": "E1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull our current inventory specifications",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.s4/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.s4/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1007
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1057
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.odm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 11
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/siemens.plm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/siemens.plm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"siemens.plm:package:Core:v1\",\n      \"title\": \"siemens.plm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 940
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.s4"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.s4",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE SYSTEMS (10 visible):\n- workday.hcm: HCM - compensation agents only, NO REST API for staffing data\n- sap.sf: SuccessFactors HCM - REST API: EmployeeCompensationManagement:v1 (READ payroll/compensation data)\n- sap.s4: ERP - MaterialReceiptInboundAPI (INBOUND REST API for goods receipt), Procurement agents, OpportunityToOrderAutomationEngine (sales opp\u2192order)\n- sap.crm: CRM - sales/marketing agents ONLY (OpportunityQualificationAdvisor, SalesCompensationOrchestrator, etc.) - NO performance analytics APIs\n- sap.ehs: Safety/health - AGENTS ONLY (IncidentRootCauseAnalyzer, IncidentResponseCoordinator, ComplianceCampaignOrchestrator, SafetyComplianceAutomationCoordinator) - NO REST API for reading safety metrics\n- sap.ariba: Procurement - PurchaseOrderNetworkAPI (REST API for PO status + vendor monitoring)\n- corp.itsm: IT service mgmt - agents ONLY (NO create API)\n- emarsys.cx: CX/marketing - agents only\n- my.mes: Manufacturing - ProductionQualityMonitor, EquipmentOEEAnalytics (REST API for machine OEE metrics), BillOfMaterialsComplianceValidator, HazmatIncidentComplianceMonitor (HAZMAT/chemical inventory + regulatory compliance)\n- siemens.plm: PLM - SupplierQualificationAndMaterialCoordinator, BOM validators, QA agents\n- sap.odm: Data model (entity taxonomy only)\n\nINVENTORY/MATERIAL KEY GAPS:\n- NO REST API for reading inventory specifications in landscape\n- sap.s4:MaterialReceiptInboundAPI = WRITE-ONLY (inbound goods receipt), NOT read\n- Multiple agents exist for BOM/material validation (my.mes, sap.s4, siemens.plm) but these are automation/orchestration, not data retrieval APIs\n- Activity \"pull current inventory specifications\" cannot be fulfilled"
+              },
+              "result_preview": {
+                "stored_bytes": 1681,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "No REST API in the landscape exposes current inventory specifications for reading; only inbound write APIs and BOM validation agents exist."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "No REST API in the landscape exposes current inventory specifications for reading; only inbound write APIs and BOM validation agents exist."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "No REST API in the landscape exposes current inventory specifications for reading; only inbound write APIs and BOM validation agents exist.",
+          "tool_calls": 8,
+          "tokens": 79913,
+          "latency_s": 28.019,
+          "llm_calls": 8
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Retrieve vendor details we have on file",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+                "reason": "REST API that exposes vendor entity types and supports supplier collaboration for vendor details retrieval."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+          "picked_reason": "REST API that exposes vendor entity types and supports supplier collaboration for vendor details retrieval.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 2,
+          "tokens": 7945,
+          "latency_s": 5.559,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Check the status of our pending maintenance requests",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE SYSTEMS (10 visible):\n- workday.hcm: HCM - compensation agents only, NO REST API for staffing data\n- sap.sf: SuccessFactors HCM - REST API: EmployeeCompensationManagement:v1 (READ payroll/co \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1021
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.odm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 11
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape has no REST API resource for reading maintenance request status; corp.itsm contains only automation agents, not data retrieval APIs."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape has no REST API resource for reading maintenance request status; corp.itsm contains only automation agents, not data retrieval APIs."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape has no REST API resource for reading maintenance request status; corp.itsm contains only automation agents, not data retrieval APIs.",
+          "tool_calls": 6,
+          "tokens": 35506,
+          "latency_s": 14.321,
+          "llm_calls": 6
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Get information on any open change orders we've submitted",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE SYSTEMS (10 visible):\n- workday.hcm: HCM - compensation agents only, NO REST API for staffing data\n- sap.sf: SuccessFactors HCM - REST API: EmployeeCompensationManagement:v1 (READ payroll/co \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.ariba"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.ariba",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.ariba/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.ariba/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 870
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+                "reason": "PurchaseOrderNetworkAPI supports monitoring and updating purchase orders including lifecycle status tracking, which encompasses open change orders within the procurement workflow."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+          "picked_reason": "PurchaseOrderNetworkAPI supports monitoring and updating purchase orders including lifecycle status tracking, which encompasses open change orders within the procurement workflow.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 5,
+          "tokens": 27126,
+          "latency_s": 14.677,
+          "llm_calls": 5
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 150833,
+    "latency_s": 62.576,
+    "llm_calls": 22
+  },
+  "wall_s": 62.645
+}

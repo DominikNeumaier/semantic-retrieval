@@ -1,0 +1,194 @@
+{
+  "case_id": "oos-08",
+  "user_prompt": "We need to automatically flag SKUs that are approaching slow-moving or obsolete status based on turnover velocity trends, so we can initiate clearance protocols or adjust safety stock levels before excess inventory ties up working capital for another quarter.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Analyze turnover velocity trends to identify SKUs approaching slow-moving or obsolete status",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.s4",
+            "sap.ariba"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.s4\", \"sap.ariba\"],\n  \"reason\": \"SKU turnover velocity analysis requires inventory management and material tracking capabilities, both central to SAP S/4HANA and Ariba's procurement and inventory systems.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"This activity is purely read-only analysis of historical turnover data to identify trends and classify SKUs; it requires data products and event resources for KPI computation, not operational execution.\"\n}\n```",
+          "stage2_pool_size": 15,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductItem:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:ProductItem:v1\"],\n  \"reason\": \"Analyzing turnover velocity trends to identify slow-moving or obsolete SKUs requires reading Material and ProductItem data to assess inventory movement patterns.\"\n}\n```",
+          "stage3_pool_size": 5,
+          "stage4_raw": "```json\n[\n  \"sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1\",\n  \"sap.s4:dataProduct:ProcurementMetricsHub:v1\",\n  \"sap.ariba:dataProduct:SupplyChainProductIntelligence:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2289,
+          "latency_s": 6.368,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Automatically flag SKUs that meet slow-moving or obsolete criteria based on velocity analysis",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.s4",
+            "sap.ariba"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.s4\", \"sap.ariba\"],\n  \"reason\": \"SKU velocity analysis for slow-moving/obsolete flagging requires inventory management and material master data, both core to S4 and Ariba's procurement/inventory functions.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Velocity analysis is a read-only KPI calculation that identifies SKUs meeting criteria; flagging is a metadata marker requiring no live transactional work.\"\n}\n```",
+          "stage2_pool_size": 15,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductItem:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:ProductItem:v1\"],\n  \"reason\": \"The activity analyzes SKU velocity to flag slow-moving or obsolete items, which directly concerns Material master data and ProductItem definitions that represent these SKUs.\"\n}\n```",
+          "stage3_pool_size": 5,
+          "stage4_raw": "```json\n[\n  \"sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1\",\n  \"sap.s4:dataProduct:ProcurementMetricsHub:v1\",\n  \"sap.ariba:dataProduct:SupplyChainProductIntelligence:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2290,
+          "latency_s": 6.851,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Initiate clearance protocols and adjust safety stock levels for flagged SKUs to optimize working capital",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:ProcurementMatchingAgent:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.s4",
+            "sap.ariba"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.s4\", \"sap.ariba\"],\n  \"reason\": \"SKU clearance and safety stock optimization are core inventory management functions handled by SAP S/4HANA (Material, Inventory Management) and SAP Ariba (Inventory Management, Material master data).\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Adjusting safety stock levels and initiating clearance protocols are direct actions that modify master data and execute supply chain decisions.\"\n}\n```",
+          "stage2_pool_size": 36,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductionOrder:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:ProductionOrder:v1\"],\n  \"reason\": \"The activity adjusts safety stock levels for flagged SKUs (materials) and involves clearance protocols that impact production planning and inventory optimization.\"\n}\n```",
+          "stage3_pool_size": 16,
+          "stage4_raw": "```json\n[\n  \"sap.s4:apiResource:MaterialReceiptInboundAPI:v1\",\n  \"sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1\",\n  \"sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1\",\n  \"sap.s4:agent:ProcurementMatchingAgent:v1\",\n  \"sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 3028,
+          "latency_s": 7.467,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is for an automated inventory monitoring and flagging system based on turnover trends, which is a specialized inventory management capability not fully covered by any registered skill\u2014most skills focus on procurement, production, compliance, or order fulfillment rather than inventory velocity analysis and clearance protocols.\"\n}\n```",
+      "reason": "The request is for an automated inventory monitoring and flagging system based on turnover trends, which is a specialized inventory management capability not fully covered by any registered skill\u2014most skills focus on procurement, production, compliance, or order fulfillment rather than inventory vel",
+      "tokens": 1687,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 9662,
+    "latency_s": 20.686,
+    "llm_calls": 14
+  },
+  "wall_s": 20.725
+}

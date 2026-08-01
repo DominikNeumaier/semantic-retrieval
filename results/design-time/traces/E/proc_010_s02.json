@@ -1,0 +1,101 @@
+{
+  "case_id": "proc_010_s02",
+  "process": "proc_010",
+  "label": "ServiceToProduction process: Analyze Change Impact and Materials \u2014 Evaluate engineering changes required to resolve the service issue and identify materials needed for remediation.",
+  "method": "E",
+  "expected_ordIds": [
+    "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.ariba:package:Core:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_dir",
+        "args": {
+          "path": "landscape"
+        },
+        "result_preview": {
+          "error": "path not allowed: 'landscape'. Allowed roots: ('benchmark',)"
+        }
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "read_file",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/sap.odm/ord_enriched.json"
+        },
+        "result_preview": {
+          "error": "file not found: benchmark/landscape/systems_enriched/sap.odm/ord_enriched.json"
+        }
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "read_file",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+          "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+          "truncated": true,
+          "total_lines": 1016
+        }
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "write_notes",
+        "args": {
+          "content": "## Landscape Summary\n- 11 systems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\n## SERVICE REQUEST & ORDER CAPTURE\n- **sap.s4:agent:OpportunityToOrderAutomationEngine** - Converts sales opportunities to customer orders, automates order creation workflows\n- **corp.itsm agents process ServiceTickets** - IncidentRootCauseAnalyzer, IncidentSafetyCoordinator work with ServiceTicket entity type\n- **sap.ariba** - Purchase Order Network API handles procurement orders (vendor orders, not customer orders)\n\n## SUPPLY CHAIN RISK & COMPLIANCE\n- **sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1** - Validates vendor safety certifications, monitors contract adherence to EHS requirements, processes compliance exceptions during PO creation/contract execution. Works with Vendor, PurchaseOrder, Contract entity types.\n- **sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1** - Enforces safety compliance on materials and product items, coordinates supplier qualification assessments\n- **sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1** - Tracks hazardous material declarations from vendors, identifies non-compliance signals, routes safety alerts for supply chain risk mitigation\n- **sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1** - Validates material specifications against compliance requirements, processes engineering changes, coordinates material updates across procurement workflows. Works with EngineeringChange, Material, ProductItem entity types.\n\n## SUPPLY CHAIN CONTINUITY VALIDATION\n- **sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1** - REST API for PO lifecycle management. Exposes PurchaseOrder & Vendor entity types. Capabilities: coordinate-vendor-procurement, validate-purchase-orders, verify-vendor-compliance.\n\n## PRODUCTION INCIDENT & SAFETY ANALYSIS\n- **sap.ehs:agent:IncidentRootCauseAnalyzer:v1** - Autonomously analyzes SafetyIncident data, environmental factors, and historical patterns to identify root causes. Generates RCA reports with recommended corrective/preventive actions prioritized by risk severity.\n\n## CHANGE IMPACT & MATERIAL REMEDIATION\n- **sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1** - PRIMARY for evaluating engineering changes and identifying materials needed for remediation. Processes change requests, validates material specs against compliance requirements, propagates updates through procurement network.\n"
+        },
+        "result_preview": {
+          "stored_bytes": 2465,
+          "truncated": false,
+          "cap_bytes": 4096
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+          "reason": "Processes engineering changes to resolve service issues and identifies materials needed through coordinated specification validation and material updates."
+        },
+        "result_preview": {
+          "committed": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+    "picked_reason": "Processes engineering changes to resolve service issues and identifies materials needed through coordinated specification validation and material updates.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 5,
+    "tokens": 15972,
+    "latency_s": 14.258,
+    "llm_calls": 5
+  },
+  "wall_s": 14.261
+}

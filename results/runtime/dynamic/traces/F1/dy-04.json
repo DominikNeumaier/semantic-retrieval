@@ -1,0 +1,264 @@
+{
+  "case_id": "dy-04",
+  "user_prompt": "Our engineering team keeps pushing through design changes that require updates to our IT infrastructure, but we're struggling to keep pace with manual coordination across multiple systems. Right now, when a new component specification comes through, we have to manually track which servers need reconfiguration, which licenses need reallocation, and which hardware needs to be deployed\u2014and it's creating delays and tracking errors. We need a way to automate this entire workflow so that when engineering changes are approved, all the downstream IT infrastructure changes happen consistently and in the right sequence.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1,
+    "acceptable": 1,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Our engineering team keeps pushing through design changes that require updates to our IT infrastructure, but we're struggling to keep pace with manual coordination across multiple systems. Right now, when a new component specification comes through, we have to manually track which servers need reconfiguration, which licenses need reallocation, and which hardware needs to be deployed\u2014and it's creating delays and tracking errors. We need a way to automate this entire workflow so that when engineering changes are approved, all the downstream IT infrastructure changes happen consistently and in the right sequence.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 46014,
+          "latency_s": 12.93,
+          "llm_calls": 8,
+          "confidence": 0.92,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 24,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 818,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "corp.itsm",
+                "entity_types": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:ITEquipment:v1"
+                ],
+                "action_verb": "orchestrate",
+                "resource_type_hint": "apiResource"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29369,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 9184,
+              "latency_s": 7.410319089889526,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:EngineeringChange:v1"
+                  },
+                  "n_results": 40
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:ITEquipment:v1"
+                  },
+                  "n_results": 24
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 64
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "corp.itsm": 5,
+                "my.mes": 4,
+                "siemens.plm": 3,
+                "emarsys.cx": 3,
+                "sap.ariba": 3,
+                "sap.s4": 2
+              },
+              "entity_types": {
+                "sap.odm:entityType:EngineeringChange:v1": 18,
+                "sap.odm:entityType:ProductItem:v1": 18,
+                "sap.odm:entityType:Material:v1": 15,
+                "sap.odm:entityType:ChangeRequest:v1": 2,
+                "sap.odm:entityType:ITEquipment:v1": 2,
+                "sap.odm:entityType:ServiceTicket:v1": 2
+              },
+              "resource_types": {
+                "agent": 12,
+                "apiResource": 4,
+                "dataProduct": 4
+              },
+              "top_capabilities": {
+                "assess-engineering-change": 1,
+                "evaluate-material-impact": 1,
+                "allocate-materials": 1,
+                "coordinate-infrastructure": 1,
+                "allocate-equipment": 1,
+                "orchestrate-provisioning": 1,
+                "coordinate-equipment-assignment": 1,
+                "orchestrate-asset-provisioning": 1
+              },
+              "n_candidates": 20
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1"
+                ],
+                "business_groups": [
+                  "proc_EngChangeAndProcurement_v1",
+                  "proc_integrated_service_change_mgmt_v1"
+                ],
+                "lines_of_business": [
+                  "IT Service Management",
+                  "Manufacturing"
+                ],
+                "reason": "Engineering design changes trigger downstream IT infrastructure updates (servers, licenses, hardware) requiring automated change request and IT equipment coordination across systems."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\",\n    \"sap.odm:entityType:ITEquipment:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_EngChangeAndProcurement_v1\",\n    \"proc_integrated_service_change_mgmt_v1\"\n  ],\n  \"lines_of_business\": [\n    \"IT Service Management\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Engineering design changes trigger downstream IT infrastructure updates (servers, licenses, hardware) requiring automated change request and IT equipment coordination across systems.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity describes automating a multi-system workflow triggered by engineering changes, with downstream sequencing across infrastructure (servers, licenses, hardware). This requires **orchestration agents** that automate coordination across multiple systems.\n\n**Top picks (Agents - orchestration focus):**\n1. **ProductionChangeOrchestrator** - Directly orchestrates production changes, sequences work orders, coordinates material flow, and synchronizes engineering changes across systems\n2. **AssetProvisioningOrchestrator** - Explicitly coordinates infrastructure/asset provisioning (equipment, materials) across engineering changes, which directly addresses the server reconfiguration and hardware deployment need\n3. **AssetLifecycleChangeOrchestrator** - Coordinates engineering changes with automated provisioning and tracks lifecycle, bridging change approval to implementation\n4. **EngineeringChangeAndMaterialProvisioning** - Automates change processing with provisioning coordination, though it emphasizes material over IT infrastructure\n\n**Supporting resources (Analytics):**\n- DataProducts provide impact analysis and readiness validation, useful for pre-change assessment but insufficient for automation execution\n- Ranked lower because the core need is workflow automation, not analytics alone",
+              "refused": false,
+              "previous_resolved": [
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1"
+              ],
+              "tokens": 4303,
+              "latency_s": 5.52,
+              "llm_calls": 2,
+              "n_new_from_graph": 4
+            },
+            "phase3_rerank": {
+              "tokens": 2340,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+              "confidence": 0.92
+            }
+          },
+          "decomp_trace": {
+            "tokens": 512,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 1,
+            "sub_queries": [
+              "We need to automate a workflow that tracks and orchestrates IT infrastructure changes triggered by engineering design approvals. The workflow should automatically handle server reconfiguration, license reallocation, and hardware deployment in the correct sequence, eliminating manual coordination across multiple systems and reducing tracking errors."
+            ],
+            "original_prompt": "Our engineering team keeps pushing through design changes that require updates to our IT infrastructure, but we're struggling to keep pace with manual coordination across multiple systems. Right now, when a new component specification comes through, we have to manually track which servers need reconfiguration, which licenses need reallocation, and which hardware needs to be deployed\u2014and it's creating delays and tracking errors. We need a way to automate this entire workflow so that when engineering changes are approved, all the downstream IT infrastructure changes happen consistently and in the right sequence."
+          },
+          "n_detected": 1
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is for IT infrastructure automation triggered by engineering changes, which falls outside the manufacturing/product operations domain covered by all registered skills; no skill addresses automated IT system coordination (server reconfiguration, license reallocation, hardware deployment).\"\n}\n```",
+      "reason": "The request is for IT infrastructure automation triggered by engineering changes, which falls outside the manufacturing/product operations domain covered by all registered skills; no skill addresses automated IT system coordination (server reconfiguration, license reallocation, hardware deployment).",
+      "tokens": 1739,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 48265,
+    "latency_s": 12.93,
+    "llm_calls": 10
+  },
+  "wall_s": 17.19
+}

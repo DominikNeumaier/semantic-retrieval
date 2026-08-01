@@ -1,0 +1,281 @@
+{
+  "case_id": "dy-11",
+  "user_prompt": "I need to submit a maintenance request for our server infrastructure and track its progress through approval. Can you help me get this logged in the system and see what the current status is?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "enriched",
+  "condition": "E1",
+  "skill_expected": null,
+  "skill_picked": "proc_007",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Log maintenance request in the system",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1021
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/corp.itsm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/corp.itsm",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1021
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "corp.itsm (the logical ITSM system) has no apiResources to log/create maintenance requests; it only contains processing agents without external APIs."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "corp.itsm (the logical ITSM system) has no apiResources to log/create maintenance requests; it only contains processing agents without external APIs."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "corp.itsm (the logical ITSM system) has no apiResources to log/create maintenance requests; it only contains processing agents without external APIs.",
+          "tool_calls": 5,
+          "tokens": 35459,
+          "latency_s": 14.252,
+          "llm_calls": 5
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Check current status of submitted request",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "## Landscape Overview (10 systems):\n- **corp.itsm**: ITSM system with agents for incident management, root cause analysis, change coordination, safety incidents, and asset provisioning (NO retrieval A \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.crm:package:Core:v1\",\n      \"title\": \"sap.crm Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1080
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "## Landscape Overview (10 systems):\n- **corp.itsm**: ITSM system with agents for incident management, root cause analysis, change coordination, safety incidents, and asset provisioning (NO retrieval APIs)\n- **sap.crm**: CRM system with agents for opportunity management, sales coordination, and campaign optimization\n- **sap.s4**: ERP system with procurement, BOM, sales, and change orchestration agents; sales order management with OpportunityToOrderAutomationEngine\n- **sap.sf**: HR/HCM system (SuccessFactors) with EmployeeCompensationManagement API and compensation automation agents\n- **sap.ariba**: Procurement system with PurchaseOrderNetworkAPI (supplier POs), SourceingCampaignAndAccountManagementAPI, invoice matching, sourcing, compliance APIs\n- **sap.ehs**: Safety/compliance system with risk identification, incident analysis, and compliance automation agents\n- **workday.hcm**: HCM system with compensation adjustment/change processors\n- **siemens.plm**: PLM system with BOM compliance and engineering change agents\n- **my.mes**: MES system with production quality and change orchestration agents\n- **sap.odm, emarsys.cx**: Other domain systems\n\n## KEY FINDINGS:\n\n### Customer Order Management:\n- sap.s4 (ERP) has OpportunityToOrderAutomationEngine agent for order lifecycle\n- sap.s4 is the system responsible for sales order management (customer orders)\n- sap.ariba PurchaseOrderNetworkAPI is for SUPPLIER POs (inbound procurement), not customer sales orders\n\n### Cost Drivers & Supply Chain Visibility:\n- **sap.s4:agent:ProcurementMatchingAgent:v1** provides cost and vendor analysis\n\n### Status Tracking APIs (NEW):\n- **sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1** explicitly supports real-time status tracking of purchase orders and supplier networks\n- sap.crm agents are mostly automation-focused (no retrieval APIs)\n- Most other systems rely on agents, not retrieval APIs\n"
+              },
+              "result_preview": {
+                "stored_bytes": 1898,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+                "reason": "This API explicitly enables real-time status tracking of purchase orders and supplier workflows, directly fulfilling the need to check the current status of submitted requests."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+          "picked_reason": "This API explicitly enables real-time status tracking of purchase orders and supplier workflows, directly fulfilling the need to check the current status of submitted requests.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 6,
+          "tokens": 37892,
+          "latency_s": 19.948,
+          "llm_calls": 6
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_007",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_007\",\n  \"reason\": \"proc_007 manages the complete lifecycle of service and change requests from initial capture through implementation coordination with approval workflows, which directly matches the user's need to submit a maintenance request and track its approval status.\"\n}\n```",
+      "reason": "proc_007 manages the complete lifecycle of service and change requests from initial capture through implementation coordination with approval workflows, which directly matches the user's need to submit a maintenance request and track its approval status.",
+      "tokens": 1661,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Log maintenance request in the system\",\n    \"Check current status of submitted request\"\n  ],\n  \"reason\": \"The skill covers the end-to-end lifecycle including approval workflows and stakeholder communication, but the step list is empty and does not include the specific operational actions needed: submitting/logging the maintenance request entry and retrieving its current status from the system.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers the end-to-end lifecycle including approval workflows and stakeholder communication, but the step list is empty and does not include the specific operational actions needed: submitting/logging the maintenance request entry and retrieving its current status from the system.",
+      "tokens": 428,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "I need to submit a maintenance request for our server infrastructure and track its progress through approval. Can you help me get this logged in the system and see what the current status is?"
+      ],
+      "original_prompt": "I need to submit a maintenance request for our server infrastructure and track its progress through approval. Can you help me get this logged in the system and see what the current status is?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 1,
+      "sub_queries": [
+        "I need to submit a maintenance request for our server infrastructure and track its progress through approval, including getting it logged in the system and checking the current status."
+      ],
+      "routed_ok": true,
+      "count_ok": true,
+      "verdict": "green"
+    }
+  },
+  "trace": {
+    "tokens": 75440,
+    "latency_s": 34.2,
+    "llm_calls": 13
+  },
+  "wall_s": 34.226
+}

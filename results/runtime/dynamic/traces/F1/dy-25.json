@@ -1,0 +1,869 @@
+{
+  "case_id": "dy-25",
+  "user_prompt": "We need to reconcile our incoming supplier billing against the materials we've received this quarter, and at the same time, verify that everything we've taken in meets our regulatory obligations for restricted substances in each shipment.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Reconcile our incoming supplier billing against the materials we've received this quarter",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ProductionQualityMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 93953,
+          "latency_s": 27.029,
+          "llm_calls": 20,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 472,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Reconcile our incoming supplier billing against the materials we've received this quarter"
+            ],
+            "original_prompt": "Reconcile our incoming supplier billing against the materials we've received this quarter",
+            "sub_queries_redecomposed": [
+              "Retrieve all supplier invoices and billing records received this quarter",
+              "Retrieve all materials received and corresponding purchase orders for this quarter"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve all supplier invoices and billing records received this quarter",
+              "trace": {
+                "tokens": 44669,
+                "latency_s": 12.137,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 22,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 716,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ariba",
+                      "entity_types": [
+                        "sap.odm:entityType:Invoice:v1",
+                        "sap.odm:entityType:PurchaseOrder:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29274,
+                    "latency_s": 0.462
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8557,
+                    "latency_s": 4.757934093475342,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Invoice:v1"
+                        },
+                        "n_results": 7
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+                        },
+                        "n_results": 21
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 28
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.ariba": 4,
+                      "corp.itsm": 4,
+                      "my.mes": 3,
+                      "emarsys.cx": 3,
+                      "sap.ehs": 2,
+                      "sap.s4": 2,
+                      "sap.crm": 1,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Vendor:v1": 12,
+                      "sap.odm:entityType:PurchaseOrder:v1": 10,
+                      "sap.odm:entityType:Material:v1": 8,
+                      "sap.odm:entityType:Invoice:v1": 7,
+                      "sap.odm:entityType:Contract:v1": 6,
+                      "sap.odm:entityType:ProductionOrder:v1": 1,
+                      "sap.odm:entityType:QualityInspection:v1": 1,
+                      "sap.odm:entityType:CustomerAccount:v1": 1,
+                      "sap.odm:entityType:CustomerOrder:v1": 1
+                    },
+                    "resource_types": {
+                      "dataProduct": 9,
+                      "apiResource": 6,
+                      "agent": 5
+                    },
+                    "top_capabilities": {
+                      "validate-vendor-material": 1,
+                      "process-invoice": 1,
+                      "verify-material-specification": 1,
+                      "audit-procurement-compliance": 1,
+                      "execute-procurement-orders": 1,
+                      "manage-vendor-orders": 1,
+                      "track-purchase-fulfillment": 1,
+                      "manage-supplier-orders": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Invoice:v1",
+                        "sap.odm:entityType:Vendor:v1",
+                        "sap.odm:entityType:PurchaseOrder:v1"
+                      ],
+                      "business_groups": [
+                        "proc_procure_fulfill_v1",
+                        "proc_ProcurementSafetyCompliance_v1"
+                      ],
+                      "lines_of_business": [
+                        "Procurement",
+                        "Finance"
+                      ],
+                      "reason": "Activity retrieves supplier invoices and billing records, which are core procurement and finance operations involving vendor and invoice entities."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_ProcurementSafetyCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Finance\"\n  ],\n  \"reason\": \"Activity retrieves supplier invoices and billing records, which are core procurement and finance operations involving vendor and invoice entities.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1\",\n  \"sap.s4:apiResource:MaterialReceiptInboundAPI:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity is to \"retrieve all supplier invoices and billing records received this quarter\" \u2014 a pure data retrieval task focused on financial/procurement records.\n\n1. **sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1** (BEST MATCH): This API resource directly addresses vendor invoices and their retrieval. Its capabilities include `process-invoice`, `validate-vendor-material`, and its shortDescription explicitly states \"Retrieves and manages vendor invoices linked to materials and purchase orders.\" This is the most relevant match for the stated activity.\n\n2. **sap.s4:apiResource:MaterialReceiptInboundAPI:v1** (SECONDARY): While this focuses on material receipt rather than invoicing specifically, it tracks inbound vendor shipments and receipt validation, which is often paired with invoice reconciliation workflows. It provides supporting context for supplier billing records.\n\n3. **sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1** (TERTIARY): This dataProduct can analyze material availability and requirements, providing analytical context for understanding supplier invoices and billing patterns across the quarter.\n\nThe agents and other dataProducts are not ideal because the activity is fundamentally a retrieval/read operation on billing master data, not a complex orchestration or workforce assessment task.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                      "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                      "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                      "sap.ariba:dataProduct:ProductionQualityMetrics:v1",
+                      "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+                    ],
+                    "tokens": 4102,
+                    "latency_s": 7.379,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 2
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2020,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Retrieve all materials received and corresponding purchase orders for this quarter",
+              "trace": {
+                "tokens": 47812,
+                "latency_s": 14.892,
+                "llm_calls": 9,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 23,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 716,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.s4",
+                      "entity_types": [
+                        "sap.odm:entityType:Material:v1",
+                        "sap.odm:entityType:PurchaseOrder:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29275,
+                    "latency_s": 0.517
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 11681,
+                    "latency_s": 7.215564489364624,
+                    "llm_calls": 5,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+                        },
+                        "n_results": 21
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.s4:dataProduct:MaterialReceiptIntelligence:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.s4:dataProduct:ProcurementOrderIntelligence:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:VendorSpendIntelligence:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 79
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "emarsys.cx": 6,
+                      "my.mes": 4,
+                      "corp.itsm": 4,
+                      "sap.ariba": 3,
+                      "sap.crm": 1,
+                      "sap.s4": 1,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Material:v1": 16,
+                      "sap.odm:entityType:Vendor:v1": 7,
+                      "sap.odm:entityType:EngineeringChange:v1": 7,
+                      "sap.odm:entityType:ProductItem:v1": 7,
+                      "sap.odm:entityType:Invoice:v1": 4,
+                      "sap.odm:entityType:PurchaseOrder:v1": 2,
+                      "sap.odm:entityType:ProductionOrder:v1": 2,
+                      "sap.odm:entityType:QualityInspection:v1": 1,
+                      "sap.odm:entityType:Machine:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 7,
+                      "dataProduct": 7,
+                      "agent": 6
+                    },
+                    "top_capabilities": {
+                      "manage-supplier-orders": 1,
+                      "update-purchase-orders": 1,
+                      "coordinate-vendor-schedules": 1,
+                      "analyze-material-supply": 1,
+                      "validate-vendor-capacity": 1,
+                      "assess-inventory-impact": 1,
+                      "validate-vendor-material": 1,
+                      "process-invoice": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Material:v1",
+                        "sap.odm:entityType:PurchaseOrder:v1"
+                      ],
+                      "business_groups": [
+                        "proc_procure_fulfill_v1",
+                        "proc_QualityDrivenMfgSupplyChain_v1"
+                      ],
+                      "lines_of_business": [
+                        "Procurement",
+                        "Inventory Management"
+                      ],
+                      "reason": "Activity retrieves materials received and purchase orders, core entities in procurement and supply chain processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_QualityDrivenMfgSupplyChain_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Inventory Management\"\n  ],\n  \"reason\": \"Activity retrieves materials received and purchase orders, core entities in procurement and supply chain processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.s4:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requires **retrieving materials received and purchase orders for a specific quarter** \u2014 this is a historical analytical query on master data.\n\n1. **sap.s4:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1** (1st) \u2014 Best match. It's a dataProduct (preferred for analytical reads) with capabilities like `assess-material-requirements`, `assess-material-availability`, and `analyze-material-requirements`. It directly supports querying material and operational data for analysis.\n\n2. **sap.s4:agent:AssetLifecycleChangeOrchestrator:v1** (2nd) \u2014 Strong secondary. Tracks material updates and change lifecycle, providing visibility into materials across time periods. The capability to `manage-product-lifecycle` and `track-change-lifecycle` supports historical retrieval.\n\n3. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** (3rd) \u2014 Relevant for material tracking and provisioning context, though more operational than analytical. Capabilities like `track-change-status` and `manage-material-provisioning` support visibility into materials.\n\n4. **sap.s4:agent:BOMComplianceAutomationAgent:v1** (4th) \u2014 Provides bill-of-materials validation and material verification, useful for understanding material composition but less focused on temporal retrieval of received materials and POs.\n\nExcluded: The other agents focus on workforce readiness, safety compliance, or IT asset provisioning\u2014not material receipt and purchase order data retrieval.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+                      "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                      "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+                      "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                      "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1"
+                    ],
+                    "tokens": 4106,
+                    "latency_s": 7.676,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 3
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2034,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 1000,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+              "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Verify that everything we've taken in meets our regulatory obligations for restricted substances in each shipment",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 90910,
+          "latency_s": 30.459,
+          "llm_calls": 19,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 520,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Verify that everything we've taken in meets our regulatory obligations for restricted substances in each shipment"
+            ],
+            "original_prompt": "Verify that everything we've taken in meets our regulatory obligations for restricted substances in each shipment",
+            "sub_queries_redecomposed": [
+              "Retrieve all incoming shipments and their contents inventory to identify what substances have been received",
+              "Check regulatory compliance requirements for restricted substances and verify each shipment's contents against applicable regulatory obligations"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve all incoming shipments and their contents inventory to identify what substances have been received",
+              "trace": {
+                "tokens": 44679,
+                "latency_s": 14.158,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 24,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 721,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.s4",
+                      "entity_types": [
+                        "sap.odm:entityType:PurchaseOrder:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29279,
+                    "latency_s": 0.506
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8593,
+                    "latency_s": 5.418212175369263,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+                        },
+                        "n_results": 21
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:VendorSpendIntelligence:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 79
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 5,
+                      "my.mes": 4,
+                      "sap.ehs": 4,
+                      "sap.s4": 3,
+                      "sap.ariba": 2,
+                      "emarsys.cx": 2
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Vendor:v1": 12,
+                      "sap.odm:entityType:PurchaseOrder:v1": 10,
+                      "sap.odm:entityType:HazardousSubstance:v1": 8,
+                      "sap.odm:entityType:Contract:v1": 5,
+                      "sap.odm:entityType:Material:v1": 2,
+                      "sap.odm:entityType:Incident:v1": 1,
+                      "sap.odm:entityType:SafetyIncident:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 14,
+                      "agent": 4,
+                      "dataProduct": 2
+                    },
+                    "top_capabilities": {
+                      "verify-vendor-compliance": 2,
+                      "assess-material-safety": 1,
+                      "verify-substance-regulations": 1,
+                      "evaluate-hazardous-materials": 1,
+                      "validate-material-safety": 1,
+                      "evaluate-compliance": 1,
+                      "assess-regulatory-alignment": 1,
+                      "validate-material": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Material:v1",
+                        "sap.odm:entityType:HazardousSubstance:v1",
+                        "sap.odm:entityType:PurchaseOrder:v1",
+                        "sap.odm:entityType:QualityInspection:v1"
+                      ],
+                      "business_groups": [
+                        "proc_procure_fulfill_v1",
+                        "proc_QualityDrivenMfgSupplyChain_v1",
+                        "proc_ProcurementSafetyCompliance_v1"
+                      ],
+                      "lines_of_business": [
+                        "Procurement",
+                        "Inventory Management"
+                      ],
+                      "reason": "Activity involves receiving shipments and tracking material/substance inventory, anchored by procurement orders, material tracking, and hazardous substance identification."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:HazardousSubstance:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:QualityInspection:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_QualityDrivenMfgSupplyChain_v1\",\n    \"proc_ProcurementSafetyCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Inventory Management\"\n  ],\n  \"reason\": \"Activity involves receiving shipments and tracking material/substance inventory, anchored by procurement orders, material tracking, and hazardous substance identification.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requires **retrieving incoming shipments and their contents inventory to identify received substances** \u2014 this is fundamentally an inventory/material data retrieval task.\n\n1. **sap.s4:agent:AssetLifecycleChangeOrchestrator:v1** (Best match): Coordinates material updates and assesses material impact across product lifecycles, with capabilities to track changes and manage approvals related to materials.\n\n2. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** (Strong match): Has explicit capabilities for `allocate-inventory` and `manage-material-provisioning`, plus useCases mentioning material availability and picking lists \u2014 directly relevant to tracking received substances.\n\n3. **sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1** (Good match): Offers `assess-material-availability` and `analyze-material-requirements` capabilities with focus on material data analysis, appropriate for analytical inventory reads.\n\n4. **corp.itsm:agent:AssetProvisioningOrchestrator:v1** (Acceptable match): While primarily asset-focused, has `allocate-materials` capability and useCases mentioning inventory tracking across transition waves.\n\nExcluded candidates lack inventory/shipment retrieval focus: Production Change Orchestrator and Asset Lifecycle agents are oriented toward orchestration rather than data retrieval; Safety Compliance and Workforce analytics are misaligned with the core retrieval requirement.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+                      "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+                      "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+                      "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+                      "sap.ehs:apiResource:MaterialHazardDataExchange:v1"
+                    ],
+                    "tokens": 4085,
+                    "latency_s": 8.74,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 4
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2001,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Check regulatory compliance requirements for restricted substances and verify each shipment's contents against applicable regulatory obligations",
+              "trace": {
+                "tokens": 44784,
+                "latency_s": 16.301,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 26,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 725,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ehs",
+                      "entity_types": [
+                        "sap.odm:entityType:HazardousSubstance:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "action_verb": "validate",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29281,
+                    "latency_s": 0.505
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8575,
+                    "latency_s": 8.772299766540527,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:HazardousSubstance:v1"
+                        },
+                        "n_results": 23
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 81
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.ehs": 5,
+                      "emarsys.cx": 4,
+                      "corp.itsm": 3,
+                      "my.mes": 3,
+                      "siemens.plm": 2,
+                      "sap.ariba": 1,
+                      "sap.s4": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:HazardousSubstance:v1": 17,
+                      "sap.odm:entityType:Incident:v1": 5,
+                      "sap.odm:entityType:SafetyIncident:v1": 5,
+                      "sap.odm:entityType:Material:v1": 2,
+                      "sap.odm:entityType:Vendor:v1": 1,
+                      "sap.odm:entityType:ProductItem:v1": 1,
+                      "sap.odm:entityType:EngineeringChange:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 13,
+                      "agent": 6
+                    },
+                    "top_capabilities": {
+                      "assess-material-safety": 1,
+                      "verify-substance-regulations": 1,
+                      "evaluate-hazardous-materials": 1,
+                      "validate-material-safety": 1,
+                      "evaluate-compliance": 1,
+                      "assess-regulatory-alignment": 1,
+                      "verify-compliance": 1,
+                      "validate-substance-regulations": 1
+                    },
+                    "n_candidates": 19
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:HazardousSubstance:v1",
+                        "sap.odm:entityType:CustomerOrder:v1",
+                        "sap.odm:entityType:Material:v1",
+                        "sap.odm:entityType:QualityInspection:v1"
+                      ],
+                      "business_groups": [
+                        "proc_ProcurementSafetyCompliance_v1",
+                        "proc_SafetyComplianceOrchestration_v1",
+                        "proc_supply_production_compliance_v1"
+                      ],
+                      "lines_of_business": [
+                        "Environment, Health & Safety",
+                        "Procurement"
+                      ],
+                      "reason": "Activity validates shipment contents against regulatory restrictions on hazardous substances, requiring tracking of orders, materials, and compliance inspections through safety and procurement governance."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:HazardousSubstance:v1\",\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:QualityInspection:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_ProcurementSafetyCompliance_v1\",\n    \"proc_SafetyComplianceOrchestration_v1\",\n    \"proc_supply_production_compliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Environment, Health & Safety\",\n    \"Procurement\"\n  ],\n  \"reason\": \"Activity validates shipment contents against regulatory restrictions on hazardous substances, requiring tracking of orders, materials, and compliance inspections through safety and procurement governance.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "siemens.plm:agent:BOMComplianceValidator:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:BOMComplianceValidator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity requires **regulatory compliance verification** and **shipment content validation** against regulatory obligations\u2014this is fundamentally a compliance validation task.\n\n**Top matches:**\n1. **sap.s4:agent:BOMComplianceAutomationAgent:v1** - Perfect fit. Explicitly automates BOM validation, enforces engineering standards, verifies material standards, and validates compliance. Directly addresses regulatory requirement verification.\n\n2. **siemens.plm:agent:BOMComplianceValidator:v1** - Excellent match. Validates BOM compliance, assesses material compliance, verifies component standards against regulatory requirements. Use cases include QA validating material changes against regulatory requirements.\n\n3. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** - Strong secondary. Evaluates material requirements, manages material provisioning, and validates engineering changes\u2014essential for shipment content verification.\n\n4. **sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1** - Relevant for analytical validation of material requirements and operational readiness assessment.\n\n5. **corp.itsm:agent:AssetProvisioningOrchestrator:v1** - Supports material allocation and supply chain validation aligned with requirements.\n\n6-8. Lower-ranked dataProducts and agents focus more on workforce and production orchestration rather than regulatory compliance verification.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+                      "emarsys.cx:apiResource:ComplianceRiskAssessmentAPI:v1",
+                      "emarsys.cx:apiResource:SubstanceComplianceDataAPI:v1",
+                      "emarsys.cx:apiResource:HazardousSubstanceComplianceManagementAPI:v1",
+                      "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1"
+                    ],
+                    "tokens": 4157,
+                    "latency_s": 7.529,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 7
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2046,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 927,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+              "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request combines two distinct operational needs\u2014supplier billing reconciliation (accounts payable) and regulatory compliance verification\u2014that don't align with any single registered skill's end-to-end process; this appears to be a specialized finance and compliance reconciliation task rather than a standard product, procurement, or manufacturing workflow.\"\n}\n```",
+      "reason": "The request combines two distinct operational needs\u2014supplier billing reconciliation (accounts payable) and regulatory compliance verification\u2014that don't align with any single registered skill's end-to-end process; this appears to be a specialized finance and compliance reconciliation task rather tha",
+      "tokens": 1687,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 186887,
+    "latency_s": 57.488,
+    "llm_calls": 41
+  },
+  "wall_s": 81.614
+}

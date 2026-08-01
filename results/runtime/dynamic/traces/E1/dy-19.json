@@ -1,0 +1,625 @@
+{
+  "case_id": "dy-19",
+  "user_prompt": "We need to check our current compliance status for the hazardous materials we're storing across all our facilities and understand what regulatory requirements we need to meet. Can you pull a report showing our inventory levels and which items require updated certifications or documentation?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "enriched",
+  "condition": "E1",
+  "skill_expected": null,
+  "skill_picked": "proc_004",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Pull compliance status report across all facilities",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.ehs/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.ehs/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1075
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.odm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 11
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.odm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.odm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-independent\",\n  \"description\": \"SAP One Domain Model entity type taxonomy for the benchmark landscape. 40 canonical business objects servi \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 667
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "## Landscape Overview (10 systems):\n- **corp.itsm**: Incident mgmt, RCA, change coordination, safety, asset provisioning (NO retrieval APIs, NO field team comm, NO error-handling resource)\n- **sap.crm**: Sales opportunities, compensation, product change coordination, vendor procurement\n- **sap.s4**: ERP with procurement, BOM, sales, change orchestration; ProcurementMatchingAgent; Material Receipt Inbound API; OpportunityToOrderAutomationEngine (links sales opportunities, production planning, orders)\n- **sap.sf**: HR/HCM (SuccessFactors) with compensation APIs, SkillsAndCapabilityMatchingOrchestrator, performance review coordination\n- **sap.ariba**: Procurement, PO networks, sourcing, invoice matching (3-way), compliance, hazmat tracking; MaterialAndEngineeringChangeCoordinator\n- **sap.ehs**: Safety/compliance, risk ID, incident analysis (IncidentRootCauseAnalyzer), ComplianceCampaignOrchestrator, SafetyComplianceAutomationCoordinator; NO facility-level compliance reporting API\n- **workday.hcm**: HCM with compensation adjustments, performance review coordination\n- **siemens.plm**: PLM with BOM compliance, engineering change agents (EngineeringChangeAndMaterialProvisioning)\n- **my.mes**: Production quality, supplier compliance, change orchestration, BOM validation, hazmat\n- **emarsys.cx**: CX/marketing (campaigns, vendor engagement, opportunity orchestration, product lifecycle)\n\n## Key Activity Resolutions:\n- **Activity: Adjust inventory records** \u2192 sap.s4 InventoryAdjustmentAPI\n- **Activity: Q3 production initiatives + account commitments + orders** \u2192 sap.s4:agent:OpportunityToOrderAutomationEngine:v1\n- **Activity: Pull compliance status report across all facilities** \u2192 NO RESOURCE (sap.ehs has agents for compliance but no retrieval/reporting API for facility-level data)\n"
+              },
+              "result_preview": {
+                "stored_bytes": 1801,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape contains compliance orchestration agents (sap.ehs) but no facility-level compliance status report retrieval API."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape contains compliance orchestration agents (sap.ehs) but no facility-level compliance status report retrieval API."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape contains compliance orchestration agents (sap.ehs) but no facility-level compliance status report retrieval API.",
+          "tool_calls": 8,
+          "tokens": 74486,
+          "latency_s": 25.97,
+          "llm_calls": 8
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Generate inventory levels report for hazardous materials",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1276
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1276
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/my.mes"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/my.mes",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1057
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1057
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.ehs/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.ehs/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1075
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.s4/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.s4/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1007
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "## Landscape Overview (10 systems):\n- **corp.itsm**: Incident mgmt, RCA, change coordination, safety, asset provisioning (NO retrieval APIs, NO field team comm, NO error-handling resource)\n- **sap.crm**: Sales opportunities, compensation, product change coordination, vendor procurement\n- **sap.s4**: ERP with procurement, BOM, sales, change orchestration; ProcurementMatchingAgent; Material Receipt Inbound API; OpportunityToOrderAutomationEngine (links sales opportunities, production planning, orders)\n- **sap.sf**: HR/HCM (SuccessFactors) with compensation APIs, SkillsAndCapabilityMatchingOrchestrator, performance review coordination\n- **sap.ariba**: Procurement, PO networks, sourcing, invoice matching (3-way), compliance, hazmat tracking; MaterialAndEngineeringChangeCoordinator; SupplierComplianceAndIncidentMonitor (hazmat agent) but NO hazmat inventory API\n- **sap.ehs**: Safety/compliance, risk ID, incident analysis (IncidentRootCauseAnalyzer), ComplianceCampaignOrchestrator, SafetyComplianceAutomationCoordinator; NO facility-level compliance reporting API\n- **workday.hcm**: HCM with compensation adjustments, performance review coordination\n- **siemens.plm**: PLM with BOM compliance, engineering change agents (EngineeringChangeAndMaterialProvisioning)\n- **my.mes**: Production quality, supplier compliance, change orchestration, BOM validation, hazmat; HazmatIncidentComplianceMonitor (agent) but NO hazmat inventory levels API\n- **emarsys.cx**: CX/marketing (campaigns, vendor engagement, opportunity orchestration, product lifecycle)\n\n## Key Activity Resolutions:\n- **Activity: Adjust inventory records** \u2192 sap.s4 InventoryAdjustmentAPI\n- **Activity: Q3 production initiatives + account commitments + orders** \u2192 sap.s4:agent:OpportunityToOrderAutomationEngine:v1\n- **Activity: Pull compliance status report across all facilities** \u2192 NO RESOURCE (sap.ehs has agents for compliance but no retrieval/reporting API for facility-level data)\n- **Activity: Generate inventory levels report for hazardous materials** \u2192 NO RESOURCE (sap.ariba/my.mes have hazmat agents/monitoring but no retrieval API for hazmat inventory levels)"
+              },
+              "result_preview": {
+                "stored_bytes": 2142,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 8,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "No resource in the landscape provides a retrieval or reporting API for hazardous materials inventory levels; hazmat capabilities exist only as monitoring/coordination agents."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "No resource in the landscape provides a retrieval or reporting API for hazardous materials inventory levels; hazmat capabilities exist only as monitoring/coordination agents."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "No resource in the landscape provides a retrieval or reporting API for hazardous materials inventory levels; hazmat capabilities exist only as monitoring/coordination agents.",
+          "tool_calls": 10,
+          "tokens": 123115,
+          "latency_s": 30.667,
+          "llm_calls": 10
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Identify items requiring updated certifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1276
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/siemens.plm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/siemens.plm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"siemens.plm:package:Core:v1\",\n      \"title\": \"siemens.plm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1102
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "## Landscape Overview (10 systems):\n- **corp.itsm**: Incident mgmt, RCA, change coordination, safety, asset provisioning (NO retrieval APIs, NO field team comm, NO error-handling resource)\n- **sap.crm**: Sales opportunities, compensation, product change coordination, vendor procurement\n- **sap.s4**: ERP with procurement, BOM, sales, change orchestration; ProcurementMatchingAgent; Material Receipt Inbound API; OpportunityToOrderAutomationEngine\n- **sap.sf**: HR/HCM (SuccessFactors) with compensation APIs, SkillsAndCapabilityMatchingOrchestrator, performance review coordination\n- **sap.ariba**: Procurement, PO networks, sourcing, invoice matching; MaterialAndEngineeringChangeCoordinator; SupplierComplianceAndIncidentMonitor (hazmat agent) NO hazmat inventory API\n- **sap.ehs**: Safety/compliance, risk ID, incident analysis; IncidentRootCauseAnalyzer; VendorComplianceAutomationOrchestrator; SafetyComplianceAutomationCoordinator; NO facility-level compliance reporting API\n- **workday.hcm**: HCM with compensation adjustments, performance review coordination\n- **siemens.plm**: PLM with BOM compliance (BOMComplianceValidator agent), engineering change agents\n- **my.mes**: Production quality, supplier compliance, BOM validation, HazmatIncidentComplianceMonitor agent\n- **emarsys.cx**: CX/marketing (campaigns, vendor engagement, opportunity orchestration)\n\n## Key Activity Resolutions:\n- **Activity: Adjust inventory records** \u2192 sap.s4 InventoryAdjustmentAPI\n- **Activity: Q3 production initiatives + account commitments + orders** \u2192 sap.s4:agent:OpportunityToOrderAutomationEngine:v1\n- **Activity: Pull compliance status report across all facilities** \u2192 NO RESOURCE\n- **Activity: Generate inventory levels report for hazardous materials** \u2192 NO RESOURCE\n- **Activity: Identify items requiring updated certifications** \u2192 sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1 (best match - tracks certifications but is orchestration agent, not retrieval API; NO dedicated retrieval API for items needing certification exists)\n"
+              },
+              "result_preview": {
+                "stored_bytes": 2037,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+                "reason": "This agent tracks hazardous material certifications from vendors, identifies non-compliance signals through regulatory verification, and triggers protocols for items/materials requiring certification updates."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+          "picked_reason": "This agent tracks hazardous material certifications from vendors, identifies non-compliance signals through regulatory verification, and triggers protocols for items/materials requiring certification updates.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 7,
+          "tokens": 56005,
+          "latency_s": 25.397,
+          "llm_calls": 7
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Identify items requiring updated documentation",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+                "reason": "Coordinates material updates and engineering changes with specification validation, naturally following compliance monitoring to identify items requiring documentation updates."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+          "picked_reason": "Coordinates material updates and engineering changes with specification validation, naturally following compliance monitoring to identify items requiring documentation updates.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 3,
+          "tokens": 16320,
+          "latency_s": 9.749,
+          "llm_calls": 3
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_004",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_004\",\n  \"reason\": \"This skill directly manages hazardous substance compliance, identification of hazardous materials, and assessment across manufacturing operations, which comprehensively covers the user's request for compliance status, inventory levels, and certification requirements for stored hazardous materials.\"\n}\n```",
+      "reason": "This skill directly manages hazardous substance compliance, identification of hazardous materials, and assessment across manufacturing operations, which comprehensively covers the user's request for compliance status, inventory levels, and certification requirements for stored hazardous materials.",
+      "tokens": 1683,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Pull compliance status report across all facilities\",\n    \"Generate inventory levels report for hazardous materials\",\n    \"Identify items requiring updated certifications\",\n    \"Identify items requiring updated documentation\"\n  ],\n  \"reason\": \"The skill covers identification of hazardous materials and execution of regulatory compliance programs, but lacks specific steps for generating reports on current inventory levels, compliance status across facilities, and identifying which items need certification or documentation updates.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers identification of hazardous materials and execution of regulatory compliance programs, but lacks specific steps for generating reports on current inventory levels, compliance status across facilities, and identifying which items need certification or documentation updates.",
+      "tokens": 457,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "We need to check our current compliance status for the hazardous materials we're storing across all our facilities and understand what regulatory requirements we need to meet. Can you pull a report showing our inventory levels and which items require updated certifications or documentation?"
+      ],
+      "original_prompt": "We need to check our current compliance status for the hazardous materials we're storing across all our facilities and understand what regulatory requirements we need to meet. Can you pull a report showing our inventory levels and which items require updated certifications or documentation?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 3,
+      "sub_queries": [
+        "Check our current compliance status for hazardous materials storage across all facilities against applicable regulatory requirements",
+        "Pull a report showing our hazardous materials inventory levels across all facilities",
+        "Identify which hazardous materials items require updated certifications or documentation"
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 272066,
+    "latency_s": 91.783,
+    "llm_calls": 30
+  },
+  "wall_s": 91.836
+}

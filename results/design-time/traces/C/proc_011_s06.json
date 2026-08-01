@@ -1,0 +1,82 @@
+{
+  "case_id": "proc_011_s06",
+  "process": "proc_011",
+  "label": "ProductComplianceManufacturing process: Schedule production and machine resources \u2014 Allocate production orders and machine capacity based on validated material compliance and manufacturing capability requirements.",
+  "method": "C",
+  "expected_ordIds": [
+    "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+      "score": 65.0
+    },
+    {
+      "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+      "score": 65.0
+    },
+    {
+      "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+      "score": 65.0
+    },
+    {
+      "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+      "score": 65.0
+    },
+    {
+      "ordId": "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+      "score": 65.0
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "anchors": {
+      "entity_types": [
+        "sap.odm:entityType:ProductionOrder:v1",
+        "sap.odm:entityType:Machine:v1",
+        "sap.odm:entityType:Material:v1",
+        "sap.odm:entityType:QualityInspection:v1"
+      ],
+      "business_groups": [],
+      "lines_of_business": [
+        "Manufacturing",
+        "Manufacturing Execution"
+      ],
+      "reason": "Activity schedules production orders and allocates machine capacity based on material compliance and manufacturing capability, directly involving production orders, machines, materials, and quality inspections."
+    },
+    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:QualityInspection:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Manufacturing Execution\"\n  ],\n  \"reason\": \"Activity schedules production orders and allocates machine capacity based on material compliance and manufacturing capability, directly involving production orders, machines, materials, and quality inspections.\"\n}\n```",
+    "max_hops": 2,
+    "hop_decay": 0.5,
+    "edge_weights": {
+      "co_exposes": 1.0,
+      "co_partOf": 2.0,
+      "calls": 3.0,
+      "processNext": 3.0
+    },
+    "scored_resources": 111,
+    "walk_top_ids": [
+      "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+      "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+      "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+      "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+      "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+      "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+      "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+    ],
+    "rerank_raw": "```json\n[\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\",\n  \"corp.itsm:agent:ChangeAutomationOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"corp.itsm:agent:ChangeReleaseCoordinator:v1\",\n  \"emarsys.cx:agent:ProductLifecycleOrchestrator:v1\"\n]\n```\n\n**Rationale:**\n\n1. **BillOfMaterialsComplianceValidator** (rank 1): Best match \u2014 directly addresses \"validated material compliance\" validation and is explicitly designed for BOM compliance checks, which is core to the manufacturing scheduling activity.\n\n2. **ChangeAutomationOrchestrator** (rank 2): Strong secondary match \u2014 handles material updates and engineering changes that inform production capacity allocation decisions.\n\n3. **AssetProvisioningOrchestrator** (rank 3): Relevant for machine resource allocation and capacity management through asset lifecycle orchestration.\n\n4. **ChangeReleaseCoordinator** (rank 4): Addresses inventory and production coordination across engineering changes.\n\n5. **ProductLifecycleOrchestrator** (rank 5): Supports product coordination and inventory synchronization relevant to manufacturing scheduling.\n\n*Excluded dataProducts*: Analytics resources (ProductChangeAndInventoryAnalytics, ProductImpactSalesIntelligence) are for analytical reads, not operational scheduling and allocation tasks. *Excluded AccessProvisioningOrchestrator*: Focused on access control, not manufacturing resource allocation.",
+    "refused": false,
+    "previous_resolved": [],
+    "tokens": 2179,
+    "latency_s": 5.616,
+    "llm_calls": 2
+  },
+  "wall_s": 5.627
+}

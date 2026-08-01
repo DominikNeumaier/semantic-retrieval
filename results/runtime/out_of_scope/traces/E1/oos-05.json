@@ -1,0 +1,159 @@
+{
+  "case_id": "oos-05",
+  "user_prompt": "We need visibility into how our daily supplier payment obligations will impact our available cash balance hour-by-hour, so our treasury team can coordinate with our banks on same-day funding needs before we hit our minimum operating cash threshold\u2014right now we're manually pulling payment schedules from three different systems and it's causing us to request emergency credit lines that cost us fees.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "enriched",
+  "condition": "E1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 1,
+    "falsely_picked": 0,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Integrate and consolidate daily supplier payment schedules from three different systems into a single unified data source",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "No ORD resource in the landscape provides multi-source supplier payment schedule integration and consolidation into a unified data source; the landscape lacks general ETL/data integration platform capabilities."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "No ORD resource in the landscape provides multi-source supplier payment schedule integration and consolidation into a unified data source; the landscape lacks general ETL/data integration platform capabilities."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "No ORD resource in the landscape provides multi-source supplier payment schedule integration and consolidation into a unified data source; the landscape lacks general ETL/data integration platform capabilities.",
+          "tool_calls": 4,
+          "tokens": 21857,
+          "latency_s": 11.825,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Build a real-time cash flow visibility tool that projects available cash balance hour-by-hour based on payment obligations, with alerts when approaching minimum operating cash threshold to enable proactive coordination with banks for same-day funding",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "No system in the landscape provides real-time cash flow visibility, hour-by-hour balance projections, or treasury/liquidity management capabilities for proactive bank coordination."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "No system in the landscape provides real-time cash flow visibility, hour-by-hour balance projections, or treasury/liquidity management capabilities for proactive bank coordination."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "No system in the landscape provides real-time cash flow visibility, hour-by-hour balance projections, or treasury/liquidity management capabilities for proactive bank coordination.",
+          "tool_calls": 1,
+          "tokens": 2980,
+          "latency_s": 4.296,
+          "llm_calls": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user's request is for a treasury/cash flow forecasting capability that integrates supplier payment data across systems for real-time cash visibility and liquidity management\u2014none of the registered skills cover financial planning, cash flow analysis, or treasury operations.\"\n}\n```",
+      "reason": "The user's request is for a treasury/cash flow forecasting capability that integrates supplier payment data across systems for real-time cash visibility and liquidity management\u2014none of the registered skills cover financial planning, cash flow analysis, or treasury operations.",
+      "tokens": 1705,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 26940,
+    "latency_s": 16.121,
+    "llm_calls": 7
+  },
+  "wall_s": 16.129
+}

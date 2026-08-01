@@ -1,0 +1,138 @@
+{
+  "case_id": "proc_010_s04",
+  "process": "proc_010",
+  "label": "ServiceToProduction process: Assess Equipment and Production Impact \u2014 Evaluate current machine status and production order schedules to understand operational impact and prioritize resolution urgency.",
+  "method": "E",
+  "expected_ordIds": [
+    "sap.s4:apiResource:ProductionPerformanceAPI:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "siemens.plm:agent:QualityAssuranceAndDefectPrevention:v1",
+      "score": null
+    },
+    {
+      "ordId": "my.mes:package:Core:v1",
+      "score": null
+    },
+    {
+      "ordId": "siemens.plm:package:Core:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "read_notes",
+        "args": {},
+        "result_preview": {
+          "content": "## Landscape Summary\n- 11 systems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\n## SERVICE REQUEST & ORDER CAPTURE\n- **sap.s4:agent:Op \u2026(truncated)"
+        }
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "read_file",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json",
+          "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+          "truncated": true,
+          "total_lines": 1276
+        }
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "read_file",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+          "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+          "truncated": true,
+          "total_lines": 1296
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "list_dir",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/my.mes"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched/my.mes",
+          "entries": [
+            {
+              "name": "ord_enriched.json",
+              "kind": "file"
+            }
+          ],
+          "entries_count": 1
+        }
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "read_file",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/siemens.plm/ord_enriched.json"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched/siemens.plm/ord_enriched.json",
+          "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"siemens.plm:package:Core:v1\",\n      \"title\": \"siemens.plm Core Package\",\n      \"shortDesc \u2026(truncated)",
+          "truncated": true,
+          "total_lines": 1102
+        }
+      },
+      {
+        "step": 4,
+        "kind": "tool_call",
+        "name": "write_notes",
+        "args": {
+          "content": "## Landscape Summary\n- 11 systems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\n## SERVICE REQUEST & ORDER CAPTURE\n- **sap.s4:agent:OpportunityToOrderAutomationEngine** - Converts sales opportunities to customer orders, automates order creation workflows\n- **corp.itsm agents process ServiceTickets** - IncidentRootCauseAnalyzer, IncidentSafetyCoordinator work with ServiceTicket entity type\n- **sap.ariba** - Purchase Order Network API handles procurement orders (vendor orders, not customer orders)\n\n## SUPPLY CHAIN RISK & COMPLIANCE\n- **sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1** - Validates vendor safety certifications, monitors contract adherence to EHS requirements, processes compliance exceptions during PO creation/contract execution. Works with Vendor, PurchaseOrder, Contract entity types.\n- **sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1** - Enforces safety compliance on materials and product items, coordinates supplier qualification assessments\n- **sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1** - Tracks hazardous material declarations from vendors, identifies non-compliance signals, routes safety alerts for supply chain risk mitigation\n- **sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1** - Validates material specifications against compliance requirements, processes engineering changes, coordinates material updates across procurement workflows. Works with EngineeringChange, Material, ProductItem entity types.\n\n## SUPPLY CHAIN CONTINUITY VALIDATION\n- **sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1** - REST API for PO lifecycle management. Exposes PurchaseOrder & Vendor entity types. Capabilities: coordinate-vendor-procurement, validate-purchase-orders, verify-vendor-compliance.\n\n## PRODUCTION INCIDENT & SAFETY ANALYSIS\n- **sap.ehs:agent:IncidentRootCauseAnalyzer:v1** - Autonomously analyzes SafetyIncident data, environmental factors, and historical patterns to identify root causes. Generates RCA reports with recommended corrective/preventive actions prioritized by risk severity.\n\n## CHANGE IMPACT & MATERIAL REMEDIATION\n- **sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1** - PRIMARY for evaluating engineering changes and identifying materials needed for remediation. Processes change requests, validates material specs against compliance requirements, propagates updates through procurement network.\n\n## PRODUCTION MONITORING & EQUIPMENT ASSESSMENT\n- **siemens.plm:agent:QualityAssuranceAndDefectPrevention:v1** - Continuously monitors machines and production orders to identify quality anomalies. Works with Machine, ProductionOrder, QualityInspection entity types. Part of proc_ServiceToProduction_v1 process group. Capabilities: defect detection, machine recalibration, production parameter optimization.\n- **my.mes:agent:ProductionQualityMonitor:v1** - Monitors QualityInspection outcomes across active ProductionOrders and Machines, detects quality deviations, initiates escalation workflows and recommends production order adjustments.\n- **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** - Part of proc_ServiceToProduction_v1 process group, automates engineering change and material provisioning coordination\n"
+        },
+        "result_preview": {
+          "stored_bytes": 3296,
+          "truncated": false,
+          "cap_bytes": 4096
+        }
+      },
+      {
+        "step": 5,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "siemens.plm:agent:QualityAssuranceAndDefectPrevention:v1",
+          "reason": "Directly monitors machines and production orders to assess operational status, identify anomalies, and optimize production parameters\u2014core requirements for evaluating equipment and production impact in the ServiceToProduction process."
+        },
+        "result_preview": {
+          "committed": "siemens.plm:agent:QualityAssuranceAndDefectPrevention:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "siemens.plm:agent:QualityAssuranceAndDefectPrevention:v1",
+    "picked_reason": "Directly monitors machines and production orders to assess operational status, identify anomalies, and optimize production parameters\u2014core requirements for evaluating equipment and production impact in the ServiceToProduction process.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 7,
+    "tokens": 48571,
+    "latency_s": 23.741,
+    "llm_calls": 7
+  },
+  "wall_s": 23.745
+}

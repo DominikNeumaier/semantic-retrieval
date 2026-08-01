@@ -1,0 +1,289 @@
+{
+  "case_id": "dy-14",
+  "user_prompt": "We need to record incoming shipments from our suppliers into the system, but I'm not sure if we should be using the invoicing module or if there's a different process for just logging what physically arrived at our warehouse before we even get the bills.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1,
+    "acceptable": 1,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "We need to record incoming shipments from our suppliers into the system, but I'm not sure if we should be using the invoicing module or if there's a different process for just logging what physically arrived at our warehouse before we even get the bills.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Inventory Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Vendor Management API",
+                  "shortDescription": "Exposes purchase orders and vendor data for ITSM procurement workflows."
+                },
+                {
+                  "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Contract Compliance Orchestrator",
+                  "shortDescription": "Automates vendor contract and purchase order compliance monitoring across procurement lifecycle."
+                },
+                "... (18 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Material Receipt Inbound API",
+                "shortDescription": "REST API for creating and managing goods receipt transactions against purchase orders.",
+                "description": "Enables integration systems and warehouse management applications to post goods receipts in real-time against procured materials. Supports batch material receipt posting, quality inspection workflows, and stock reservation updates. Critical for supply chain visibility and inventory accuracy in manufacturing operations.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement",
+                  "Inventory Management",
+                  "Manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "goods-receipt",
+                  "inbound-logistics",
+                  "material-management",
+                  "procurement-integration"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                "reason": "This API is purpose-built for recording physical goods receipts against purchase orders independently of invoicing, making it ideal for logging warehouse inbound shipments before supplier bills arrive."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+          "picked_reason": "This API is purpose-built for recording physical goods receipts against purchase orders independently of invoicing, making it ideal for logging warehouse inbound shipments before supplier bills arrive.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 22552,
+          "latency_s": 10.739,
+          "llm_calls": 8
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user is asking for guidance on a specific operational procedure (receiving/logging shipments) rather than needing to execute a complete end-to-end business process; this is an ad-hoc question about system configuration and process choice, not a registered workflow.\"\n}\n```",
+      "reason": "The user is asking for guidance on a specific operational procedure (receiving/logging shipments) rather than needing to execute a complete end-to-end business process; this is an ad-hoc question about system configuration and process choice, not a registered workflow.",
+      "tokens": 1686,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "We need to record incoming shipments from our suppliers into the system, but I'm not sure if we should be using the invoicing module or if there's a different process for just logging what physically arrived at our warehouse before we even get the bills."
+      ],
+      "original_prompt": "We need to record incoming shipments from our suppliers into the system, but I'm not sure if we should be using the invoicing module or if there's a different process for just logging what physically arrived at our warehouse before we even get the bills.",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 2,
+      "sub_queries": [
+        "How do I record incoming shipments from suppliers into the system when physical goods arrive at the warehouse?",
+        "Should I use the invoicing module for logging received shipments, or is there a different process for recording arrivals before invoices are received?"
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 24238,
+    "latency_s": 10.739,
+    "llm_calls": 9
+  },
+  "wall_s": 10.75
+}

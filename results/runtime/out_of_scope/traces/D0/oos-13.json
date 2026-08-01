@@ -1,0 +1,405 @@
+{
+  "case_id": "oos-13",
+  "user_prompt": "Our manufacturing plants are experiencing high turnover in specialized maintenance roles, and we need a way to automatically identify which of our current operators have transferable skills that could fill these gaps\u2014ideally something that can scan our existing employee training records and certifications to recommend internal candidates for upskilling programs before we resort to external hiring.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Our manufacturing plants are experiencing high turnover in specialized maintenance roles, and we need a way to automatically identify which of our current operators have transferable skills that could fill these gaps\u2014ideally something that can scan our existing employee training records and certifications to recommend internal candidates for upskilling programs before we resort to external hiring.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:agent:TalentAcquisitionCampaignOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:RecruitmentCampaignAutomationOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_skills",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "talent-acquisition"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.sf:agent:TalentAcquisitionCampaignOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Talent Acquisition Campaign Orchestrator",
+                  "shortDescription": "Automates recruitment campaign coordination across candidate segments and sourcing channels."
+                },
+                {
+                  "ordId": "workday.hcm:agent:RecruitmentCampaignAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Hiring Pipeline Orchestration Engine",
+                  "shortDescription": "Streamlines talent sourcing operations and recruiter task allocation across multiple hiring channels."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources and Talent Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ehs:dataProduct:ProductionQualityWorkforcePerformanceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Production Quality and Workforce Performance Analytics",
+                  "shortDescription": "Aggregates production order and quality inspection metrics to analyze workforce safety and quality performance."
+                },
+                {
+                  "ordId": "sap.sf:dataProduct:WorkforceQualityAndProductionMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Against Manufacturing Standards",
+                  "shortDescription": "Combines staff capability assessments with production output and quality compliance data to evaluate operational effectiveness."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Manufacturing"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Employee:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Sales Capacity and Time Off Management API",
+                  "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning."
+                },
+                {
+                  "ordId": "my.mes:apiResource:WorkforceScheduleAndAbsenceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Workforce Schedule and Absence Management API",
+                  "shortDescription": "Manages employee shift assignments and time-off requests in production operations."
+                },
+                "... (41 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:WorkforcePerson:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Workforce Compensation API",
+                  "shortDescription": "Manages employee compensation and payroll data for procurement personnel."
+                },
+                {
+                  "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                  "type": "apiResource",
+                  "title": "Sales Employee Hierarchy and Capability Directory API",
+                  "shortDescription": "Exposes employee organizational structure and sales capabilities for CRM operations."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (16 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.ehs",
+                "title": "Employee Safety Training Compliance Management",
+                "shortDescription": "Manages and retrieves employee safety training records and compliance status.",
+                "description": "Exposes employee and workforce person safety training history, certification status, and compliance requirements. Provides access to training completion records, expiration dates, and regulatory qualification documentation. Manages employee safety competency validation and training mandate tracking.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "safety-training",
+                  "compliance-management",
+                  "workforce-certification"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                "type": "apiResource",
+                "namespace": "sap.crm",
+                "title": "Sales Employee Hierarchy and Capability Directory API",
+                "shortDescription": "Exposes employee organizational structure and sales capabilities for CRM operations.",
+                "description": "This API provides access to employee hierarchical relationships and workforce capabilities within the sales organization. It retrieves detailed employee profiles, reporting structures, and skill inventories to support sales team composition and resource allocation. The service manages workforce person records and organizational mappings essential for sales planning and opportunity assignment.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Capital Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "workforce-management",
+                  "organizational-structure",
+                  "employee-hierarchy"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.sf",
+                "title": "Employee Lifecycle and Personnel Data Management API",
+                "shortDescription": "Exposes and manages complete employee and workforce person records throughout their organizational tenure.",
+                "description": "This API retrieves and manages comprehensive employee lifecycle data including personnel information, organizational assignments, and workforce person attributes. It provides access to employee records and person details maintained throughout the employment journey, enabling seamless data integration for HR processes and reporting.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "employee-data",
+                  "workforce-management",
+                  "personnel-records"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                "reason": "Directly exposes employee training records, certifications, and competency validation needed to identify operators with transferable skills for specialized maintenance role upskilling programs."
+              },
+              "result": {
+                "committed": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+          "picked_reason": "Directly exposes employee training records, certifications, and competency validation needed to identify operators with transferable skills for specialized maintenance role upskilling programs.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 14,
+          "tokens": 38461,
+          "latency_s": 17.349,
+          "llm_calls": 14
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request describes a custom HR/talent management process (skills gap analysis and internal candidate matching) that does not match any of the registered manufacturing, procurement, compliance, or order fulfillment skills.\"\n}\n```",
+      "reason": "The request describes a custom HR/talent management process (skills gap analysis and internal candidate matching) that does not match any of the registered manufacturing, procurement, compliance, or order fulfillment skills.",
+      "tokens": 1687,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 40615,
+    "latency_s": 17.349,
+    "llm_calls": 16
+  },
+  "wall_s": 17.362
+}

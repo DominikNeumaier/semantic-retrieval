@@ -1,0 +1,1242 @@
+{
+  "case_id": "dy-27",
+  "user_prompt": "We need to pull together our supplier payment terms and current commitments against what we've got coming in from our clients this quarter\u2014basically reconcile who we owe and what we're expecting to collect so we can forecast our cash position accurately.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull together our supplier payment terms and current financial commitments we owe",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 90620,
+          "latency_s": 60.539,
+          "llm_calls": 17,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 290,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Pull together our supplier payment terms",
+              "Pull together our current financial commitments we owe"
+            ],
+            "original_prompt": "Pull together our supplier payment terms and current financial commitments we owe"
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Pull together our supplier payment terms",
+              "trace": {
+                "tokens": 44612,
+                "latency_s": 34.432,
+                "llm_calls": 7,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 23,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 710,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ariba",
+                      "entity_types": [
+                        "sap.odm:entityType:Contract:v1",
+                        "sap.odm:entityType:PurchaseOrder:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29270,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8431,
+                    "latency_s": 20.355563640594482,
+                    "llm_calls": 3,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Contract:v1"
+                        },
+                        "n_results": 12
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+                        },
+                        "n_results": 21
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:VendorSpendIntelligence:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 21
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 4,
+                      "sap.ariba": 4,
+                      "sap.ehs": 3,
+                      "my.mes": 2,
+                      "sap.s4": 2,
+                      "siemens.plm": 2,
+                      "emarsys.cx": 2
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Vendor:v1": 16,
+                      "sap.odm:entityType:PurchaseOrder:v1": 15,
+                      "sap.odm:entityType:Contract:v1": 12,
+                      "sap.odm:entityType:Invoice:v1": 3,
+                      "sap.odm:entityType:Material:v1": 3,
+                      "sap.odm:entityType:CustomerAccount:v1": 1,
+                      "sap.odm:entityType:CustomerOrder:v1": 1
+                    },
+                    "resource_types": {
+                      "dataProduct": 8,
+                      "agent": 7,
+                      "apiResource": 4
+                    },
+                    "top_capabilities": {
+                      "execute-procurement-orders": 1,
+                      "manage-vendor-orders": 1,
+                      "track-purchase-fulfillment": 1
+                    },
+                    "n_candidates": 19
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Vendor:v1",
+                        "sap.odm:entityType:Contract:v1",
+                        "sap.odm:entityType:PurchaseOrder:v1"
+                      ],
+                      "business_groups": [
+                        "proc_procure_fulfill_v1",
+                        "proc_EngChangeAndProcurement_v1"
+                      ],
+                      "lines_of_business": [
+                        "Procurement"
+                      ],
+                      "reason": "Supplier payment terms are contractual agreements with vendors that govern purchase transactions and procurement processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:Contract:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_EngChangeAndProcurement_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\"\n  ],\n  \"reason\": \"Supplier payment terms are contractual agreements with vendors that govern purchase transactions and procurement processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity \"Pull together our supplier payment terms\" requires understanding supplier master data, vendor agreements, and their associated payment terms in the context of material procurement.\n\n1. **sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1** (BEST) - Directly retrieves vendor master records and material specifications, which are foundational to accessing supplier payment terms. This is pure CRUD on master data (API).\n\n2. **sap.s4:agent:AssetLifecycleChangeOrchestrator:v1** - Coordinates engineering changes with cross-functional workflows including supplier agreements and change approval processes that impact payment terms negotiations.\n\n3. **sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1** - Provides analytical capability to assess material requirements and supplier impacts, useful for understanding supplier relationships affecting payment terms.\n\n4. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** - Manages material provisioning workflows that involve supplier coordination, relevant to understanding supplier capacity and payment obligations.\n\nThe remaining candidates (Material Receipt Inbound, Production Change Orchestrator, Engineering Change Impact Analytics, Asset Provisioning) are less relevant as they focus on execution/receipt/logistics rather than supplier master data and payment term management.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                      "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1",
+                      "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                      "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+                      "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1"
+                    ],
+                    "tokens": 4110,
+                    "latency_s": 14.076,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 4
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2091,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Pull together our current financial commitments we owe",
+              "trace": {
+                "tokens": 44783,
+                "latency_s": 26.107,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 28,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 714,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.s4",
+                      "entity_types": [
+                        "sap.odm:entityType:PurchaseOrder:v1",
+                        "sap.odm:entityType:Invoice:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29272,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8536,
+                    "latency_s": 14.297084331512451,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+                        },
+                        "n_results": 21
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Invoice:v1"
+                        },
+                        "n_results": 7
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:VendorSpendIntelligence:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 28
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 4,
+                      "my.mes": 4,
+                      "sap.ariba": 4,
+                      "emarsys.cx": 3,
+                      "sap.ehs": 2,
+                      "sap.crm": 1,
+                      "sap.s4": 1,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:PurchaseOrder:v1": 14,
+                      "sap.odm:entityType:Vendor:v1": 14,
+                      "sap.odm:entityType:Contract:v1": 9,
+                      "sap.odm:entityType:Invoice:v1": 4,
+                      "sap.odm:entityType:Material:v1": 4,
+                      "sap.odm:entityType:Compensation:v1": 1,
+                      "sap.odm:entityType:Employee:v1": 1,
+                      "sap.odm:entityType:CustomerAccount:v1": 1,
+                      "sap.odm:entityType:CustomerOrder:v1": 1
+                    },
+                    "resource_types": {
+                      "agent": 5,
+                      "dataProduct": 9,
+                      "apiResource": 6
+                    },
+                    "top_capabilities": {
+                      "execute-procurement-orders": 1,
+                      "manage-vendor-orders": 1,
+                      "track-purchase-fulfillment": 1,
+                      "manage-supplier-orders": 1,
+                      "update-purchase-orders": 1,
+                      "coordinate-vendor-schedules": 1,
+                      "coordinate-vendor-procurement": 1,
+                      "validate-purchase-orders": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Contract:v1",
+                        "sap.odm:entityType:PurchaseOrder:v1",
+                        "sap.odm:entityType:Invoice:v1"
+                      ],
+                      "business_groups": [
+                        "proc_procure_fulfill_v1"
+                      ],
+                      "lines_of_business": [
+                        "Finance",
+                        "Procurement"
+                      ],
+                      "reason": "Financial commitments owed relate to contracts, purchase orders, and invoices tracked in procurement and finance processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Contract:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Invoice:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Finance\",\n    \"Procurement\"\n  ],\n  \"reason\": \"Financial commitments owed relate to contracts, purchase orders, and invoices tracked in procurement and finance processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:apiResource:MaterialReceiptInboundAPI:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity \"Pull together our current financial commitments we owe\" is fundamentally an **analytical reporting task** requiring aggregation of financial/contractual data across the organization.\n\n**Top picks (dataProducts):**\n1. **EngineeringChangeImpactAndWorkforceReadiness** - Provides analytical capability to assess organizational commitments and readiness\n2. **ProductChangeImpactAndMaterialAnalytics** - Aggregates cross-functional impact data including material commitments and operational readiness\n\n**Secondary picks (APIs & Agents):**\n- Material Receipt and compliance agents provide underlying master data and transaction records that feed financial commitment tracking\n- Asset/BOM/Change orchestrators help identify committed resources and obligations across the supply chain\n\nThe dataProducts are prioritized because the activity requires synthesis of disparate commitment data (materials, workforce, compliance obligations) into a coherent view\u2014classic analytical read workload.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                      "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                      "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                      "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                      "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1"
+                    ],
+                    "tokens": 4192,
+                    "latency_s": 11.81,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 8
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2069,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 935,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+              "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+            ],
+            "confidence": 0.85
+          }
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+            "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Pull together our client invoices and expected collections coming in this quarter",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:SalesOpportunityPipelineAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 88357,
+          "latency_s": 46.837,
+          "llm_calls": 18,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 291,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Pull together our client invoices for this quarter",
+              "Pull together our expected collections coming in this quarter"
+            ],
+            "original_prompt": "Pull together our client invoices and expected collections coming in this quarter"
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Pull together our client invoices for this quarter",
+              "trace": {
+                "tokens": 43643,
+                "latency_s": 23.156,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 22,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 711,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.s4",
+                      "entity_types": [
+                        "sap.odm:entityType:Invoice:v1",
+                        "sap.odm:entityType:CustomerAccount:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29272,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8530,
+                    "latency_s": 12.05275273323059,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Invoice:v1"
+                        },
+                        "n_results": 7
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:CustomerAccount:v1"
+                        },
+                        "n_results": 57
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 64
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 8,
+                      "sap.ariba": 3,
+                      "sap.ehs": 2,
+                      "sap.s4": 2,
+                      "emarsys.cx": 1,
+                      "my.mes": 1,
+                      "sap.crm": 1,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:CustomerAccount:v1": 9,
+                      "sap.odm:entityType:Material:v1": 8,
+                      "sap.odm:entityType:Invoice:v1": 7,
+                      "sap.odm:entityType:Campaign:v1": 6,
+                      "sap.odm:entityType:Vendor:v1": 4,
+                      "sap.odm:entityType:CustomerOrder:v1": 3,
+                      "sap.odm:entityType:PurchaseOrder:v1": 2,
+                      "sap.odm:entityType:Contract:v1": 2,
+                      "sap.odm:entityType:CustomerSegment:v1": 1
+                    },
+                    "resource_types": {
+                      "dataProduct": 8,
+                      "apiResource": 9,
+                      "agent": 2
+                    },
+                    "top_capabilities": {
+                      "validate-vendor-material": 1,
+                      "process-invoice": 1,
+                      "verify-material-specification": 1,
+                      "audit-procurement-compliance": 1,
+                      "grant-sales-permissions": 1,
+                      "manage-communication-channels": 1,
+                      "manage-campaign-access": 1,
+                      "capture-service-request": 1
+                    },
+                    "n_candidates": 19
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Invoice:v1",
+                        "sap.odm:entityType:CustomerAccount:v1",
+                        "sap.odm:entityType:CustomerOrder:v1"
+                      ],
+                      "business_groups": [
+                        "proc_order_compliance_fulfillment_v1"
+                      ],
+                      "lines_of_business": [
+                        "Finance",
+                        "Sales and Order Management"
+                      ],
+                      "reason": "Pulling invoices requires direct access to Invoice records linked to CustomerAccounts and their Orders, spanning finance and order management."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:CustomerOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Finance\",\n    \"Sales and Order Management\"\n  ],\n  \"reason\": \"Pulling invoices requires direct access to Invoice records linked to CustomerAccounts and their Orders, spanning finance and order management.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                      "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                      "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                      "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                      "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                      "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                      "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                      "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1\",\n  \"corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1\",\n  \"emarsys.cx:apiResource:CampaignContactEngagementAPI:v1\",\n  \"sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity \"Pull together our client invoices for this quarter\" is fundamentally an **analytical read** task requiring aggregation and reporting of financial/transactional data.\n\n1. **CampaignPerformanceAnalytics** (1st) - Best match as a dataProduct providing aggregated metrics across channels, directly aligned with pulling together quarterly data.\n\n2. **CustomerEngagementServiceMetrics** (2nd) - Strong secondary choice as a dataProduct that aggregates performance data across customer segments, supporting quarterly reporting needs.\n\n3. **CampaignContactEngagementAPI** (3rd) - While an API, it manages campaign interactions and could support underlying invoice/engagement data retrieval if invoices are tied to campaign activities.\n\n4. **VendorPerformanceAndSegmentationAnalytics** (4th) - Relevant if client invoices relate to vendor/customer spend analysis and segmentation patterns.\n\nThe compliance, access management, and journey state APIs are misaligned\u2014they focus on engagement workflow execution rather than aggregating historical invoice data for quarterly reporting.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                      "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                      "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                      "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                      "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+                    ],
+                    "tokens": 3140,
+                    "latency_s": 11.103,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 3
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1990,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Pull together our expected collections coming in this quarter",
+              "trace": {
+                "tokens": 43490,
+                "latency_s": 23.681,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 25,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 703,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.s4",
+                      "entity_types": [
+                        "sap.odm:entityType:CustomerOrder:v1",
+                        "sap.odm:entityType:Invoice:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29273,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8474,
+                    "latency_s": 12.186274766921997,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:CustomerOrder:v1"
+                        },
+                        "n_results": 15
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Invoice:v1"
+                        },
+                        "n_results": 7
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 22
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "emarsys.cx": 5,
+                      "sap.crm": 4,
+                      "my.mes": 3,
+                      "sap.s4": 2,
+                      "corp.itsm": 2,
+                      "sap.ariba": 1,
+                      "sap.sf": 1,
+                      "siemens.plm": 1,
+                      "sap.ehs": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:CustomerAccount:v1": 15,
+                      "sap.odm:entityType:CustomerOrder:v1": 10,
+                      "sap.odm:entityType:SalesOpportunity:v1": 5,
+                      "sap.odm:entityType:Invoice:v1": 3,
+                      "sap.odm:entityType:Material:v1": 3,
+                      "sap.odm:entityType:ProductionOrder:v1": 1,
+                      "sap.odm:entityType:QualityInspection:v1": 1,
+                      "sap.odm:entityType:Compensation:v1": 1,
+                      "sap.odm:entityType:Employee:v1": 1
+                    },
+                    "resource_types": {
+                      "dataProduct": 10,
+                      "apiResource": 10
+                    },
+                    "top_capabilities": {
+                      "manage-customer-accounts": 2,
+                      "validate-order": 2,
+                      "receive-log-orders": 1,
+                      "track-service-tickets": 1,
+                      "enable-order-processing": 1,
+                      "enrich-customer-order": 1,
+                      "enhance-order-fulfillment-data": 1,
+                      "enrich-customer-orders": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Invoice:v1",
+                        "sap.odm:entityType:CustomerOrder:v1",
+                        "sap.odm:entityType:CustomerAccount:v1"
+                      ],
+                      "business_groups": [
+                        "proc_order_compliance_fulfillment_v1",
+                        "proc_procure_fulfill_v1"
+                      ],
+                      "lines_of_business": [
+                        "Finance",
+                        "Sales and Order Management"
+                      ],
+                      "reason": "Collecting expected quarterly collections involves tracking invoices, customer orders, and accounts receivable related to sales fulfillment and financial forecasting."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\",\n    \"proc_procure_fulfill_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Finance\",\n    \"Sales and Order Management\"\n  ],\n  \"reason\": \"Collecting expected quarterly collections involves tracking invoices, customer orders, and accounts receivable related to sales fulfillment and financial forecasting.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                      "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                      "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                      "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                      "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                      "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                      "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                      "sap.crm:agent:CampaignAudienceOptimizationAgent:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1\",\n  \"corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1\",\n  \"emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1\",\n  \"sap.crm:agent:CampaignAudienceOptimizationAgent:v1\",\n  \"emarsys.cx:apiResource:CampaignContactEngagementAPI:v1\"\n]\n```\n\n**Rationale:** The activity \"Pull together our expected collections coming in this quarter\" is fundamentally an analytical/reporting task focused on aggregating and understanding incoming data. \n\n1. **CampaignPerformanceAnalytics** (dataProduct) - Best match. Directly provides aggregated metrics and performance breakdowns needed to \"pull together\" collections data.\n2. **CustomerEngagementServiceMetrics** (dataProduct) - Strong secondary match. Aggregates engagement patterns across accounts/segments, supporting collection forecasting.\n3. **SegmentDrivenCampaignOptimizer** (agent) - Useful for autonomously identifying high-value segments that should be prioritized in collections planning.\n4. **CampaignAudienceOptimizationAgent** (agent) - Similar value; analyzes segments and characteristics relevant to collection targeting.\n5. **CampaignContactEngagementAPI** (apiResource) - Included as fallback for querying real-time engagement state if operational access is needed, though less ideal for forecasting.\n\nExcluded: Vendor analytics (wrong domain), Access Management API (administrative, not analytical), Journey Contact State API (operational, not collection-focused).",
+                    "refused": false,
+                    "previous_resolved": [
+                      "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                      "emarsys.cx:dataProduct:OpportunitySalesForecasting:v1",
+                      "my.mes:dataProduct:CustomerOrderFulfillmentAndOEECorrelation:v1",
+                      "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                      "sap.ariba:dataProduct:CustomerAndOpportunityInsights:v1"
+                    ],
+                    "tokens": 3090,
+                    "latency_s": 11.495,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 5
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1950,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.crm:dataProduct:SalesOpportunityPipelineAnalytics:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 933,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+              "sap.crm:dataProduct:SalesOpportunityPipelineAnalytics:v1"
+            ],
+            "confidence": 0.72
+          }
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Reconcile supplier obligations against client receivables to forecast our cash position",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:SupplierQualityComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 90017,
+          "latency_s": 46.206,
+          "llm_calls": 19,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 509,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Reconcile supplier obligations against client receivables to forecast our cash position"
+            ],
+            "original_prompt": "Reconcile supplier obligations against client receivables to forecast our cash position",
+            "sub_queries_redecomposed": [
+              "Retrieve and reconcile all outstanding supplier obligations and payables to determine total cash outflows",
+              "Retrieve and reconcile all client receivables and outstanding invoices to determine total cash inflows"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve and reconcile all outstanding supplier obligations and payables to determine total cash outflows",
+              "trace": {
+                "tokens": 44848,
+                "latency_s": 23.469,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 27,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 722,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.s4",
+                      "entity_types": [
+                        "sap.odm:entityType:Invoice:v1",
+                        "sap.odm:entityType:PurchaseOrder:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29280,
+                    "latency_s": 0.487
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8494,
+                    "latency_s": 11.323277235031128,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Invoice:v1"
+                        },
+                        "n_results": 7
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+                        },
+                        "n_results": 21
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:VendorSpendIntelligence:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 28
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 4,
+                      "my.mes": 4,
+                      "sap.ariba": 3,
+                      "emarsys.cx": 3,
+                      "sap.ehs": 2,
+                      "siemens.plm": 1,
+                      "sap.crm": 1,
+                      "sap.s4": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Vendor:v1": 13,
+                      "sap.odm:entityType:PurchaseOrder:v1": 12,
+                      "sap.odm:entityType:Contract:v1": 8,
+                      "sap.odm:entityType:Invoice:v1": 7,
+                      "sap.odm:entityType:Material:v1": 7
+                    },
+                    "resource_types": {
+                      "agent": 5,
+                      "dataProduct": 10,
+                      "apiResource": 4
+                    },
+                    "top_capabilities": {
+                      "execute-procurement-orders": 1,
+                      "manage-vendor-orders": 1,
+                      "track-purchase-fulfillment": 1,
+                      "manage-supplier-orders": 1,
+                      "update-purchase-orders": 1,
+                      "coordinate-vendor-schedules": 1
+                    },
+                    "n_candidates": 19
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Vendor:v1",
+                        "sap.odm:entityType:PurchaseOrder:v1",
+                        "sap.odm:entityType:Invoice:v1",
+                        "sap.odm:entityType:Contract:v1"
+                      ],
+                      "business_groups": [
+                        "proc_procure_fulfill_v1",
+                        "proc_ProcurementSafetyCompliance_v1"
+                      ],
+                      "lines_of_business": [
+                        "Procurement",
+                        "Finance"
+                      ],
+                      "reason": "Activity focuses on tracking supplier payables and obligations, requiring vendor, purchase order, and invoice data within procurement and financial processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:Contract:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_ProcurementSafetyCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Finance\"\n  ],\n  \"reason\": \"Activity focuses on tracking supplier payables and obligations, requiring vendor, purchase order, and invoice data within procurement and financial processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1\",\n  \"sap.s4:apiResource:MaterialReceiptInboundAPI:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requires retrieving and reconciling outstanding supplier obligations and payables\u2014a financial/procurement reconciliation task focused on cash outflows.\n\n1. **BOM Compliance Automation Agent** (top) - Best match for reconciling supplier obligations; validates material compliance and supplier certifications, critical for confirming what is owed.\n\n2. **Engineering Change and Material Provisioning Agent** - Tracks material provisioning and change status; helps identify what materials/obligations exist in supply chain.\n\n3. **Asset Lifecycle Change Orchestrator** - Coordinates supplier agreements and change workflows; relevant for tracking obligations across material updates.\n\n4. **Product Change Impact and Material Analytics** (dataProduct) - Analytical assessment of material requirements and availability; supports reconciliation of obligations against current state.\n\n5. **Vendor Material Invoice Management API** - Directly manages vendor invoices linked to materials and POs; core to payables reconciliation.\n\n6. **Material Receipt Inbound API** - Tracks receipt confirmations against POs; helps validate obligations through receipt records.\n\n7. **Production Change Orchestrator** - Manages material flow and changes; less directly relevant but maintains material/obligation records.\n\n8. **Workforce Readiness Analytics** (dataProduct) - Lowest relevance; focuses on HR capability rather than financial obligations.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                      "my.mes:agent:SupplierQualityComplianceOrchestrator:v1",
+                      "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1",
+                      "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                      "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+                    ],
+                    "tokens": 4255,
+                    "latency_s": 12.146,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 8
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2097,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Retrieve and reconcile all client receivables and outstanding invoices to determine total cash inflows",
+              "trace": {
+                "tokens": 43733,
+                "latency_s": 22.737,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 25,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 721,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.s4",
+                      "entity_types": [
+                        "sap.odm:entityType:Invoice:v1",
+                        "sap.odm:entityType:CustomerAccount:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29281,
+                    "latency_s": 0.561
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8523,
+                    "latency_s": 11.450865030288696,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Invoice:v1"
+                        },
+                        "n_results": 7
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:CustomerAccount:v1"
+                        },
+                        "n_results": 57
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 64
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 8,
+                      "sap.ariba": 2,
+                      "sap.ehs": 2,
+                      "sap.s4": 2,
+                      "emarsys.cx": 1,
+                      "my.mes": 1,
+                      "sap.crm": 1,
+                      "sap.sf": 1,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:CustomerAccount:v1": 10,
+                      "sap.odm:entityType:Invoice:v1": 7,
+                      "sap.odm:entityType:Material:v1": 7,
+                      "sap.odm:entityType:Campaign:v1": 6,
+                      "sap.odm:entityType:CustomerOrder:v1": 4,
+                      "sap.odm:entityType:Vendor:v1": 3,
+                      "sap.odm:entityType:PurchaseOrder:v1": 2,
+                      "sap.odm:entityType:Contract:v1": 2,
+                      "sap.odm:entityType:CustomerSegment:v1": 1
+                    },
+                    "resource_types": {
+                      "dataProduct": 8,
+                      "agent": 2,
+                      "apiResource": 9
+                    },
+                    "top_capabilities": {
+                      "grant-sales-permissions": 1,
+                      "manage-communication-channels": 1,
+                      "manage-campaign-access": 1,
+                      "capture-service-request": 1,
+                      "configure-audience-segmentation": 1,
+                      "validate-customer-account-permissions": 1,
+                      "control-launch-visibility": 1,
+                      "control-campaign-permissions": 1
+                    },
+                    "n_candidates": 19
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:CustomerAccount:v1",
+                        "sap.odm:entityType:Invoice:v1",
+                        "sap.odm:entityType:CustomerOrder:v1"
+                      ],
+                      "business_groups": [
+                        "proc_order_compliance_fulfillment_v1",
+                        "proc_procure_fulfill_v1"
+                      ],
+                      "lines_of_business": [
+                        "Finance",
+                        "Sales and Order Management"
+                      ],
+                      "reason": "Activity focuses on reconciling client receivables and invoices to determine cash inflows, which are core finance and accounts receivable functions tied to customer accounts and orders."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:CustomerOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\",\n    \"proc_procure_fulfill_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Finance\",\n    \"Sales and Order Management\"\n  ],\n  \"reason\": \"Activity focuses on reconciling client receivables and invoices to determine cash inflows, which are core finance and accounts receivable functions tied to customer accounts and orders.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                      "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                      "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                      "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                      "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                      "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                      "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                      "sap.crm:agent:CampaignAudienceOptimizationAgent:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.crm:agent:CampaignAudienceOptimizationAgent:v1\",\n  \"emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1\",\n  \"sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1\",\n  \"corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1\",\n  \"emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1\",\n  \"emarsys.cx:apiResource:CampaignContactEngagementAPI:v1\",\n  \"emarsys.cx:apiResource:JourneyContactStateAPI:v1\",\n  \"corp.itsm:apiResource:CampaignAccessManagementAPI:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requires **retrieving and reconciling financial data** (client receivables and outstanding invoices) to determine cash inflows\u2014primarily an analytical/reporting task.\n\n1. **CampaignAudienceOptimizationAgent** (agent) - Ranks first as it performs autonomous analysis and optimization across customer segments, closest to reconciliation logic\n2. **CampaignPerformanceAnalytics** (dataProduct) - Aggregated metrics directly support financial reconciliation and cash flow analysis\n3. **VendorPerformanceAndSegmentationAnalytics** (dataProduct) - Segmentation and analytics for reconciliation against spend patterns\n4. **CustomerEngagementServiceMetrics** (dataProduct) - Service metrics aggregation supports cash inflow tracking\n5. **SegmentDrivenCampaignOptimizer** (agent) - Secondary agent for segment analysis\n6. **CampaignContactEngagementAPI** - Provides contact/engagement data needed for reconciliation\n7. **JourneyContactStateAPI** - Query capability for engagement state tracking\n8. **CampaignAccessManagementAPI** - Least relevant (access control, not financial data)\n\nNone perfectly match accounts receivable/invoicing systems, but these candidates support customer engagement and financial analytics workflows.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                      "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                      "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                      "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+                      "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1"
+                    ],
+                    "tokens": 3217,
+                    "latency_s": 11.286,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 6
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1991,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 927,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+              "sap.s4:apiResource:CustomerAccountFinancialAPI:v1"
+            ],
+            "confidence": 0.78
+          }
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is a financial forecasting and cash flow analysis task (reconciling payables, receivables, and cash position) that doesn't match any registered skill, which focus on operational processes like procurement, manufacturing, product launches, and order fulfillment.\"\n}\n```",
+      "reason": "The request is a financial forecasting and cash flow analysis task (reconciling payables, receivables, and cash position) that doesn't match any registered skill, which focus on operational processes like procurement, manufacturing, product launches, and order fulfillment.",
+      "tokens": 1682,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 271030,
+    "latency_s": 153.582,
+    "llm_calls": 56
+  },
+  "wall_s": 226.309
+}

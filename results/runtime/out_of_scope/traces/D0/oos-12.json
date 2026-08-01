@@ -1,0 +1,669 @@
+{
+  "case_id": "oos-12",
+  "user_prompt": "We need to automatically calculate and track Scope 3 emissions from our supplier network so we can report accurate supply chain carbon footprint to our investors and meet our 2030 net-zero commitments, but our current ESG platform only captures direct emissions from our own facilities.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 1,
+    "falsely_picked": 0,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Calculate and track Scope 3 emissions from our supplier network automatically",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Environment, Health & Safety"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                  "type": "apiResource",
+                  "title": "Safety Compliance Customer Management API",
+                  "shortDescription": "Manages customer accounts and safety campaigns with compliance tracking integration."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+                  "type": "apiResource",
+                  "title": "Safety Inspection Campaign Management API",
+                  "shortDescription": "Manages and retrieves safety inspection campaigns linked to customer accounts."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Storage Tracking API",
+                  "shortDescription": "Manages and retrieves hazardous substance storage locations and inventory status."
+                },
+                "... (2 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Vendor:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Vendor Management API",
+                  "shortDescription": "Exposes purchase orders and vendor data for ITSM procurement workflows."
+                },
+                {
+                  "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Contract Compliance Orchestrator",
+                  "shortDescription": "Automates vendor contract and purchase order compliance monitoring across procurement lifecycle."
+                },
+                "... (39 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+                "type": "agent",
+                "namespace": "sap.ehs",
+                "title": "Vendor Compliance Automation Orchestrator",
+                "shortDescription": "Automates vendor safety compliance verification across purchase orders and contracts.",
+                "description": "Coordinates automated validation of vendor safety certifications and compliance status during purchase order creation and contract execution. Monitors vendor contract adherence to EHS requirements and processes compliance exceptions through escalation workflows. Automates reconciliation between vendor safety profiles, contract terms, and procurement activities to ensure continuous compliance alignment.",
+                "entityTypes": [
+                  "sap.odm:entityType:Contract:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "invoice-management",
+                  "three-way-matching",
+                  "vendor-reconciliation",
+                  "automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.ariba",
+                "title": "Vendor Performance and Segmentation Analytics",
+                "shortDescription": "Aggregates vendor metrics and segments customers by engagement and spend patterns.",
+                "description": "This data product aggregates vendor performance indicators, campaign effectiveness, and customer account metrics to provide comprehensive segmentation analytics. It summarizes key procurement campaign outcomes, customer account profitability, and segment-level performance trends. The product delivers actionable insights on vendor relationships, customer segmentation quality, and strategic sourcing opportunities aligned with procurement objectives.",
+                "entityTypes": [
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerSegment:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "vendor-analytics",
+                  "customer-segmentation",
+                  "sourcing-intelligence"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1",
+                "type": "dataProduct",
+                "namespace": "my.mes",
+                "title": "Supplier Performance and Procurement Optimization Analytics",
+                "shortDescription": "Aggregates vendor reliability, contract compliance, and purchase order metrics for supply chain optimization.",
+                "description": "Aggregates and summarizes supplier performance indicators across contracts, purchase orders, and vendor relationships to provide actionable metrics on delivery compliance, quality performance, and cost efficiency. Provides comprehensive analytics on procurement patterns, vendor reliability trends, and contract fulfillment to support strategic sourcing decisions and supply chain risk mitigation in manufacturing execution.",
+                "entityTypes": [
+                  "sap.odm:entityType:Contract:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "procurement",
+                  "supplier-analytics",
+                  "supply-chain"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "safety-environment-health"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ehs:agent:ComplianceCampaignOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Compliance Campaign Orchestrator",
+                  "shortDescription": "Automates safety compliance campaigns across customer segments and accounts."
+                }
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "list_namespaces",
+              "args": {},
+              "result_preview": [
+                "corp.itsm",
+                "emarsys.cx",
+                "my.mes",
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape contains procurement and EHS resources but lacks a dedicated capability for calculating and tracking Scope 3 emissions from supplier networks, which requires specialized carbon accounting and sustainability reporting functionality."
+              },
+              "result": {
+                "refused": true,
+                "reason": "The landscape contains procurement and EHS resources but lacks a dedicated capability for calculating and tracking Scope 3 emissions from supplier networks, which requires specialized carbon accounting and sustainability reporting functionality."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape contains procurement and EHS resources but lacks a dedicated capability for calculating and tracking Scope 3 emissions from supplier networks, which requires specialized carbon accounting and sustainability reporting functionality.",
+          "tool_calls": 12,
+          "tokens": 44550,
+          "latency_s": 15.899,
+          "llm_calls": 12
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Generate supply chain carbon footprint reporting for investor disclosure",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Environment, Health & Safety"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                  "type": "apiResource",
+                  "title": "Safety Compliance Customer Management API",
+                  "shortDescription": "Manages customer accounts and safety campaigns with compliance tracking integration."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+                  "type": "apiResource",
+                  "title": "Safety Inspection Campaign Management API",
+                  "shortDescription": "Manages and retrieves safety inspection campaigns linked to customer accounts."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Storage Tracking API",
+                  "shortDescription": "Manages and retrieves hazardous substance storage locations and inventory status."
+                },
+                "... (2 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "safety-environment-health"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ehs:agent:ComplianceCampaignOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Compliance Campaign Orchestrator",
+                  "shortDescription": "Automates safety compliance campaigns across customer segments and accounts."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Finance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Procurement Automation Orchestrator",
+                  "shortDescription": "Automates vendor engagement and procurement workflows through targeted marketing communications."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                "... (10 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a specialized resource for carbon footprint calculation and ESG investor disclosure reporting; existing resources focus on safety compliance and procurement but not carbon accounting."
+              },
+              "result": {
+                "refused": true,
+                "reason": "The landscape lacks a specialized resource for carbon footprint calculation and ESG investor disclosure reporting; existing resources focus on safety compliance and procurement but not carbon accounting."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a specialized resource for carbon footprint calculation and ESG investor disclosure reporting; existing resources focus on safety compliance and procurement but not carbon accounting.",
+          "tool_calls": 8,
+          "tokens": 20197,
+          "latency_s": 9.214,
+          "llm_calls": 8
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Integrate ESG platform to capture both direct emissions from our facilities and indirect supplier emissions to support 2030 net-zero commitment tracking",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Environment, Health & Safety"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                  "type": "apiResource",
+                  "title": "Safety Compliance Customer Management API",
+                  "shortDescription": "Manages customer accounts and safety campaigns with compliance tracking integration."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+                  "type": "apiResource",
+                  "title": "Safety Inspection Campaign Management API",
+                  "shortDescription": "Manages and retrieves safety inspection campaigns linked to customer accounts."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Storage Tracking API",
+                  "shortDescription": "Manages and retrieves hazardous substance storage locations and inventory status."
+                },
+                "... (2 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Safety and Environment"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Compliance Management API",
+                  "shortDescription": "Manages and exposes hazardous substance inventory, compliance status, and regulatory documentation."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:IncidentSafetyAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Incident and Safety Analytics",
+                  "shortDescription": "Aggregates incident and safety event data with compliance metrics and trend analysis."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+                  "type": "apiResource",
+                  "title": "Chemical Inventory and Compliance API",
+                  "shortDescription": "REST API for managing hazardous substance inventory and regulatory compliance tracking"
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "list_namespaces",
+              "args": {},
+              "result_preview": [
+                "corp.itsm",
+                "emarsys.cx",
+                "my.mes",
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "integration_dependencies",
+              "args": {
+                "namespace": "sap.ehs"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks an ESG platform or emissions tracking resource; available resources focus on occupational safety and hazardous substance compliance, not comprehensive direct/indirect emissions measurement and net-zero commitment tracking."
+              },
+              "result": {
+                "refused": true,
+                "reason": "The landscape lacks an ESG platform or emissions tracking resource; available resources focus on occupational safety and hazardous substance compliance, not comprehensive direct/indirect emissions measurement and net-zero commitment tracking."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks an ESG platform or emissions tracking resource; available resources focus on occupational safety and hazardous substance compliance, not comprehensive direct/indirect emissions measurement and net-zero commitment tracking.",
+          "tool_calls": 9,
+          "tokens": 34514,
+          "latency_s": 13.785,
+          "llm_calls": 9
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request requires building a new ESG/carbon accounting capability for Scope 3 supplier emissions tracking and investor reporting, which is a strategic sustainability initiative not covered by any of the registered skills\u2014these skills focus on production, procurement, compliance, and operational management rather than environmental accounting and ESG reporting.\"\n}\n```",
+      "reason": "The request requires building a new ESG/carbon accounting capability for Scope 3 supplier emissions tracking and investor reporting, which is a strategic sustainability initiative not covered by any of the registered skills\u2014these skills focus on production, procurement, compliance, and operational m",
+      "tokens": 1701,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 101336,
+    "latency_s": 38.898,
+    "llm_calls": 31
+  },
+  "wall_s": 38.929
+}

@@ -1,0 +1,283 @@
+{
+  "case_id": "proc_030_s04",
+  "process": "proc_030",
+  "label": "SafetyComplianceOrchestration process: Verify customer safety compliance status \u2014 Cross-reference customer accounts and campaigns against safety compliance records to ensure contractual safety obligations are met.",
+  "method": "D",
+  "expected_ordIds": [
+    "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 1,
+    "r_at_5": 1,
+    "mrr": 1.0,
+    "first_hit_rank": 1,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_entity_types",
+        "args": {},
+        "result_preview": [
+          "sap.odm:entityType:Campaign:v1",
+          "sap.odm:entityType:ChangeRequest:v1",
+          "sap.odm:entityType:Compensation:v1",
+          "... (23 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_lines_of_business",
+        "args": {},
+        "result_preview": [
+          "ERP",
+          "Environment, Health & Safety",
+          "Environment, Health and Safety",
+          "... (44 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_capabilities",
+        "args": {},
+        "result_preview": []
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:CustomerAccount:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+            "type": "apiResource",
+            "title": "Campaign Access Management API",
+            "shortDescription": "Manages provisioning and access control for campaign-related customer accounts."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "type": "apiResource",
+            "title": "Service Ticket and Order Management API",
+            "shortDescription": "Retrieves and manages customer service tickets and orders with status tracking."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+            "type": "apiResource",
+            "title": "Customer Provisioning Order API",
+            "shortDescription": "Exposes and manages customer account orders for ITSM provisioning workflows."
+          },
+          "... (54 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:SafetyIncident:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+            "type": "agent",
+            "title": "Incident Safety Coordinator",
+            "shortDescription": "Automates safety incident detection and coordinates response workflows across ITSM."
+          },
+          {
+            "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+            "type": "agent",
+            "title": "Occupational Safety Incident Coordinator",
+            "shortDescription": "Monitors and coordinates safety incidents with hazardous substance involvement for compliance."
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+            "type": "dataProduct",
+            "title": "Incident Compliance Analytics",
+            "shortDescription": "Aggregates incident and safety incident data for compliance reporting and trend analysis."
+          },
+          "... (21 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_in_lob",
+        "args": {
+          "line_of_business": "Safety and Environment"
+        },
+        "result_preview": [
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+            "type": "apiResource",
+            "title": "Hazardous Substance Compliance Management API",
+            "shortDescription": "Manages and exposes hazardous substance inventory, compliance status, and regulatory documentation."
+          },
+          {
+            "ordId": "my.mes:dataProduct:IncidentSafetyAnalytics:v1",
+            "type": "dataProduct",
+            "title": "Incident and Safety Analytics",
+            "shortDescription": "Aggregates incident and safety event data with compliance metrics and trend analysis."
+          },
+          {
+            "ordId": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+            "type": "apiResource",
+            "title": "Chemical Inventory and Compliance API",
+            "shortDescription": "REST API for managing hazardous substance inventory and regulatory compliance tracking"
+          },
+          "... (7 more)"
+        ]
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1"
+        },
+        "result_preview": {
+          "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+          "type": "apiResource",
+          "namespace": "corp.itsm",
+          "title": "Safety Compliance Customer Management API",
+          "shortDescription": "Manages customer accounts and safety campaigns with compliance tracking integration.",
+          "description": "Exposes customer account records and safety campaign data to retrieve compliance inspection status, manage customer engagement in safety programs, and provide access to historical campaign performance metrics. Integrates service tickets with customer-level safety requirements for coordinated incident response and regulatory reporting.",
+          "entityTypes": [
+            "sap.odm:entityType:Campaign:v1",
+            "sap.odm:entityType:CustomerAccount:v1"
+          ],
+          "lineOfBusiness": [
+            "Environment, Health & Safety"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "safety-inspection",
+            "compliance-tracking",
+            "customer-engagement"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "corp.itsm:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "emarsys.cx:agent:IncidentComplianceOrchestrator:v1"
+        },
+        "result_preview": {
+          "ordId": "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+          "type": "agent",
+          "namespace": "emarsys.cx",
+          "title": "Risk Event Response Automation Engine",
+          "shortDescription": "Detects regulatory risks, orchestrates mitigation protocols, and validates adherence during customer engagement initiatives.",
+          "description": "Tracks adverse events and regulatory exposures within customer engagement programs, triggering automated compliance procedures and coordinating remediation efforts. Analyzes event information to satisfy regulatory mandates, integrates with control assessment frameworks, and schedules alerts to appropriate business units. Maintains real-time visibility into regulatory posture and resolution progress metrics to uphold required safety governance standards across the customer lifecycle.",
+          "entityTypes": [
+            "sap.odm:entityType:HazardousSubstance:v1",
+            "sap.odm:entityType:Incident:v1",
+            "sap.odm:entityType:SafetyIncident:v1"
+          ],
+          "lineOfBusiness": [
+            "Sales"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "risk-governance",
+            "event-response-automation",
+            "regulatory-adherence"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "emarsys.cx:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.ehs:agent:IncidentResponseCoordinator:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.ehs:agent:IncidentResponseCoordinator:v1",
+          "type": "agent",
+          "namespace": "sap.ehs",
+          "title": "Incident Response Coordinator",
+          "shortDescription": "Coordinates safety incident workflows and automates emergency response actions.",
+          "description": "Monitors incoming safety incidents and environmental events, automatically initiating coordinated response procedures across change management and IT infrastructure. Processes incident severity assessments, routes service tickets to appropriate response teams, and tracks equipment status during emergency situations to ensure compliance with regulatory reporting timelines.",
+          "entityTypes": [
+            "sap.odm:entityType:ChangeRequest:v1",
+            "sap.odm:entityType:ITEquipment:v1",
+            "sap.odm:entityType:ServiceTicket:v1"
+          ],
+          "lineOfBusiness": [
+            "Safety and Environment"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "incident-management",
+            "emergency-response",
+            "workflow-automation"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "sap.ehs:package:Core:v1"
+        }
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+          "reason": "This API directly manages customer accounts and safety campaigns with compliance tracking, enabling verification of contractual safety obligations through cross-referenced compliance inspection status."
+        },
+        "result": {
+          "committed": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+    "picked_reason": "This API directly manages customer accounts and safety campaigns with compliance tracking, enabling verification of contractual safety obligations through cross-referenced compliance inspection status.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 10,
+    "tokens": 24785,
+    "latency_s": 12.232,
+    "llm_calls": 10
+  },
+  "wall_s": 12.237
+}

@@ -1,0 +1,352 @@
+{
+  "case_id": "dy-10",
+  "user_prompt": "I need to understand which of our products are driving the most cost and why\u2014like breaking down material expenses, design complexity, and whether we're overpaying certain suppliers compared to our benchmarks. Can you show me which items in our portfolio have the most expensive components and where our supply chain dependencies might be creating risk?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1,
+    "acceptable": 1,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to understand which of our products are driving the most cost and why\u2014like breaking down material expenses, design complexity, and whether we're overpaying certain suppliers compared to our benchmarks. Can you show me which items in our portfolio have the most expensive components and where our supply chain dependencies might be creating risk?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ProductItem:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Change Lifecycle API",
+                  "shortDescription": "Exposes engineering changes and product items for workforce asset management."
+                },
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                "... (37 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "analyze-product-costs"
+              },
+              "result_preview": [
+                {
+                  "ordId": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Product Cost and Complexity Analytics",
+                  "shortDescription": "Aggregated metrics on product cost drivers, BOM complexity, and supplier impact analysis."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "siemens.plm",
+                "title": "Product Cost and Complexity Analytics",
+                "shortDescription": "Aggregated metrics on product cost drivers, BOM complexity, and supplier impact analysis.",
+                "description": "This analytical data product delivers aggregated cost and complexity metrics across product portfolios, integrating bill of materials depth, material sourcing patterns, and engineering change frequency. It enables procurement and engineering teams to identify high-cost drivers, optimize supplier qualification strategies, and track compliance documentation effectiveness across the product lifecycle.",
+                "entityTypes": [
+                  "sap.odm:entityType:ProductItem:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:EngineeringChange:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [
+                  "identify-cost-optimization",
+                  "evaluate-complexity",
+                  "analyze-product-costs",
+                  "compare-complexity-benchmarks",
+                  "analyze-product-economics"
+                ],
+                "useCases": [
+                  "Manufacturing optimizes production sequences based on identified complexity drivers.",
+                  "Finance teams benchmark actual product costs against target cost models.",
+                  "Finance and product teams understand cost implications and design complexity to inform pricing and production planning.",
+                  "Product managers evaluate cost implications of design decisions before procurement."
+                ],
+                "tags": [
+                  "cost-analysis",
+                  "bom-complexity",
+                  "supplier-impact",
+                  "compliance-metrics"
+                ],
+                "partOfGroups": [
+                  "proc_ProductLifecycleCompliance_v1",
+                  "proc_product_launch_workforce_v1"
+                ],
+                "processNext": [
+                  "sap.sf:apiResource:MaterialAndVendorProcurementIntegration:v1"
+                ],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.s4",
+                "title": "Product Material Economics and Regulatory Assessment",
+                "shortDescription": "Evaluates material expenditures, regulatory adherence, and engineering modification impacts on bill-of-materials structures.",
+                "description": "Consolidates product item specifications, material master records, and engineering change documentation to deliver comprehensive supply chain economic analysis, regulatory compliance exposure assessment, and supplier relationship metrics. Enables finance and operations teams to monitor cost trends by component, track compliance obligations, and understand supplier performance implications for strategic procurement and product development initiatives.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "material-cost-analysis",
+                  "supply-chain-economics",
+                  "regulatory-exposure",
+                  "supplier-performance"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.crm",
+                "title": "Bill of Materials Cost and Compliance Analytics",
+                "shortDescription": "Aggregates material costs, supplier impact, and compliance metrics across engineering changes.",
+                "description": "Synthesizes engineering change records, material master data, and product item configurations to aggregate supply chain costs, bill of materials complexity, and regulatory compliance exposure. Provides metrics on supplier dependencies, cost variance trends, and compliance risk implications for product portfolio decisions in sales planning.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [
+                  "validate-bom-compliance",
+                  "audit-material-standards",
+                  "verify-cost-targets"
+                ],
+                "useCases": [
+                  "Compliance teams verify BOMs meet regulatory material restrictions before manufacturing.",
+                  "Finance validates BOMs against approved cost budgets for product variants."
+                ],
+                "tags": [
+                  "cost-analysis",
+                  "bom-complexity",
+                  "supplier-impact",
+                  "compliance-metrics"
+                ],
+                "partOfGroups": [
+                  "proc_ProductLifecycleCompliance_v1"
+                ],
+                "processNext": [
+                  "sap.ariba:apiResource:EngineeringChangeAndProductItemManagement:v1"
+                ],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+                "reason": "This data product directly delivers cost drivers, BOM complexity analysis, supplier impact assessment, and cost optimization capabilities needed to understand product portfolio expenses and supply chain dependencies."
+              },
+              "result": {
+                "committed": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+          "picked_reason": "This data product directly delivers cost drivers, BOM complexity analysis, supplier impact assessment, and cost optimization capabilities needed to understand product portfolio expenses and supply chain dependencies.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 30810,
+          "latency_s": 14.504,
+          "llm_calls": 10
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 30810,
+    "latency_s": 14.504,
+    "llm_calls": 10
+  },
+  "wall_s": 14.507
+}

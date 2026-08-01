@@ -1,0 +1,111 @@
+{
+  "case_id": "proc_009_s05",
+  "process": "proc_009",
+  "label": "supplychain risk compliance process: Analyze Production Incidents and Safety Records \u2014 Review historical incident and safety data for materials and vendors to identify operational risks.",
+  "method": "E",
+  "expected_ordIds": [
+    "sap.s4:dataProduct:IncidentSafetyAnalyticsHub:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1",
+      "score": null
+    },
+    {
+      "ordId": "my.mes:package:Core:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.ehs:package:Core:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "read_file",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json",
+          "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+          "truncated": true,
+          "total_lines": 1276
+        }
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "read_file",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json",
+          "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+          "truncated": true,
+          "total_lines": 1276
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "read_file",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+          "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+          "truncated": true,
+          "total_lines": 1154
+        }
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "write_notes",
+        "args": {
+          "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nSUPPLY CHAIN WORKFLOW INITIATION:\n\u2713 BEST: sap.s4:agent:OpportunityToOrderAutomationEngine:v1\n  - Monitors sales opportunities (incoming customer requests)\n  - Automates order creation & logging\n  - Initiates supply chain via procurement/production coordination\n  - Processes credit limits & inventory availability\n  - Related entity types: SalesOpportunity, CustomerAccount\n\nSUPPLY CHAIN CONTINUITY & RESILIENCE VALIDATION:\n\u2713 BEST: sap.s4:agent:ProcurementMatchingAgent:v1\n  - Analyzes vendor lead times (capacity), delivery performance (resilience)\n  - Evaluates historical performance metrics for supply chain resilience\n  - Matches requisitions to vendors considering cost, quality, delivery\n  - Confirms material availability through vendor/material specification matching\n  - Related entity types: Material, Vendor\n  - Line of Business: Procurement, Finance, ERP\n\nSUPPLY CHAIN OPERATIONS:\nAgent: sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 - 3-way matching\nAgent: sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1 - material updates\nAgent: sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1 - PO management with capabilities: coordinate-vendor-procurement, validate-purchase-orders, verify-vendor-compliance\n\nCOMPLIANCE & SAFETY (SAP.EHS):\n\u2713 COMPLIANCE GATING: sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1\n  - Validates vendor safety certifications & compliance status BEFORE PO creation\n  - Monitors vendor adherence to EHS requirements & contracts\n  - Related entity types: Vendor, PurchaseOrder, Contract\n\n\u2713 MATERIAL SAFETY: sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\n  - Enforces safety compliance on engineering changes, materials, product items\n\n\u2713 INCIDENT ANALYSIS: sap.ehs:agent:IncidentRootCauseAnalyzer:v1\n  - Analyzes safety incidents to identify root causes & recommend corrective actions\n  - Processes incident data, environmental factors, historical patterns\n  - Related entity types: SafetyIncident, Incident, HazardousSubstance\n  - Tags: incident-analysis, root-cause, corrective-action\n\nMANUFACTURING EXECUTION (my.mes):\nAgent: my.mes:agent:SupplierQualityComplianceOrchestrator:v1 - supplier quality/compliance monitoring\nAgent: my.mes:agent:ProductionChangeOrchestrator:v1 - engineering change orchestration\nAgent: my.mes:agent:BillOfMaterialsComplianceValidator:v1 - BOM validation\nAgent: my.mes:agent:ProductionQualityMonitor:v1 - quality monitoring, defect detection\n\nACTIVITY MATCHES:\nActivity \"Receive and Log Customer Service Request\": sap.s4:agent:OpportunityToOrderAutomationEngine:v1\nActivity \"Assess Vendor and Material Compliance Risk\": sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1\nActivity \"Validate Supply Chain Continuity\": sap.s4:agent:ProcurementMatchingAgent:v1\nActivity \"Analyze Production Incidents and Safety Records\": sap.ehs:agent:IncidentRootCauseAnalyzer:v1\n"
+        },
+        "result_preview": {
+          "stored_bytes": 3001,
+          "truncated": false,
+          "cap_bytes": 4096
+        }
+      },
+      {
+        "step": 4,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1",
+          "reason": "Autonomously analyzes safety incidents and historical patterns to identify root causes and operational risks for materials and vendors."
+        },
+        "result_preview": {
+          "committed": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1",
+    "picked_reason": "Autonomously analyzes safety incidents and historical patterns to identify root causes and operational risks for materials and vendors.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 5,
+    "tokens": 40525,
+    "latency_s": 21.948,
+    "llm_calls": 5
+  },
+  "wall_s": 21.954
+}

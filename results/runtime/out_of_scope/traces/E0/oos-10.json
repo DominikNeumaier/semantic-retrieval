@@ -1,0 +1,225 @@
+{
+  "case_id": "oos-10",
+  "user_prompt": "We need a way to automatically flag outdated information in our internal wiki when referenced policies or procedures are updated in our source systems\u2014right now our procurement team keeps making decisions based on old vendor qualification standards because the wiki doesn't sync with our master policy database.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 1,
+    "falsely_picked": 0,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Set up automatic synchronization to flag outdated information in our internal wiki when referenced policies or procedures are updated in our source systems",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nRESOLVED ACTIVITIES:\n\n1. Supplier financial health monitori \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "landscape/systems/corp.itsm"
+              },
+              "result_preview": {
+                "error": "path not allowed: 'landscape/systems/corp.itsm'. Allowed roots: ('benchmark',)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "landscape/systems/sap.odm"
+              },
+              "result_preview": {
+                "error": "path not allowed: 'landscape/systems/sap.odm'. Allowed roots: ('benchmark',)"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/corp.itsm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/corp.itsm",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.odm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.odm",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1021
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.odm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.odm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-independent\",\n  \"description\": \"SAP One Domain Model entity type taxonomy for the benchmark landscape. 40 canonical business objects servi \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 667
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nRESOLVED ACTIVITIES:\n\n1. Supplier financial health monitoring (90d):\n   - No specific resource found; likely future enhancement\n\n2. Ledger vs. supply chain discrepancy flagging:\n   - MATCH: sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n   - 3-way matching (invoice \u2192 PO \u2192 contract), flags exceptions\n\n3. Employee engagement monitoring (Slack/email):\n   - NO MATCH - Activity requires communication analytics not in landscape\n\n4. Flight-risk employee early warning (predictive, 60d lead):\n   - NO MATCH - Activity requires predictive HR analytics not in landscape\n\n5. Regulatory rule matching to vendor agreements:\n   - MATCH: sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1\n   - Automates vendor safety compliance verification across contracts\n\n6. Real-time cash flow visibility (hour-by-hour projections, alerts):\n   - NO MATCH - No treasury/liquidity/cash flow forecasting resources in landscape\n\n7. Dynamic pricing band order flagging:\n   - NO MATCH - Landscape has order mgmt and invoice reconciliation, but no price band validation\n\n8. Sales discount audit with threshold validation (customer segments, margin targets):\n   - NO MATCH - sap.crm has sales/opportunity agents (qualification, compensation, campaign); sap.s4 has order automation\n   - Missing: pre-order discount governance, segment-level threshold enforcement, margin verification before accounting\n\n9. Turnover velocity trends to identify slow-moving/obsolete SKUs:\n   - NO MATCH - Landscape has procurement/order/invoice/quality agents but no inventory analytics\n   - Missing: Inventory turnover velocity trend analysis, slow-SKU detection, inventory aging forecasting\n   - Explored: sap.s4 (order mgmt, BOM), my.mes (quality/manufacturing), sap.ariba (invoice/procurement)\n\n10. SKU clearance protocols & safety stock optimization:\n    - NO MATCH - Activity requires inventory management, clearance workflows, and dynamic safety stock adjustment\n    - Missing: SKU clearance/disposal protocols, safety stock level adjustment, inventory optimization agents\n    - Explored: sap.s4 (procurement matching, BOM compliance, order automation\u2014no inventory mgmt), my.mes (quality/production/BOM validation\u2014no inventory mgmt)\n    - Confirmed: No dedicated inventory management/analytics system in landscape\n\n11. Diversity spend monitoring by business unit & fiscal quarter:\n    - NO MATCH - Activity requires diversity supplier spend tracking with contractual target monitoring\n    - Missing: Diversity supplier spend analytics, minority/women-owned supplier tracking, target enforcement by BU/quarter\n    - Explored: sap.ariba (invoice reconciliation, vendor compliance\u2014focused on safety/safety; no diversity tracking), sap.ehs (compliance orchestration\u2014focused on safety; no diversity monitoring), sap.s4 (procurement matching, BOM\u2014no diversity spend)\n    - Confirmed: No diversity spend monitoring or diversity supplier analytics in landscape\n\n12. Wiki policy/procedure synchronization (flag outdated references when source systems update):\n    - NO MATCH - Landscape lacks knowledge management/content synchronization capabilities\n    - Missing: Wiki/knowledge base system, documentation sync agents, policy change detection, content cross-referencing, automated flagging of stale docs\n    - Explored: corp.itsm (incident analysis, asset provisioning, change mgmt\u2014no knowledge mgmt), sap.odm (entity taxonomy only, no resources)\n    - Confirmed: No dedicated knowledge management or content synchronization system in landscape\n\nKey systems:\n- sap.s4: ERP (Procurement, Order Mgmt, Safety, Asset Lifecycle); OpportunityToOrderAutomationEngine does order creation\n- sap.crm: Sales/opportunity mgmt (qualification, compensation orchestration)\n- sap.ariba: Procurement/vendor reconciliation (post-order invoice matching, material coordination, hazardous material tracking)\n- sap.ehs: EHS/Regulatory compliance (safety incidents, vendor safety compliance, compliance campaigns)\n- my.mes: Manufacturing execution (quality, production orchestration, supplier compliance, BOM validation)\n- sap.sf: HR transactional\n- workday.hcm: HR transactional\n- emarsys.cx: Marketing/CX orchestration\n- corp.itsm: Incident analysis, change mgmt, asset provisioning, vendor compliance\n- sap.odm: Entity type taxonomy only (not operational resources)\n- No dedicated treasury/liquidity/pricing governance/discount audit/inventory management/diversity spend/knowledge management system\n"
+              },
+              "result_preview": {
+                "stored_bytes": 4096,
+                "truncated": true,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "Landscape lacks a knowledge management or content synchronization system to monitor policy changes in source systems and flag outdated wiki references."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "Landscape lacks a knowledge management or content synchronization system to monitor policy changes in source systems and flag outdated wiki references."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "Landscape lacks a knowledge management or content synchronization system to monitor policy changes in source systems and flag outdated wiki references.",
+          "tool_calls": 9,
+          "tokens": 39817,
+          "latency_s": 26.064,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Implement a real-time data sync mechanism between our master policy database and the wiki to ensure procurement team decisions are based on current vendor qualification standards",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a knowledge management system, wiki platform, and content synchronization infrastructure needed for real-time policy database\u2013wiki syncing."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape lacks a knowledge management system, wiki platform, and content synchronization infrastructure needed for real-time policy database\u2013wiki syncing."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a knowledge management system, wiki platform, and content synchronization infrastructure needed for real-time policy database\u2013wiki syncing.",
+          "tool_calls": 1,
+          "tokens": 3341,
+          "latency_s": 6.112,
+          "llm_calls": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is a systems integration and data governance problem (wiki sync with policy database), not an end-to-end operational process that any registered skill covers.\"\n}\n```",
+      "reason": "The request is a systems integration and data governance problem (wiki sync with policy database), not an end-to-end operational process that any registered skill covers.",
+      "tokens": 1665,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 45189,
+    "latency_s": 32.176,
+    "llm_calls": 12
+  },
+  "wall_s": 32.192
+}

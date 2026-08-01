@@ -1,0 +1,151 @@
+{
+  "case_id": "oos-15",
+  "user_prompt": "Our finance team currently uses our lease accounting system to track IFRS 16 liabilities and right-of-use assets, but we have no automated way to reconcile the lease modification adjustments that our real estate and equipment procurement teams make throughout the year against what's been recorded in our general ledger\u2014we're manually reviewing dozens of modification notices each quarter and trying to match them to journal entries, which creates audit risk and delays our month-end close.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "C",
+  "state": "clean",
+  "condition": "C0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 1,
+    "falsely_picked": 0,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "We need an automated reconciliation capability to match lease modification adjustments made by our real estate and equipment procurement teams against the journal entries recorded in our general ledger for IFRS 16 liabilities and right-of-use assets.",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Contract:v1",
+              "sap.odm:entityType:PurchaseOrder:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Finance",
+              "Procurement"
+            ],
+            "reason": "Lease modification reconciliation involves contracts (lease agreements) and procurement transactions, mapped to Finance for IFRS 16 accounting and Procurement for real estate/equipment procurement activities."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Contract:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Finance\",\n    \"Procurement\"\n  ],\n  \"reason\": \"Lease modification reconciliation involves contracts (lease agreements) and procurement transactions, mapped to Finance for IFRS 16 accounting and Procurement for real estate/equipment procurement activities.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 249,
+          "walk_top_ids": [
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+            "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity requires an automated reconciliation capability that matches lease modification adjustments against general ledger journal entries for IFRS 16 accounting. This is a specialized financial reconciliation and accounting function.\n\nNone of the candidates fulfill this requirement:\n- The agents (AccessProvisioning, AssetProvisioning, ChangeAutomation, ChangeRelease, ProductLifecycle, BillOfMaterials) focus on IT asset management, engineering changes, product releases, and supply chain\u2014not financial reconciliation or lease accounting\n- The dataProducts (ProductChangeAndInventoryAnalytics, ProductImpactSalesIntelligence) provide sales and inventory insights, not financial reconciliation capabilities\n\nWhile \"Asset Provisioning Orchestrator\" might superficially overlap with \"assets\" (right-of-use assets), it handles IT asset lifecycle management, not lease accounting reconciliation against general ledger entries. This is a topical false positive from the knowledge graph walk.\n\nThe activity requires financial/accounting domain expertise (IFRS 16 compliance, general ledger reconciliation) that none of these candidates\u2014drawn from IT service management, CX, and manufacturing domains\u2014actually provide.",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 2127,
+          "latency_s": 5.916,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "We need to establish a process or control to systematically capture and track lease modification notices from our real estate and equipment procurement teams throughout the year to enable timely reconciliation and reduce manual review efforts during month-end close.",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Contract:v1",
+              "sap.odm:entityType:PurchaseOrder:v1",
+              "sap.odm:entityType:Invoice:v1",
+              "sap.odm:entityType:ChangeRequest:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Procurement",
+              "Finance"
+            ],
+            "reason": "Lease modification tracking involves contract management, purchase orders for equipment, invoice reconciliation, and change requests, spanning procurement and finance operations."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Contract:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Finance\"\n  ],\n  \"reason\": \"Lease modification tracking involves contract management, purchase orders for equipment, invoice reconciliation, and change requests, spanning procurement and finance operations.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 273,
+          "walk_top_ids": [
+            "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+            "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity requires a system to **capture and track lease modification notices** from real estate and equipment procurement teams for month-end reconciliation. This is a specific lease/real estate management capability.\n\nNone of the candidates address this need:\n- The procurement dataProduct tracks vendor/order metrics, not lease modifications\n- The ITSM agents handle IT asset provisioning, access provisioning, and engineering changes\u2014not real estate or lease management\n- The emarsys agents/dataProducts focus on product lifecycle and sales, not lease administration\n\nThe candidates are topically related through procurement and asset management terminology, but none actually provide lease modification tracking or notice management capabilities.",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 2034,
+          "latency_s": 4.983,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"This is a financial reconciliation and audit control request (lease accounting, IFRS 16 reconciliation, journal entry matching) that requires a finance/accounting process, but all registered skills focus on manufacturing operations, procurement, product launches, and engineering changes\u2014none cover financial reconciliation or GL account matching workflows.\"\n}\n```",
+      "reason": "This is a financial reconciliation and audit control request (lease accounting, IFRS 16 reconciliation, journal entry matching) that requires a finance/accounting process, but all registered skills focus on manufacturing operations, procurement, product launches, and engineering changes\u2014none cover f",
+      "tokens": 1740,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 6348,
+    "latency_s": 10.899,
+    "llm_calls": 6
+  },
+  "wall_s": 10.938
+}

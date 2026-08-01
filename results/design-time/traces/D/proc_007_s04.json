@@ -1,0 +1,275 @@
+{
+  "case_id": "proc_007_s04",
+  "process": "proc_007",
+  "label": "integrated service change mgmt process: Identify equipment and vendor dependencies \u2014 Cross-reference materials, vendors, and procurement requirements needed to implement the change.",
+  "method": "D",
+  "expected_ordIds": [
+    "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 1,
+    "r_at_5": 1,
+    "mrr": 1.0,
+    "first_hit_rank": 1,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_entity_types",
+        "args": {},
+        "result_preview": [
+          "sap.odm:entityType:Campaign:v1",
+          "sap.odm:entityType:ChangeRequest:v1",
+          "sap.odm:entityType:Compensation:v1",
+          "... (23 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_lines_of_business",
+        "args": {},
+        "result_preview": [
+          "ERP",
+          "Environment, Health & Safety",
+          "Environment, Health and Safety",
+          "... (44 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_capabilities",
+        "args": {},
+        "result_preview": [
+          "activate-campaigns",
+          "activate-contact-engagement",
+          "activate-customer-accounts",
+          "... (337 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "type": "apiResource",
+            "title": "Change Request Approval Workflow API",
+            "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "type": "apiResource",
+            "title": "Asset Provisioning Integration API",
+            "shortDescription": "Manages equipment provisioning requests linked to service tickets and change approvals."
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "type": "agent",
+            "title": "Incident Root Cause Analysis Agent",
+            "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+          },
+          "... (21 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "identify-vendors-materials"
+        },
+        "result_preview": [
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+            "type": "apiResource",
+            "title": "Material and Vendor Procurement Data API",
+            "shortDescription": "Retrieves material specifications and vendor information for procurement workflows."
+          }
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "map-procurement-dependencies"
+        },
+        "result_preview": [
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "type": "apiResource",
+            "title": "Material and Vendor Procurement API",
+            "shortDescription": "Exposes material master data and vendor information for procurement operations."
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+          "type": "apiResource",
+          "namespace": "sap.ariba",
+          "title": "Material and Vendor Procurement API",
+          "shortDescription": "Exposes material master data and vendor information for procurement operations.",
+          "description": "Retrieves and manages material specifications, vendor catalogs, and procurement-related attributes across the sourcing lifecycle. Provides access to material classifications, vendor performance indicators, and purchase-to-pay data required for procurement integration and inbound logistics workflows.",
+          "entityTypes": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "lineOfBusiness": [
+            "Procurement",
+            "Inventory Management",
+            "Manufacturing"
+          ],
+          "capabilities": [
+            "map-procurement-dependencies",
+            "validate-vendor-availability",
+            "assess-material-constraints"
+          ],
+          "useCases": [
+            "Identify required materials and vendors for change implementation.",
+            "Confirm procurement timelines align with change schedule."
+          ],
+          "tags": [
+            "goods-receipt",
+            "inbound-logistics",
+            "material-management",
+            "procurement-integration"
+          ],
+          "partOfGroups": [
+            "proc_integrated_service_change_mgmt_v1"
+          ],
+          "processNext": [
+            "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+          ],
+          "partOfPackage": "sap.ariba:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+          "type": "apiResource",
+          "namespace": "sap.ariba",
+          "title": "Material and Vendor Procurement Data API",
+          "shortDescription": "Retrieves material specifications and vendor information for procurement workflows.",
+          "description": "Manages and provides access to material master data and vendor profiles across procurement operations. Exposes detailed material attributes and vendor capabilities to enable sourcing decisions and purchase order creation. Retrieves vendor performance indicators and material availability status for inventory planning.",
+          "entityTypes": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "lineOfBusiness": [
+            "manufacturing"
+          ],
+          "capabilities": [
+            "query-procurement-database",
+            "identify-vendors-materials",
+            "match-demand-inventory",
+            "lookup-material-sourcing",
+            "fetch-certification-data",
+            "retrieve-vendor-specs"
+          ],
+          "useCases": [
+            "Procurement specialist queries approved vendors and materials inventory to match customer demand.",
+            "Real-time material and vendor master data for procurement planning.",
+            "Supply chain team identifies alternative vendors for materials flagged in compliance review.",
+            "Access to material specifications and vendor qualifications for sourcing decisions.",
+            "Procurement specialist accesses approved material suppliers and pricing for validated BOM items."
+          ],
+          "tags": [
+            "inventory-management",
+            "supply-chain",
+            "material-planning"
+          ],
+          "partOfGroups": [
+            "proc_supplychain_risk_compliance_v1",
+            "proc_ProductComplianceWorkforceSafety_v1"
+          ],
+          "processNext": [
+            "emarsys.cx:apiResource:VendorMaterialSupplyChainAPI:v1"
+          ],
+          "partOfPackage": "sap.ariba:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "coordinate-vendor-procurement"
+        },
+        "result_preview": [
+          {
+            "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+            "type": "apiResource",
+            "title": "Purchase Order Network API",
+            "shortDescription": "REST API for creating, updating, and monitoring purchase orders across supplier networks."
+          }
+        ]
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+          "reason": "Maps procurement dependencies and identifies required materials and vendors for change implementation, directly fulfilling the need to cross-reference materials, vendors, and procurement requirements."
+        },
+        "result": {
+          "committed": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+    "picked_reason": "Maps procurement dependencies and identifies required materials and vendors for change implementation, directly fulfilling the need to cross-reference materials, vendors, and procurement requirements.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 10,
+    "tokens": 25511,
+    "latency_s": 12.969,
+    "llm_calls": 10
+  },
+  "wall_s": 12.974
+}

@@ -1,0 +1,611 @@
+{
+  "case_id": "dy-36",
+  "user_prompt": "We need to pull together workforce compensation figures alongside our current stock levels and product spec changes so we can model how our transition impacts both our labor costs and operational readiness before we commit to the new setup.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull together workforce compensation figures for analysis",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:dataProduct:CompensationTrendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Compensation:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Production Labor Productivity Metrics",
+                  "shortDescription": "Aggregates employee compensation and performance data to analyze production labor efficiency."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Compensation and Safety Risk Correlation Analytics",
+                  "shortDescription": "Aggregates compensation patterns and safety incident data to identify risk correlations."
+                },
+                {
+                  "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Sales Compensation Orchestrator",
+                  "shortDescription": "Automates compensation calculations and dispute resolution for sales teams."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:dataProduct:CompensationTrendAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:dataProduct:CompensationTrendAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "workday.hcm",
+                "title": "Compensation Trend Analytics",
+                "shortDescription": "Aggregated compensation metrics and trends across employee populations and time periods.",
+                "description": "This analytical data product provides pre-aggregated views of compensation data including salary distributions, merit increase patterns, pay equity metrics, and compensation-to-performance ratios. It enables HR analytics teams to identify compensation trends, benchmark pay levels by job family and geography, and support data-driven compensation planning and equity analysis.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:Compensation:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "compensation",
+                  "analytics",
+                  "workforce-planning",
+                  "pay-equity"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:dataProduct:CompensationTrendAnalytics:v1",
+                "reason": "This data product directly aggregates workforce compensation metrics and trends across employee populations, providing the analytical foundation needed to pull together compensation figures for analysis."
+              },
+              "result": {
+                "committed": "workday.hcm:dataProduct:CompensationTrendAnalytics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:dataProduct:CompensationTrendAnalytics:v1",
+          "picked_reason": "This data product directly aggregates workforce compensation metrics and trends across employee populations, providing the analytical foundation needed to pull together compensation figures for analysis.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 6,
+          "tokens": 18398,
+          "latency_s": 9.537,
+          "llm_calls": 6
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "sap.s4:apiResource:EmployeePayrollDataAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Retrieve current stock levels for analysis",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "workday.hcm:dataProduct:CompensationTrendAnalytics:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Material:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                  "type": "agent",
+                  "title": "Change Release Coordinator",
+                  "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+                },
+                "... (55 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Inventory Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Material and Vendor Inventory Management",
+                "shortDescription": "Retrieves and manages material stock levels and vendor supply chain data.",
+                "description": "Exposes real-time material inventory records and vendor information to support production scheduling and procurement workflows. Provides access to material availability, reorder points, and vendor performance metrics for optimized supply chain operations. Manages material-to-vendor relationships to ensure accurate sourcing and inventory replenishment across manufacturing facilities.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "inventory-management",
+                  "supply-chain",
+                  "material-planning"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                "reason": "Directly retrieves real-time material stock levels and vendor supply chain data for inventory analysis and production planning."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+          "picked_reason": "Directly retrieves real-time material stock levels and vendor supply chain data for inventory analysis and production planning.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 19733,
+          "latency_s": 10.77,
+          "llm_calls": 8
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Obtain product specification changes for analysis",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:EngineeringChange:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Change Lifecycle API",
+                  "shortDescription": "Exposes engineering changes and product items for workforce asset management."
+                },
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                "... (37 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ProductItem:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Change Lifecycle API",
+                  "shortDescription": "Exposes engineering changes and product items for workforce asset management."
+                },
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                "... (37 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "my.mes",
+                "title": "Engineering Change Impact Analytics",
+                "shortDescription": "Aggregates cost, complexity, and supplier impact metrics from engineering changes and material modifications.",
+                "description": "Synthesizes engineering change data with material specifications and product item configurations to provide comprehensive impact analysis. Summarizes bill-of-materials complexity, supplier dependency metrics, and compliance exposure across all active product modifications. Delivers actionable insights on change propagation costs and regulatory alignment for informed decision-making.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "cost-analysis",
+                  "bom-complexity",
+                  "supplier-impact",
+                  "compliance-metrics"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Design Modification and Component Specification API",
+                "shortDescription": "Facilitates tracking and coordination of design updates and component specifications during product development and procurement cycles.",
+                "description": "Exposes design modification records and component specification data to enable integration systems to access approval statuses, impacted items, and change history throughout the product lifecycle. Supports retrieval of design update details, affected component relationships, and change request submissions to coordinate cross-functional teams. Enables real-time access to modification tracking, impact assessments, and stakeholder notifications for design changes across sourcing and manufacturing operations.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "design-modification",
+                  "product-lifecycle-management",
+                  "change-tracking",
+                  "component-management"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+                "reason": "Engineering Change Impact Analytics aggregates product specification changes with cost, complexity, and supplier impact metrics, providing the analytical insights needed for analysis."
+              },
+              "result": {
+                "committed": "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+          "picked_reason": "Engineering Change Impact Analytics aggregates product specification changes with cost, complexity, and supplier impact metrics, providing the analytical insights needed for analysis.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 22798,
+          "latency_s": 10.161,
+          "llm_calls": 8
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 61255,
+    "latency_s": 30.468,
+    "llm_calls": 23
+  },
+  "wall_s": 30.501
+}

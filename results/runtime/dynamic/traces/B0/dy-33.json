@@ -1,0 +1,180 @@
+{
+  "case_id": "dy-33",
+  "user_prompt": "I need to simultaneously log incoming shipments from our suppliers while also tracking the modifications we're making to our product line and ensuring our field technicians can submit their equipment maintenance needs through a single integrated workflow.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to log incoming shipments from our suppliers and track modifications to our product line in an integrated system.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:EngineeringChangeAndProductItemManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeProductDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:EngineeringChangeOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ariba",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ariba\", \"sap.s4\"],\n  \"reason\": \"Incoming shipment logging requires procurement/inventory tracking (Ariba), while product line modifications need manufacturing and inventory management with material/engineering change tracking (S4).\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Logging incoming shipments and tracking product line modifications are transactional activities that create and update master data in the system.\"\n}\n```",
+          "stage2_pool_size": 36,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1",
+            "sap.odm:entityType:EngineeringChange:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\"\n  ],\n  \"reason\": \"The activity involves logging incoming shipments (Material from Vendor) and tracking product line modifications (EngineeringChange).\"\n}\n```",
+          "stage3_pool_size": 16,
+          "stage4_raw": "```json\n[\n  \"sap.s4:apiResource:MaterialReceiptInboundAPI:v1\",\n  \"sap.ariba:apiResource:EngineeringChangeAndProductItemManagement:v1\",\n  \"sap.s4:apiResource:EngineeringChangeProductDataAPI:v1\",\n  \"sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1\",\n  \"sap.s4:agent:EngineeringChangeOrchestrator:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 3083,
+          "latency_s": 6.351,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "I need to set up a workflow where field technicians can submit their equipment maintenance needs.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\", \"my.mes\"],\n  \"reason\": \"Equipment maintenance needs require IT Service Management for workflow/ticketing and Manufacturing Execution System for equipment tracking and lifecycle management.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Field technicians submitting maintenance requests requires creating/updating work orders or tickets in a live system, which is purely operational work.\"\n}\n```",
+          "stage2_pool_size": 42,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ServiceTicket:v1",
+            "sap.odm:entityType:Machine:v1",
+            "sap.odm:entityType:Employee:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:ServiceTicket:v1\", \"sap.odm:entityType:Machine:v1\", \"sap.odm:entityType:Employee:v1\"],\n  \"reason\": \"Field technicians submit maintenance requests as service tickets for machines, with employee identification for tracking and assignment.\"\n}\n```",
+          "stage3_pool_size": 12,
+          "stage4_raw": "```json\n[\n  \"my.mes:apiResource:EquipmentServiceAndChangeManagement:v1\",\n  \"my.mes:apiResource:EquipmentChangeAndServiceManagement:v1\",\n  \"my.mes:apiResource:ServiceTicketChangeRequestManagement:v1\",\n  \"corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1\",\n  \"my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2774,
+          "latency_s": 6.315,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request requires three distinct, simultaneous workflows (incoming shipment logging, product line modifications, and field technician maintenance requests) that no single skill covers end-to-end as an integrated process.\"\n}\n```",
+      "reason": "The request requires three distinct, simultaneous workflows (incoming shipment logging, product line modifications, and field technician maintenance requests) that no single skill covers end-to-end as an integrated process.",
+      "tokens": 1663,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 3,
+      "sub_queries": [
+        "Log incoming shipments from our suppliers",
+        "Track modifications we're making to our product line",
+        "Enable field technicians to submit equipment maintenance needs through an integrated workflow"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 7782,
+    "latency_s": 12.666,
+    "llm_calls": 10
+  },
+  "wall_s": 12.691
+}

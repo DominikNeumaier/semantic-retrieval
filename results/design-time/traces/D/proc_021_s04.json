@@ -1,0 +1,252 @@
+{
+  "case_id": "proc_021_s04",
+  "process": "proc_021",
+  "label": "QualityDrivenMfgSupplyChain process: Receive and inspect material shipments \u2014 Process inbound material receipts from qualified vendors and validate against purchase orders and quality standards.",
+  "method": "D",
+  "expected_ordIds": [
+    "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+      "score": null
+    },
+    {
+      "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.ariba:dataProduct:ProductionQualityMetrics:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 1,
+    "r_at_5": 1,
+    "mrr": 1.0,
+    "first_hit_rank": 1,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_entity_types",
+        "args": {},
+        "result_preview": [
+          "sap.odm:entityType:Campaign:v1",
+          "sap.odm:entityType:ChangeRequest:v1",
+          "sap.odm:entityType:Compensation:v1",
+          "... (23 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_lines_of_business",
+        "args": {},
+        "result_preview": [
+          "ERP",
+          "Environment, Health & Safety",
+          "Environment, Health and Safety",
+          "... (44 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_capabilities",
+        "args": {},
+        "result_preview": []
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:QualityInspection:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "type": "agent",
+            "title": "Production Quality Monitor Agent",
+            "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+          },
+          {
+            "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+            "type": "dataProduct",
+            "title": "Production Order Quality Metrics",
+            "shortDescription": "Aggregated quality performance and defect rates per production order."
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ProductionQualityMetrics:v1",
+            "type": "dataProduct",
+            "title": "Procurement Quality and Vendor Performance Dashboard",
+            "shortDescription": "Vendor compliance tracking and material quality assessment across sourced components and supplier deliverables."
+          },
+          "... (5 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:Material:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "type": "agent",
+            "title": "Asset Provisioning Orchestrator",
+            "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "type": "agent",
+            "title": "Change Automation Orchestrator",
+            "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "type": "agent",
+            "title": "Change Release Coordinator",
+            "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+          },
+          "... (55 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_in_lob",
+        "args": {
+          "line_of_business": "Procurement"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "type": "apiResource",
+            "title": "Vendor Campaign Account Retrieval API",
+            "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "type": "apiResource",
+            "title": "Vendor Procurement Order API",
+            "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+            "type": "dataProduct",
+            "title": "Vendor Spend Intelligence",
+            "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+          },
+          "... (27 more)"
+        ]
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+          "type": "apiResource",
+          "namespace": "sap.s4",
+          "title": "Material Receipt Inbound API",
+          "shortDescription": "REST API for creating and managing goods receipt transactions against purchase orders.",
+          "description": "Enables integration systems and warehouse management applications to post goods receipts in real-time against procured materials. Supports batch material receipt posting, quality inspection workflows, and stock reservation updates. Critical for supply chain visibility and inventory accuracy in manufacturing operations.",
+          "entityTypes": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "lineOfBusiness": [
+            "Procurement",
+            "Inventory Management",
+            "Manufacturing"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "goods-receipt",
+            "inbound-logistics",
+            "material-management",
+            "procurement-integration"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "sap.s4:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+          "type": "agent",
+          "namespace": "sap.ariba",
+          "title": "Dangerous Goods Supply Chain Safety Agent",
+          "shortDescription": "Tracks hazardous material declarations from vendors and triggers response protocols for safety events.",
+          "description": "Automates oversight of hazardous material certifications within the supplier ecosystem and ingests real-time safety event notifications. Executes regulatory verification processes, identifies non-compliance signals, and routes urgent safety alerts to procurement teams for corrective intervention and risk mitigation across the supply chain.",
+          "entityTypes": [
+            "sap.odm:entityType:HazardousSubstance:v1",
+            "sap.odm:entityType:Incident:v1",
+            "sap.odm:entityType:SafetyIncident:v1"
+          ],
+          "lineOfBusiness": [
+            "Procurement"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "hazardous-materials",
+            "vendor-risk-management",
+            "safety-event-tracking"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "sap.ariba:package:Core:v1"
+        }
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+          "reason": "Direct REST API for posting goods receipts, quality inspection workflows, and inventory validation against purchase orders from vendors in manufacturing supply chain operations."
+        },
+        "result": {
+          "committed": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+    "picked_reason": "Direct REST API for posting goods receipts, quality inspection workflows, and inventory validation against purchase orders from vendors in manufacturing supply chain operations.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 9,
+    "tokens": 24789,
+    "latency_s": 10.76,
+    "llm_calls": 9
+  },
+  "wall_s": 10.765
+}

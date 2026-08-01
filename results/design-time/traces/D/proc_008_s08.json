@@ -1,0 +1,278 @@
+{
+  "case_id": "proc_008_s08",
+  "process": "proc_008",
+  "label": "order compliance fulfillment process: Approve fulfillment and schedule resource time \u2014 Authorize order fulfillment and reserve employee capacity and time allocations for delivery execution.",
+  "method": "D",
+  "expected_ordIds": [
+    "workday.hcm:apiResource:TimeOffBalanceManagement:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+      "score": null
+    },
+    {
+      "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_capabilities",
+        "args": {},
+        "result_preview": [
+          "activate-campaigns",
+          "activate-contact-engagement",
+          "activate-customer-accounts",
+          "... (337 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_lines_of_business",
+        "args": {},
+        "result_preview": [
+          "ERP",
+          "Environment, Health & Safety",
+          "Environment, Health and Safety",
+          "... (44 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "fulfill-customer-orders"
+        },
+        "result_preview": [
+          {
+            "ordId": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+            "type": "apiResource",
+            "title": "Order Fulfillment Service API",
+            "shortDescription": "Manages order lifecycle and customer account service interactions for ticket resolution."
+          }
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "approve-salary-adjustments"
+        },
+        "result_preview": [
+          {
+            "ordId": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+            "type": "apiResource",
+            "title": "Employee Compensation Management API",
+            "shortDescription": "REST API for managing employee compensation, salary structures, and merit adjustments."
+          }
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "resource-allocation-scheduling"
+        },
+        "result_preview": [
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "type": "apiResource",
+            "title": "Payroll Processing Data Management",
+            "shortDescription": "Manages and exposes payroll calculations, earnings, and deductions data."
+          }
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "coordinate-delivery-schedules"
+        },
+        "result_preview": [
+          {
+            "ordId": "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+            "type": "apiResource",
+            "title": "Procurement Vendor and Purchase Order Management API",
+            "shortDescription": "Retrieves and manages vendor details and purchase order data for procurement operations."
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "allocate-workforce"
+        },
+        "result_preview": [
+          {
+            "ordId": "workday.hcm:apiResource:PayrollDataExposure:v1",
+            "type": "apiResource",
+            "title": "Payroll Data Exposure API",
+            "shortDescription": "Exposes payroll records, earnings, deductions, and tax information for employees."
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "coordinate-employee-availability"
+        },
+        "result_preview": [
+          {
+            "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+            "type": "apiResource",
+            "title": "Sales Capacity and Time Off Management API",
+            "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning."
+          }
+        ]
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1"
+        },
+        "result_preview": {
+          "ordId": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+          "type": "apiResource",
+          "namespace": "emarsys.cx",
+          "title": "Order Fulfillment Service API",
+          "shortDescription": "Manages order lifecycle and customer account service interactions for ticket resolution.",
+          "description": "Exposes order fulfillment status and customer account details to enable service teams to retrieve, manage, and track customer orders throughout their lifecycle. Provides access to order-related service tickets and account information, facilitating coordinated fulfillment operations and customer support workflows.",
+          "entityTypes": [
+            "sap.odm:entityType:CustomerAccount:v1",
+            "sap.odm:entityType:CustomerOrder:v1"
+          ],
+          "lineOfBusiness": [
+            "itsm-operations"
+          ],
+          "capabilities": [
+            "fulfill-customer-orders",
+            "allocate-inventory",
+            "manage-customer-accounts"
+          ],
+          "useCases": [
+            "Sales fulfillment teams process initial customer orders for the new product while managing inventory and delivery commitments.",
+            "Customer account managers verify order accuracy and coordinate logistics for early-stage product shipments."
+          ],
+          "tags": [
+            "service-management",
+            "order-fulfillment",
+            "ticket-lifecycle"
+          ],
+          "partOfGroups": [
+            "proc_ProductLaunchVendorCompliance_v1"
+          ],
+          "processNext": [
+            "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1"
+          ],
+          "partOfPackage": "emarsys.cx:package:Core:v1"
+        }
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1"
+        },
+        "result_preview": {
+          "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+          "type": "apiResource",
+          "namespace": "emarsys.cx",
+          "title": "Sales Capacity and Time Off Management API",
+          "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning.",
+          "description": "Exposes employee workforce information and time-off schedules to manage sales team capacity and resource allocation. Provides access to employee profiles and time-off records for workforce planning and sales operations optimization. Manages real-time availability data to support accurate capacity forecasting and campaign staffing decisions.",
+          "entityTypes": [
+            "sap.odm:entityType:Employee:v1",
+            "sap.odm:entityType:TimeOff:v1"
+          ],
+          "lineOfBusiness": [
+            "Sales"
+          ],
+          "capabilities": [
+            "plan-sales-capacity",
+            "manage-time-off",
+            "block-availability",
+            "coordinate-employee-availability",
+            "schedule-capacity",
+            "manage-time-off-allocation"
+          ],
+          "useCases": [
+            "Sales leadership schedules workforce availability and manages time-off to maintain customer contact coverage during product transition.",
+            "HR coordinators prevent conflicting vacation requests during critical go-live periods.",
+            "Sales operations reserve team availability during high-stakes product launch windows.",
+            "Regional sales managers confirm team capacity meets customer communication workload for transition period."
+          ],
+          "tags": [
+            "capacity-planning",
+            "workforce-management",
+            "sales-operations"
+          ],
+          "partOfGroups": [
+            "proc_ProductTransitionSafetyCoordination_v1",
+            "proc_product_launch_transition_v1"
+          ],
+          "processNext": [
+            "emarsys.cx:dataProduct:OpportunitySalesForecasting:v1"
+          ],
+          "partOfPackage": "emarsys.cx:package:Core:v1"
+        }
+      },
+      {
+        "step": 4,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+          "reason": "This API directly manages employee capacity, time-off, and availability scheduling, enabling reserve of employee time allocations for delivery execution as required by the fulfillment process."
+        },
+        "result": {
+          "committed": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+    "picked_reason": "This API directly manages employee capacity, time-off, and availability scheduling, enabling reserve of employee time allocations for delivery execution as required by the fulfillment process.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 11,
+    "tokens": 27340,
+    "latency_s": 13.998,
+    "llm_calls": 11
+  },
+  "wall_s": 14.009
+}

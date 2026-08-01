@@ -1,0 +1,109 @@
+{
+  "case_id": "oos-01",
+  "user_prompt": "We need a way to automatically flag suppliers whose credit ratings or financial health metrics have deteriorated in the past 90 days so we can proactively assess whether to reduce order volumes or increase payment terms before we hit a cash flow problem.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "C",
+  "state": "enriched",
+  "condition": "C1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 1,
+    "falsely_picked": 0,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "We need a way to automatically flag suppliers whose credit ratings or financial health metrics have deteriorated in the past 90 days so we can proactively assess whether to reduce order volumes or increase payment terms before we hit a cash flow problem.",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Vendor:v1",
+              "sap.odm:entityType:PurchaseOrder:v1",
+              "sap.odm:entityType:Invoice:v1",
+              "sap.odm:entityType:Contract:v1"
+            ],
+            "business_groups": [
+              "proc_procure_fulfill_v1",
+              "proc_supplychain_risk_compliance_v1",
+              "proc_EngChangeAndProcurement_v1"
+            ],
+            "lines_of_business": [
+              "Procurement",
+              "Finance"
+            ],
+            "reason": "Activity monitors supplier financial health to manage procurement risk, involving vendor data, purchase orders, and cash flow/payment terms decisions."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:Contract:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_supplychain_risk_compliance_v1\",\n    \"proc_EngChangeAndProcurement_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Finance\"\n  ],\n  \"reason\": \"Activity monitors supplier financial health to manage procurement risk, involving vendor data, purchase orders, and cash flow/payment terms decisions.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity requires monitoring supplier credit ratings and financial health metrics to flag deterioration and trigger proactive procurement decisions (reducing order volumes, adjusting payment terms). \n\nNone of the candidates provide this capability:\n- The Material Receipt, Material Master Data, and Procurement Data APIs focus on material/vendor master data retrieval and goods receipt\u2014not financial health monitoring\n- The agents (Engineering Change, Production Change, Asset Lifecycle orchestrators) handle operational workflows for engineering changes and material provisioning, not financial analysis\n- The data products assess workforce readiness and production capability for transitions, not supplier financial health\n\nThe candidates are topically related to procurement/supply chain but lack the financial monitoring, credit rating analysis, or supplier health metrics capabilities needed for this activity.",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 4029,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is a financial monitoring and supplier risk assessment task that doesn't align with any of the registered skills, which focus on procurement, production, compliance, and fulfillment workflows rather than proactive financial health tracking and credit rating analysis.\"\n}\n```",
+      "reason": "The request is a financial monitoring and supplier risk assessment task that doesn't align with any of the registered skills, which focus on procurement, production, compliance, and fulfillment workflows rather than proactive financial health tracking and credit rating analysis.",
+      "tokens": 1678,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 6148,
+    "latency_s": 0.0,
+    "llm_calls": 4
+  },
+  "wall_s": 0.102
+}

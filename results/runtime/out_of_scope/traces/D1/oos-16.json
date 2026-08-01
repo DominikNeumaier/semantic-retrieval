@@ -1,0 +1,795 @@
+{
+  "case_id": "oos-16",
+  "user_prompt": "We need to automatically map and consolidate sustainability data from our disparate ERP, HR, and facility management systems into a single staging area so our sustainability team can validate completeness and consistency before submitting our annual GRI and CSRD reports\u2014right now they're manually pulling CSVs from five different systems and spending weeks reconciling conflicting numbers on energy use and headcount metrics.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Build an automated data integration pipeline that consolidates sustainability data from our disparate ERP, HR, and facility management systems into a single staging area",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:apiResource:MachineProductionOrderIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "integrate-production-orders"
+              },
+              "result_preview": [
+                {
+                  "ordId": "siemens.plm:apiResource:MachineProductionOrderIntegration:v1",
+                  "type": "apiResource",
+                  "title": "Machine Production Order Integration API",
+                  "shortDescription": "Retrieves and manages machine-production order relationships for execution tracking."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "integration_dependencies",
+              "args": {
+                "namespace": "sap.s4"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Environment, Health & Safety"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                  "type": "apiResource",
+                  "title": "Safety Compliance Customer Management API",
+                  "shortDescription": "Manages customer accounts and safety campaigns with compliance tracking integration."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+                  "type": "apiResource",
+                  "title": "Safety Inspection Campaign Management API",
+                  "shortDescription": "Manages and retrieves safety inspection campaigns linked to customer accounts."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Storage Tracking API",
+                  "shortDescription": "Manages and retrieves hazardous substance storage locations and inventory status."
+                },
+                "... (2 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "list_namespaces",
+              "args": {},
+              "result_preview": [
+                "corp.itsm",
+                "emarsys.cx",
+                "my.mes",
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "integration_dependencies",
+              "args": {
+                "namespace": "sap.ehs"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.ehs",
+                "title": "Safety Inspection Campaign Management API",
+                "shortDescription": "Manages and retrieves safety inspection campaigns linked to customer accounts.",
+                "description": "Exposes safety inspection campaign data and customer account relationships to coordinate scheduled inspections, track compliance status across customer sites, and provide access to inspection results and remediation tracking. Enables seamless integration of inspection workflows with customer account management systems for comprehensive EHS oversight.",
+                "entityTypes": [
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerAccount:v1"
+                ],
+                "lineOfBusiness": [
+                  "Environment, Health & Safety"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "safety-inspection",
+                  "compliance-tracking",
+                  "customer-engagement"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+                "reason": "This API consolidates and integrates safety inspection and compliance data across multiple customer sites and account management systems, providing seamless data aggregation for EHS/sustainability metrics from disparate sources."
+              },
+              "result": {
+                "committed": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+          "picked_reason": "This API consolidates and integrates safety inspection and compliance data across multiple customer sites and account management systems, providing seamless data aggregation for EHS/sustainability metrics from disparate sources.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 34397,
+          "latency_s": 14.314,
+          "llm_calls": 10
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Implement a data validation and reconciliation capability that allows our sustainability team to verify completeness and consistency of consolidated sustainability metrics",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:BenefitsEnrollmentDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "reconcile-enrollment"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:BenefitsEnrollmentDataManagement:v1",
+                  "type": "apiResource",
+                  "title": "Benefits Enrollment Data Management API",
+                  "shortDescription": "Manages and retrieves employee benefits enrollment records and eligibility data."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Environment, Health & Safety"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                  "type": "apiResource",
+                  "title": "Safety Compliance Customer Management API",
+                  "shortDescription": "Manages customer accounts and safety campaigns with compliance tracking integration."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+                  "type": "apiResource",
+                  "title": "Safety Inspection Campaign Management API",
+                  "shortDescription": "Manages and retrieves safety inspection campaigns linked to customer accounts."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Storage Tracking API",
+                  "shortDescription": "Manages and retrieves hazardous substance storage locations and inventory status."
+                },
+                "... (2 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "automate-compliance-verification"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                  "type": "agent",
+                  "title": "BOM Compliance Automation Agent",
+                  "shortDescription": "Automates bill-of-materials validation and supplier compliance verification across engineering changes."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "detect-anomalies"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Engagement Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.ehs",
+                "title": "Safety Inspection Campaign Management API",
+                "shortDescription": "Manages and retrieves safety inspection campaigns linked to customer accounts.",
+                "description": "Exposes safety inspection campaign data and customer account relationships to coordinate scheduled inspections, track compliance status across customer sites, and provide access to inspection results and remediation tracking. Enables seamless integration of inspection workflows with customer account management systems for comprehensive EHS oversight.",
+                "entityTypes": [
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerAccount:v1"
+                ],
+                "lineOfBusiness": [
+                  "Environment, Health & Safety"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "safety-inspection",
+                  "compliance-tracking",
+                  "customer-engagement"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "integration_dependencies",
+              "args": {
+                "namespace": "sap.ehs"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "collect-safety-metrics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes safety incidents with compliance tracking."
+                }
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1"
+              },
+              "result_preview": {
+                "ordId": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+                "type": "dataProduct",
+                "namespace": "corp.itsm",
+                "title": "Safety Incident Metrics",
+                "shortDescription": "Aggregates and analyzes safety incidents with compliance tracking.",
+                "description": "Summarizes safety incident patterns and incident data to provide comprehensive metrics on organizational safety performance and regulatory compliance. Delivers real-time dashboards and historical trend analysis across all safety-related incidents and standard incident records.",
+                "entityTypes": [
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [
+                  "collect-safety-metrics",
+                  "aggregate-incident-data",
+                  "establish-safety-baseline"
+                ],
+                "useCases": [
+                  "Risk management team establishes pre-transition safety baseline to measure post-transition safety performance.",
+                  "Compliance officer validates incident trending and determines if safety protocols require update for new materials."
+                ],
+                "tags": [
+                  "safety-analytics",
+                  "incident-management",
+                  "compliance-monitoring"
+                ],
+                "partOfGroups": [
+                  "proc_ProductTransitionSafetyCoordination_v1"
+                ],
+                "processNext": [
+                  "sap.ariba:apiResource:VendorServiceManagementAPI:v1"
+                ],
+                "partOfPackage": "corp.itsm:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "orchestrate-compliance-checks"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                  "type": "agent",
+                  "title": "Safety Compliance Automation Coordinator",
+                  "shortDescription": "Automates safety validation across engineering changes, materials, and product items."
+                }
+              ]
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "type": "agent",
+                "namespace": "sap.ehs",
+                "title": "Safety Compliance Automation Coordinator",
+                "shortDescription": "Automates safety validation across engineering changes, materials, and product items.",
+                "description": "Monitors and processes engineering changes, materials, and product items to enforce safety compliance requirements and automate BOM validation workflows. Coordinates supplier qualification assessments and initiates compliance remediation actions when safety risks or regulatory gaps are detected. Automates incident prevention through continuous validation of product configurations against safety standards.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [
+                  "assess-material-safety",
+                  "automate-safety-assessments",
+                  "automate-compliance-checks",
+                  "coordinate-compliance-workflow",
+                  "validate-engineering-changes",
+                  "orchestrate-compliance-checks",
+                  "coordinate-safety-compliance"
+                ],
+                "useCases": [
+                  "Safety officers ensure all engineering changes trigger integrated compliance assessments across the organization.",
+                  "EHS team automates review of engineering changes to ensure material and product modifications meet safety and regulatory requirements before production",
+                  "Compliance automation prevents unsafe or non-compliant product items from advancing to manufacturing",
+                  "Compliance teams automate material and process safety validation to reduce manual review time.",
+                  "Operations leadership maintains consistent safety standards across all product variants and manufacturing locations."
+                ],
+                "tags": [
+                  "compliance",
+                  "bom-validation",
+                  "supplier-qualification",
+                  "automation"
+                ],
+                "partOfGroups": [
+                  "proc_ProductComplianceManufacturing_v1",
+                  "proc_talent_compliance_ops_v1"
+                ],
+                "processNext": [
+                  "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+                ],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "reason": "Automates compliance validation and verification of sustainability/safety metrics through orchestrated checks and continuous validation workflows, enabling the team to verify completeness and consistency of consolidated data."
+              },
+              "result": {
+                "committed": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+          "picked_reason": "Automates compliance validation and verification of sustainability/safety metrics through orchestrated checks and continuous validation workflows, enabling the team to verify completeness and consistency of consolidated data.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 14,
+          "tokens": 49506,
+          "latency_s": 19.778,
+          "llm_calls": 14
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Enable automated report generation for GRI and CSRD compliance submissions from the consolidated and validated sustainability data",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+                  "type": "apiResource",
+                  "title": "Purchase Order Network API",
+                  "shortDescription": "REST API for creating, updating, and monitoring purchase orders across supplier networks."
+                }
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "generate-compliance-reports"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Environment, Health & Safety"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                  "type": "apiResource",
+                  "title": "Safety Compliance Customer Management API",
+                  "shortDescription": "Manages customer accounts and safety campaigns with compliance tracking integration."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+                  "type": "apiResource",
+                  "title": "Safety Inspection Campaign Management API",
+                  "shortDescription": "Manages and retrieves safety inspection campaigns linked to customer accounts."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Storage Tracking API",
+                  "shortDescription": "Manages and retrieves hazardous substance storage locations and inventory status."
+                },
+                "... (2 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "automate-compliance-verification"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                  "type": "agent",
+                  "title": "BOM Compliance Automation Agent",
+                  "shortDescription": "Automates bill-of-materials validation and supplier compliance verification across engineering changes."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "orchestrate-compliance-checks"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                  "type": "agent",
+                  "title": "Safety Compliance Automation Coordinator",
+                  "shortDescription": "Automates safety validation across engineering changes, materials, and product items."
+                }
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Finance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Procurement Automation Orchestrator",
+                  "shortDescription": "Automates vendor engagement and procurement workflows through targeted marketing communications."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                "... (10 more)"
+              ]
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:dataProduct:MaterialInvoiceComplianceCostAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:dataProduct:MaterialInvoiceComplianceCostAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.ehs",
+                "title": "Material Invoice Compliance Cost Analytics",
+                "shortDescription": "Aggregates material procurement and invoicing data against safety compliance requirements.",
+                "description": "Synthesizes invoice transactions and material master data to provide comprehensive cost analytics on safety-compliant procurement. Summarizes financial impact of hazardous material sourcing, regulatory compliance costs, and vendor safety performance metrics. Delivers insights on spending patterns correlated with environmental and chemical compliance obligations across the supply chain.",
+                "entityTypes": [
+                  "sap.odm:entityType:Invoice:v1",
+                  "sap.odm:entityType:Material:v1"
+                ],
+                "lineOfBusiness": [
+                  "Finance"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "procurement-analytics",
+                  "compliance-costs",
+                  "material-safety"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a resource with capabilities for automated GRI and CSRD compliance report generation from consolidated sustainability data; available resources focus on safety compliance, procurement, and cost analytics rather than sustainability reporting frameworks."
+              },
+              "result": {
+                "refused": true,
+                "reason": "The landscape lacks a resource with capabilities for automated GRI and CSRD compliance report generation from consolidated sustainability data; available resources focus on safety compliance, procurement, and cost analytics rather than sustainability reporting frameworks."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a resource with capabilities for automated GRI and CSRD compliance report generation from consolidated sustainability data; available resources focus on safety compliance, procurement, and cost analytics rather than sustainability reporting frameworks.",
+          "tool_calls": 11,
+          "tokens": 48502,
+          "latency_s": 18.47,
+          "llm_calls": 11
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request requires a sustainability data integration and consolidation process (ERP/HR/facility systems \u2192 staging \u2192 validation), which is a specialized data governance and reporting workflow not covered by any of the registered skills that focus on production, procurement, compliance, and operational change management.\"\n}\n```",
+      "reason": "The request requires a sustainability data integration and consolidation process (ERP/HR/facility systems \u2192 staging \u2192 validation), which is a specialized data governance and reporting workflow not covered by any of the registered skills that focus on production, procurement, compliance, and operatio",
+      "tokens": 1716,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 134538,
+    "latency_s": 52.562,
+    "llm_calls": 37
+  },
+  "wall_s": 52.595
+}

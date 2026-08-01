@@ -1,0 +1,174 @@
+{
+  "case_id": "dy-31",
+  "user_prompt": "I need to pull together our current safety performance metrics across all reported events while simultaneously ensuring our chemical inventory documentation stays current with regulatory standards\u2014can I get both of those data sets integrated into one dashboard view?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "enriched",
+  "condition": "B1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull together our current safety performance metrics across all reported events and display them in a dashboard view.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:IncidentSafetyAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ehs",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ehs\", \"my.mes\"],\n  \"reason\": \"Safety performance metrics and reported events are primarily managed through EHS (Environment, Health & Safety) systems, with manufacturing safety data also tracked in MES.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Pulling and displaying safety metrics in a dashboard is read-only KPI aggregation with no live execution or data modification.\"\n}\n```",
+          "stage2_pool_size": 18,
+          "stage3_entity_types": [
+            "sap.odm:entityType:SafetyIncident:v1",
+            "sap.odm:entityType:Incident:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:SafetyIncident:v1\", \"sap.odm:entityType:Incident:v1\"],\n  \"reason\": \"The activity aggregates safety performance metrics from reported events, which directly correspond to SafetyIncident and Incident entity types that contain the event data needed for dashboard metrics.\"\n}\n```",
+          "stage3_pool_size": 4,
+          "stage4_raw": "```json\n[\n  \"sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1\",\n  \"sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1\",\n  \"my.mes:dataProduct:IncidentSafetyAnalytics:v1\",\n  \"sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 4,
+          "refused": false,
+          "tokens": 2267,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "corp.itsm:dataProduct:IncidentEngagementReliability:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Ensure our chemical inventory documentation stays current with regulatory standards and integrate it into a dashboard view.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:HazardousSubstanceInventoryAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ehs",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ehs\", \"sap.s4\"],\n  \"reason\": \"sap.ehs handles hazardous substance documentation and regulatory compliance for safety/environment, while sap.s4 manages material inventory and can integrate dashboard views.\"\n}\n```",
+          "stage2_modalities": [
+            "operational",
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\", \"analytical\"],\n  \"reason\": \"Updating inventory documentation to meet regulatory standards is operational work (agent updates master data), while the dashboard view is analytical (read-only KPI display).\"\n}\n```",
+          "stage2_pool_size": 58,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:HazardousSubstance:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:HazardousSubstance:v1\"],\n  \"reason\": \"Chemical inventory documentation and regulatory compliance primarily concern materials and hazardous substances tracking and documentation.\"\n}\n```",
+          "stage3_pool_size": 20,
+          "stage4_raw": "```json\n[\n  \"sap.ehs:apiResource:ChemicalInventoryCompliance:v1\",\n  \"sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1\",\n  \"sap.s4:apiResource:HazardousSubstanceInventoryAPI:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 4197,
+          "latency_s": 1.684,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user is requesting a dashboard integration combining safety metrics and chemical inventory data\u2014an ad-hoc analytics/reporting request that doesn't match any complete multi-step operational process.\"\n}\n```",
+      "reason": "The user is requesting a dashboard integration combining safety metrics and chemical inventory data\u2014an ad-hoc analytics/reporting request that doesn't match any complete multi-step operational process.",
+      "tokens": 1658,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 2,
+      "sub_queries": [
+        "Pull together our current safety performance metrics across all reported events",
+        "Ensure our chemical inventory documentation stays current with regulatory standards"
+      ],
+      "routed_ok": true,
+      "count_ok": true,
+      "verdict": "green"
+    }
+  },
+  "trace": {
+    "tokens": 8382,
+    "latency_s": 1.684,
+    "llm_calls": 10
+  },
+  "wall_s": 1.706
+}

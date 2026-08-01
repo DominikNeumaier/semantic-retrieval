@@ -1,0 +1,110 @@
+{
+  "case_id": "dy-14",
+  "user_prompt": "We need to record incoming shipments from our suppliers into the system, but I'm not sure if we should be using the invoicing module or if there's a different process for just logging what physically arrived at our warehouse before we even get the bills.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "C",
+  "state": "enriched",
+  "condition": "C1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "We need to record incoming shipments from our suppliers into the system, but I'm not sure if we should be using the invoicing module or if there's a different process for just logging what physically arrived at our warehouse before we even get the bills.",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:PurchaseOrder:v1",
+              "sap.odm:entityType:Vendor:v1",
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:QualityInspection:v1"
+            ],
+            "business_groups": [
+              "proc_procure_fulfill_v1",
+              "proc_QualityDrivenMfgSupplyChain_v1"
+            ],
+            "lines_of_business": [
+              "Procurement",
+              "Inventory Management"
+            ],
+            "reason": "Recording incoming shipments involves capturing physical receipt of materials from vendors against purchase orders, which is a goods receipt / inbound logistics activity distinct from invoice processing."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:QualityInspection:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_QualityDrivenMfgSupplyChain_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Inventory Management\"\n  ],\n  \"reason\": \"Recording incoming shipments involves capturing physical receipt of materials from vendors against purchase orders, which is a goods receipt / inbound logistics activity distinct from invoice processing.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity describes recording incoming physical shipments at the warehouse before invoicing - this is a **goods receipt** or **inbound logistics** process, not an engineering change, material provisioning, compliance validation, or asset provisioning workflow.\n\nNone of the candidates address:\n- Receiving/inbound goods documentation\n- Warehouse receipt transactions\n- Physical inventory arrival logging\n- Goods-to-receipt (GR) matching separate from invoicing\n\nAll candidates are focused on engineering changes, material provisioning coordination, compliance validation, or asset lifecycle management - topics that overlap topically but don't fulfill the core activity of recording warehouse receipts.",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 3978,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 3978,
+    "latency_s": 0.0,
+    "llm_calls": 2
+  },
+  "wall_s": 0.004
+}

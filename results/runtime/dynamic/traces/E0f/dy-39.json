@@ -1,0 +1,241 @@
+{
+  "case_id": "dy-39",
+  "user_prompt": "I need to simultaneously pull together our current spending commitments with a specific vendor and cross-reference that against our latest payroll records to reconcile Q4 budget allocations and ensure our procurement expenses align with employee compensation costs for audit purposes.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull our current spending commitments with a specific vendor",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE SYSTEMS (11 total):\n- workday.hcm: HCM - compensation agents only, NO APIs\n- sap.sf: SuccessFactors HCM\n  * apiResource:EmployeeCompensationManagement:v1 (compensation & tax reconciliation)\n \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+                "reason": "Exposes purchase orders and vendor data with lifecycle management capabilities to retrieve current spending commitments with a specific vendor."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+          "picked_reason": "Exposes purchase orders and vendor data with lifecycle management capabilities to retrieve current spending commitments with a specific vendor.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 3,
+          "tokens": 13391,
+          "latency_s": 9.765,
+          "llm_calls": 3
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "workday.hcm:apiResource:PayrollDataExposure:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Retrieve our latest payroll records",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.sf:package:Core:v1\",\n      \"title\": \"sap.sf Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1072
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE SYSTEMS (11 total):\n- workday.hcm: HCM - compensation agents only, NO APIs\n- sap.sf: SuccessFactors HCM\n  * apiResource:EmployeeCompensationManagement:v1 (compensation & tax reconciliation, PAYROLL RECORDS)\n  * agents: CompensationPolicyAutomationEngine, SkillsAndCapabilityMatchingOrchestrator\n- sap.s4: ERP\n  * apiResource:MaterialReceiptInboundAPI:v1 (goods receipt)\n  * agents: AssetLifecycleChangeOrchestrator, BOMComplianceAutomationAgent, ProcurementMatchingAgent, OpportunityToOrderAutomationEngine, IncidentRootCauseAutomationEngine, EngineeringChangeOrchestrator\n- sap.crm: CRM agents only, NO customer case mgmt APIs\n- sap.ehs: Safety/health agents: IncidentRootCauseAnalyzer, SafetyComplianceAutomationCoordinator, IncidentResponseCoordinator, VendorComplianceAutomationOrchestrator, VendorComplianceInvoiceAutomation, ComplianceCampaignOrchestrator\n- sap.ariba: Procurement agents + APIs\n  * agent:VendorInvoiceReconciliationAutomation (vendor invoices matching)\n  * agent:MaterialAndEngineeringChangeCoordinator (monitors engineering changes & material mods)\n  * apiResource:PurchaseOrderNetworkAPI\n  * apiResource:SourceingCampaignAndAccountManagementAPI\n- corp.itsm: IT service mgmt agents only\n- emarsys.cx: CX/marketing agents\n  * agent:SegmentDrivenCampaignOptimizer (segment analysis & campaign targeting)\n  * agent:OpportunityEngagementOrchestrator (monitors interactions, orchestrates engagement, identifies high-value transitions)\n  * agent:VendorProcurementAutomationOrchestrator (vendor engagement campaigns)\n  * agent:IncidentComplianceOrchestrator (risk event response)\n  * agent:VendorContractJourneyCoordinator (vendor journey orchestration)\n  * agent:ProductLifecycleOrchestrator (product change coordination with engagement)\n- my.mes: Manufacturing Execution\n  * apiResource:EquipmentOEEAnalytics:v1 (machine performance OEE, NOT queue status)\n  * agents: ProductionQualityMonitor, SupplierQualityComplianceOrchestrator, ProductionChangeOrchestrator, BillOfMaterialsComplianceValidator, HazmatIncidentComplianceMonitor\n- siemens.plm: PLM agents: BOMComplianceValidator, EngineeringChangeAndMaterialProvisioning, QualityAssuranceAndDefectPrevention, SupplierQualificationAndMaterialCoordinator\n- sap.odm: Entity type repository\n\nKEY FINDINGS:\n- Campaign engagement & contact tracking: emarsys.cx:agent:OpportunityEngagementOrchestrator\n- VENDOR SAFETY COMPLIANCE: sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1 (validates vendor safety certifications & compliance status, monitors contract adherence to EHS requirements)\n- PAYROLL RECORDS: sap.sf:apiResource:EmployeeCompensationManagement:v1 (compensation & tax reconciliation)"
+              },
+              "result_preview": {
+                "stored_bytes": 2677,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+                "reason": "This API manages employee compensation data and payroll records in SuccessFactors HCM."
+              },
+              "result_preview": {
+                "committed": "sap.sf:apiResource:EmployeeCompensationManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+          "picked_reason": "This API manages employee compensation data and payroll records in SuccessFactors HCM.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 3,
+          "tokens": 16075,
+          "latency_s": 16.07,
+          "llm_calls": 3
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Cross-reference vendor spending commitments against payroll records to reconcile Q4 budget allocations and ensure procurement expenses align with employee compensation costs for audit purposes",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "reason": "Reconciles vendor invoices against POs and contracts to cross-reference procurement expenses against payroll commitments for Q4 budget audit alignment."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+          "picked_reason": "Reconciles vendor invoices against POs and contracts to cross-reference procurement expenses against payroll commitments for Q4 budget audit alignment.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 2,
+          "tokens": 9279,
+          "latency_s": 8.89,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 39107,
+    "latency_s": 34.725,
+    "llm_calls": 9
+  },
+  "wall_s": 34.749
+}

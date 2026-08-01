@@ -1,0 +1,168 @@
+{
+  "case_id": "dy-09",
+  "user_prompt": "I need to pull up a customer's recent purchases and modify one of their orders before it ships out. Can you help me access their account information and make those changes?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to pull up a customer's recent purchases and modify one of their orders before it ships out. Can you help me access their account information and make those changes?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.crm:package:Core:v1\",\n      \"title\": \"sap.crm Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1080
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "## Landscape Overview (11 systems):\n- **corp.itsm**: ITSM system with agents for incident management, root cause analysis, change coordination, safety incidents, and asset provisioning\n- **sap.crm**: CRM system with agents for opportunity management, sales coordination, and campaign optimization (not for direct order/purchase access)\n- **sap.s4**: ERP system with procurement, BOM, sales, and financial management agents\n- **sap.sf**: HR/HCM system (SuccessFactors) with Employee Compensation Management API\n- **sap.ariba**: Procurement system with PurchaseOrderNetworkAPI, SourceingCampaignAndAccountManagementAPI, invoice matching, sourcing, compliance APIs\n- **sap.ehs**: Safety/compliance system\n- **sap.odm, workday.hcm, emarsys.cx, siemens.plm, my.mes**: Other domain systems\n\n## Key Resources by Activity:\n\n### Purchase Order Management (Activity 9):\n- **Resource Used**: sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1\n- REST API for purchase order lifecycle (creation, updating, approval, status tracking)\n- Supports bulk operations and supplier collaboration\n- Capabilities: coordinate-vendor-procurement, validate-purchase-orders, verify-vendor-compliance\n- Perfect for accessing customer purchase records and modifying orders before shipment\n- Handles order-to-cash processes and supplier collaboration\n\n### Previous Resolved Activities:\n2. Filter payroll data \u2192 sap.sf:apiResource:EmployeeCompensationManagement:v1\n4. Configure compliance validation \u2192 sap.s4:agent:BOMComplianceAutomationAgent:v1\n5. Automated triggers for changes \u2192 sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\n6. Automated compliance escalation \u2192 sap.ehs:agent:ComplianceCampaignOrchestrator:v1\n7. IT equipment deployment \u2192 corp.itsm:agent:AssetProvisioningOrchestrator:v1\n8. Process new supplier order \u2192 sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+              },
+              "result_preview": {
+                "stored_bytes": 1841,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+                "reason": "REST API for complete purchase order lifecycle management that enables retrieving customer orders and modifying them before shipment through update workflows and real-time status tracking."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+          "picked_reason": "REST API for complete purchase order lifecycle management that enables retrieving customer orders and modifying them before shipment through update workflows and real-time status tracking.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 4,
+          "tokens": 26429,
+          "latency_s": 16.635,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user's request is a specific, ad-hoc task (access customer account and modify one order) rather than needing a complete end-to-end process; while order fulfillment skills exist, they don't cover customer account lookup and individual order modification as a workflow.\"\n}\n```",
+      "reason": "The user's request is a specific, ad-hoc task (access customer account and modify one order) rather than needing a complete end-to-end process; while order fulfillment skills exist, they don't cover customer account lookup and individual order modification as a workflow.",
+      "tokens": 1673,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "I need to pull up a customer's recent purchases and modify one of their orders before it ships out. Can you help me access their account information and make those changes?"
+      ],
+      "original_prompt": "I need to pull up a customer's recent purchases and modify one of their orders before it ships out. Can you help me access their account information and make those changes?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 2,
+      "sub_queries": [
+        "Access a customer's account information and retrieve their recent purchases",
+        "Modify one of the customer's orders before it ships out"
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 28102,
+    "latency_s": 16.635,
+    "llm_calls": 5
+  },
+  "wall_s": 16.642
+}

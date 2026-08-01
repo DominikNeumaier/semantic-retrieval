@@ -1,0 +1,106 @@
+{
+  "case_id": "proc_003_s08",
+  "process": "proc_003",
+  "label": "order to production process: Investigate production incidents and root causes \u2014 Identify and resolve safety or operational issues that arise during manufacturing to maintain schedule and prevent recurrence.",
+  "method": "E",
+  "expected_ordIds": [
+    "sap.ehs:agent:IncidentRootCauseAnalyzer:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.ehs:package:Core:v1",
+      "score": null
+    },
+    {
+      "ordId": "my.mes:package:Core:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 1,
+    "r_at_5": 1,
+    "mrr": 1.0,
+    "first_hit_rank": 1,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "read_notes",
+        "args": {},
+        "result_preview": {
+          "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes (Manufacturing Execution), sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nORDER-TO-PRODUCTION PROCESSES:\nAg \u2026(truncated)"
+        }
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "read_file",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+          "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+          "truncated": true,
+          "total_lines": 1154
+        }
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "read_file",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json",
+          "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+          "truncated": true,
+          "total_lines": 1276
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "write_notes",
+        "args": {
+          "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes (Manufacturing Execution), sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nORDER-TO-PRODUCTION PROCESSES:\nAgent: sap.s4:agent:OpportunityToOrderAutomationEngine:v1\n- Captures incoming customer orders from sales opportunities\n- Validates fulfillment eligibility: customer account eligibility, credit limits, inventory availability\n\nWORKFORCE ALLOCATION & PAYROLL:\nAgent: sap.sf:agent:SkillsAndCapabilityMatchingOrchestrator:v1\n- Automates workforce capability alignment with project resource requirements\n- Monitors employee competencies and coordinates optimal resource allocation\n- Processes material/product requirements, automating personnel skill matching\n- Facilitates dynamic workforce planning with capability gap evaluation\n- Best fit for: Assigning production staff to manufacturing tasks and coordinating labor costing\n\nAgent: sap.sf:agent:CompensationPolicyAutomationEngine:v1\n- Automates compensation adjustments per organizational policies\n- Processes compensation events for payroll integration\n- Supports: payroll-policy-driven salary adjustments\n\nENGINEERING CHANGE MANAGEMENT:\nAgent: siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\n- Automates engineering change processing and material lifecycle coordination\n- Part of multiple production processes\n\nMANUFACTURING CHANGE ORCHESTRATION:\nAgent: my.mes:agent:ProductionChangeOrchestrator:v1\n- Automates engineering changes across production materials/items\n- Capabilities include machine scheduling and work order sequencing\n\nBOM COMPLIANCE & VALIDATION:\nAgent: siemens.plm:agent:BOMComplianceValidator:v1 (PLM)\nAgent: sap.s4:agent:BOMComplianceAutomationAgent:v1 (S4)\nAgent: my.mes:agent:BillOfMaterialsComplianceValidator:v1\n\nINCIDENT INVESTIGATION & ROOT CAUSE ANALYSIS:\nAgent: sap.ehs:agent:IncidentRootCauseAnalyzer:v1 \u2713\n- Autonomously analyzes safety incidents to identify root causes\n- Recommends corrective and preventive actions prioritized by risk severity\n- Generates structured root cause analysis reports with evidence-based analysis\n- Accelerates investigation workflows, ensures consistent analysis\n- Works with SafetyIncident, Incident, HazardousSubstance entity types\n- Line of Business: Safety and Environment\n- BEST FIT for: Production incident investigation and root cause analysis\n\nAgent: sap.ehs:agent:IncidentResponseCoordinator:v1\n- Coordinates safety incident workflows and emergency response actions\n- Monitors incoming incidents, initiates coordinated response procedures\n- Processes severity assessments, routes tickets to response teams\n\nQUALITY MONITORING:\nAgent: my.mes:agent:ProductionQualityMonitor:v1\n- Monitors QualityInspection outcomes across ProductionOrders\n- Detects quality deviations, initiates escalation workflows\n- Logs quality incidents for traceability"
+        },
+        "result_preview": {
+          "stored_bytes": 2870,
+          "truncated": false,
+          "cap_bytes": 4096
+        }
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1",
+          "reason": "This agent autonomously analyzes production safety incidents to identify root causes and recommend corrective actions, directly fulfilling the requirement to investigate incidents and resolve operational issues during manufacturing."
+        },
+        "result_preview": {
+          "committed": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1",
+    "picked_reason": "This agent autonomously analyzes production safety incidents to identify root causes and recommend corrective actions, directly fulfilling the requirement to investigate incidents and resolve operational issues during manufacturing.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 5,
+    "tokens": 24315,
+    "latency_s": 17.566,
+    "llm_calls": 5
+  },
+  "wall_s": 17.569
+}

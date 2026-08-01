@@ -1,0 +1,83 @@
+{
+  "case_id": "proc_021_s06",
+  "process": "proc_021",
+  "label": "QualityDrivenMfgSupplyChain process: Schedule production and assign machines \u2014 Optimize production order sequencing and machine allocation to maximize utilization and meet delivery dates.",
+  "method": "C",
+  "expected_ordIds": [
+    "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+      "score": 65.0
+    },
+    {
+      "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+      "score": 65.0
+    },
+    {
+      "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+      "score": 65.0
+    },
+    {
+      "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+      "score": 65.0
+    },
+    {
+      "ordId": "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+      "score": 65.0
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "anchors": {
+      "entity_types": [
+        "sap.odm:entityType:ProductionOrder:v1",
+        "sap.odm:entityType:Machine:v1",
+        "sap.odm:entityType:CustomerOrder:v1",
+        "sap.odm:entityType:Material:v1"
+      ],
+      "business_groups": [],
+      "lines_of_business": [
+        "Manufacturing",
+        "Manufacturing Execution",
+        "Operations"
+      ],
+      "reason": "Activity directly manages production order sequencing and machine allocation to optimize manufacturing utilization and meet delivery commitments."
+    },
+    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:Material:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Manufacturing Execution\",\n    \"Operations\"\n  ],\n  \"reason\": \"Activity directly manages production order sequencing and machine allocation to optimize manufacturing utilization and meet delivery commitments.\"\n}\n```",
+    "max_hops": 2,
+    "hop_decay": 0.5,
+    "edge_weights": {
+      "co_exposes": 1.0,
+      "co_partOf": 2.0,
+      "calls": 3.0,
+      "processNext": 3.0
+    },
+    "scored_resources": 168,
+    "walk_top_ids": [
+      "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+      "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+      "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+      "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+      "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+      "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+      "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+    ],
+    "rerank_raw": "```json\n[\n  \"corp.itsm:agent:ChangeAutomationOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\",\n  \"corp.itsm:agent:ChangeReleaseCoordinator:v1\",\n  \"emarsys.cx:agent:ProductLifecycleOrchestrator:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requires **scheduling production, assigning machines, and optimizing resource allocation** \u2014 this is operational orchestration work, not analytics.\n\n1. **ChangeAutomationOrchestrator** (rank 1): Best match. Automates engineering changes and deployments, directly supporting production sequencing and allocation decisions.\n\n2. **AssetProvisioningOrchestrator** (rank 2): Strong secondary. Asset lifecycle provisioning aligns with machine allocation and utilization optimization.\n\n3. **BillOfMaterialsComplianceValidator** (rank 3): Relevant for ensuring production feasibility; BOM validation supports scheduling decisions.\n\n4. **ChangeReleaseCoordinator** (rank 4): Coordinates releases across inventory, supporting delivery date compliance.\n\n5. **ProductLifecycleOrchestrator** (rank 5): Orchestrates product changes and inventory sync, peripherally relevant to production planning.\n\nEliminated: dataProducts (analytics-only, not operational execution) and AccessProvisioningOrchestrator (access control, not manufacturing operations).",
+    "refused": false,
+    "previous_resolved": [],
+    "tokens": 2168,
+    "latency_s": 6.247,
+    "llm_calls": 2
+  },
+  "wall_s": 6.26
+}

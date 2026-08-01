@@ -1,0 +1,635 @@
+{
+  "case_id": "dy-35",
+  "user_prompt": "I need to pull together a comprehensive view of our current operational health by analyzing both our recent campaign safety incidents and engagement issues alongside our product economics to understand cost drivers and supplier dependencies\u2014so I can brief leadership on where we're experiencing the most friction across both customer-facing and manufacturing operations.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Analyze our recent campaign safety incidents and engagement issues to identify operational friction points in our customer-facing operations",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:IncidentSafetyAnalyticsHub:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "audit-campaign-safety"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                  "type": "apiResource",
+                  "title": "Safety Compliance Customer Management API",
+                  "shortDescription": "Manages customer accounts and safety campaigns with compliance tracking integration."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "analyze-incidents-safety"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:dataProduct:IncidentSafetyAnalyticsHub:v1",
+                  "type": "dataProduct",
+                  "title": "Incident & Safety Analytics Hub",
+                  "shortDescription": "Aggregates and analyzes incident and safety data across manufacturing operations."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "track-engagement-metrics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Engagement Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1"
+              },
+              "result_preview": {
+                "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                "type": "dataProduct",
+                "namespace": "emarsys.cx",
+                "title": "Engagement Incident Metrics",
+                "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues.",
+                "description": "Summarizes incident patterns across customer journeys and engagement campaigns, providing metrics on safety incidents and campaign disruptions. Delivers actionable insights on incident frequency, impact on customer touchpoints, and remediation trends to optimize engagement reliability and compliance posture.",
+                "entityTypes": [
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "customer-experience"
+                ],
+                "capabilities": [
+                  "monitor-incidents",
+                  "track-engagement-metrics",
+                  "detect-anomalies",
+                  "identify-safety-issues",
+                  "monitor-transition-incidents",
+                  "track-safety-metrics"
+                ],
+                "useCases": [
+                  "Manufacturing supervisors detect real-time equipment failures to prevent production disruptions.",
+                  "Customer experience tracks engagement quality and incident correlation with new capabilities.",
+                  "Safety officers track incident trends across facilities for compliance reporting.",
+                  "Customer experience teams correlate production incidents with fulfillment delays.",
+                  "Operations team monitors production incidents during transition for rapid issue resolution.",
+                  "Safety compliance monitors for any safety-related incidents emerging during transition."
+                ],
+                "tags": [
+                  "incident-analytics",
+                  "engagement-reliability",
+                  "compliance-monitoring"
+                ],
+                "partOfGroups": [
+                  "proc_ProductionTransitionMarketReadiness_v1",
+                  "proc_QualityDrivenMfgSupplyChain_v1"
+                ],
+                "processNext": [],
+                "partOfPackage": "emarsys.cx:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:IncidentSafetyAnalyticsHub:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:dataProduct:IncidentSafetyAnalyticsHub:v1",
+                "type": "dataProduct",
+                "namespace": "sap.s4",
+                "title": "Incident & Safety Analytics Hub",
+                "shortDescription": "Aggregates and analyzes incident and safety data across manufacturing operations.",
+                "description": "This data product aggregates incident and safety incident records throughout the production lifecycle to provide comprehensive safety metrics and compliance insights. It summarizes trends in workplace incidents, hazardous events, and safety violations to enable proactive risk mitigation and regulatory compliance monitoring. The hub provides actionable analytics on incident patterns, root causes, and safety performance indicators across all manufacturing facilities.",
+                "entityTypes": [
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [
+                  "analyze-incidents-safety",
+                  "review-safety-metrics",
+                  "identify-operational-risks"
+                ],
+                "useCases": [
+                  "Operations team examines incident patterns and safety metrics to mitigate production risks.",
+                  "Historical safety analysis for vendor and material risk scoring.",
+                  "Trend analysis of production incidents to inform sourcing decisions."
+                ],
+                "tags": [
+                  "safety-analytics",
+                  "incident-management",
+                  "compliance-monitoring"
+                ],
+                "partOfGroups": [
+                  "proc_supplychain_risk_compliance_v1"
+                ],
+                "processNext": [
+                  "sap.sf:apiResource:WorkforceProductionCapabilityManagement:v1"
+                ],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                "type": "apiResource",
+                "namespace": "corp.itsm",
+                "title": "Safety Compliance Customer Management API",
+                "shortDescription": "Manages customer accounts and safety campaigns with compliance tracking integration.",
+                "description": "Exposes customer account records and safety campaign data to retrieve compliance inspection status, manage customer engagement in safety programs, and provide access to historical campaign performance metrics. Integrates service tickets with customer-level safety requirements for coordinated incident response and regulatory reporting.",
+                "entityTypes": [
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerAccount:v1"
+                ],
+                "lineOfBusiness": [
+                  "Environment, Health & Safety"
+                ],
+                "capabilities": [
+                  "verify-customer-compliance",
+                  "map-campaign-to-safety",
+                  "assess-safety-compliance",
+                  "evaluate-customer-safety-risk",
+                  "validate-account-obligations",
+                  "audit-campaign-safety",
+                  "identify-compliance-gaps"
+                ],
+                "useCases": [
+                  "Compliance teams validate campaign messaging against regulatory standards.",
+                  "Validate campaign messaging alignment with customer safety requirements",
+                  "Ensure customer contractual safety commitments are met before campaign execution",
+                  "Risk managers assess environmental and health hazards in customer accounts.",
+                  "Cross-reference customer account status against compliance risk assessments",
+                  "Safety officers review compliance requirements for customer-facing campaigns."
+                ],
+                "tags": [
+                  "safety-inspection",
+                  "compliance-tracking",
+                  "customer-engagement"
+                ],
+                "partOfGroups": [
+                  "proc_ProcurementSafetyCompliance_v1",
+                  "proc_SafetyComplianceOrchestration_v1"
+                ],
+                "processNext": [
+                  "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1"
+                ],
+                "partOfPackage": "corp.itsm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                "reason": "Directly analyzes campaign safety incidents and engagement issues to identify operational friction points in customer-facing operations through incident pattern detection and anomaly identification."
+              },
+              "result": {
+                "committed": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+          "picked_reason": "Directly analyzes campaign safety incidents and engagement issues to identify operational friction points in customer-facing operations through incident pattern detection and anomaly identification.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 22616,
+          "latency_s": 12.565,
+          "llm_calls": 10
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+            "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Provide a comprehensive analysis of product economics including cost drivers and supplier dependencies to understand manufacturing operational constraints",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Manufacturing"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Material:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                  "type": "agent",
+                  "title": "Change Release Coordinator",
+                  "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+                },
+                "... (55 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "my.mes",
+                "title": "Material Cost and Invoice Reconciliation Analytics",
+                "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI.",
+                "description": "This dataProduct synthesizes Material entity consumption patterns with Invoice records to provide comprehensive financial analytics on procurement efficiency. It summarizes cost variances, supplier performance metrics, and material usage trends to support customer monetization strategies and campaign ROI optimization. The analytics enable identification of cost reduction opportunities and invoice accuracy validation across production operations.",
+                "entityTypes": [
+                  "sap.odm:entityType:Invoice:v1",
+                  "sap.odm:entityType:Material:v1"
+                ],
+                "lineOfBusiness": [
+                  "Finance"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "campaign-roi",
+                  "financial-analytics",
+                  "customer-monetization"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.crm",
+                "title": "Bill of Materials Cost and Compliance Analytics",
+                "shortDescription": "Aggregates material costs, supplier impact, and compliance metrics across engineering changes.",
+                "description": "Synthesizes engineering change records, material master data, and product item configurations to aggregate supply chain costs, bill of materials complexity, and regulatory compliance exposure. Provides metrics on supplier dependencies, cost variance trends, and compliance risk implications for product portfolio decisions in sales planning.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [
+                  "validate-bom-compliance",
+                  "audit-material-standards",
+                  "verify-cost-targets"
+                ],
+                "useCases": [
+                  "Compliance teams verify BOMs meet regulatory material restrictions before manufacturing.",
+                  "Finance validates BOMs against approved cost budgets for product variants."
+                ],
+                "tags": [
+                  "cost-analysis",
+                  "bom-complexity",
+                  "supplier-impact",
+                  "compliance-metrics"
+                ],
+                "partOfGroups": [
+                  "proc_ProductLifecycleCompliance_v1"
+                ],
+                "processNext": [
+                  "sap.ariba:apiResource:EngineeringChangeAndProductItemManagement:v1"
+                ],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+                "type": "dataProduct",
+                "namespace": "sap.ariba",
+                "title": "Supply Chain Product Intelligence",
+                "shortDescription": "Aggregates engineering changes, materials, and product data for procurement insights.",
+                "description": "This data product summarizes engineering change patterns, material sourcing trends, and product item performance across the procurement lifecycle. It provides metrics on change velocity, material availability, and product adoption rates to support strategic sourcing and vendor optimization decisions.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "product-lifecycle",
+                  "sourcing-optimization",
+                  "material-management"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+                "reason": "Provides comprehensive product economics analysis aggregating material costs, supplier dependencies, BOM complexity, and cost variance trends to understand manufacturing operational constraints."
+              },
+              "result": {
+                "committed": "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+          "picked_reason": "Provides comprehensive product economics analysis aggregating material costs, supplier dependencies, BOM complexity, and cost variance trends to understand manufacturing operational constraints.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 25955,
+          "latency_s": 11.452,
+          "llm_calls": 10
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is a strategic analytics and briefing exercise requiring ad-hoc synthesis across multiple operational domains (safety incidents, engagement, product economics, supplier dependencies) rather than execution of any single registered end-to-end process.\"\n}\n```",
+      "reason": "The request is a strategic analytics and briefing exercise requiring ad-hoc synthesis across multiple operational domains (safety incidents, engagement, product economics, supplier dependencies) rather than execution of any single registered end-to-end process.",
+      "tokens": 1685,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 3,
+      "sub_queries": [
+        "Analyze our recent campaign safety incidents and engagement issues to identify operational friction points",
+        "Analyze our product economics including cost drivers and supplier dependencies",
+        "Synthesize insights from safety incidents, engagement issues, and product economics into a comprehensive operational health briefing for leadership"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 50537,
+    "latency_s": 24.017,
+    "llm_calls": 22
+  },
+  "wall_s": 24.034
+}

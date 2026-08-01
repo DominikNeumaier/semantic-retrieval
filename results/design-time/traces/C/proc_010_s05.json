@@ -1,0 +1,81 @@
+{
+  "case_id": "proc_010_s05",
+  "process": "proc_010",
+  "label": "ServiceToProduction process: Allocate Workforce and Schedule Resources \u2014 Identify available technicians and schedule them to address the service ticket based on urgency and resource availability.",
+  "method": "C",
+  "expected_ordIds": [
+    "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.sf:apiResource:EmployeeChangeAndITServiceManagement:v1",
+      "score": 36.0
+    },
+    {
+      "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+      "score": 36.0
+    },
+    {
+      "ordId": "corp.itsm:dataProduct:ServiceHealthMetrics:v1",
+      "score": 36.0
+    },
+    {
+      "ordId": "sap.ehs:apiResource:SafetyChangeGovernanceManagement:v1",
+      "score": 36.0
+    },
+    {
+      "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+      "score": 36.0
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "anchors": {
+      "entity_types": [
+        "sap.odm:entityType:ServiceTicket:v1",
+        "sap.odm:entityType:Employee:v1",
+        "sap.odm:entityType:WorkforcePerson:v1"
+      ],
+      "business_groups": [],
+      "lines_of_business": [
+        "IT Service Management",
+        "Human Resources"
+      ],
+      "reason": "Activity involves scheduling technicians for service tickets, requiring ServiceTicket and Employee/WorkforcePerson entities within IT Service Management and HR domains."
+    },
+    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:WorkforcePerson:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"IT Service Management\",\n    \"Human Resources\"\n  ],\n  \"reason\": \"Activity involves scheduling technicians for service tickets, requiring ServiceTicket and Employee/WorkforcePerson entities within IT Service Management and HR domains.\"\n}\n```",
+    "max_hops": 2,
+    "hop_decay": 0.5,
+    "edge_weights": {
+      "co_exposes": 1.0,
+      "co_partOf": 2.0,
+      "calls": 3.0,
+      "processNext": 3.0
+    },
+    "scored_resources": 213,
+    "walk_top_ids": [
+      "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+      "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+      "corp.itsm:dataProduct:ServiceHealthMetrics:v1",
+      "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+      "sap.ehs:apiResource:SafetyChangeGovernanceManagement:v1",
+      "sap.sf:agent:PerformanceReviewCycleCoordinator:v1",
+      "sap.sf:apiResource:EmployeeChangeAndITServiceManagement:v1",
+      "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1"
+    ],
+    "rerank_raw": "```json\n[\n  \"sap.sf:apiResource:EmployeeChangeAndITServiceManagement:v1\",\n  \"my.mes:apiResource:EquipmentChangeAndServiceManagement:v1\",\n  \"corp.itsm:dataProduct:ServiceHealthMetrics:v1\",\n  \"sap.ehs:apiResource:SafetyChangeGovernanceManagement:v1\",\n  \"corp.itsm:agent:IncidentRootCauseAnalyzer:v1\"\n]\n```\n\n**Rationale:**\n\n1. **sap.sf:EmployeeChangeAndITServiceManagement** (Rank 1): Best match. Explicitly handles \"workforce modifications\" and \"technology asset allocation\" \u2014 directly supports technician scheduling and resource allocation for service tickets.\n\n2. **my.mes:EquipmentChangeAndServiceManagement** (Rank 2): Strong secondary option. Manages service requests and maintenance governance, supporting resource scheduling and service ticket processing.\n\n3. **corp.itsm:ServiceHealthMetrics** (Rank 3): Provides equipment availability and ticket data needed to inform scheduling decisions based on resource capacity and ticket urgency.\n\n4. **sap.ehs:SafetyChangeGovernanceManagement** (Rank 4): Manages service tickets and equipment assets; relevant if workforce allocation involves safety compliance considerations.\n\n5. **corp.itsm:IncidentRootCauseAnalyzer** (Rank 5): While an agent, it analyzes tickets rather than allocating resources, but could support prioritization by identifying root causes affecting urgency.\n\nExcluded: Change Request Approval Workflow (process approval, not scheduling); Performance Review Coordinator (unrelated); Design Review Coordinator (unrelated).",
+    "refused": false,
+    "previous_resolved": [],
+    "tokens": 2216,
+    "latency_s": 5.602,
+    "llm_calls": 2
+  },
+  "wall_s": 5.614
+}

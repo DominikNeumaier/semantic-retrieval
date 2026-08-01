@@ -1,0 +1,562 @@
+{
+  "case_id": "oos-04",
+  "user_prompt": "We need a way to automatically flag when new regulations affecting our supply chain contracts go into effect\u2014right now our procurement team manually checks regulatory databases and emails everyone, but we keep missing updates that require contract amendments. Can we set up alerts that pull from official regulatory sources and automatically match relevant rules to our active vendor agreements?",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Set up automated alerts that pull regulatory updates from official sources and notify the procurement team when new regulations affecting supply chain contracts go into effect",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "audit-procurement-compliance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-vendor-contracts"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Vendor and Purchase Order Management API",
+                  "shortDescription": "Retrieves and manages vendor details and purchase order data for procurement operations."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+                "type": "agent",
+                "namespace": "sap.ehs",
+                "title": "Vendor Compliance Automation Orchestrator",
+                "shortDescription": "Automates vendor safety compliance verification across purchase orders and contracts.",
+                "description": "Coordinates automated validation of vendor safety certifications and compliance status during purchase order creation and contract execution. Monitors vendor contract adherence to EHS requirements and processes compliance exceptions through escalation workflows. Automates reconciliation between vendor safety profiles, contract terms, and procurement activities to ensure continuous compliance alignment.",
+                "entityTypes": [
+                  "sap.odm:entityType:Contract:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "invoice-management",
+                  "three-way-matching",
+                  "vendor-reconciliation",
+                  "automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+                "type": "agent",
+                "namespace": "sap.ariba",
+                "title": "Dangerous Goods Supply Chain Safety Agent",
+                "shortDescription": "Tracks hazardous material declarations from vendors and triggers response protocols for safety events.",
+                "description": "Automates oversight of hazardous material certifications within the supplier ecosystem and ingests real-time safety event notifications. Executes regulatory verification processes, identifies non-compliance signals, and routes urgent safety alerts to procurement teams for corrective intervention and risk mitigation across the supply chain.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1",
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "hazardous-materials",
+                  "vendor-risk-management",
+                  "safety-event-tracking"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "coordinate-compliance-workflow"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                  "type": "agent",
+                  "title": "Safety Compliance Automation Coordinator",
+                  "shortDescription": "Automates safety validation across engineering changes, materials, and product items."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "escalate-compliance-issues"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+                  "type": "dataProduct",
+                  "title": "Incident Engagement Reliability Analytics",
+                  "shortDescription": "Aggregates incident and safety incident data to measure engagement reliability and compliance metrics."
+                }
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+                "reason": "Automates vendor compliance verification and monitoring across contracts, with escalation workflows to notify procurement teams of compliance exceptions and regulatory alignment issues."
+              },
+              "result": {
+                "committed": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+          "picked_reason": "Automates vendor compliance verification and monitoring across contracts, with escalation workflows to notify procurement teams of compliance exceptions and regulatory alignment issues.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 11,
+          "tokens": 34911,
+          "latency_s": 12.686,
+          "llm_calls": 11
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Create a system to automatically match relevant regulatory rules to our active vendor agreements to identify which contracts require amendments",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-vendor-contracts"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Vendor and Purchase Order Management API",
+                  "shortDescription": "Retrieves and manages vendor details and purchase order data for procurement operations."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "identify-compliance-gaps"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                  "type": "apiResource",
+                  "title": "Safety Compliance Customer Management API",
+                  "shortDescription": "Manages customer accounts and safety campaigns with compliance tracking integration."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "match-demand-inventory"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement Data API",
+                  "shortDescription": "Retrieves material specifications and vendor information for procurement workflows."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "automate-compliance-checks"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                  "type": "agent",
+                  "title": "Safety Compliance Automation Coordinator",
+                  "shortDescription": "Automates safety validation across engineering changes, materials, and product items."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "assess-regulatory-alignment"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Compliance API",
+                  "shortDescription": "Exposes hazardous substance inventory and regulatory compliance data for IT asset management."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "type": "agent",
+                "namespace": "sap.ehs",
+                "title": "Safety Compliance Automation Coordinator",
+                "shortDescription": "Automates safety validation across engineering changes, materials, and product items.",
+                "description": "Monitors and processes engineering changes, materials, and product items to enforce safety compliance requirements and automate BOM validation workflows. Coordinates supplier qualification assessments and initiates compliance remediation actions when safety risks or regulatory gaps are detected. Automates incident prevention through continuous validation of product configurations against safety standards.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [
+                  "assess-material-safety",
+                  "automate-safety-assessments",
+                  "automate-compliance-checks",
+                  "coordinate-compliance-workflow",
+                  "validate-engineering-changes",
+                  "orchestrate-compliance-checks",
+                  "coordinate-safety-compliance"
+                ],
+                "useCases": [
+                  "Safety officers ensure all engineering changes trigger integrated compliance assessments across the organization.",
+                  "EHS team automates review of engineering changes to ensure material and product modifications meet safety and regulatory requirements before production",
+                  "Compliance automation prevents unsafe or non-compliant product items from advancing to manufacturing",
+                  "Compliance teams automate material and process safety validation to reduce manual review time.",
+                  "Operations leadership maintains consistent safety standards across all product variants and manufacturing locations."
+                ],
+                "tags": [
+                  "compliance",
+                  "bom-validation",
+                  "supplier-qualification",
+                  "automation"
+                ],
+                "partOfGroups": [
+                  "proc_ProductComplianceManufacturing_v1",
+                  "proc_talent_compliance_ops_v1"
+                ],
+                "processNext": [
+                  "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+                ],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:ProcurementVendorOrderManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.crm",
+                "title": "Procurement Vendor and Purchase Order Management API",
+                "shortDescription": "Retrieves and manages vendor details and purchase order data for procurement operations.",
+                "description": "This API resource exposes vendor master information and purchase order records, enabling CRM systems to access and manage procurement data in real-time. It provides endpoints to retrieve vendor profiles, purchase order history, and order status updates, facilitating seamless integration between sales planning and procurement workflows.",
+                "entityTypes": [
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [
+                  "coordinate-delivery-schedules",
+                  "manage-vendor-contracts",
+                  "manage-purchase-orders",
+                  "track-order-fulfillment",
+                  "execute-purchase-orders",
+                  "track-vendor-performance"
+                ],
+                "useCases": [
+                  "Finance tracks vendor payment terms and contract compliance obligations.",
+                  "Create and monitor purchase orders for approved engineering changes",
+                  "Procurement specialists issue purchase orders and manage vendor commitments.",
+                  "Procure materials from qualified vendors while tracking cost, delivery, and quality metrics"
+                ],
+                "tags": [
+                  "vendor-management",
+                  "purchase-orders",
+                  "procurement"
+                ],
+                "partOfGroups": [
+                  "proc_ProductLifecycleCompliance_v1",
+                  "proc_EngChangeAndProcurement_v1"
+                ],
+                "processNext": [
+                  "corp.itsm:dataProduct:IncidentEngagementReliability:v1"
+                ],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "reason": "This agent automates compliance checks and orchestrates compliance workflows to identify regulatory gaps, making it ideal for automatically matching regulatory rules to vendor agreements and identifying required amendments."
+              },
+              "result": {
+                "committed": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+          "picked_reason": "This agent automates compliance checks and orchestrates compliance workflows to identify regulatory gaps, making it ideal for automatically matching regulatory rules to vendor agreements and identifying required amendments.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 26191,
+          "latency_s": 12.523,
+          "llm_calls": 10
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request requires building a new automated regulatory monitoring and alerting system for supply chain contracts, which is a systems implementation task that doesn't match any registered skill's end-to-end process\u2014the skills cover operational workflows (launches, changes, fulfillment) but not regulatory surveillance infrastructure setup.\"\n}\n```",
+      "reason": "The request requires building a new automated regulatory monitoring and alerting system for supply chain contracts, which is a systems implementation task that doesn't match any registered skill's end-to-end process\u2014the skills cover operational workflows (launches, changes, fulfillment) but not regu",
+      "tokens": 1705,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 63177,
+    "latency_s": 25.209,
+    "llm_calls": 23
+  },
+  "wall_s": 25.232
+}

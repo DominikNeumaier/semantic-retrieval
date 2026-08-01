@@ -1,0 +1,343 @@
+{
+  "case_id": "dy-19",
+  "user_prompt": "We need to check our current compliance status for the hazardous materials we're storing across all our facilities and understand what regulatory requirements we need to meet. Can you pull a report showing our inventory levels and which items require updated certifications or documentation?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "C",
+  "state": "enriched",
+  "condition": "C1",
+  "skill_expected": null,
+  "skill_picked": "proc_004",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Pull compliance status report across all facilities",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": 45.25
+          },
+          {
+            "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "score": 44.0
+          },
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": 43.75
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:SafetyIncident:v1",
+              "sap.odm:entityType:QualityInspection:v1",
+              "sap.odm:entityType:ChangeRequest:v1",
+              "sap.odm:entityType:Incident:v1"
+            ],
+            "business_groups": [
+              "proc_SafetyComplianceOrchestration_v1",
+              "proc_ManufacturingChangeCompliance_v1",
+              "proc_ProductComplianceManufacturing_v1"
+            ],
+            "lines_of_business": [
+              "Environment, Health & Safety",
+              "Manufacturing"
+            ],
+            "reason": "Compliance status reporting across facilities involves monitoring safety incidents, quality inspections, and changes across manufacturing operations."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:SafetyIncident:v1\",\n    \"sap.odm:entityType:QualityInspection:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\",\n    \"sap.odm:entityType:Incident:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_SafetyComplianceOrchestration_v1\",\n    \"proc_ManufacturingChangeCompliance_v1\",\n    \"proc_ProductComplianceManufacturing_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Environment, Health & Safety\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Compliance status reporting across facilities involves monitoring safety incidents, quality inspections, and changes across manufacturing operations.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 3758,
+          "latency_s": 4.352,
+          "llm_calls": 2
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Generate inventory levels report for hazardous materials",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:HazardousSubstance:v1",
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:ProductionOrder:v1",
+              "sap.odm:entityType:QualityInspection:v1"
+            ],
+            "business_groups": [
+              "proc_ProcurementSafetyCompliance_v1",
+              "proc_SafetyComplianceOrchestration_v1",
+              "proc_supply_production_compliance_v1"
+            ],
+            "lines_of_business": [
+              "Inventory Management",
+              "Environment, Health & Safety"
+            ],
+            "reason": "Reporting on hazardous materials inventory requires tracking of hazardous substances and materials with safety compliance and inventory management focus."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:HazardousSubstance:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:QualityInspection:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_ProcurementSafetyCompliance_v1\",\n    \"proc_SafetyComplianceOrchestration_v1\",\n    \"proc_supply_production_compliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Inventory Management\",\n    \"Environment, Health & Safety\"\n  ],\n  \"reason\": \"Reporting on hazardous materials inventory requires tracking of hazardous substances and materials with safety compliance and inventory management focus.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "siemens.plm:agent:BOMComplianceValidator:v1",
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity requests generating an inventory levels report for hazardous materials. This is a specific analytical reporting task that requires:\n- Access to inventory master data filtered for hazardous materials\n- Report generation/visualization capabilities\n- Likely a dedicated inventory or materials management system\n\nNone of the candidates fulfill this requirement:\n- The agents (ProductionChangeOrchestrator, EngineeringChangeAndMaterialProvisioning, BOMComplianceValidator, AssetProvisioningOrchestrator, SafetyComplianceAutomationCoordinator) focus on orchestration, change management, compliance validation, and provisioning workflows\u2014not reporting on inventory levels.\n- The dataProducts focus on impact analysis, workforce readiness, and operational capability assessment for transitions\u2014not inventory level reporting.\n\nWhile some candidates mention material-related capabilities, none directly support generating inventory reports. A proper match would be an inventory management system or analytics product specifically designed for inventory level reporting.",
+          "refused": true,
+          "previous_resolved": [
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+          ],
+          "tokens": 3833,
+          "latency_s": 6.755,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Identify items requiring updated certifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": 76.0
+          },
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": 78.5
+          },
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": 76.75
+          },
+          {
+            "ordId": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "score": 76.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Employee:v1",
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:ProductItem:v1",
+              "sap.odm:entityType:Vendor:v1"
+            ],
+            "business_groups": [
+              "proc_SafetyComplianceOrchestration_v1",
+              "proc_ProductComplianceManufacturing_v1",
+              "proc_ProcurementSafetyCompliance_v1"
+            ],
+            "lines_of_business": [
+              "Environment, Health & Safety",
+              "Procurement"
+            ],
+            "reason": "Certification updates typically affect employees, materials, products, and vendors across compliance and safety governance domains."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:Vendor:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_SafetyComplianceOrchestration_v1\",\n    \"proc_ProductComplianceManufacturing_v1\",\n    \"proc_ProcurementSafetyCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Environment, Health & Safety\",\n    \"Procurement\"\n  ],\n  \"reason\": \"Certification updates typically affect employees, materials, products, and vendors across compliance and safety governance domains.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+          ],
+          "tokens": 3733,
+          "latency_s": 4.36,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Identify items requiring updated documentation",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "score": 76.5
+          },
+          {
+            "ordId": "siemens.plm:agent:BOMComplianceValidator:v1",
+            "score": 75.25
+          },
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": 80.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:ChangeRequest:v1",
+              "sap.odm:entityType:EngineeringChange:v1",
+              "sap.odm:entityType:Contract:v1",
+              "sap.odm:entityType:Material:v1"
+            ],
+            "business_groups": [
+              "proc_EngChangeAndProcurement_v1",
+              "proc_ProductLifecycleCompliance_v1",
+              "proc_ManufacturingChangeCompliance_v1"
+            ],
+            "lines_of_business": [
+              "Product Lifecycle Management",
+              "Operations"
+            ],
+            "reason": "Documentation updates are typically triggered by changes, contracts, materials, and engineering modifications across product lifecycle and operational compliance processes."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ChangeRequest:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:Contract:v1\",\n    \"sap.odm:entityType:Material:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_EngChangeAndProcurement_v1\",\n    \"proc_ProductLifecycleCompliance_v1\",\n    \"proc_ManufacturingChangeCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Product Lifecycle Management\",\n    \"Operations\"\n  ],\n  \"reason\": \"Documentation updates are typically triggered by changes, contracts, materials, and engineering modifications across product lifecycle and operational compliance processes.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "siemens.plm:agent:BOMComplianceValidator:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:BOMComplianceValidator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+          ],
+          "tokens": 3718,
+          "latency_s": 4.603,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_004",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_004\",\n  \"reason\": \"This skill directly manages hazardous substance compliance, identification of hazardous materials, and assessment across manufacturing operations, which comprehensively covers the user's request for compliance status, inventory levels, and certification requirements for stored hazardous materials.\"\n}\n```",
+      "reason": "This skill directly manages hazardous substance compliance, identification of hazardous materials, and assessment across manufacturing operations, which comprehensively covers the user's request for compliance status, inventory levels, and certification requirements for stored hazardous materials.",
+      "tokens": 1683,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Pull compliance status report across all facilities\",\n    \"Generate inventory levels report for hazardous materials\",\n    \"Identify items requiring updated certifications\",\n    \"Identify items requiring updated documentation\"\n  ],\n  \"reason\": \"The skill covers identification of hazardous materials and execution of regulatory compliance programs, but lacks specific steps for generating reports on current inventory levels, compliance status across facilities, and identifying which items need certification or documentation updates.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers identification of hazardous materials and execution of regulatory compliance programs, but lacks specific steps for generating reports on current inventory levels, compliance status across facilities, and identifying which items need certification or documentation updates.",
+      "tokens": 457,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "We need to check our current compliance status for the hazardous materials we're storing across all our facilities and understand what regulatory requirements we need to meet. Can you pull a report showing our inventory levels and which items require updated certifications or documentation?"
+      ],
+      "original_prompt": "We need to check our current compliance status for the hazardous materials we're storing across all our facilities and understand what regulatory requirements we need to meet. Can you pull a report showing our inventory levels and which items require updated certifications or documentation?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 3,
+      "sub_queries": [
+        "Check our current compliance status for hazardous materials storage across all facilities against applicable regulatory requirements",
+        "Pull a report showing our hazardous materials inventory levels across all facilities",
+        "Identify which hazardous materials items require updated certifications or documentation"
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 17182,
+    "latency_s": 20.07,
+    "llm_calls": 10
+  },
+  "wall_s": 20.121
+}

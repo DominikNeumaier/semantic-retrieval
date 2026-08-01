@@ -1,0 +1,113 @@
+{
+  "case_id": "dy-38",
+  "sub_idx": 1,
+  "sub_query": "Review procurement records and vendor relationships to verify all suppliers maintain current safety certifications and compliance standings",
+  "gt_id": "sap.ehs:apiResource:VendorSafetyComplianceOrders:v1",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0mh",
+  "top1_acc": 0,
+  "candidate_recall": 0,
+  "top5_candidates": [
+    "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+    "sap.ariba:package:Core:v1",
+    "siemens.plm:package:Core:v1"
+  ],
+  "refused": false,
+  "tokens": 22627,
+  "wall_s": 19.697,
+  "plan": {
+    "request": "Review procurement records and vendor relationships to verify all suppliers maintain current safety certifications and compliance standings",
+    "mode": "dynamic",
+    "skill_id": null,
+    "coverage": "none",
+    "method": "E",
+    "steps": [
+      {
+        "step_name": "Review procurement records and vendor relationships to verify all suppliers maintain current safety certifications and compliance standings",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1"
+          },
+          {
+            "ordId": "sap.ariba:package:Core:v1"
+          },
+          {
+            "ordId": "siemens.plm:package:Core:v1"
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/siemens.plm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/siemens.plm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"siemens.plm:package:Core:v1\",\n      \"title\": \"siemens.plm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1102
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE SYSTEMS (10 visible):\n- workday.hcm: HCM - compensation agents only, NO REST API for staffing data\n- sap.sf: SuccessFactors HCM - REST API: EmployeeCompensationManagement:v1. KEY AGENTS:\n  * SkillsAndCapabilityMatchingOrchestrator:v1 - workforce skills analysis & training recommendations\n  * PerformanceReviewCycleCoordinator:v1\n  * CompensationPolicyAutomationEngine:v1\n- sap.s4: ERP - MaterialReceiptInboundAPI, Procurement agents, OpportunityToOrderAutomationEngine\n- sap.crm: CRM - CAMPAIGN ENGAGEMENT TRACKING & MANAGEMENT:\n  * CampaignAudienceOptimizationCoordinator:v1 - ORCHESTRATES campaign execution & coordinates across customer accounts & segments\n  * CampaignAudienceOptimizationAgent:v1 - analyzes customer segments & real-time engagement metrics\n  * OpportunityQualificationAdvisor, SalesProductChangeCoordinator, SalesCompensationOrchestrator\n- sap.ehs: Safety/health - KEY AGENTS FOR SAFETY ANALYSIS:\n  * IncidentRootCauseAnalyzer:v1 - ANALYZES SAFETY INCIDENTS & TRENDS\n  * IncidentResponseCoordinator:v1\n  * SafetyComplianceAutomationCoordinator:v1\n- sap.ariba: Procurement - KEY AGENTS:\n  * VendorInvoiceReconciliationAutomation:v1 - 3-way matching\n  * SupplierComplianceAndIncidentMonitor:v1 - HAZMAT tracking & SAFETY CERTIFICATIONS verification\n  * MaterialAndEngineeringChangeCoordinator:v1\n  * **PurchaseOrderNetworkAPI:v1 (REST) - exposes Vendor & PurchaseOrder entities**\n- corp.itsm: IT service mgmt - agents ONLY (for IT tickets, NOT manufacturing maintenance):\n  * IncidentRootCauseAnalyzer:v1 (IT-focused)\n  * AssetProvisioningOrchestrator:v1\n  * ChangeAutomationOrchestrator:v1\n- emarsys.cx: CX/marketing - agents ONLY\n- my.mes: Manufacturing - KEY AGENTS/APIs:\n  * EquipmentOEEAnalytics (REST API) - machine performance metrics only\n  * ProductionQualityMonitor - quality inspection monitoring\n  * ProductionChangeOrchestrator:v1\n  * BillOfMaterialsComplianceValidator:v1\n  * **NO maintenance request/work order submission capability**\n- siemens.plm: PLM - KEY AGENTS:\n  * SupplierQualificationAndMaterialCoordinator:v1 - supplier qualification & material approval (NOT ongoing safety verification)\n  * BOMComplianceValidator:v1\n  * EngineeringChangeAndMaterialProvisioning:v1\n- sap.odm: Data model (entity taxonomy only)\n\nKEY FINDINGS:\n- Equipment upgrade logging & tracking (audit-ready) \u2192 my.mes:agent:ProductionChangeOrchestrator:v1\n- Safety incident analysis \u2192 sap.ehs:agent:IncidentRootCauseAnalyzer:v1\n- Supplier qualification & regulatory compliance \u2192 siemens.plm:agent:SupplierQualificationAndMaterialCoordinator:v1\n- Invoice reconciliation (3-way matching) \u2192 sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n- Pull vendor specifications & details \u2192 sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1 (REST API)\n- **SUPPLIER SAFETY CERTIFICATION & COMPLIANCE VERIFICATION \u2192 sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1** (hazmat certs, regulatory verification, non-compliance signals)\n\nGAPS:\n- **NO maintenance request submission capability** - landscape has production monitoring (OEE, quality) but no maintenance/work order management system\n"
+              },
+              "result_preview": {
+                "stored_bytes": 3114,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+                "reason": "This agent automates oversight of hazardous material certifications, executes regulatory verification processes, identifies non-compliance signals, and orchestrates vendor compliance management across the supplier ecosystem."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+          "picked_reason": "This agent automates oversight of hazardous material certifications, executes regulatory verification processes, identifies non-compliance signals, and orchestrates vendor compliance management across the supplier ecosystem.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 4,
+          "tokens": 22627,
+          "latency_s": 19.692,
+          "llm_calls": 4
+        }
+      }
+    ],
+    "trace": {
+      "total_tokens": 22627,
+      "total_latency_s": 0,
+      "total_llm_calls": 4
+    }
+  }
+}

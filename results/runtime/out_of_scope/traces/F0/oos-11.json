@@ -1,0 +1,634 @@
+{
+  "case_id": "oos-11",
+  "user_prompt": "Our multinational procurement team sources materials from 47 countries with payment terms ranging from 30-180 days, and we currently lack visibility into which of our outstanding purchase orders face material FX exposure\u2014we need a system that automatically flags POs with foreign currency commitments exceeding our 2% margin threshold and recommends hedging actions tied to our actual payment dates, not just spot rates today.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "clean",
+  "condition": "F0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "my.mes:apiResource:SupplierProcurementOrderManagement:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Build a system that provides visibility into outstanding purchase orders and identifies which ones have foreign currency commitments",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 17198,
+          "latency_s": 11.855,
+          "llm_calls": 9,
+          "use_graph": false,
+          "picked_ord_id": "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+          "picked_reason": "Directly manages and retrieves purchase orders with vendor data and procurement order lifecycle tracking, exposing PurchaseOrder entity type. Provides the foundational data access and status tracking capabilities needed to build visibility into outstanding purchase orders; can be augmented with currency/commitment analysis at the application layer.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "outstanding purchase orders foreign currency commitments visibility",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+                "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+                "sap.ehs:apiResource:PurchaseOrderVendorSafetyCompliance:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                "sap.ehs:apiResource:VendorSafetyComplianceOrders:v1",
+                "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "PurchaseOrder"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "Currency"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:SupplierProcurementOrderManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "purchase orders currency exposure commitment tracking",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+                "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                "sap.ehs:apiResource:PurchaseOrderVendorSafetyCompliance:v1",
+                "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "foreign exchange currency commitment financial exposure procurement",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+                "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+                "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                "sap.crm:agent:VendorMaterialProcurementCoordinator:v1",
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1",
+                "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                "siemens.plm:dataProduct:MaterialInvoiceFinancialMetrics:v1",
+                "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+                "reason": "Directly manages and retrieves purchase orders with vendor data and procurement order lifecycle tracking, exposing PurchaseOrder entity type. Provides the foundational data access and status tracking capabilities needed to build visibility into outstanding purchase orders; can be augmented with currency/commitment analysis at the application layer."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:SupplierProcurementOrderManagement:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Create an automated flagging mechanism that identifies POs with FX exposure exceeding a 2% margin threshold",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:OpportunityToOrderAutomationEngine:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 19581,
+          "latency_s": 12.815,
+          "llm_calls": 10,
+          "use_graph": false,
+          "picked_ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+          "picked_reason": "This agent autonomously flags discrepancies in PO-related transactions using exception handling logic. Its three-way matching architecture and policy violation flagging capabilities can be extended to detect FX exposure exceeding the 2% margin threshold by integrating currency exposure calculations and margin validation rules.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "automated flagging mechanism PO FX exposure margin threshold",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "my.mes:agent:ProductionQualityMonitor:v1",
+                "sap.s4:agent:OpportunityToOrderAutomationEngine:v1",
+                "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+                "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+                "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+                "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+                "emarsys.cx:agent:OpportunityEnrichmentOrchestrator:v1",
+                "emarsys.cx:agent:OpportunityScoringOrchestrator:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "purchase order foreign exchange risk monitoring",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+                "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "sap.ehs:apiResource:PurchaseOrderVendorSafetyCompliance:v1",
+                "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+                "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                "my.mes:agent:SupplierQualityComplianceOrchestrator:v1",
+                "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+                "sap.ehs:apiResource:VendorSafetyComplianceOrders:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "FX currency exposure treasury risk flagging",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1",
+                "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+                "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                "sap.ehs:dataProduct:EmployeeCompensationSafetyRiskAnalytics:v1",
+                "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                "workday.hcm:agent:OccupationalSafetyIncidentMonitoring:v1",
+                "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1",
+                "siemens.plm:dataProduct:MaterialInvoiceFinancialMetrics:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "PurchaseOrder"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "agent flagging monitoring threshold procurement purchasing",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.s4:agent:ProcurementMatchingAgent:v1",
+                "corp.itsm:dataProduct:ProcurementOperationalMetrics:v1",
+                "sap.crm:agent:VendorMaterialProcurementCoordinator:v1",
+                "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+                "my.mes:agent:ProductionQualityMonitor:v1",
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "sap.ariba:dataProduct:ProductionQualityMetrics:v1",
+                "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+                "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "financial risk monitoring margin exposure detection",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+                "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1",
+                "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                "sap.ehs:dataProduct:EmployeeCompensationSafetyRiskAnalytics:v1",
+                "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                "my.mes:agent:HazmatIncidentComplianceMonitor:v1",
+                "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1",
+                "sap.sf:agent:OccupationalSafetyComplianceMonitor:v1",
+                "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:agent:ProcurementMatchingAgent:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "automate create flag PO purchase order margin threshold exceed",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+                "sap.s4:agent:OpportunityToOrderAutomationEngine:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                "sap.s4:agent:ProcurementMatchingAgent:v1",
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+                "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+                "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                "corp.itsm:apiResource:VendorProcurementOrderAPI:v1"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "reason": "This agent autonomously flags discrepancies in PO-related transactions using exception handling logic. Its three-way matching architecture and policy violation flagging capabilities can be extended to detect FX exposure exceeding the 2% margin threshold by integrating currency exposure calculations and margin validation rules."
+              },
+              "result": {
+                "committed": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Develop a hedging recommendation engine that suggests hedging actions based on actual payment dates rather than spot rates",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "tokens": 30726,
+          "latency_s": 16.116,
+          "llm_calls": 11,
+          "use_graph": false,
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "No hedging recommendation engine or financial derivatives/FX risk management resource exists in the CLEAN-ORD landscape. The landscape lacks specialized treasury management, derivative trading, or currency hedging services that would support developing a hedging recommendation engine based on actual payment dates rather than spot rates. Available finance resources focus on customer receivables, invoice reconciliation, and procurement rather than treasury hedging strategies.",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "hedging recommendation engine payment dates hedging actions",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+                "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+                "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+                "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+                "sap.ehs:dataProduct:EmployeeCompensationSafetyRiskAnalytics:v1",
+                "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                "workday.hcm:agent:CompensationChangeProcessor:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "sap.s4:agent:ProcurementMatchingAgent:v1",
+                "sap.crm:agent:ProductChangeCompensationCoordinator:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "foreign exchange risk management payment date hedging",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+                "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "workday.hcm:agent:CompensationChangeProcessor:v1",
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+                "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+                "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                "sap.crm:agent:ProductChangeCompensationCoordinator:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "hedging actions currency risk treasury management",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+                "sap.ehs:dataProduct:EmployeeCompensationSafetyRiskAnalytics:v1",
+                "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+                "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+                "workday.hcm:agent:CompensationChangeProcessor:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1",
+                "workday.hcm:agent:OccupationalSafetyIncidentMonitoring:v1",
+                "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+                "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "recommendation engine payment timing financial transactions",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+                "sap.s4:agent:ProcurementMatchingAgent:v1",
+                "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+                "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+                "emarsys.cx:agent:OpportunityEnrichmentOrchestrator:v1",
+                "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                "sap.s4:agent:OpportunityToOrderAutomationEngine:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "Payment"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "spot rate forex exchange trading financial instrument derivatives",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                "siemens.plm:dataProduct:MaterialInvoiceFinancialMetrics:v1",
+                "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+                "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+                "sap.ehs:dataProduct:EmployeeCompensationSafetyRiskAnalytics:v1",
+                "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+                "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+                "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+                "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+                "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "invoice payment schedule financial position treasury",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+                "siemens.plm:dataProduct:MaterialInvoiceFinancialMetrics:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+                "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+                "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                "sap.ehs:dataProduct:MaterialInvoiceComplianceCostAnalytics:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "Invoice"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "treasury management cash flow projection risk mitigation",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+                "sap.ehs:dataProduct:EmployeeCompensationSafetyRiskAnalytics:v1",
+                "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                "siemens.plm:dataProduct:MaterialInvoiceFinancialMetrics:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "sap.sf:agent:SkillsAndCapabilityMatchingOrchestrator:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+              ]
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "No hedging recommendation engine or financial derivatives/FX risk management resource exists in the CLEAN-ORD landscape. The landscape lacks specialized treasury management, derivative trading, or currency hedging services that would support developing a hedging recommendation engine based on actual payment dates rather than spot rates. Available finance resources focus on customer receivables, invoice reconciliation, and procurement rather than treasury hedging strategies."
+              },
+              "result": {
+                "refused": true
+              }
+            }
+          ]
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request requires a specialized financial risk management system for FX exposure monitoring and hedging recommendations\u2014a capability not present in any registered skill, which focus on procurement, production, compliance, and fulfillment processes rather than treasury or financial hedging operations.\"\n}\n```",
+      "reason": "The request requires a specialized financial risk management system for FX exposure monitoring and hedging recommendations\u2014a capability not present in any registered skill, which focus on procurement, production, compliance, and fulfillment processes rather than treasury or financial hedging operati",
+      "tokens": 1715,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 69629,
+    "latency_s": 40.786,
+    "llm_calls": 32
+  },
+  "wall_s": 50.426
+}

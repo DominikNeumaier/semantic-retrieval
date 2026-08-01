@@ -1,0 +1,733 @@
+{
+  "case_id": "dy-03",
+  "user_prompt": "I need to set up automated safety checks for our engineering change orders and material updates before they go to production. We've been manually validating everything against our compliance requirements, but it's slowing down our releases. Can you help me automate this validation process?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0",
+  "skill_expected": null,
+  "skill_picked": "proc_013",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Configure automated validation rules against compliance requirements",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "## Landscape Overview (11 systems):\n- **corp.itsm**: ITSM system with agents for incident management, root cause analysis, change coordination, safety incidents\n- **sap.crm**: CRM system for sales, cu \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 10
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.s4/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.s4/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1007
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "## Landscape Overview (11 systems):\n- **corp.itsm**: ITSM system with agents for incident management, root cause analysis, change coordination, safety incidents\n- **sap.crm**: CRM system for sales, customer management, marketing\n- **sap.s4**: ERP system with procurement, BOM, sales, and financial management agents. Has BOMComplianceAutomationAgent.\n- **sap.sf**: HR/HCM system (SuccessFactors) with Employee Compensation Management API\n- **sap.ariba**: Procurement with invoice matching, sourcing, compliance APIs, and vendor compliance agents\n- **sap.ehs**: Safety/compliance system with SafetyComplianceAutomationCoordinator and compliance validation agents\n- **sap.odm, workday.hcm, emarsys.cx, siemens.plm, my.mes**: Other domain systems\n\n## Key Findings:\n\n### Activity 2 (resolved): Filter payroll data by procurement team members\n- **Resource Used**: sap.sf:apiResource:EmployeeCompensationManagement:v1\n\n### Activity 3 (prior): Compare compensation data against budget forecasts\n- Not fully resolved due to exploration limits\n\n### Activity 4 (current): Configure automated validation rules against compliance requirements\n- **Resource Identified**: sap.s4:agent:BOMComplianceAutomationAgent:v1\n- Automates bill-of-materials validation and supplier compliance verification\n- Capabilities: validate-material-specifications, automate-bom-compliance, enforce-engineering-standards, automate-compliance-verification\n- Also strong candidates: sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1, sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1\n"
+              },
+              "result_preview": {
+                "stored_bytes": 1551,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "reason": "This agent automates compliance validation by enforcing regulatory requirements and supplier qualification standards through BOM validation workflows, directly addressing the need to configure automated validation rules against compliance requirements."
+              },
+              "result_preview": {
+                "committed": "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+          "picked_reason": "This agent automates compliance validation by enforcing regulatory requirements and supplier qualification standards through BOM validation workflows, directly addressing the need to configure automated validation rules against compliance requirements.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 82578,
+          "latency_s": 26.295,
+          "llm_calls": 9
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Set up automated triggers for change orders and material updates",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "## Landscape Overview (11 systems):\n- **corp.itsm**: ITSM system with agents for incident management, root cause analysis, change coordination, safety incidents\n- **sap.crm**: CRM system for sales, cu \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "## Landscape Overview (11 systems):\n- **corp.itsm**: ITSM system with agents for incident management, root cause analysis, change coordination, safety incidents\n- **sap.crm**: CRM system for sales, customer management, marketing\n- **sap.s4**: ERP system with procurement, BOM, sales, and financial management agents. Multiple change automation agents.\n- **sap.sf**: HR/HCM system (SuccessFactors) with Employee Compensation Management API\n- **sap.ariba**: Procurement with invoice matching, sourcing, compliance APIs, and vendor compliance agents\n- **sap.ehs**: Safety/compliance system with SafetyComplianceAutomationCoordinator and compliance validation agents\n- **sap.odm, workday.hcm, emarsys.cx, siemens.plm, my.mes**: Other domain systems\n\n## Key Findings:\n\n### Activity 2 (resolved): Filter payroll data by procurement team members\n- **Resource Used**: sap.sf:apiResource:EmployeeCompensationManagement:v1\n\n### Activity 4 (resolved): Configure automated validation rules against compliance requirements\n- **Resource Used**: sap.s4:agent:BOMComplianceAutomationAgent:v1\n\n### Activity 5 (current): Set up automated triggers for change orders and material updates\n- **Resource Used**: sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\n- Orchestrates engineering changes across materials & product items with automated asset provisioning\n- Monitors change requests and automatically coordinates downstream impacts\n- Capabilities: manage-product-lifecycle, coordinate-change-workflow, assess-material-impact, manage-change-approvals, track-change-lifecycle, orchestrate-engineering-change\n- Perfect fit: handles automated triggers for change orders and material updates\n\n## SAP S/4 Change Automation Agents (common pattern):\n- BOMComplianceAutomationAgent: for compliance validation\n- AssetLifecycleChangeOrchestrator: for change order & material update orchestration\n- ProcurementMatchingAgent: for vendor matching\n"
+              },
+              "result_preview": {
+                "stored_bytes": 1917,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "reason": "Orchestrates engineering changes with automated triggers for material updates and change order workflows across the product lifecycle."
+              },
+              "result_preview": {
+                "committed": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+          "picked_reason": "Orchestrates engineering changes with automated triggers for material updates and change order workflows across the product lifecycle.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 4,
+          "tokens": 18227,
+          "latency_s": 17.223,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Implement automated pre-production gating workflow",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "reason": "Automates quality gates and compliance validation for materials/BOMs before production, with built-in approval workflows and standardized enforcement\u2014ideal for pre-production gating."
+              },
+              "result_preview": {
+                "committed": "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+          "picked_reason": "Automates quality gates and compliance validation for materials/BOMs before production, with built-in approval workflows and standardized enforcement\u2014ideal for pre-production gating.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 3,
+          "tokens": 15817,
+          "latency_s": 10.395,
+          "llm_calls": 3
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Define notification/alert system for validation results",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "## Landscape Overview (11 systems):\n- **corp.itsm**: ITSM system with agents for incident management, root cause analysis, change coordination, safety incidents\n- **sap.crm**: CRM system for sales, cu \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 10
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.s4/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.s4/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1007
+              }
+            },
+            {
+              "step": 8,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 9,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.s4"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.s4",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 10,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.sf:package:Core:v1\",\n      \"title\": \"sap.sf Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1072
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 11,
+          "tokens": 120032,
+          "latency_s": 25.81,
+          "llm_calls": 11
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Establish automated escalation for failed compliance checks",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:agent:ComplianceCampaignOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "## Landscape Overview (11 systems):\n- **corp.itsm**: ITSM system with agents for incident management, root cause analysis, change coordination, safety incidents\n- **sap.crm**: CRM system for sales, cu \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "## Landscape Overview (11 systems):\n- **corp.itsm**: ITSM system with agents for incident management, root cause analysis, change coordination, safety incidents\n- **sap.crm**: CRM system for sales, customer management, marketing\n- **sap.s4**: ERP system with procurement, BOM, sales, and financial management agents. Multiple change automation agents.\n- **sap.sf**: HR/HCM system (SuccessFactors) with Employee Compensation Management API\n- **sap.ariba**: Procurement with invoice matching, sourcing, compliance APIs, and vendor compliance agents\n- **sap.ehs**: Safety/compliance system with SafetyComplianceAutomationCoordinator, ComplianceCampaignOrchestrator, VendorComplianceAutomationOrchestrator, and compliance validation agents\n- **sap.odm, workday.hcm, emarsys.cx, siemens.plm, my.mes**: Other domain systems\n\n## Key Findings:\n\n### Activity 2 (resolved): Filter payroll data by procurement team members\n- **Resource Used**: sap.sf:apiResource:EmployeeCompensationManagement:v1\n\n### Activity 4 (resolved): Configure automated validation rules against compliance requirements\n- **Resource Used**: sap.s4:agent:BOMComplianceAutomationAgent:v1\n\n### Activity 5 (resolved): Set up automated triggers for change orders and material updates\n- **Resource Used**: sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\n\n### Activity 6 (resolved): Establish automated escalation for failed compliance checks\n- **Resource Used**: sap.ehs:agent:ComplianceCampaignOrchestrator:v1\n- Explicitly manages \"escalation workflows for identified safety gaps\"\n- Automates safety compliance campaigns across customer segments\n- Processes compliance status updates and manages escalation workflows\n- Complements BOMComplianceAutomationAgent by orchestrating escalations\n\n## SAP S/4 Change Automation Agents (common pattern):\n- BOMComplianceAutomationAgent: for compliance validation\n- AssetLifecycleChangeOrchestrator: for change order & material update orchestration\n\n## SAP EHS Compliance Agents:\n- ComplianceCampaignOrchestrator: manages escalations for compliance gaps\n- VendorComplianceAutomationOrchestrator: processes compliance exceptions through escalation workflows\n- SafetyComplianceAutomationCoordinator: automates compliance remediation\n"
+              },
+              "result_preview": {
+                "stored_bytes": 2228,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:ComplianceCampaignOrchestrator:v1",
+                "reason": "Manages escalation workflows for identified compliance gaps and automates escalation procedures when safety compliance issues are detected."
+              },
+              "result_preview": {
+                "committed": "sap.ehs:agent:ComplianceCampaignOrchestrator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:agent:ComplianceCampaignOrchestrator:v1",
+          "picked_reason": "Manages escalation workflows for identified compliance gaps and automates escalation procedures when safety compliance issues are detected.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 6,
+          "tokens": 37950,
+          "latency_s": 18.766,
+          "llm_calls": 6
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_013",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_013\",\n  \"reason\": \"This skill directly orchestrates safety risk evaluation and compliance validation for engineering changes and material transitions before production, matching the user's need to automate pre-production validation against compliance requirements.\"\n}\n```",
+      "reason": "This skill directly orchestrates safety risk evaluation and compliance validation for engineering changes and material transitions before production, matching the user's need to automate pre-production validation against compliance requirements.",
+      "tokens": 1673,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Configure automated validation rules against compliance requirements\",\n    \"Set up automated triggers for change orders and material updates\",\n    \"Implement automated pre-production gating workflow\",\n    \"Define notification/alert system for validation results\",\n    \"Establish automated escalation for failed compliance checks\"\n  ],\n  \"reason\": \"The skill addresses safety risk evaluation and cross-functional readiness planning for transitions, but lacks the specific automation setup steps (rule configuration, trigger definition, gating workflow, alerting system, and escalation procedures) needed to transform manual validation into an automated pre-production safety check process.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill addresses safety risk evaluation and cross-functional readiness planning for transitions, but lacks the specific automation setup steps (rule configuration, trigger definition, gating workflow, alerting system, and escalation procedures) needed to transform manual validation into an automa",
+      "tokens": 492,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "I need to set up automated safety checks for our engineering change orders and material updates before they go to production. We've been manually validating everything against our compliance requirements, but it's slowing down our releases. Can you help me automate this validation process?"
+      ],
+      "original_prompt": "I need to set up automated safety checks for our engineering change orders and material updates before they go to production. We've been manually validating everything against our compliance requirements, but it's slowing down our releases. Can you help me automate this validation process?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 1,
+      "sub_queries": [
+        "Set up automated safety checks and validation for engineering change orders and material updates against compliance requirements before production release"
+      ],
+      "routed_ok": true,
+      "count_ok": true,
+      "verdict": "green"
+    }
+  },
+  "trace": {
+    "tokens": 276769,
+    "latency_s": 98.489,
+    "llm_calls": 35
+  },
+  "wall_s": 98.549
+}

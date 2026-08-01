@@ -1,0 +1,282 @@
+{
+  "case_id": "dy-30",
+  "user_prompt": "Can you pull up the current status of ticket #12847 and check who our top-performing sales representative is in the Northeast region so I can route this escalation appropriately, then also retrieve what products that employee is certified to sell?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "enriched",
+  "condition": "E1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull up the current status of ticket #12847 and identify who our top-performing sales representative is in the Northeast region.",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY FINDINGS BY FUNCTION:\n- STAFFING & CAPABILITY ANALYSIS: \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.crm:package:Core:v1\",\n      \"title\": \"sap.crm Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1080
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks ticket status retrieval functionality (for #12847) and regional sales performance analytics (for identifying top-performing reps by region)."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape lacks ticket status retrieval functionality (for #12847) and regional sales performance analytics (for identifying top-performing reps by region)."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks ticket status retrieval functionality (for #12847) and regional sales performance analytics (for identifying top-performing reps by region).",
+          "tool_calls": 4,
+          "tokens": 16123,
+          "latency_s": 11.547,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Retrieve what products our top-performing Northeast sales representative is certified to sell.",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.sf:package:Core:v1\",\n      \"title\": \"sap.sf Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1072
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 10
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.crm:package:Core:v1\",\n      \"title\": \"sap.crm Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1080
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY FINDINGS BY FUNCTION:\n- STAFFING & CAPABILITY ANALYSIS: sap.sf:agent:SkillsAndCapabilityMatchingOrchestrator:v1\n- CAMPAIGN ENGAGEMENT TRACKING: emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1\n- PAYROLL & COMPENSATION: sap.sf:apiResource:EmployeeCompensationManagement:v1\n- PRODUCT ECONOMICS: sap.s4:agent:ProcurementMatchingAgent:v1\n- PRODUCTION SCHEDULES: my.mes:apiResource:EquipmentOEEAnalytics:v1\n- PRODUCTION QUALITY: my.mes:agent:ProductionQualityMonitor:v1\n\nVENDOR SAFETY COMPLIANCE & PROCUREMENT:\n- VENDOR SAFETY VERIFICATION: sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1\n- HAZARD TRACKING (supplier): sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1\n\nMATERIAL EXPENSES & SUPPLIER COMPLIANCE:\n- INVOICE RECONCILIATION: sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n- SUPPLIER QUALITY & COMPLIANCE: my.mes:agent:SupplierQualityComplianceOrchestrator:v1\n\nPART SPECS vs SUPPLIER CERTIFICATIONS:\n- PART SPECS vs SUPPLIER CERTIFICATIONS: sap.s4:agent:BOMComplianceAutomationAgent:v1\n- PRODUCTION BOM COMPLIANCE: my.mes:agent:BillOfMaterialsComplianceValidator:v1\n\nSAFETY INCIDENT ANALYSIS & TRENDS:\n- INCIDENT ANALYSIS & TRENDS: sap.ehs:agent:IncidentRootCauseAnalyzer:v1\n\nEQUIPMENT UPGRADES & ASSET TRACKING FOR AUDIT READINESS:\n- ASSET PROVISIONING & CHANGE COORDINATION: corp.itsm:agent:AssetProvisioningOrchestrator:v1\n\nSUPPLIER PAYMENT TERMS & CASH OBLIGATIONS:\n- Best available match: sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n\nPRODUCTION QUEUE STATUS & SHIFT SCHEDULING:\n- NOT FOUND: Landscape lacks dedicated production queue status or shift scheduling resource\n\nSALES REP CERTIFICATIONS & PRODUCT ELIGIBILITY:\n- NOT FOUND: No resource for sales rep certifications, product qualification mapping, or regional sales performance by rep name/certification"
+              },
+              "result_preview": {
+                "stored_bytes": 1955,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape has no resource for sales representative certifications, product qualification eligibility by sales rep, or regional sales performance tracking needed to retrieve what products a top-performing Northeast sales representative is certified to sell."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape has no resource for sales representative certifications, product qualification eligibility by sales rep, or regional sales performance tracking needed to retrieve what products a top-performing Northeast sales representative is certified to sell."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape has no resource for sales representative certifications, product qualification eligibility by sales rep, or regional sales performance tracking needed to retrieve what products a top-performing Northeast sales representative is certified to sell.",
+          "tool_calls": 6,
+          "tokens": 47742,
+          "latency_s": 24.352,
+          "llm_calls": 6
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request combines three ad-hoc lookups (ticket status, top sales rep identification, employee certifications) that don't align with any registered process\u2014none of the skills cover sales performance analytics, employee certification management, or general ticket triage workflows.\"\n}\n```",
+      "reason": "The request combines three ad-hoc lookups (ticket status, top sales rep identification, employee certifications) that don't align with any registered process\u2014none of the skills cover sales performance analytics, employee certification management, or general ticket triage workflows.",
+      "tokens": 1682,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 3,
+      "sub_queries": [
+        "Pull up the current status of ticket #12847",
+        "Identify the top-performing sales representative in the Northeast region",
+        "Retrieve what products that top-performing Northeast sales representative is certified to sell"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 65819,
+    "latency_s": 35.899,
+    "llm_calls": 12
+  },
+  "wall_s": 35.911
+}

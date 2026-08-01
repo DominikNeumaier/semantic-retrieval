@@ -1,0 +1,86 @@
+{
+  "case_id": "proc_008_s06",
+  "process": "proc_008",
+  "label": "order compliance fulfillment process: Orchestrate contract and purchase terms \u2014 Activate vendor contract terms and generate purchase order with negotiated pricing and delivery conditions.",
+  "method": "C",
+  "expected_ordIds": [
+    "siemens.plm:agent:VendorContractLifecycleOrchestrator:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+      "score": 48.0
+    },
+    {
+      "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+      "score": 49.25
+    },
+    {
+      "ordId": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+      "score": 48.0
+    },
+    {
+      "ordId": "siemens.plm:agent:BOMComplianceValidator:v1",
+      "score": 47.5
+    },
+    {
+      "ordId": "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+      "score": 47.75
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "anchors": {
+      "entity_types": [
+        "sap.odm:entityType:Contract:v1",
+        "sap.odm:entityType:PurchaseOrder:v1",
+        "sap.odm:entityType:Vendor:v1",
+        "sap.odm:entityType:CustomerOrder:v1"
+      ],
+      "business_groups": [
+        "proc_order_compliance_fulfillment_v1",
+        "proc_procure_fulfill_v1",
+        "proc_ProcurementSafetyCompliance_v1"
+      ],
+      "lines_of_business": [
+        "Procurement",
+        "Operations"
+      ],
+      "reason": "Activity orchestrates vendor contract activation and purchase order generation with negotiated terms, directly mapping to procurement and order compliance entities and processes."
+    },
+    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Contract:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:CustomerOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\",\n    \"proc_procure_fulfill_v1\",\n    \"proc_ProcurementSafetyCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Operations\"\n  ],\n  \"reason\": \"Activity orchestrates vendor contract activation and purchase order generation with negotiated terms, directly mapping to procurement and order compliance entities and processes.\"\n}\n```",
+    "max_hops": 2,
+    "hop_decay": 0.5,
+    "edge_weights": {
+      "co_exposes": 1.0,
+      "co_partOf": 2.0,
+      "calls": 3.0,
+      "processNext": 3.0
+    },
+    "scored_resources": 274,
+    "walk_top_ids": [
+      "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+      "my.mes:agent:ProductionChangeOrchestrator:v1",
+      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+      "siemens.plm:agent:BOMComplianceValidator:v1"
+    ],
+    "rerank_raw": "```json\n[\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"siemens.plm:agent:BOMComplianceValidator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requires **orchestrating contract/purchase terms, activating vendor contracts, and generating purchase orders with negotiated pricing and delivery conditions**\u2014this is primarily a procurement workflow involving vendor terms and PO creation.\n\n**Top picks (Agents):**\n1. **BOMComplianceAutomationAgent** \u2014 Directly validates materials meet compliance before PO generation; ensures sourcing conflicts are detected; validates supplier certifications\u2014critical for vendor contract activation.\n2. **EngineeringChangeAndMaterialProvisioning** \u2014 Coordinates material provisioning and evaluates supply chain feasibility; handles material allocation and BOM updates needed for PO negotiation.\n3. **AssetLifecycleChangeOrchestrator** \u2014 Orchestrates cross-functional approvals (including supply chain) and manages material impact assessment across vendor agreements.\n4. **BOMComplianceValidator** \u2014 Validates components against supplier qualifications and regulatory standards before purchase orders are generated.\n5. **ProductChangeImpactAndMaterialAnalytics** (dataProduct) \u2014 Provides analytical support to assess material requirements and operational readiness for PO execution.\n\n*Not ranked:* Material Receipt Inbound API is about goods receipt (post-PO), not PO generation; Production Change Orchestrator focuses on shop-floor execution, not procurement; Workforce Analytics is tangential to vendor contract activation.",
+    "refused": false,
+    "previous_resolved": [],
+    "tokens": 4258,
+    "latency_s": 7.703,
+    "llm_calls": 2
+  },
+  "wall_s": 7.725
+}

@@ -1,0 +1,182 @@
+{
+  "case_id": "dy-17",
+  "user_prompt": "I need to get approval for some design modifications we're making to our product line, and then make sure the updated materials are ordered and tracked through our supply chain. Can you help me coordinate the engineering paperwork and inventory adjustments all in one place?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "S",
+  "state": "enriched",
+  "condition": "S1",
+  "skill_expected": null,
+  "skill_picked": "proc_025",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Obtain approval for design modifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "siemens.plm:apiResource:EngineringChangeManagement:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.s4:agent:EngineeringChangeOrchestrator:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13607,
+          "latency_s": 2.268,
+          "llm_calls": 1
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Track materials through supply chain",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13604,
+          "latency_s": 2.299,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Adjust inventory records",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeProductDataAPI:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "sap.s4:apiResource:HazardousSubstanceInventoryAPI:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13605,
+          "latency_s": 2.44,
+          "llm_calls": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_025",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_025\",\n  \"reason\": \"Proc_025 orchestrates the complete engineering change process from change request submission through material validation, workforce readiness, and supplier qualification to final procurement\u2014covering approval, material ordering, and supply chain tracking as one integrated workflow.\"\n}\n```",
+      "reason": "Proc_025 orchestrates the complete engineering change process from change request submission through material validation, workforce readiness, and supplier qualification to final procurement\u2014covering approval, material ordering, and supply chain tracking as one integrated workflow.",
+      "tokens": 1681,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Obtain approval for design modifications\",\n    \"Track materials through supply chain\",\n    \"Adjust inventory records\"\n  ],\n  \"reason\": \"The skill covers engineering change orchestration, material validation, supplier qualification, and procurement execution, but does not explicitly include the approval gate for design modifications, supply chain tracking/visibility, or inventory adjustments that the request requires.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers engineering change orchestration, material validation, supplier qualification, and procurement execution, but does not explicitly include the approval gate for design modifications, supply chain tracking/visibility, or inventory adjustments that the request requires.",
+      "tokens": 445,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "I need to get approval for some design modifications we're making to our product line, and then make sure the updated materials are ordered and tracked through our supply chain. Can you help me coordinate the engineering paperwork and inventory adjustments all in one place?"
+      ],
+      "original_prompt": "I need to get approval for some design modifications we're making to our product line, and then make sure the updated materials are ordered and tracked through our supply chain. Can you help me coordinate the engineering paperwork and inventory adjustments all in one place?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 3,
+      "sub_queries": [
+        "Get approval for design modifications to our product line",
+        "Order updated materials and ensure they are tracked through our supply chain",
+        "Coordinate engineering paperwork and inventory adjustments in one centralized place"
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 42942,
+    "latency_s": 7.007,
+    "llm_calls": 5
+  },
+  "wall_s": 7.015
+}

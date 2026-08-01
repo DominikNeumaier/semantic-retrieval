@@ -1,0 +1,172 @@
+{
+  "case_id": "sa-06",
+  "user_prompt": "We need to establish a complete acquisition and delivery system that starts with gathering customer orders, then assesses both supplier and product safety standards, identifies appropriate sourcing partners, and ensures our logistics network remains uninterrupted. The workflow should also track how this impacts our team's compensation structures given the increased procurement workload, and we'd like visibility into any workplace safety events that occur during the fulfillment process so we can maintain our compliance records. Can you design this entire sourcing-to-delivery journey with all these considerations built in?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "C",
+  "state": "clean",
+  "condition": "C0",
+  "skill_expected": "proc_009",
+  "skill_picked": "proc_009",
+  "expected_gaps": [
+    "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+    "corp.itsm:dataProduct:SafetyIncidentMetrics:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track workplace safety events during fulfillment",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:SafetyIncident:v1",
+              "sap.odm:entityType:Incident:v1",
+              "sap.odm:entityType:Employee:v1",
+              "sap.odm:entityType:ProductionOrder:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Environment, Health & Safety",
+              "Manufacturing"
+            ],
+            "reason": "Tracking safety events requires SafetyIncident and Incident entities, involves Employees in fulfillment operations, and spans both health/safety and manufacturing domains."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:SafetyIncident:v1\",\n    \"sap.odm:entityType:Incident:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Environment, Health & Safety\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Tracking safety events requires SafetyIncident and Incident entities, involves Employees in fulfillment operations, and spans both health/safety and manufacturing domains.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 249,
+          "walk_top_ids": [
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+            "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity \"Track workplace safety events during fulfillment\" requires a capability focused on occupational health and safety event monitoring, incident logging, or safety compliance tracking. None of the candidates provide this functionality:\n\n- The agents (AccessProvisioningOrchestrator, AssetProvisioningOrchestrator, ChangeAutomationOrchestrator, ChangeReleaseCoordinator, ProductLifecycleOrchestrator, BillOfMaterialsComplianceValidator) are all focused on IT asset management, change orchestration, or compliance validation\u2014not safety event tracking.\n\n- The dataProducts (ProductChangeAndInventoryAnalytics, ProductImpactSalesIntelligence) provide analytical insights on product and inventory changes, not safety events.\n\nWhile these resources are topically related to fulfillment and operational workflows, none actually fulfills the specific activity of tracking workplace safety events. A meaningful match would require a safety management system, incident tracking agent, or occupational health analytics resource.",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 2045,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Maintain compliance records for safety incidents",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+            "score": 33.0
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+            "score": 33.0
+          },
+          {
+            "ordId": "my.mes:agent:HazmatIncidentComplianceMonitor:v1",
+            "score": 33.0
+          },
+          {
+            "ordId": "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1",
+            "score": 35.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:SafetyIncident:v1",
+              "sap.odm:entityType:Incident:v1",
+              "sap.odm:entityType:Employee:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Environment, Health & Safety",
+              "Operations"
+            ],
+            "reason": "Safety incident compliance records directly map to SafetyIncident and Incident entities, involve employees, and fall under EHS and operations domains."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:SafetyIncident:v1\",\n    \"sap.odm:entityType:Incident:v1\",\n    \"sap.odm:entityType:Employee:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Environment, Health & Safety\",\n    \"Operations\"\n  ],\n  \"reason\": \"Safety incident compliance records directly map to SafetyIncident and Incident entities, involve employees, and fall under EHS and operations domains.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 217,
+          "walk_top_ids": [
+            "sap.sf:agent:PerformanceReviewCycleCoordinator:v1",
+            "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1",
+            "workday.hcm:agent:PerformanceReviewCoordination:v1",
+            "workday.hcm:agent:PerformanceReviewOrchestrator:v1",
+            "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+            "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+            "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+            "my.mes:agent:HazmatIncidentComplianceMonitor:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1\",\n  \"corp.itsm:agent:IncidentSafetyCoordinator:v1\",\n  \"my.mes:agent:HazmatIncidentComplianceMonitor:v1\",\n  \"siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 1936,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_009",
+      "skill_id_expected": "proc_009",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track workplace safety events during fulfillment\",\n    \"Maintain compliance records for safety incidents\"\n  ],\n  \"reason\": \"The skill covers the core procurement and fulfillment workflow including customer orders, compliance evaluation, supplier sourcing, supply chain continuity, and workforce capacity/labor cost management. However, it does not explicitly address tracking workplace safety events or maintaining safety compliance records, which the user request specifically names as required visibility for fulfillment operations.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers the core procurement and fulfillment workflow including customer orders, compliance evaluation, supplier sourcing, supply chain continuity, and workforce capacity/labor cost management. However, it does not explicitly address tracking workplace safety events or maintaining safety co",
+      "tokens": 621,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 4602,
+    "latency_s": 0.0,
+    "llm_calls": 5
+  },
+  "wall_s": 0.069
+}

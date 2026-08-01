@@ -1,0 +1,210 @@
+{
+  "case_id": "oos-11",
+  "user_prompt": "Our multinational procurement team sources materials from 47 countries with payment terms ranging from 30-180 days, and we currently lack visibility into which of our outstanding purchase orders face material FX exposure\u2014we need a system that automatically flags POs with foreign currency commitments exceeding our 2% margin threshold and recommends hedging actions tied to our actual payment dates, not just spot rates today.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "C",
+  "state": "enriched",
+  "condition": "C1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 1,
+    "falsely_picked": 0,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Build a system that provides visibility into outstanding purchase orders and identifies which ones have foreign currency commitments",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:PurchaseOrder:v1",
+              "sap.odm:entityType:Vendor:v1",
+              "sap.odm:entityType:Invoice:v1",
+              "sap.odm:entityType:Contract:v1"
+            ],
+            "business_groups": [
+              "proc_procure_fulfill_v1",
+              "proc_supplychain_risk_compliance_v1",
+              "proc_EngChangeAndProcurement_v1"
+            ],
+            "lines_of_business": [
+              "Procurement",
+              "Finance"
+            ],
+            "reason": "The activity focuses on tracking outstanding purchase orders with foreign currency exposure, requiring PO, Vendor, and Invoice entities across procurement and financial processes."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:Contract:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_supplychain_risk_compliance_v1\",\n    \"proc_EngChangeAndProcurement_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Finance\"\n  ],\n  \"reason\": \"The activity focuses on tracking outstanding purchase orders with foreign currency exposure, requiring PO, Vendor, and Invoice entities across procurement and financial processes.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity requires visibility into **outstanding purchase orders** and identification of those with **foreign currency commitments**. This is fundamentally a purchase order financial analytics capability.\n\nNone of the candidates directly address this need:\n\n- **Material Receipt Inbound API** - handles goods receipt transactions, not PO visibility or currency analysis\n- **Engineering Change agents** - focus on engineering changes and material provisioning, not PO tracking\n- **Production Change Orchestrator** - handles production scheduling, not PO financial analysis\n- **Workforce/Capability data products** - assess workforce readiness, not PO currency exposure\n- **Material & Vendor Master APIs** - retrieve master data and sourcing info, not PO status or currency commitments\n\nThe graph walk surfaced these candidates due to topical overlap with procurement and materials, but none possess capabilities for monitoring outstanding purchase orders or analyzing foreign currency exposure. This activity needs a **Purchase Order Analytics** or **Procurement Finance** resource that would track PO status, currencies, and commitments\u2014capabilities absent from all candidates.",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 4041,
+          "latency_s": 4.062,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Create an automated flagging mechanism that identifies POs with FX exposure exceeding a 2% margin threshold",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:PurchaseOrder:v1",
+              "sap.odm:entityType:Vendor:v1",
+              "sap.odm:entityType:Contract:v1"
+            ],
+            "business_groups": [
+              "proc_procure_fulfill_v1",
+              "proc_supplychain_risk_compliance_v1"
+            ],
+            "lines_of_business": [
+              "Procurement",
+              "Finance"
+            ],
+            "reason": "Activity flags POs with FX exposure thresholds, requiring PurchaseOrder, Vendor, and Contract entities within procurement and financial risk management processes."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:Contract:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_supplychain_risk_compliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Finance\"\n  ],\n  \"reason\": \"Activity flags POs with FX exposure thresholds, requiring PurchaseOrder, Vendor, and Contract entities within procurement and financial risk management processes.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity requests creating an automated flagging mechanism for POs with FX (foreign exchange) exposure exceeding a 2% margin threshold. This is a financial risk monitoring capability focused on currency exposure analysis and threshold-based alerting.\n\nNone of the candidates address this requirement:\n- The material receipt, procurement data, and engineering change resources focus on supply chain operations, not FX exposure monitoring\n- The agents orchestrate production and material changes, not financial risk assessment\n- The dataProducts analyze workforce and operational readiness, not currency exposure\n- There is no candidate with capabilities for FX analysis, currency risk assessment, margin calculation, or financial threshold monitoring\n\nThis activity requires a financial or treasury management resource that would typically reside in an ERP's finance module or a dedicated FX risk management system, which are not represented in this candidate set.",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 4013,
+          "latency_s": 3.669,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Develop a hedging recommendation engine that suggests hedging actions based on actual payment dates rather than spot rates",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Contract:v1",
+              "sap.odm:entityType:Invoice:v1",
+              "sap.odm:entityType:PurchaseOrder:v1",
+              "sap.odm:entityType:Vendor:v1"
+            ],
+            "business_groups": [
+              "proc_procure_fulfill_v1",
+              "proc_supplychain_risk_compliance_v1"
+            ],
+            "lines_of_business": [
+              "Finance",
+              "Procurement"
+            ],
+            "reason": "Hedging recommendations based on payment dates involve financial risk management across contracts, invoices, and vendor relationships in procurement and supply chain operations."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Contract:v1\",\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Vendor:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_supplychain_risk_compliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Finance\",\n    \"Procurement\"\n  ],\n  \"reason\": \"Hedging recommendations based on payment dates involve financial risk management across contracts, invoices, and vendor relationships in procurement and supply chain operations.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "sap.s4:dataProduct:ProcurementMetricsHub:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity requests development of a **hedging recommendation engine based on payment dates and spot rates** \u2014 this is a **financial derivatives/treasury management** capability requiring FX hedging logic, payment timing analysis, and rate forecasting.\n\nNone of the candidates address this need:\n- The material receipt, procurement, and engineering change resources focus on supply chain operations\n- The dataProducts analyze production transitions and operational readiness, not financial hedging\n- The agents orchestrate manufacturing and engineering changes, not treasury functions\n\nThis is a tangential match due to topical overlap around \"payment\" and \"dates,\" but no candidate actually provides hedging recommendation, FX analysis, or treasury management capabilities. A meaningful match would be a treasury/finance API or agent for hedging strategies, which is absent from this set.",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 3863,
+          "latency_s": 6.735,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request requires a specialized financial risk management system for FX exposure monitoring and hedging recommendations\u2014a capability not present in any registered skill, which focus on procurement, production, compliance, and fulfillment processes rather than treasury or financial hedging operations.\"\n}\n```",
+      "reason": "The request requires a specialized financial risk management system for FX exposure monitoring and hedging recommendations\u2014a capability not present in any registered skill, which focus on procurement, production, compliance, and fulfillment processes rather than treasury or financial hedging operati",
+      "tokens": 1715,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 14041,
+    "latency_s": 14.466,
+    "llm_calls": 8
+  },
+  "wall_s": 14.52
+}

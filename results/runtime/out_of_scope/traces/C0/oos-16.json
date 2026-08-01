@@ -1,0 +1,200 @@
+{
+  "case_id": "oos-16",
+  "user_prompt": "We need to automatically map and consolidate sustainability data from our disparate ERP, HR, and facility management systems into a single staging area so our sustainability team can validate completeness and consistency before submitting our annual GRI and CSRD reports\u2014right now they're manually pulling CSVs from five different systems and spending weeks reconciling conflicting numbers on energy use and headcount metrics.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "C",
+  "state": "clean",
+  "condition": "C0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 1,
+    "falsely_picked": 0,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Build an automated data integration pipeline that consolidates sustainability data from our disparate ERP, HR, and facility management systems into a single staging area",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Employee:v1",
+              "sap.odm:entityType:Machine:v1",
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:HazardousSubstance:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "ERP",
+              "Human Resources",
+              "Environment, Health & Safety"
+            ],
+            "reason": "Pipeline integrates employee data (HR), facility/machine data (operations), and sustainability-relevant materials and hazardous substances across ERP, HR, and facility management systems."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:HazardousSubstance:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"ERP\",\n    \"Human Resources\",\n    \"Environment, Health & Safety\"\n  ],\n  \"reason\": \"Pipeline integrates employee data (HR), facility/machine data (operations), and sustainability-relevant materials and hazardous substances across ERP, HR, and facility management systems.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 249,
+          "walk_top_ids": [
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+            "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity requires building a data integration pipeline that consolidates sustainability data from ERP, HR, and facility management systems into a staging area. This is a data ingestion and ETL orchestration task.\n\nNone of the candidates provide this capability:\n- The ITSM agents (AccessProvisioning, AssetProvisioning, ChangeAutomation, ChangeRelease) focus on IT operations workflows, not data integration\n- The Emarsys agents/dataProducts are product lifecycle and inventory-focused, not sustainability data consolidation\n- The BOM Compliance Validator handles validation, not data pipeline orchestration\n\nThe graph walk surfaced these results due to topical overlap around \"orchestration\" and \"consolidation,\" but none actually fulfill the core requirement of building ETL pipelines for sustainability data aggregation from multiple source systems.",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 2057,
+          "latency_s": 5.029,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Implement a data validation and reconciliation capability that allows our sustainability team to verify completeness and consistency of consolidated sustainability metrics",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:ProductionOrder:v1",
+              "sap.odm:entityType:HazardousSubstance:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Environment, Health & Safety",
+              "Operations"
+            ],
+            "reason": "Sustainability metrics validation requires tracking of materials, production processes, and hazardous substances across operations and environmental compliance domains."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:HazardousSubstance:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Environment, Health & Safety\",\n    \"Operations\"\n  ],\n  \"reason\": \"Sustainability metrics validation requires tracking of materials, production processes, and hazardous substances across operations and environmental compliance domains.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 205,
+          "walk_top_ids": [
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+            "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity requires a data validation and reconciliation capability specifically for sustainability metrics. None of the candidates directly address sustainability data validation:\n\n- The ITSM agents (AccessProvisioning, AssetProvisioning, ChangeAutomation, ChangeReleaseCoordinator) focus on IT/asset/change management workflows, not sustainability metrics.\n- The Product Lifecycle and Product Change orchestrators are oriented toward product/sales engagement, not sustainability.\n- The Product analytics dataProducts aggregate product/inventory/sales metrics, not sustainability metrics.\n- The BillOfMaterialsComplianceValidator validates BOM/supplier compliance, not sustainability metrics.\n\nWhile some candidates could theoretically validate *some* data, none meaningfully fulfills the core requirement of validating and reconciling *sustainability* metrics for a sustainability team. This is topical overlap without functional fit.",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 2020,
+          "latency_s": 5.073,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Enable automated report generation for GRI and CSRD compliance submissions from the consolidated and validated sustainability data",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:ProductionOrder:v1",
+              "sap.odm:entityType:HazardousSubstance:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Environment, Health & Safety",
+              "Operations"
+            ],
+            "reason": "GRI and CSRD compliance reporting requires tracking of materials, production activities, and hazardous substances with sustainability and environmental data consolidated from operations."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:HazardousSubstance:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Environment, Health & Safety\",\n    \"Operations\"\n  ],\n  \"reason\": \"GRI and CSRD compliance reporting requires tracking of materials, production activities, and hazardous substances with sustainability and environmental data consolidated from operations.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 205,
+          "walk_top_ids": [
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+            "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity requires automated report generation for GRI (Global Reporting Initiative) and CSRD (Corporate Sustainability Reporting Directive) compliance submissions from sustainability data. None of the candidates provide this capability:\n\n- The agents (AccessProvisioningOrchestrator, AssetProvisioningOrchestrator, ChangeAutomationOrchestrator, ChangeReleaseCoordinator, ProductLifecycleOrchestrator, BillOfMaterialsComplianceValidator) are all focused on IT/asset/change/product lifecycle management \u2014 not sustainability reporting or compliance submission generation.\n\n- The dataProducts (ProductChangeAndInventoryAnalytics, ProductImpactSalesIntelligence) are focused on product/inventory analytics for sales optimization, not sustainability compliance reporting.\n\nWhile these candidates are topically related to compliance and data aggregation, none actually address sustainability data consolidation, validation, or GRI/CSRD report generation.",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 2039,
+          "latency_s": 5.211,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request requires a sustainability data integration and consolidation process (ERP/HR/facility systems \u2192 staging \u2192 validation), which is a specialized data governance and reporting workflow not covered by any of the registered skills that focus on production, procurement, compliance, and operational change management.\"\n}\n```",
+      "reason": "The request requires a sustainability data integration and consolidation process (ERP/HR/facility systems \u2192 staging \u2192 validation), which is a specialized data governance and reporting workflow not covered by any of the registered skills that focus on production, procurement, compliance, and operatio",
+      "tokens": 1716,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 8249,
+    "latency_s": 15.313,
+    "llm_calls": 8
+  },
+  "wall_s": 15.363
+}

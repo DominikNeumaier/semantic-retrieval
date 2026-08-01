@@ -1,0 +1,311 @@
+{
+  "case_id": "proc_001_s01",
+  "process": "proc_001",
+  "label": "ManufacturingChangeCompliance process: Request Production Schedule Adjustment \u2014 Initiate a change request to modify production orders based on demand forecasting or supply constraints.",
+  "method": "D",
+  "expected_ordIds": [
+    "sap.crm:apiResource:MachineProductionOrderIntegration:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+      "score": null
+    },
+    {
+      "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_lines_of_business",
+        "args": {},
+        "result_preview": [
+          "ERP",
+          "Environment, Health & Safety",
+          "Environment, Health and Safety",
+          "... (44 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_entity_types",
+        "args": {},
+        "result_preview": [
+          "sap.odm:entityType:Campaign:v1",
+          "sap.odm:entityType:ChangeRequest:v1",
+          "sap.odm:entityType:Compensation:v1",
+          "... (23 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_capabilities",
+        "args": {},
+        "result_preview": [
+          "activate-campaigns",
+          "activate-contact-engagement",
+          "activate-customer-accounts",
+          "... (337 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "type": "apiResource",
+            "title": "Change Request Approval Workflow API",
+            "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "type": "apiResource",
+            "title": "Asset Provisioning Integration API",
+            "shortDescription": "Manages equipment provisioning requests linked to service tickets and change approvals."
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "type": "agent",
+            "title": "Incident Root Cause Analysis Agent",
+            "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+          },
+          "... (21 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "type": "apiResource",
+            "title": "Equipment OEE Analytics API",
+            "shortDescription": "REST API for real-time machine performance metrics and OEE calculations."
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "type": "agent",
+            "title": "Production Quality Monitor Agent",
+            "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+          },
+          {
+            "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+            "type": "dataProduct",
+            "title": "Production Order Quality Metrics",
+            "shortDescription": "Aggregated quality performance and defect rates per production order."
+          },
+          "... (20 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_in_lob",
+        "args": {
+          "line_of_business": "Manufacturing"
+        },
+        "result_preview": [
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "type": "apiResource",
+            "title": "Material and Vendor Master Data API",
+            "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "type": "apiResource",
+            "title": "Vendor Material Invoice Management API",
+            "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "type": "apiResource",
+            "title": "Material and Vendor Procurement API",
+            "shortDescription": "Exposes material master data and vendor information for procurement operations."
+          },
+          "... (7 more)"
+        ]
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "initiate-change-request"
+        },
+        "result_preview": [
+          {
+            "ordId": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+            "type": "apiResource",
+            "title": "Engineering Change and Service Management API",
+            "shortDescription": "Manages product changes, equipment tracking, and service request workflows."
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "plan-production"
+        },
+        "result_preview": [
+          {
+            "ordId": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+            "type": "apiResource",
+            "title": "Production Order and Machine Integration API",
+            "shortDescription": "Retrieves production order details and machine status for procurement planning."
+          }
+        ]
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "manage-production-orders"
+        },
+        "result_preview": [
+          {
+            "ordId": "sap.crm:apiResource:MachineProductionOrderIntegration:v1",
+            "type": "apiResource",
+            "title": "Machine and Production Order Integration API",
+            "shortDescription": "Exposes machine assets and production orders for sales planning and opportunity management."
+          }
+        ]
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "orchestrate-production-change"
+        },
+        "result_preview": [
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "type": "agent",
+            "title": "Production Change Orchestrator",
+            "shortDescription": "Automates and coordinates engineering changes across production materials and items."
+          }
+        ]
+      },
+      {
+        "step": 4,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "my.mes:agent:ProductionChangeOrchestrator:v1"
+        },
+        "result_preview": {
+          "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+          "type": "agent",
+          "namespace": "my.mes",
+          "title": "Production Change Orchestrator",
+          "shortDescription": "Automates and coordinates engineering changes across production materials and items.",
+          "description": "Orchestrates the propagation of engineering changes throughout the production environment by monitoring change requests, automating impact assessments on materials and product items, and coordinating synchronized updates across dependent production workflows. Processes change notifications to ensure manufacturing execution systems remain synchronized with engineering modifications while maintaining asset lifecycle integrity.",
+          "entityTypes": [
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductItem:v1"
+          ],
+          "lineOfBusiness": [
+            "it-service-management"
+          ],
+          "capabilities": [
+            "manage-material-updates",
+            "validate-engineering-specifications",
+            "sequence-work-orders",
+            "coordinate-material-flow",
+            "manage-change-impact",
+            "schedule-machines",
+            "orchestrate-production-change",
+            "orchestrate-production-execution",
+            "synchronize-engineering-change",
+            "coordinate-material-substitution"
+          ],
+          "useCases": [
+            "Operations manager submits engineering change order for new product variant with material updates",
+            "Manufacturing execution system automates handoff between engineering changes and shop-floor implementation.",
+            "Manufacturing orchestrates production changes when new compliant materials are approved.",
+            "Production agent orchestrates real-time scheduling of machines, material kits, and work orders to implement the change without line disruption.",
+            "Production planner synchronizes material changes across manufacturing systems",
+            "Supply chain coordinator initiates bill-of-materials updates for product variants",
+            "Change management tracks impacts of material updates on production schedules.",
+            "Operations synchronizes engineering changes across equipment and processes."
+          ],
+          "tags": [
+            "asset-lifecycle",
+            "change-automation",
+            "provisioning-orchestration"
+          ],
+          "partOfGroups": [
+            "proc_ManufacturingChangeCompliance_v1",
+            "proc_ProcurementSafetyCompliance_v1",
+            "proc_product_launch_compliance_v1"
+          ],
+          "processNext": [
+            "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+          ],
+          "partOfPackage": "my.mes:package:Core:v1"
+        }
+      },
+      {
+        "step": 5,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "my.mes:agent:ProductionChangeOrchestrator:v1",
+          "reason": "This agent orchestrates production changes and coordinates modifications to production workflows, materials, and schedules\u2014directly fulfilling the requirement to initiate change requests for production schedule adjustments based on demand or supply constraints within the ManufacturingChangeCompliance process."
+        },
+        "result": {
+          "committed": "my.mes:agent:ProductionChangeOrchestrator:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "my.mes:agent:ProductionChangeOrchestrator:v1",
+    "picked_reason": "This agent orchestrates production changes and coordinates modifications to production workflows, materials, and schedules\u2014directly fulfilling the requirement to initiate change requests for production schedule adjustments based on demand or supply constraints within the ManufacturingChangeCompliance process.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 12,
+    "tokens": 50073,
+    "latency_s": 15.566,
+    "llm_calls": 12
+  },
+  "wall_s": 15.572
+}

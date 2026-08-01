@@ -1,0 +1,141 @@
+{
+  "case_id": "sa-07",
+  "user_prompt": "We need to orchestrate a comprehensive transition of our product line by first evaluating whether our organization is ready for this change, then validating that we meet all regulatory compliance requirements before moving forward. The process should also manage how this impacts our procurement operations and reconfigure our production workflows accordingly. As part of this transition, we'll need to ensure we're tracking any hazardous materials in our new product specifications and managing the cost implications including how this affects our workforce compensation structures.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "?",
+  "method": "B",
+  "state": "enriched",
+  "condition": "B1gf",
+  "skill_expected": "proc_014",
+  "skill_picked": "proc_014",
+  "expected_gaps": [
+    "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+    "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": null,
+    "acceptable": null,
+    "candidate_recall": null,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 1.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Hazardous Substance Compliance API",
+        "source": "gap_forced",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceInventoryExchange:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:HazardousSubstanceInventoryAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ehs",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ehs\", \"sap.s4\"],\n  \"reason\": \"sap.ehs directly manages hazardous substances and compliance, while sap.s4 handles materials and procurement for inventory management.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Hazardous Substance Compliance API enforces regulatory requirements and controls substance handling, which requires live execution and master data management rather than read-only analysis.\"\n}\n```",
+          "stage2_pool_size": 41,
+          "stage3_entity_types": [
+            "sap.odm:entityType:HazardousSubstance:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:HazardousSubstance:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:Vendor:v1\"\n  ],\n  \"reason\": \"Hazardous Substance Compliance API primarily manages hazardous substances, materials containing them, and vendor compliance data.\"\n}\n```",
+          "stage3_pool_size": 20,
+          "stage4_raw": "```json\n[\n  \"sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1\",\n  \"sap.ehs:apiResource:ChemicalInventoryCompliance:v1\",\n  \"sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1\",\n  \"sap.ehs:apiResource:HazardousSubstanceInventoryExchange:v1\",\n  \"sap.s4:apiResource:HazardousSubstanceInventoryAPI:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 4018,
+          "latency_s": 3.651,
+          "llm_calls": 4
+        }
+      },
+      {
+        "step_name": "Payroll Processing Data Management",
+        "source": "gap_forced",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:PayrollDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.sf",
+            "workday.hcm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.sf\", \"workday.hcm\"],\n  \"reason\": \"Payroll processing is a Human Resources and Finance function, best supported by HR/HCM systems that manage employee records and compensation data.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Payroll processing requires creating, calculating, and posting employee compensation records to master systems, which is transactional work rather than analytical reporting.\"\n}\n```",
+          "stage2_pool_size": 43,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Employee:v1",
+            "sap.odm:entityType:Compensation:v1",
+            "sap.odm:entityType:TimeOff:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Compensation:v1\",\n    \"sap.odm:entityType:TimeOff:v1\"\n  ],\n  \"reason\": \"Payroll processing primarily reads and writes employee compensation data and manages time-off records that affect payroll calculations.\"\n}\n```",
+          "stage3_pool_size": 20,
+          "stage4_raw": "```json\n[\n  \"workday.hcm:apiResource:PayrollProcessingDataManagement:v1\",\n  \"workday.hcm:apiResource:PayrollDataExposure:v1\",\n  \"workday.hcm:apiResource:WorkforceCompensationDataManagement:v1\",\n  \"sap.sf:apiResource:CompensationAndSalaryManagement:v1\",\n  \"workday.hcm:agent:CompensationAdjustmentAutomation:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 4059,
+          "latency_s": 3.048,
+          "llm_calls": 4
+        }
+      }
+    ]
+  },
+  "trace": {
+    "tokens": 8077,
+    "latency_s": 0.0,
+    "llm_calls": 0
+  },
+  "wall_s": 0.0
+}

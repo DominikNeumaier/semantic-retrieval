@@ -1,0 +1,367 @@
+{
+  "case_id": "proc_002_s02",
+  "process": "proc_002",
+  "label": "ProductLifecycleCompliance process: Retrieve qualified materials and vendor catalogs \u2014 Access the approved material and vendor qualification database to identify pre-vetted procurement sources.",
+  "method": "D",
+  "expected_ordIds": [
+    "sap.sf:apiResource:MaterialAndVendorProcurementIntegration:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_entity_types",
+        "args": {},
+        "result_preview": [
+          "sap.odm:entityType:Campaign:v1",
+          "sap.odm:entityType:ChangeRequest:v1",
+          "sap.odm:entityType:Compensation:v1",
+          "... (23 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_lines_of_business",
+        "args": {},
+        "result_preview": [
+          "ERP",
+          "Environment, Health & Safety",
+          "Environment, Health and Safety",
+          "... (44 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_capabilities",
+        "args": {},
+        "result_preview": [
+          "activate-campaigns",
+          "activate-contact-engagement",
+          "activate-customer-accounts",
+          "... (337 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:Material:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "type": "agent",
+            "title": "Asset Provisioning Orchestrator",
+            "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "type": "agent",
+            "title": "Change Automation Orchestrator",
+            "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "type": "agent",
+            "title": "Change Release Coordinator",
+            "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+          },
+          "... (55 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:Vendor:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "type": "apiResource",
+            "title": "Vendor Procurement Order API",
+            "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+            "type": "apiResource",
+            "title": "Procurement Vendor Management API",
+            "shortDescription": "Exposes purchase orders and vendor data for ITSM procurement workflows."
+          },
+          {
+            "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+            "type": "agent",
+            "title": "Vendor Contract Compliance Orchestrator",
+            "shortDescription": "Automates vendor contract and purchase order compliance monitoring across procurement lifecycle."
+          },
+          "... (39 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_in_lob",
+        "args": {
+          "line_of_business": "Procurement"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "type": "apiResource",
+            "title": "Vendor Campaign Account Retrieval API",
+            "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "type": "apiResource",
+            "title": "Vendor Procurement Order API",
+            "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+            "type": "dataProduct",
+            "title": "Vendor Spend Intelligence",
+            "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+          },
+          "... (27 more)"
+        ]
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+          "type": "apiResource",
+          "namespace": "sap.ariba",
+          "title": "Material and Vendor Master Data API",
+          "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations.",
+          "description": "This API exposes comprehensive material and vendor master data, enabling systems to retrieve standardized product information, vendor attributes, and procurement-relevant classifications. It provides access to material hierarchies, vendor certifications, compliance statuses, and sourcing preferences to support goods receipt workflows and inbound logistics processing.",
+          "entityTypes": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "lineOfBusiness": [
+            "Procurement",
+            "Inventory Management",
+            "Manufacturing"
+          ],
+          "capabilities": [
+            "retrieve-material-vendor-master",
+            "retrieve-material-specifications",
+            "identify-alternate-suppliers",
+            "query-vendor-master",
+            "query-material-specifications",
+            "source-materials"
+          ],
+          "useCases": [
+            "Access current material and vendor performance data for procurement planning",
+            "Material sourcing decisions are made by accessing vendor and material master data to ensure quality and compliance.",
+            "Identify qualified vendors and material alternatives for the approved engineering change",
+            "Procurement officer creates and tracks purchase orders with preferred vendors to secure bill-of-materials components."
+          ],
+          "tags": [
+            "goods-receipt",
+            "inbound-logistics",
+            "material-management",
+            "procurement-integration"
+          ],
+          "partOfGroups": [
+            "proc_order_to_production_v1",
+            "proc_EngChangeAndProcurement_v1"
+          ],
+          "processNext": [
+            "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1"
+          ],
+          "partOfPackage": "sap.ariba:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "my.mes:apiResource:MaterialAndVendorMasterData:v1"
+        },
+        "result_preview": {
+          "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+          "type": "apiResource",
+          "namespace": "my.mes",
+          "title": "Material and Vendor Master Data API",
+          "shortDescription": "Retrieves and manages material specifications and vendor information for production planning.",
+          "description": "This API exposes material master records and vendor data to support production scheduling and supply chain operations. It provides access to material attributes, vendor qualifications, and supply chain relationships that drive manufacturing execution decisions. The resource manages material classifications and vendor performance indicators used across production workflows.",
+          "entityTypes": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "lineOfBusiness": [
+            "Product Lifecycle Management"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "material-master",
+            "vendor-management",
+            "supply-chain"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "my.mes:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+          "type": "apiResource",
+          "namespace": "sap.ariba",
+          "title": "Material and Vendor Procurement API",
+          "shortDescription": "Exposes material master data and vendor information for procurement operations.",
+          "description": "Retrieves and manages material specifications, vendor catalogs, and procurement-related attributes across the sourcing lifecycle. Provides access to material classifications, vendor performance indicators, and purchase-to-pay data required for procurement integration and inbound logistics workflows.",
+          "entityTypes": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "lineOfBusiness": [
+            "Procurement",
+            "Inventory Management",
+            "Manufacturing"
+          ],
+          "capabilities": [
+            "map-procurement-dependencies",
+            "validate-vendor-availability",
+            "assess-material-constraints"
+          ],
+          "useCases": [
+            "Identify required materials and vendors for change implementation.",
+            "Confirm procurement timelines align with change schedule."
+          ],
+          "tags": [
+            "goods-receipt",
+            "inbound-logistics",
+            "material-management",
+            "procurement-integration"
+          ],
+          "partOfGroups": [
+            "proc_integrated_service_change_mgmt_v1"
+          ],
+          "processNext": [
+            "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+          ],
+          "partOfPackage": "sap.ariba:package:Core:v1"
+        }
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+        },
+        "result_preview": {
+          "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+          "type": "agent",
+          "namespace": "my.mes",
+          "title": "Bill of Materials Compliance Validator",
+          "shortDescription": "Automates BOM validation and supplier qualification checks across engineering changes.",
+          "description": "Monitors engineering changes and material specifications to automatically validate bill of materials compliance against supplier qualifications. Coordinates BOM updates with product item definitions while processing supplier approval workflows. Automates compliance verification across product variants to ensure manufacturing readiness and regulatory adherence.",
+          "entityTypes": [
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductItem:v1"
+          ],
+          "lineOfBusiness": [
+            "Product Lifecycle Management"
+          ],
+          "capabilities": [
+            "validate-bom-compliance",
+            "audit-component-materials",
+            "enforce-engineering-standards"
+          ],
+          "useCases": [
+            "Manufacturing confirms all components in the product structure meet material safety and engineering requirements.",
+            "Engineering change management ensures BOMs remain compliant when modifications occur.",
+            "Quality assurance validates material selections before production execution."
+          ],
+          "tags": [
+            "compliance",
+            "bom-validation",
+            "supplier-qualification",
+            "automation"
+          ],
+          "partOfGroups": [
+            "proc_ProductComplianceManufacturing_v1"
+          ],
+          "processNext": [
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+          ],
+          "partOfPackage": "my.mes:package:Core:v1"
+        }
+      },
+      {
+        "step": 4,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+          "reason": "Provides comprehensive access to approved material specifications and qualified vendor master records with certifications and compliance statuses for procurement planning in ProductLifecycleCompliance processes."
+        },
+        "result": {
+          "committed": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+    "picked_reason": "Provides comprehensive access to approved material specifications and qualified vendor master records with certifications and compliance statuses for procurement planning in ProductLifecycleCompliance processes.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 11,
+    "tokens": 48780,
+    "latency_s": 24.814,
+    "llm_calls": 11
+  },
+  "wall_s": 24.817
+}

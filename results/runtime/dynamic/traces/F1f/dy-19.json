@@ -1,0 +1,165 @@
+{
+  "case_id": "dy-19",
+  "user_prompt": "We need to check our current compliance status for the hazardous materials we're storing across all our facilities and understand what regulatory requirements we need to meet. Can you pull a report showing our inventory levels and which items require updated certifications or documentation?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1,
+    "acceptable": 1,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "We need to check our current compliance status for the hazardous materials we're storing across all our facilities and understand what regulatory requirements we need to meet. Can you pull a report showing our inventory levels and which items require updated certifications or documentation?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:HazmatIncidentComplianceMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 8160,
+          "latency_s": 8.422,
+          "llm_calls": 7,
+          "use_graph": true,
+          "picked_ord_id": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+          "picked_reason": "This API provides real-time access to hazardous substance inventory, compliance status, and regulatory documentation across facilities. It has the specific capability to track-compliance-status and exposes compliance certifications and regulatory reporting requirements needed to generate compliance reports showing inventory levels and certification/documentation needs.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "compliance status hazardous materials inventory certifications regulatory requirements facilities",
+                "top_k": 8
+              },
+              "result_summary": "8 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-compliance"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "report-inventory"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+                "reason": "This API provides real-time access to hazardous substance inventory, compliance status, and regulatory documentation across facilities. It has the specific capability to track-compliance-status and exposes compliance certifications and regulatory reporting requirements needed to generate compliance reports showing inventory levels and certification/documentation needs."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1"
+              }
+            }
+          ]
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 8160,
+    "latency_s": 8.422,
+    "llm_calls": 7
+  },
+  "wall_s": 9.172
+}

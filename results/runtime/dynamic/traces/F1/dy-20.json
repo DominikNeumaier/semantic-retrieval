@@ -1,0 +1,270 @@
+{
+  "case_id": "dy-20",
+  "user_prompt": "I need to figure out who reports to whom across our company and understand the chain of command structure. Can you help me pull together the reporting relationships and organizational breakdown?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to figure out who reports to whom across our company and understand the chain of command structure. Can you help me pull together the reporting relationships and organizational breakdown?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:WorkforceOrgStructureAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 44644,
+          "latency_s": 9.184,
+          "llm_calls": 8,
+          "confidence": 0.95,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 22,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 732,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "workday.hcm",
+                "entity_types": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:PerformanceReview:v1"
+                ],
+                "action_verb": "retrieve",
+                "resource_type_hint": "dataProduct"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29297,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 8517,
+              "latency_s": 5.090138912200928,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:Employee:v1"
+                  },
+                  "n_results": 44
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:PerformanceReview:v1"
+                  },
+                  "n_results": 8
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "sap.sf:agent:PerformanceReviewCycleCoordinator:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 44
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "workday.hcm": 5,
+                "sap.crm": 4,
+                "my.mes": 4,
+                "corp.itsm": 2,
+                "sap.sf": 2,
+                "sap.s4": 1,
+                "emarsys.cx": 1,
+                "sap.ariba": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:Employee:v1": 16,
+                "sap.odm:entityType:WorkforcePerson:v1": 5,
+                "sap.odm:entityType:Compensation:v1": 5,
+                "sap.odm:entityType:TimeOff:v1": 5,
+                "sap.odm:entityType:EngineeringChange:v1": 4,
+                "sap.odm:entityType:ProductItem:v1": 4,
+                "sap.odm:entityType:Material:v1": 3,
+                "sap.odm:entityType:PerformanceReview:v1": 1
+              },
+              "resource_types": {
+                "agent": 3,
+                "apiResource": 11,
+                "dataProduct": 6
+              },
+              "top_capabilities": {
+                "align-sales-capability": 1,
+                "map-employee-hierarchy": 1,
+                "assess-workforce-readiness": 1,
+                "validate-approval-chain": 1,
+                "resolve-organizational-hierarchy": 1,
+                "identify-decision-makers": 1,
+                "identify-role-based-hazards": 1,
+                "assign-employee-safety-training": 1
+              },
+              "n_candidates": 20
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1",
+                  "sap.odm:entityType:PerformanceReview:v1",
+                  "sap.odm:entityType:Compensation:v1"
+                ],
+                "business_groups": [
+                  "proc_ChangeTalentIntegration_v1",
+                  "proc_talent_compliance_ops_v1",
+                  "proc_workforce_comp_benefits_v1"
+                ],
+                "lines_of_business": [
+                  "Human Resources",
+                  "Human Capital Management"
+                ],
+                "reason": "Understanding reporting relationships and organizational structure requires mapping employee hierarchies, workforce persons, and talent management processes central to HR operations."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:WorkforcePerson:v1\",\n    \"sap.odm:entityType:PerformanceReview:v1\",\n    \"sap.odm:entityType:Compensation:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_ChangeTalentIntegration_v1\",\n    \"proc_talent_compliance_ops_v1\",\n    \"proc_workforce_comp_benefits_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Human Resources\",\n    \"Human Capital Management\"\n  ],\n  \"reason\": \"Understanding reporting relationships and organizational structure requires mapping employee hierarchies, workforce persons, and talent management processes central to HR operations.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity is asking for **analytical insights into organizational structure, reporting relationships, and chain of command** \u2014 this is a pure data retrieval and analysis use case, not a worker performing an action or a CRUD operation on master data.\n\nThe two dataProducts are the best matches because they:\n- **Assess organizational capability and readiness** across functions\n- **Combine cross-functional data** (workforce, operations, materials) to provide holistic organizational views\n- **Support executive decision-making** on structural readiness and resource alignment\n- Emphasize **workforce capability assessment** and **organizational structure evaluation** for transitions\n\nThe agents were deprioritized because they:\n- Focus on **orchestrating workflows and automating changes** (doing work), not providing reporting/analytical insights\n- Are specialized in engineering changes, production execution, compliance, and material provisioning \u2014 not organizational hierarchy\n\nThe dataProducts directly address the need to \"pull together reporting relationships and organizational breakdown\" by analyzing workforce, capability gaps, and organizational readiness across the enterprise.",
+              "refused": false,
+              "previous_resolved": [
+                "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+                "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                "sap.s4:apiResource:WorkforceOrgStructureAPI:v1",
+                "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1",
+                "sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1"
+              ],
+              "tokens": 4023,
+              "latency_s": 4.094,
+              "llm_calls": 2,
+              "n_new_from_graph": 2
+            },
+            "phase3_rerank": {
+              "tokens": 2075,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "sap.s4:apiResource:WorkforceOrgStructureAPI:v1",
+              "confidence": 0.95
+            }
+          },
+          "decomp_trace": {
+            "tokens": 390,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 1,
+            "sub_queries": [
+              "Pull together the reporting relationships and organizational structure across the company to understand the chain of command"
+            ],
+            "original_prompt": "I need to figure out who reports to whom across our company and understand the chain of command structure. Can you help me pull together the reporting relationships and organizational breakdown?"
+          },
+          "n_detected": 1
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user is requesting organizational structure and reporting relationship information, which is a one-off organizational lookup that doesn't match any of the registered skills that focus on operational processes (procurement, manufacturing, launches, compliance, etc.).\"\n}\n```",
+      "reason": "The user is requesting organizational structure and reporting relationship information, which is a one-off organizational lookup that doesn't match any of the registered skills that focus on operational processes (procurement, manufacturing, launches, compliance, etc.).",
+      "tokens": 1659,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 46693,
+    "latency_s": 9.184,
+    "llm_calls": 10
+  },
+  "wall_s": 12.858
+}

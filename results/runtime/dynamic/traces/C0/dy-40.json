@@ -1,0 +1,204 @@
+{
+  "case_id": "dy-40",
+  "user_prompt": "We need to streamline our component sourcing workflow by simultaneously validating our internal part specifications against supplier certifications and pulling current inventory levels along with vendor capabilities to ensure we're not creating bottlenecks during our quarterly supply chain review.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "C",
+  "state": "clean",
+  "condition": "C0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Validate our internal part specifications against supplier certifications to ensure compliance and quality standards.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "score": 66.5
+          },
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": 66.5
+          },
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": 66.5
+          },
+          {
+            "ordId": "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+            "score": 66.5
+          },
+          {
+            "ordId": "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+            "score": 66.5
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:Vendor:v1",
+              "sap.odm:entityType:QualityInspection:v1",
+              "sap.odm:entityType:Contract:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Procurement",
+              "Product Lifecycle Management"
+            ],
+            "reason": "Activity validates internal part specifications against supplier certifications, directly involving materials, vendors, quality inspections, and procurement contracts."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:QualityInspection:v1\",\n    \"sap.odm:entityType:Contract:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Product Lifecycle Management\"\n  ],\n  \"reason\": \"Activity validates internal part specifications against supplier certifications, directly involving materials, vendors, quality inspections, and procurement contracts.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 273,
+          "walk_top_ids": [
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+            "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+            "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+            "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1\",\n  \"sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 2006,
+          "latency_s": 3.692,
+          "llm_calls": 2
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Retrieve current inventory levels and vendor capabilities data for our components to identify potential supply chain bottlenecks.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+            "score": 65.0
+          },
+          {
+            "ordId": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+            "score": 65.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:Vendor:v1",
+              "sap.odm:entityType:PurchaseOrder:v1",
+              "sap.odm:entityType:ProductionOrder:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Inventory Management",
+              "Procurement"
+            ],
+            "reason": "Activity focuses on inventory levels and vendor capabilities to identify supply chain bottlenecks, requiring Material, Vendor, and purchasing/production order entities."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Inventory Management\",\n    \"Procurement\"\n  ],\n  \"reason\": \"Activity focuses on inventory levels and vendor capabilities to identify supply chain bottlenecks, requiring Material, Vendor, and purchasing/production order entities.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 205,
+          "walk_top_ids": [
+            "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+            "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.ariba:dataProduct:SupplyChainProductIntelligence:v1\",\n  \"sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+          ],
+          "tokens": 1908,
+          "latency_s": 3.249,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request describes a specific, tactical supply chain review activity (validating specs, checking certifications, pulling inventory levels) rather than a complete end-to-end process lifecycle that any registered skill fully covers.\"\n}\n```",
+      "reason": "The request describes a specific, tactical supply chain review activity (validating specs, checking certifications, pulling inventory levels) rather than a complete end-to-end process lifecycle that any registered skill fully covers.",
+      "tokens": 1671,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 3,
+      "sub_queries": [
+        "Validate our internal part specifications against supplier certifications",
+        "Pull current inventory levels for our components",
+        "Retrieve vendor capabilities and capacity information"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 5853,
+    "latency_s": 6.941,
+    "llm_calls": 6
+  },
+  "wall_s": 11.198
+}

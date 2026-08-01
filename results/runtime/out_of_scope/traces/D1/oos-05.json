@@ -1,0 +1,527 @@
+{
+  "case_id": "oos-05",
+  "user_prompt": "We need visibility into how our daily supplier payment obligations will impact our available cash balance hour-by-hour, so our treasury team can coordinate with our banks on same-day funding needs before we hit our minimum operating cash threshold\u2014right now we're manually pulling payment schedules from three different systems and it's causing us to request emergency credit lines that cost us fees.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Integrate and consolidate daily supplier payment schedules from three different systems into a single unified data source",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-supplier-orders"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+                  "type": "apiResource",
+                  "title": "Supplier Procurement Order Management",
+                  "shortDescription": "Manages and retrieves purchase orders and vendor data for production material procurement."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "process-invoice"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.ariba",
+                "title": "Procurement Spend Analytics",
+                "shortDescription": "Aggregated spend metrics and vendor performance trends across purchase orders and contracts.",
+                "description": "A derived analytical data product that consolidates procurement spend data across vendors, purchase orders, and active contracts. It provides pre-calculated KPIs including category spend distribution, vendor spend concentration, contract utilization rates, and period-over-period spend variance. This product enables procurement teams to identify optimization opportunities, monitor vendor performance, and support strategic sourcing decisions.",
+                "entityTypes": [
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1",
+                  "sap.odm:entityType:Contract:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "spend-analytics",
+                  "vendor-performance",
+                  "procurement-metrics",
+                  "sourcing-intelligence"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.ariba",
+                "title": "Invoice and Material Procurement Analytics",
+                "shortDescription": "Aggregates invoice and material procurement metrics for spend analysis.",
+                "description": "Summarizes invoice processing trends and material procurement patterns to provide actionable insights into procurement spend, invoice aging, and material cost dynamics. Delivers comprehensive metrics on invoice volumes, payment cycles, and material consumption patterns across the procurement lifecycle.",
+                "entityTypes": [
+                  "sap.odm:entityType:Invoice:v1",
+                  "sap.odm:entityType:Material:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "spend-analytics",
+                  "invoice-management",
+                  "material-cost-analysis"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.ariba",
+                "title": "Vendor Material Invoice Management API",
+                "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders.",
+                "description": "This API exposes real-time access to vendor invoice records, material receipt confirmations, and invoice-to-PO matching data. It manages invoice status updates, payment terms, and vendor-specific billing information while providing integration points for goods receipt workflows and inbound logistics processes.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement",
+                  "Inventory Management",
+                  "Manufacturing"
+                ],
+                "capabilities": [
+                  "validate-vendor-material",
+                  "process-invoice",
+                  "verify-material-specification",
+                  "audit-procurement-compliance"
+                ],
+                "useCases": [
+                  "Procurement teams validate vendor invoices and material specifications before acceptance.",
+                  "Inventory managers confirm material quality against regulatory standards.",
+                  "Manufacturing ensures incoming materials meet engineering specifications."
+                ],
+                "tags": [
+                  "goods-receipt",
+                  "inbound-logistics",
+                  "material-management",
+                  "procurement-integration"
+                ],
+                "partOfGroups": [
+                  "proc_ProcurementSafetyCompliance_v1"
+                ],
+                "processNext": [
+                  "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1"
+                ],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+                "reason": "This data product aggregates invoice and payment cycle metrics across the procurement lifecycle, providing the unified consolidated data source needed for supplier payment schedule integration."
+              },
+              "result": {
+                "committed": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+          "picked_reason": "This data product aggregates invoice and payment cycle metrics across the procurement lifecycle, providing the unified consolidated data source needed for supplier payment schedule integration.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 34438,
+          "latency_s": 14.699,
+          "llm_calls": 10
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Build a real-time cash flow visibility tool that projects available cash balance hour-by-hour based on payment obligations, with alerts when approaching minimum operating cash threshold to enable proactive coordination with banks for same-day funding",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Finance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Procurement Automation Orchestrator",
+                  "shortDescription": "Automates vendor engagement and procurement workflows through targeted marketing communications."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                "... (10 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "forecast-labor-costs"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Compensation Management API",
+                  "shortDescription": "REST API for managing employee compensation, salary structures, and merit adjustments."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "detect-anomalies"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Engagement Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:ProcurementMetricsHub:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+                "type": "dataProduct",
+                "namespace": "sap.s4",
+                "title": "Procurement Metrics Hub",
+                "shortDescription": "Aggregated procurement KPIs tracking vendor performance, order cycle times, and spend analysis.",
+                "description": "Delivers real-time analytical views of procurement operations, including vendor scorecards, purchase order aging, invoice reconciliation status, and material cost trends. Enables procurement teams to optimize supplier relationships, reduce cycle times, and identify cost-saving opportunities across the supply chain.",
+                "entityTypes": [
+                  "sap.odm:entityType:Vendor:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Invoice:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement",
+                  "Finance"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "vendor-analytics",
+                  "spend-management",
+                  "supply-chain-kpis",
+                  "procurement-intelligence"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Customer Account Financial API",
+                "shortDescription": "Retrieves and manages customer account financial data including balances and payment terms.",
+                "description": "This API exposes customer account financial information and order-related payment details, enabling retrieval of account balances, credit limits, and payment status. It manages customer financial profiles linked to their orders, providing access to aging analysis, credit adjustments, and transaction history for integrated financial accounting and receivables management.",
+                "entityTypes": [
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Finance"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "customer-financial",
+                  "accounting",
+                  "receivables"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a dedicated Treasury or Cash Flow Management resource capable of real-time hour-by-hour cash balance projections with minimum threshold alerts for bank coordination; existing resources cover invoice/payment tracking but not proactive liquidity forecasting."
+              },
+              "result": {
+                "refused": true,
+                "reason": "The landscape lacks a dedicated Treasury or Cash Flow Management resource capable of real-time hour-by-hour cash balance projections with minimum threshold alerts for bank coordination; existing resources cover invoice/payment tracking but not proactive liquidity forecasting."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a dedicated Treasury or Cash Flow Management resource capable of real-time hour-by-hour cash balance projections with minimum threshold alerts for bank coordination; existing resources cover invoice/payment tracking but not proactive liquidity forecasting.",
+          "tool_calls": 10,
+          "tokens": 29623,
+          "latency_s": 13.388,
+          "llm_calls": 10
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user's request is for a treasury/cash flow forecasting capability that integrates supplier payment data across systems for real-time cash visibility and liquidity management\u2014none of the registered skills cover financial planning, cash flow analysis, or treasury operations.\"\n}\n```",
+      "reason": "The user's request is for a treasury/cash flow forecasting capability that integrates supplier payment data across systems for real-time cash visibility and liquidity management\u2014none of the registered skills cover financial planning, cash flow analysis, or treasury operations.",
+      "tokens": 1705,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 66164,
+    "latency_s": 28.087,
+    "llm_calls": 22
+  },
+  "wall_s": 28.108
+}

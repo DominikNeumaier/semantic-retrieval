@@ -1,0 +1,167 @@
+{
+  "case_id": "dy-32",
+  "user_prompt": "I need to pull together our current inventory specifications alongside the vendor details we have on file, and simultaneously check on the status of our pending maintenance requests and any open change orders we've submitted to understand our full operational picture.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "enriched",
+  "condition": "B1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to retrieve our current inventory specifications and cross-reference them with the vendor details we have on file.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ariba",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ariba\", \"sap.s4\"],\n  \"reason\": \"Inventory specifications are managed in sap.s4 (Material entity, Inventory Management LoB) and vendor details with purchase orders are in sap.ariba (Vendor and Material entities, Procurement LoB).\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Retrieving and cross-referencing existing inventory specs and vendor details is a read-only lookup activity with no live execution or master data changes.\"\n}\n```",
+          "stage2_pool_size": 15,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:Vendor:v1\"],\n  \"reason\": \"The activity retrieves inventory specifications (Material) and cross-references them with vendor details (Vendor) on file.\"\n}\n```",
+          "stage3_pool_size": 7,
+          "stage4_raw": "```json\n[\n  \"sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1\",\n  \"sap.ariba:dataProduct:SupplyChainProductIntelligence:v1\",\n  \"sap.s4:dataProduct:ProcurementMetricsHub:v1\",\n  \"sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 4,
+          "refused": false,
+          "tokens": 2569,
+          "latency_s": 1.563,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "I need to check the status of our pending maintenance requests and review all open change orders we've submitted.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:ProcurementOperationalMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:ServiceHealthMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\", \"my.mes\"],\n  \"reason\": \"Maintenance requests and change orders are tracked in ITSM systems; corp.itsm handles IT service management change requests while my.mes covers manufacturing maintenance and change management.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Checking status and reviewing pending requests are read-only inquiries that don't create or modify data, making this a pure analytical activity.\"\n}\n```",
+          "stage2_pool_size": 16,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Incident:v1",
+            "sap.odm:entityType:ChangeRequest:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Incident:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"reason\": \"The activity involves checking maintenance request status (Incidents) and reviewing open change orders (ChangeRequest).\"\n}\n```",
+          "stage3_pool_size": 7,
+          "stage4_raw": "```json\n[\n  \"my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1\",\n  \"corp.itsm:dataProduct:ProcurementOperationalMetrics:v1\",\n  \"corp.itsm:dataProduct:ServiceHealthMetrics:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2583,
+          "latency_s": 1.241,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user's request is a multi-faceted, ad-hoc information gathering task requiring simultaneous access to four distinct operational data sources (inventory specs, vendor details, maintenance requests, change orders) rather than execution of a single end-to-end process workflow.\"\n}\n```",
+      "reason": "The user's request is a multi-faceted, ad-hoc information gathering task requiring simultaneous access to four distinct operational data sources (inventory specs, vendor details, maintenance requests, change orders) rather than execution of a single end-to-end process workflow.",
+      "tokens": 1680,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 4,
+      "sub_queries": [
+        "Pull our current inventory specifications",
+        "Retrieve vendor details we have on file",
+        "Check the status of our pending maintenance requests",
+        "Get information on any open change orders we've submitted"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 7100,
+    "latency_s": 2.804,
+    "llm_calls": 10
+  },
+  "wall_s": 2.829
+}

@@ -1,0 +1,180 @@
+{
+  "case_id": "dy-40",
+  "user_prompt": "We need to streamline our component sourcing workflow by simultaneously validating our internal part specifications against supplier certifications and pulling current inventory levels along with vendor capabilities to ensure we're not creating bottlenecks during our quarterly supply chain review.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Validate our internal part specifications against supplier certifications to ensure compliance and quality standards.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:SupplierQualityComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialSafetyAndVendorComplianceData:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ariba",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ariba\", \"my.mes\"],\n  \"reason\": \"Supplier certifications and vendor compliance are managed in Ariba (procurement/vendors), while internal part specifications and quality standards validation align with MES (manufacturing/product lifecycle).\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\"modalities\": [\"operational\"], \"reason\": \"Validation drives compliance decisions and quality gate enforcement, requiring operational agent work or API-based certification checking against master part specifications.\"}\n```",
+          "stage2_pool_size": 36,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1",
+            "sap.odm:entityType:QualityInspection:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:Vendor:v1\", \"sap.odm:entityType:QualityInspection:v1\"],\n  \"reason\": \"The activity validates internal part specifications (Material) against supplier certifications (Vendor) to ensure compliance and quality standards (QualityInspection).\"\n}\n```",
+          "stage3_pool_size": 15,
+          "stage4_raw": "```json\n[\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\",\n  \"my.mes:agent:SupplierQualityComplianceOrchestrator:v1\",\n  \"sap.ariba:apiResource:MaterialSafetyAndVendorComplianceData:v1\",\n  \"my.mes:apiResource:MaterialAndVendorMasterData:v1\",\n  \"sap.ariba:apiResource:MaterialAndVendorProcurementData:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2980,
+          "latency_s": 6.916,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Retrieve current inventory levels and vendor capabilities data for our components to identify potential supply chain bottlenecks.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ariba",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ariba\", \"sap.s4\"],\n  \"reason\": \"SAP Ariba manages vendor data and procurement while SAP S4 handles inventory and material management, together providing the supply chain visibility needed to identify bottlenecks.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"This activity is purely read-only data retrieval and analysis to identify bottlenecks, with no operational execution or master data changes.\"\n}\n```",
+          "stage2_pool_size": 15,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1",
+            "sap.odm:entityType:PurchaseOrder:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\"\n  ],\n  \"reason\": \"The activity retrieves inventory levels (Material), vendor capabilities (Vendor), and purchase/supply data (PurchaseOrder) to identify supply chain bottlenecks.\"\n}\n```",
+          "stage3_pool_size": 7,
+          "stage4_raw": "```json\n[\n  \"sap.s4:dataProduct:ProcurementMetricsHub:v1\",\n  \"sap.ariba:dataProduct:SupplyChainProductIntelligence:v1\",\n  \"sap.ariba:dataProduct:ProcurementSpendAnalytics:v1\",\n  \"sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1\",\n  \"sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2511,
+          "latency_s": 5.681,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request describes a specific, tactical supply chain review activity (validating specs, checking certifications, pulling inventory levels) rather than a complete end-to-end process lifecycle that any registered skill fully covers.\"\n}\n```",
+      "reason": "The request describes a specific, tactical supply chain review activity (validating specs, checking certifications, pulling inventory levels) rather than a complete end-to-end process lifecycle that any registered skill fully covers.",
+      "tokens": 1671,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 3,
+      "sub_queries": [
+        "Validate our internal part specifications against supplier certifications",
+        "Pull current inventory levels for our components",
+        "Retrieve vendor capabilities and capacity information"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 7430,
+    "latency_s": 12.597,
+    "llm_calls": 10
+  },
+  "wall_s": 12.628
+}

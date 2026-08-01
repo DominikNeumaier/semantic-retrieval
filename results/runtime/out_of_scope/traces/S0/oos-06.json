@@ -1,0 +1,153 @@
+{
+  "case_id": "oos-06",
+  "user_prompt": "Our sales team is manually adjusting prices on large B2B orders based on competitor intel and customer volume history, but we need a way to automatically flag orders that fall outside our dynamic pricing bands\u2014especially when our reps are discounting beyond threshold for specific customer segments\u2014so we can audit whether deals are staying within our margin targets before they hit the accounting system.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "S",
+  "state": "clean",
+  "condition": "S0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Set up dynamic pricing bands for B2B orders that account for competitor intelligence and customer volume history",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13630,
+          "latency_s": 2.366,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Create an automated flagging system to detect orders that fall outside the established dynamic pricing bands",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13612,
+          "latency_s": 2.565,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Implement an audit mechanism to verify that sales representative discounts stay within defined thresholds for specific customer segments and maintain margin targets before orders reach accounting",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.crm:apiResource:CampaignCustomerAccountSegmentationService:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13641,
+          "latency_s": 2.35,
+          "llm_calls": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is for a pricing audit and flagging system for B2B orders, which is a financial/sales operations control function not covered by any of the registered skills that focus on production, procurement, compliance, and fulfillment processes.\"\n}\n```",
+      "reason": "The request is for a pricing audit and flagging system for B2B orders, which is a financial/sales operations control function not covered by any of the registered skills that focus on production, procurement, compliance, and fulfillment processes.",
+      "tokens": 1704,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 42991,
+    "latency_s": 7.281,
+    "llm_calls": 5
+  },
+  "wall_s": 7.29
+}

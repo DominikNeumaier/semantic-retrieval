@@ -1,0 +1,309 @@
+{
+  "case_id": "dy-32",
+  "user_prompt": "I need to pull together our current inventory specifications alongside the vendor details we have on file, and simultaneously check on the status of our pending maintenance requests and any open change orders we've submitted to understand our full operational picture.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to retrieve our current inventory specifications and cross-reference them with the vendor details we have on file.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY AGENTS BY CAPABILITY:\n\nPayroll & Compensation (Workday  \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1276
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY AGENTS BY CAPABILITY:\n\nPayroll & Compensation (Workday HCM):\n- workday.hcm:agent:CompensationAdjustmentAutomation - processes merit increases, compensation adjustments\n- workday.hcm:agent:CompensationChangeProcessor - automates compensation adjustments tied to org changes\n- workday.hcm:agent:CompensationStructureAutomationEngine - monitors org structure changes, updates compensation plans\n\nAsset & Equipment Lifecycle (corp.itsm & sap.s4):\n- corp.itsm:agent:AssetProvisioningOrchestrator - tracks asset lifecycle, material requisitions, asset assignments\n- sap.s4:agent:AssetLifecycleChangeOrchestrator - orchestrates engineering changes, automated asset provisioning\n\nIncident/Case Lifecycle Management:\n- corp.itsm:agent:IncidentSafetyCoordinator - tracks incident lifecycle, escalation\n- corp.itsm:agent:IncidentRootCauseAnalyzer - analyzes incidents, diagnostic reports\n\nIncident tracking & reporting (Safety/EHS):\n- sap.ehs:agent:IncidentRootCauseAnalyzer - analyzes safety incidents\n- sap.ehs:agent:IncidentResponseCoordinator - coordinates safety incident workflows\n\nProcurement/Supplier expenses:\n- sap.s4:agent:ProcurementMatchingAgent - matches requisitions to vendors by cost/quality\n- sap.ariba:apiResource:PurchaseOrderNetworkAPI - REST API for PO lifecycle\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation - matches vendor invoices to POs/contracts, validates terms, flags discrepancies\n\nSUPPLIER PAYMENT TERMS & COMMITMENTS:\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation - BEST for retrieving supplier payment terms and commitments\n  * Validates payment terms against POs/contracts, routes approved invoices for payment\n\nCAMPAIGN OUTREACH & ENGAGEMENT TRACKING (emarsys.cx - CX/Marketing):\n- emarsys.cx:agent:SegmentDrivenCampaignOptimizer - BEST for checking active campaign outreach and contact engagement\n  * Continuously analyzes CustomerSegment performance data and engagement metrics\n  * Automatically identifies high-value customer segments and monitors campaign performance\n  * Tracks which contacts/accounts are engaging with campaigns\n  * Relates CustomerSegment, Campaign, and CustomerAccount entities\n  * Real-time engagement monitoring across customer base\n\nEHS COMPLIANCE (sap.ehs):\n- sap.ehs:agent:IncidentRootCauseAnalyzer:v1 - analyzes safety incidents, references HazardousSubstance entity but does NOT provide chemical inventory documentation/dashboard\n- sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1 - validates safety across materials, engineering changes, product items\n- sap.ehs:agent:ComplianceCampaignOrchestrator:v1 - automates compliance campaigns\n- No dedicated chemical inventory management or dashboard resource found\n\nINVENTORY SPECIFICATIONS & VENDOR CROSS-REFERENCE:\n- sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1 - BEST for retrieving inventory specs cross-ref with vendor details\n  * REST API exposing Vendor and PurchaseOrder entity types\n  * Enables programmatic retrieval of vendor data and material specifications\n  * Designed for supplier collaboration and vendor relationship querying\n  * Also: sap.s4:agent:BOMComplianceAutomationAgent validates material specs against supplier qualifications\n  * Also: my.mes:agent:BillOfMaterialsComplianceValidator validates BOM against supplier qualifications"
+              },
+              "result_preview": {
+                "stored_bytes": 3431,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+                "reason": "REST API that exposes both Vendor and PurchaseOrder entity types, enabling programmatic retrieval and cross-referencing of current inventory specifications with vendor details on file."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+          "picked_reason": "REST API that exposes both Vendor and PurchaseOrder entity types, enabling programmatic retrieval and cross-referencing of current inventory specifications with vendor details on file.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 6,
+          "tokens": 47770,
+          "latency_s": 31.952,
+          "llm_calls": 6
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "I need to check the status of our pending maintenance requests and review all open change orders we've submitted.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY AGENTS BY CAPABILITY:\n\nPayroll & Compensation (Workday  \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY AGENTS BY CAPABILITY:\n\nPayroll & Compensation (Workday HCM):\n- workday.hcm:agent:CompensationAdjustmentAutomation - processes merit increases, compensation adjustments\n- workday.hcm:agent:CompensationChangeProcessor - automates compensation adjustments tied to org changes\n- workday.hcm:agent:CompensationStructureAutomationEngine - monitors org structure changes, updates compensation plans\n\nAsset & Equipment Lifecycle (corp.itsm & sap.s4):\n- corp.itsm:agent:AssetProvisioningOrchestrator - tracks asset lifecycle, material requisitions, asset assignments\n- sap.s4:agent:AssetLifecycleChangeOrchestrator - orchestrates engineering changes, automated asset provisioning\n\nIncident/Case Lifecycle Management:\n- corp.itsm:agent:IncidentSafetyCoordinator - tracks incident lifecycle, escalation\n- corp.itsm:agent:IncidentRootCauseAnalyzer - analyzes incidents, diagnostic reports\n\nIncident tracking & reporting (Safety/EHS):\n- sap.ehs:agent:IncidentRootCauseAnalyzer - analyzes safety incidents\n- sap.ehs:agent:IncidentResponseCoordinator - coordinates safety incident workflows\n\nProcurement/Supplier expenses:\n- sap.s4:agent:ProcurementMatchingAgent - matches requisitions to vendors by cost/quality\n- sap.ariba:apiResource:PurchaseOrderNetworkAPI - REST API for PO lifecycle\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation - matches vendor invoices to POs/contracts, validates terms, flags discrepancies\n\nCHANGE ORDER & MAINTENANCE MANAGEMENT:\n- corp.itsm:agent:ChangeAutomationOrchestrator:v1 - BEST for reviewing open change orders\n  * Automates and coordinates engineering changes, material updates, product item deployments\n  * Monitors engineering change requests and coordinates execution\n  * Orchestrates multi-step change operations with consistent delivery\n  * Works with EngineeringChange, Material, ProductItem entities\n  * IT Service Management line of business\n- sap.s4:agent:AssetLifecycleChangeOrchestrator:v1 - orchestrates engineering changes across materials/product items\n- corp.itsm:agent:AssetProvisioningOrchestrator - coordinates asset provisioning tied to change orders\n\nSUPPLIER PAYMENT TERMS & COMMITMENTS:\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation - BEST for retrieving supplier payment terms and commitments\n\nCAMPAIGN OUTREACH & ENGAGEMENT TRACKING (emarsys.cx - CX/Marketing):\n- emarsys.cx:agent:SegmentDrivenCampaignOptimizer - BEST for checking active campaign outreach and contact engagement\n\nEHS COMPLIANCE (sap.ehs):\n- sap.ehs:agent:IncidentRootCauseAnalyzer:v1 - analyzes safety incidents\n- sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1 - validates safety across materials, engineering changes, product items\n- sap.ehs:agent:ComplianceCampaignOrchestrator:v1 - automates compliance campaigns\n\nINVENTORY SPECIFICATIONS & VENDOR CROSS-REFERENCE:\n- sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1 - REST API for vendor specs and PO lifecycle"
+              },
+              "result_preview": {
+                "stored_bytes": 3049,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                "reason": "Automates and coordinates engineering changes and monitors change requests, directly fulfilling the need to review open change orders submitted."
+              },
+              "result_preview": {
+                "committed": "corp.itsm:agent:ChangeAutomationOrchestrator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+          "picked_reason": "Automates and coordinates engineering changes and monitors change requests, directly fulfilling the need to review open change orders submitted.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 7,
+          "tokens": 40584,
+          "latency_s": 33.555,
+          "llm_calls": 7
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user's request is a multi-faceted, ad-hoc information gathering task requiring simultaneous access to four distinct operational data sources (inventory specs, vendor details, maintenance requests, change orders) rather than execution of a single end-to-end process workflow.\"\n}\n```",
+      "reason": "The user's request is a multi-faceted, ad-hoc information gathering task requiring simultaneous access to four distinct operational data sources (inventory specs, vendor details, maintenance requests, change orders) rather than execution of a single end-to-end process workflow.",
+      "tokens": 1680,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 4,
+      "sub_queries": [
+        "Pull our current inventory specifications",
+        "Retrieve vendor details we have on file",
+        "Check the status of our pending maintenance requests",
+        "Get information on any open change orders we've submitted"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 90302,
+    "latency_s": 65.507,
+    "llm_calls": 15
+  },
+  "wall_s": 65.528
+}

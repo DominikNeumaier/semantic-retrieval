@@ -1,0 +1,119 @@
+{
+  "case_id": "oos-13",
+  "user_prompt": "Our manufacturing plants are experiencing high turnover in specialized maintenance roles, and we need a way to automatically identify which of our current operators have transferable skills that could fill these gaps\u2014ideally something that can scan our existing employee training records and certifications to recommend internal candidates for upskilling programs before we resort to external hiring.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "C",
+  "state": "clean",
+  "condition": "C0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Our manufacturing plants are experiencing high turnover in specialized maintenance roles, and we need a way to automatically identify which of our current operators have transferable skills that could fill these gaps\u2014ideally something that can scan our existing employee training records and certifications to recommend internal candidates for upskilling programs before we resort to external hiring.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+            "score": 31.5
+          },
+          {
+            "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+            "score": 31.5
+          },
+          {
+            "ordId": "workday.hcm:agent:PerformanceReviewOrchestrator:v1",
+            "score": 36.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Employee:v1",
+              "sap.odm:entityType:PerformanceReview:v1",
+              "sap.odm:entityType:Machine:v1",
+              "sap.odm:entityType:ProductionOrder:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Human Resources and Talent Management",
+              "Manufacturing Execution",
+              "People Analytics"
+            ],
+            "reason": "Activity focuses on identifying employee skills from training records and certifications to fill maintenance roles, directly involving employee data, performance history, and manufacturing operations for internal talent management."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:PerformanceReview:v1\",\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Human Resources and Talent Management\",\n    \"Manufacturing Execution\",\n    \"People Analytics\"\n  ],\n  \"reason\": \"Activity focuses on identifying employee skills from training records and certifications to fill maintenance roles, directly involving employee data, performance history, and manufacturing operations for internal talent management.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 67,
+          "walk_top_ids": [
+            "sap.sf:agent:PerformanceReviewCycleCoordinator:v1",
+            "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1",
+            "workday.hcm:agent:PerformanceReviewCoordination:v1",
+            "workday.hcm:agent:PerformanceReviewOrchestrator:v1",
+            "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+            "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+            "sap.ehs:apiResource:EmployeeSafetyIncidentReporting:v1",
+            "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1\",\n  \"sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1\",\n  \"workday.hcm:agent:PerformanceReviewOrchestrator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 2072,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request describes a custom HR/talent management process (skills gap analysis and internal candidate matching) that does not match any of the registered manufacturing, procurement, compliance, or order fulfillment skills.\"\n}\n```",
+      "reason": "The request describes a custom HR/talent management process (skills gap analysis and internal candidate matching) that does not match any of the registered manufacturing, procurement, compliance, or order fulfillment skills.",
+      "tokens": 1687,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 4226,
+    "latency_s": 0.0,
+    "llm_calls": 4
+  },
+  "wall_s": 0.025
+}

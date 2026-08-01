@@ -1,0 +1,168 @@
+{
+  "case_id": "oos-16",
+  "user_prompt": "We need to automatically map and consolidate sustainability data from our disparate ERP, HR, and facility management systems into a single staging area so our sustainability team can validate completeness and consistency before submitting our annual GRI and CSRD reports\u2014right now they're manually pulling CSVs from five different systems and spending weeks reconciling conflicting numbers on energy use and headcount metrics.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "enriched",
+  "condition": "B1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Build an automated data integration pipeline that consolidates sustainability data from our disparate ERP, HR, and facility management systems into a single staging area",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:MaterialHazardDataExchange:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:MaterialAndVendorProcurementIntegration:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ehs",
+            "sap.sf"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ehs\", \"sap.sf\"],\n  \"reason\": \"EHS handles sustainability/environmental data and facility management, while SF (SuccessFactors) provides HR system data; both are core sources for consolidated sustainability reporting alongside ERP systems.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Building and executing an automated data integration pipeline is an operational activity that actively extracts, transforms, and writes consolidated data to a staging area across multiple source systems.\"\n}\n```",
+          "stage2_pool_size": 42,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Employee:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Machine:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:Machine:v1\"\n  ],\n  \"reason\": \"The pipeline consolidates HR data (Employee), ERP materials/procurement data (Material), and facility management/operations data (Machine) from disparate systems into a sustainability data staging area.\"\n}\n```",
+          "stage3_pool_size": 17,
+          "stage4_raw": "```json\n[\n  \"sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1\",\n  \"sap.ehs:apiResource:MaterialHazardDataExchange:v1\",\n  \"sap.sf:apiResource:EmployeeCompensationManagement:v1\",\n  \"sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1\",\n  \"sap.sf:apiResource:MaterialAndVendorProcurementIntegration:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 3640,
+          "latency_s": 1.898,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Implement a data validation and reconciliation capability that allows our sustainability team to verify completeness and consistency of consolidated sustainability metrics",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ehs",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ehs\", \"sap.s4\"],\n  \"reason\": \"EHS handles environmental/sustainability data and hazardous substances, while S4 provides material and inventory metrics needed for comprehensive sustainability reconciliation.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Data validation and reconciliation of sustainability metrics is a read-only verification activity that monitors data quality and consistency without driving live execution or transactional changes.\"\n}\n```",
+          "stage2_pool_size": 17,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductionOrder:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:ProductionOrder:v1\", \"sap.odm:entityType:Vendor:v1\"],\n  \"reason\": \"Sustainability metrics validation typically involves tracking material sourcing, production processes, and vendor compliance\u2014the core entities for environmental and supply chain sustainability reporting.\"\n}\n```",
+          "stage3_pool_size": 8,
+          "stage4_raw": "```json\n[]\n```\n\nThe activity requests a capability for data validation and reconciliation of sustainability metrics. None of the candidate resources are designed to support sustainability data validation and reconciliation. The candidates focus on:\n\n- Compliance and cost analytics (material invoices, vendor compliance)\n- Procurement metrics and KPIs\n- Manufacturing quality and production metrics\n- Engineering change impact analysis\n\nWhile some candidates aggregate data, none are positioned to validate completeness and consistency of consolidated sustainability metrics specifically. The activity requires a sustainability-focused data product with validation and reconciliation capabilities, which is not present in this candidate set.",
+          "stage4_valid_count": 0,
+          "refused": true,
+          "tokens": 2642,
+          "latency_s": 2.879,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Enable automated report generation for GRI and CSRD compliance submissions from the consolidated and validated sustainability data",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ehs",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ehs\", \"sap.s4\"],\n  \"reason\": \"GRI and CSRD compliance require environmental, health & safety data (sap.ehs) plus material and manufacturing data (sap.s4) for consolidated sustainability reporting.\"\n}\n```",
+          "stage2_modalities": [
+            "operational",
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\", \"analytical\"],\n  \"reason\": \"Requires operational API resources to automate report generation and submission, plus analytical data products to read consolidated validated sustainability data for GRI/CSRD compliance outputs.\"\n}\n```",
+          "stage2_pool_size": 58,
+          "stage3_entity_types": [],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [],\n  \"reason\": \"This activity concerns sustainability compliance reporting infrastructure (GRI/CSRD), which operates at an aggregated data level rather than on specific business object entities from the provided list.\"\n}\n```",
+          "stage3_pool_size": 58,
+          "stage4_raw": "```json\n[]\n```\n\nThe activity requests automated report generation for GRI (Global Reporting Initiative) and CSRD (Corporate Sustainability Reporting Directive) compliance submissions from consolidated sustainability data. While the candidate resources include many EHS and compliance-related APIs and data products, none of them specifically address:\n\n1. **Sustainability reporting frameworks** (GRI, CSRD) - The resources focus on occupational health & safety (EHS), hazardous substances, and operational safety compliance, not environmental/social sustainability metrics\n2. **Sustainability data consolidation and validation** - There are no resources for collecting, consolidating, or validating ESG/sustainability data\n3. **Report generation and submission automation** - There are no report generation or submission management capabilities for sustainability frameworks\n\nThe landscape appears to lack genuine sustainability reporting resources, so returning an empty array is appropriate rather than selecting tangentially related safety/compliance APIs.",
+          "stage4_valid_count": 0,
+          "refused": true,
+          "tokens": 7096,
+          "latency_s": 3.277,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request requires a sustainability data integration and consolidation process (ERP/HR/facility systems \u2192 staging \u2192 validation), which is a specialized data governance and reporting workflow not covered by any of the registered skills that focus on production, procurement, compliance, and operational change management.\"\n}\n```",
+      "reason": "The request requires a sustainability data integration and consolidation process (ERP/HR/facility systems \u2192 staging \u2192 validation), which is a specialized data governance and reporting workflow not covered by any of the registered skills that focus on production, procurement, compliance, and operatio",
+      "tokens": 1716,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 15511,
+    "latency_s": 8.054,
+    "llm_calls": 14
+  },
+  "wall_s": 8.149
+}

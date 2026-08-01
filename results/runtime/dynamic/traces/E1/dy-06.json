@@ -1,0 +1,149 @@
+{
+  "case_id": "dy-06",
+  "user_prompt": "I need to schedule some updates to our manufacturing workflow next week and make sure all the dependent systems get notified at the right time. We have a few service components that need to be rolled out together, and I want to avoid any conflicts or downtime. Can you help me figure out what tool handles coordinating these kinds of synchronized deployments?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "enriched",
+  "condition": "E1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1,
+    "acceptable": 1,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to schedule some updates to our manufacturing workflow next week and make sure all the dependent systems get notified at the right time. We have a few service components that need to be rolled out together, and I want to avoid any conflicts or downtime. Can you help me figure out what tool handles coordinating these kinds of synchronized deployments?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1276
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "## Landscape Overview (10 systems):\n- **corp.itsm**: ITSM system with agents for incident management, root cause analysis, change coordination, safety incidents, and asset provisioning (NO retrieval APIs)\n- **sap.crm**: CRM system with agents for opportunity management, sales coordination, and campaign optimization (no issue tracking)\n- **sap.s4**: ERP system with procurement, BOM, sales, and change orchestration agents (no budget forecast/comparison API)\n- **sap.sf**: HR/HCM system (SuccessFactors) with EmployeeCompensationManagement API and compensation automation agents\n- **sap.ariba**: Procurement system with PurchaseOrderNetworkAPI, SourceingCampaignAndAccountManagementAPI, invoice matching, sourcing, compliance APIs, **MaterialAndEngineeringChangeCoordinator agent**\n- **sap.ehs**: Safety/compliance system with risk identification, incident analysis, and compliance automation agents\n- **workday.hcm**: HCM system with compensation adjustment/change processors but no budget forecasting\n- **siemens.plm**: PLM system with BOMComplianceValidator, EngineeringChangeAndMaterialProvisioning, QualityAssuranceAndDefectPrevention, SupplierQualificationAndMaterialCoordinator agents\n- **my.mes**: MES system with ProductionQualityMonitor (alerts/escalations), **ProductionChangeOrchestrator** (synchronized deployment coordination), BillOfMaterialsComplianceValidator agents\n- **sap.odm, emarsys.cx**: Other domain systems\n\n## Key Resources by Activity:\n\n### Compensation Data Retrieval (Activity 2):\n- **Resource Used**: sap.sf:apiResource:EmployeeCompensationManagement:v1\n\n### Request Status Checking (Activity 11):\n- **Resource Used**: sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1\n\n### Compliance Risk Identification (Activity 12):\n- **Resource Used**: sap.ehs:agent:ComplianceCampaignOrchestrator:v1\n\n### Change Orders & Material Updates Automation (Activity 15):\n- **Resource Used**: sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1\n\n### Automated Pre-Production Gating Workflow (Activity 16):\n- **Resource Used**: siemens.plm:agent:BOMComplianceValidator:v1\n- Context: Validates BOM compliance before engineering release; catches non-compliant materials and regulatory issues before production\n\n### Notification/Alert System for Validation Results (Activity 17):\n- **Resource Used**: my.mes:agent:ProductionQualityMonitor:v1\n- Context: Monitors validation/inspection results and initiates escalation workflows when thresholds exceeded; reduces manual oversight and accelerates response\n\n### Log Equipment Changes in Asset Management System (Activity 18):\n- **Resource Used**: corp.itsm:agent:AssetProvisioningOrchestrator:v1\n- Context: Coordinates IT asset lifecycle and monitors engineering changes to orchestrate asset provisioning. Manages product item assignments and automates asset allocation workflows, effectively logging equipment changes through its provisioning coordination.\n\n### Link Service Work Orders to Regulatory Requirements (Activity 19):\n- **Resource Used**: sap.ehs:agent:IncidentResponseCoordinator:v1\n- Context: Routes service tickets to appropriate response teams and tracks equipment status during emergency situations to ensure compliance with regulatory reporting timelines; directly links service work (tickets) to regulatory requirements.\n\n### Synchronized Manufacturing Deployments (Activity 20):\n- **Resource Used**: my.mes:agent:ProductionChangeOrchestrator:v1\n- Context: Orchestrates coordinated updates across production workflows with dependency management. Automates impact assessments, coordinates synchronized changes across dependent components, and ensures manufacturing systems remain synchronized without line disruption or conflicts.\n\n## REFUSED Activities (No Suitable Resource):\n\n### Activity 10 - Cost & Supply Chain Analysis:\nGap: No dedicated cost analysis, margin reporting, or supply chain complexity analytics resources\n\n### Activity 13 - Customer Issue Retrieval & Status Check:\nGap: No API resource in landscape to retrieve/query customer issues and their current status\n\n### Activity 14 - Compare Compensation Data Against Budget Forecasts:\nGap: No budget forecasting or budget vs. actual comparison API/agent in landscape"
+              },
+              "result_preview": {
+                "stored_bytes": 4096,
+                "truncated": true,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "reason": "Orchestrates synchronized deployments of manufacturing workflow components with dependency management and impact assessment to avoid conflicts and downtime."
+              },
+              "result_preview": {
+                "committed": "my.mes:agent:ProductionChangeOrchestrator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:agent:ProductionChangeOrchestrator:v1",
+          "picked_reason": "Orchestrates synchronized deployments of manufacturing workflow components with dependency management and impact assessment to avoid conflicts and downtime.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 3,
+          "tokens": 17317,
+          "latency_s": 23.072,
+          "llm_calls": 3
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user is asking for a tool recommendation for coordinating synchronized deployments of service components, which is an IT/DevOps infrastructure question rather than a request to execute any of the registered manufacturing, procurement, or product lifecycle processes.\"\n}\n```",
+      "reason": "The user is asking for a tool recommendation for coordinating synchronized deployments of service components, which is an IT/DevOps infrastructure question rather than a request to execute any of the registered manufacturing, procurement, or product lifecycle processes.",
+      "tokens": 1698,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "I need to schedule some updates to our manufacturing workflow next week and make sure all the dependent systems get notified at the right time. We have a few service components that need to be rolled out together, and I want to avoid any conflicts or downtime. Can you help me figure out what tool handles coordinating these kinds of synchronized deployments?"
+      ],
+      "original_prompt": "I need to schedule some updates to our manufacturing workflow next week and make sure all the dependent systems get notified at the right time. We have a few service components that need to be rolled out together, and I want to avoid any conflicts or downtime. Can you help me figure out what tool handles coordinating these kinds of synchronized deployments?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 1,
+      "sub_queries": [
+        "I need to schedule manufacturing workflow updates for next week with synchronized deployment of multiple service components, ensure dependent systems are notified at the right time, avoid conflicts and downtime, and identify the tool that handles coordinating these synchronized deployments."
+      ],
+      "routed_ok": true,
+      "count_ok": true,
+      "verdict": "green"
+    }
+  },
+  "trace": {
+    "tokens": 19015,
+    "latency_s": 23.072,
+    "llm_calls": 4
+  },
+  "wall_s": 23.081
+}

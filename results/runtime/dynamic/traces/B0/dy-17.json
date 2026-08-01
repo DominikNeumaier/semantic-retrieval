@@ -1,0 +1,239 @@
+{
+  "case_id": "dy-17",
+  "user_prompt": "I need to get approval for some design modifications we're making to our product line, and then make sure the updated materials are ordered and tracked through our supply chain. Can you help me coordinate the engineering paperwork and inventory adjustments all in one place?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": null,
+  "skill_picked": "proc_025",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Obtain approval for design modifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeProductDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:EngineeringChangeOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "my.mes",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"my.mes\", \"sap.s4\"],\n  \"reason\": \"Design modifications typically require change management and engineering controls, which are central to manufacturing execution and product lifecycle management where EngineeringChange entities and ChangeRequest resources reside.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Obtaining approval for design modifications requires an agent or system to act on the approval decision, making it an operational activity that drives live execution.\"\n}\n```",
+          "stage2_pool_size": 40,
+          "stage3_entity_types": [
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:ProductItem:v1",
+            "sap.odm:entityType:Employee:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:Employee:v1\"\n  ],\n  \"reason\": \"Design modification approval primarily involves engineering changes, product items being modified, and employees granting or receiving approval.\"\n}\n```",
+          "stage3_pool_size": 13,
+          "stage4_raw": "```json\n[\n  \"sap.s4:apiResource:EngineeringChangeManagementAPI:v1\",\n  \"sap.s4:apiResource:EngineeringChangeProductDataAPI:v1\",\n  \"sap.s4:agent:EngineeringChangeOrchestrator:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"my.mes:apiResource:EngineeringChangeProductIntegration:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2868,
+          "latency_s": 6.811,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Track materials through supply chain",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ariba",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ariba\", \"sap.s4\"],\n  \"reason\": \"Supply chain tracking requires procurement/inventory management (Ariba) and material/inventory execution (S4) capabilities across the procurement-to-manufacturing flow.\"\n}\n```",
+          "stage2_modalities": [
+            "operational",
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\", \"analytical\"],\n  \"reason\": \"Tracking requires operational APIs to update material status and locations in real-time, plus analytical resources to monitor KPIs, dashboards, and supply chain visibility.\"\n}\n```",
+          "stage2_pool_size": 51,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1",
+            "sap.odm:entityType:ProductionOrder:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\"\n  ],\n  \"reason\": \"Tracking materials through supply chain involves monitoring materials from vendors through production and distribution.\"\n}\n```",
+          "stage3_pool_size": 28,
+          "stage4_raw": "```json\n[\n  \"sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1\",\n  \"sap.s4:apiResource:MaterialReceiptInboundAPI:v1\",\n  \"sap.ariba:dataProduct:SupplyChainProductIntelligence:v1\",\n  \"sap.s4:dataProduct:ProcurementMetricsHub:v1\",\n  \"sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 3850,
+          "latency_s": 7.433,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Adjust inventory records",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.s4",
+            "sap.ariba"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.s4\", \"sap.ariba\"],\n  \"reason\": \"Inventory record adjustments are core functions of SAP S/4HANA (Inventory Management) and SAP Ariba (Inventory Management), both containing Material entities and inventory-related LoB coverage.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Adjusting inventory records is a direct write operation that modifies master data and requires immediate execution by an agent or API resource.\"\n}\n```",
+          "stage2_pool_size": 36,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductionOrder:v1",
+            "sap.odm:entityType:ProductItem:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:ProductionOrder:v1\", \"sap.odm:entityType:ProductItem:v1\"],\n  \"reason\": \"Adjusting inventory records primarily involves updating Material stock levels, which may be driven by ProductionOrder consumption or ProductItem transactions.\"\n}\n```",
+          "stage3_pool_size": 19,
+          "stage4_raw": "```json\n[\n  \"sap.s4:apiResource:MaterialReceiptInboundAPI:v1\",\n  \"sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1\",\n  \"sap.ariba:apiResource:MaterialAndVendorProcurementData:v1\",\n  \"sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1\"\n]\n```",
+          "stage4_valid_count": 4,
+          "refused": false,
+          "tokens": 3145,
+          "latency_s": 7.312,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_025",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_025\",\n  \"reason\": \"Proc_025 orchestrates the complete engineering change process from change request submission through material validation, workforce readiness, and supplier qualification to final procurement\u2014covering approval, material ordering, and supply chain tracking as one integrated workflow.\"\n}\n```",
+      "reason": "Proc_025 orchestrates the complete engineering change process from change request submission through material validation, workforce readiness, and supplier qualification to final procurement\u2014covering approval, material ordering, and supply chain tracking as one integrated workflow.",
+      "tokens": 1681,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Obtain approval for design modifications\",\n    \"Track materials through supply chain\",\n    \"Adjust inventory records\"\n  ],\n  \"reason\": \"The skill covers engineering change orchestration, material validation, supplier qualification, and procurement execution, but does not explicitly include the approval gate for design modifications, supply chain tracking/visibility, or inventory adjustments that the request requires.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers engineering change orchestration, material validation, supplier qualification, and procurement execution, but does not explicitly include the approval gate for design modifications, supply chain tracking/visibility, or inventory adjustments that the request requires.",
+      "tokens": 445,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "I need to get approval for some design modifications we're making to our product line, and then make sure the updated materials are ordered and tracked through our supply chain. Can you help me coordinate the engineering paperwork and inventory adjustments all in one place?"
+      ],
+      "original_prompt": "I need to get approval for some design modifications we're making to our product line, and then make sure the updated materials are ordered and tracked through our supply chain. Can you help me coordinate the engineering paperwork and inventory adjustments all in one place?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 3,
+      "sub_queries": [
+        "Get approval for design modifications to our product line",
+        "Order updated materials and ensure they are tracked through our supply chain",
+        "Coordinate engineering paperwork and inventory adjustments in one centralized place"
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 11989,
+    "latency_s": 21.556,
+    "llm_calls": 14
+  },
+  "wall_s": 21.613
+}

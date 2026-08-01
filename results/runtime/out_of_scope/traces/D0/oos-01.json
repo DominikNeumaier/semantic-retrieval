@@ -1,0 +1,364 @@
+{
+  "case_id": "oos-01",
+  "user_prompt": "We need a way to automatically flag suppliers whose credit ratings or financial health metrics have deteriorated in the past 90 days so we can proactively assess whether to reduce order volumes or increase payment terms before we hit a cash flow problem.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "my.mes:agent:SupplierQualityComplianceOrchestrator:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "We need a way to automatically flag suppliers whose credit ratings or financial health metrics have deteriorated in the past 90 days so we can proactively assess whether to reduce order volumes or increase payment terms before we hit a cash flow problem.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:agent:SupplierQualityComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Vendor:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Vendor Management API",
+                  "shortDescription": "Exposes purchase orders and vendor data for ITSM procurement workflows."
+                },
+                {
+                  "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Contract Compliance Orchestrator",
+                  "shortDescription": "Automates vendor contract and purchase order compliance monitoring across procurement lifecycle."
+                },
+                "... (39 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+                "type": "agent",
+                "namespace": "sap.ariba",
+                "title": "Dangerous Goods Supply Chain Safety Agent",
+                "shortDescription": "Tracks hazardous material declarations from vendors and triggers response protocols for safety events.",
+                "description": "Automates oversight of hazardous material certifications within the supplier ecosystem and ingests real-time safety event notifications. Executes regulatory verification processes, identifies non-compliance signals, and routes urgent safety alerts to procurement teams for corrective intervention and risk mitigation across the supply chain.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1",
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "hazardous-materials",
+                  "vendor-risk-management",
+                  "safety-event-tracking"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:agent:SupplierQualityComplianceOrchestrator:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:agent:SupplierQualityComplianceOrchestrator:v1",
+                "type": "agent",
+                "namespace": "my.mes",
+                "title": "Supplier Quality Compliance Orchestrator",
+                "shortDescription": "Automates vendor performance monitoring and procurement compliance validation.",
+                "description": "Monitors supplier quality metrics and vendor compliance status by coordinating across purchase orders and contracts. Processes incoming material inspections and automatically escalates non-conformance issues to designated vendors. Orchestrates quality certifications and supplier audit schedules to maintain manufacturing standards.",
+                "entityTypes": [
+                  "sap.odm:entityType:Contract:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "supplier-management",
+                  "quality-assurance",
+                  "compliance-automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.ariba",
+                "title": "Vendor Performance and Segmentation Analytics",
+                "shortDescription": "Aggregates vendor metrics and segments customers by engagement and spend patterns.",
+                "description": "This data product aggregates vendor performance indicators, campaign effectiveness, and customer account metrics to provide comprehensive segmentation analytics. It summarizes key procurement campaign outcomes, customer account profitability, and segment-level performance trends. The product delivers actionable insights on vendor relationships, customer segmentation quality, and strategic sourcing opportunities aligned with procurement objectives.",
+                "entityTypes": [
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerSegment:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "vendor-analytics",
+                  "customer-segmentation",
+                  "sourcing-intelligence"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Finance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Procurement Automation Orchestrator",
+                  "shortDescription": "Automates vendor engagement and procurement workflows through targeted marketing communications."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                "... (10 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:ProcurementMetricsHub:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+                "type": "dataProduct",
+                "namespace": "sap.s4",
+                "title": "Procurement Metrics Hub",
+                "shortDescription": "Aggregated procurement KPIs tracking vendor performance, order cycle times, and spend analysis.",
+                "description": "Delivers real-time analytical views of procurement operations, including vendor scorecards, purchase order aging, invoice reconciliation status, and material cost trends. Enables procurement teams to optimize supplier relationships, reduce cycle times, and identify cost-saving opportunities across the supply chain.",
+                "entityTypes": [
+                  "sap.odm:entityType:Vendor:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Invoice:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement",
+                  "Finance"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "vendor-analytics",
+                  "spend-management",
+                  "supply-chain-kpis",
+                  "procurement-intelligence"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:agent:SupplierQualityComplianceOrchestrator:v1",
+                "reason": "This agent automates vendor performance monitoring and automatically escalates non-conformance issues, providing the proactive flagging mechanism needed to identify deteriorated supplier metrics and trigger corrective procurement actions."
+              },
+              "result": {
+                "committed": "my.mes:agent:SupplierQualityComplianceOrchestrator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:agent:SupplierQualityComplianceOrchestrator:v1",
+          "picked_reason": "This agent automates vendor performance monitoring and automatically escalates non-conformance issues, providing the proactive flagging mechanism needed to identify deteriorated supplier metrics and trigger corrective procurement actions.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 11,
+          "tokens": 45204,
+          "latency_s": 18.252,
+          "llm_calls": 11
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is a financial monitoring and supplier risk assessment task that doesn't align with any of the registered skills, which focus on procurement, production, compliance, and fulfillment workflows rather than proactive financial health tracking and credit rating analysis.\"\n}\n```",
+      "reason": "The request is a financial monitoring and supplier risk assessment task that doesn't align with any of the registered skills, which focus on procurement, production, compliance, and fulfillment workflows rather than proactive financial health tracking and credit rating analysis.",
+      "tokens": 1678,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 47323,
+    "latency_s": 18.252,
+    "llm_calls": 13
+  },
+  "wall_s": 18.258
+}

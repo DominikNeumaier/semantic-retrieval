@@ -1,0 +1,268 @@
+{
+  "case_id": "dy-06",
+  "user_prompt": "I need to schedule some updates to our manufacturing workflow next week and make sure all the dependent systems get notified at the right time. We have a few service components that need to be rolled out together, and I want to avoid any conflicts or downtime. Can you help me figure out what tool handles coordinating these kinds of synchronized deployments?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to schedule some updates to our manufacturing workflow next week and make sure all the dependent systems get notified at the right time. We have a few service components that need to be rolled out together, and I want to avoid any conflicts or downtime. Can you help me figure out what tool handles coordinating these kinds of synchronized deployments?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 45503,
+          "latency_s": 10.425,
+          "llm_calls": 8,
+          "confidence": 0.92,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 22,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 776,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "corp.itsm",
+                "entity_types": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "action_verb": "orchestrate",
+                "resource_type_hint": "apiResource"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29330,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 8702,
+              "latency_s": 5.012722969055176,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+                  },
+                  "n_results": 24
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+                  },
+                  "n_results": 23
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 47
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "corp.itsm": 8,
+                "my.mes": 5,
+                "sap.s4": 2,
+                "sap.sf": 2,
+                "siemens.plm": 2,
+                "emarsys.cx": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:ChangeRequest:v1": 10,
+                "sap.odm:entityType:ServiceTicket:v1": 10,
+                "sap.odm:entityType:ITEquipment:v1": 10,
+                "sap.odm:entityType:EngineeringChange:v1": 9,
+                "sap.odm:entityType:Material:v1": 9,
+                "sap.odm:entityType:ProductItem:v1": 9,
+                "sap.odm:entityType:Machine:v1": 1,
+                "sap.odm:entityType:ProductionOrder:v1": 1
+              },
+              "resource_types": {
+                "agent": 8,
+                "dataProduct": 5,
+                "apiResource": 7
+              },
+              "top_capabilities": {
+                "assess-engineering-change": 1,
+                "evaluate-material-impact": 1,
+                "allocate-materials": 1,
+                "coordinate-infrastructure": 1,
+                "allocate-equipment": 1,
+                "orchestrate-provisioning": 1,
+                "coordinate-equipment-assignment": 1,
+                "orchestrate-asset-provisioning": 1
+              },
+              "n_candidates": 20
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "business_groups": [
+                  "proc_ManufacturingChangeCompliance_v1",
+                  "proc_integrated_service_change_mgmt_v1",
+                  "proc_order_to_production_v1"
+                ],
+                "lines_of_business": [
+                  "Manufacturing",
+                  "IT_Operations"
+                ],
+                "reason": "Coordinating synchronized service deployments for manufacturing workflows requires change management, system integration, and production order orchestration."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ChangeRequest:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:ITEquipment:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_ManufacturingChangeCompliance_v1\",\n    \"proc_integrated_service_change_mgmt_v1\",\n    \"proc_order_to_production_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"IT_Operations\"\n  ],\n  \"reason\": \"Coordinating synchronized service deployments for manufacturing workflows requires change management, system integration, and production order orchestration.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity describes **coordinating synchronized deployments of service components with notification across dependent systems while avoiding conflicts and downtime**\u2014a classic orchestration use case.\n\n1. **Production Change Orchestrator** (Agent) - Perfect match. It explicitly handles \"orchestrate-production-change,\" \"synchronize-engineering-change,\" and \"sequence-work-orders\" with cross-system coordination capabilities.\n\n2. **Asset Lifecycle Change Orchestrator** (Agent) - Strong match. Provides \"coordinate-change-workflow\" and \"orchestrate-engineering-change\" with cross-functional approval coordination (manufacturing, supply chain, HR, finance).\n\n3. **Engineering Change and Material Provisioning Agent** (Agent) - Good match. Handles \"synchronize-engineering-changes\" and coordinates material provisioning workflows across product lifecycle.\n\n4. **Asset Provisioning Orchestrator** (Agent) - Relevant for orchestrating asset/infrastructure provisioning across change schedules with coordination capabilities.\n\n5. **Operational Capability Assessment** (dataProduct) - Useful for pre-deployment validation to identify bottlenecks and readiness before rollout.\n\n6. **BOM Compliance Automation** (Agent) - Ensures material/component validation before production to prevent conflicts.\n\n7-8. **Impact/Readiness Analytics** (dataProducts) - Secondary support for assessing workforce and material readiness.",
+              "refused": false,
+              "previous_resolved": [
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+              ],
+              "tokens": 4305,
+              "latency_s": 5.412,
+              "llm_calls": 2,
+              "n_new_from_graph": 2
+            },
+            "phase3_rerank": {
+              "tokens": 2390,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+              "confidence": 0.92
+            }
+          },
+          "decomp_trace": {
+            "tokens": 461,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 1,
+            "sub_queries": [
+              "I need to schedule manufacturing workflow updates for next week with synchronized deployment of multiple service components, ensure dependent systems are notified at the right time, avoid conflicts and downtime, and identify the tool that handles coordinating these synchronized deployments."
+            ],
+            "original_prompt": "I need to schedule some updates to our manufacturing workflow next week and make sure all the dependent systems get notified at the right time. We have a few service components that need to be rolled out together, and I want to avoid any conflicts or downtime. Can you help me figure out what tool handles coordinating these kinds of synchronized deployments?"
+          },
+          "n_detected": 1
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user is asking for a tool recommendation for coordinating synchronized deployments of service components, which is an IT/DevOps infrastructure question rather than a request to execute any of the registered manufacturing, procurement, or product lifecycle processes.\"\n}\n```",
+      "reason": "The user is asking for a tool recommendation for coordinating synchronized deployments of service components, which is an IT/DevOps infrastructure question rather than a request to execute any of the registered manufacturing, procurement, or product lifecycle processes.",
+      "tokens": 1698,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 47662,
+    "latency_s": 10.425,
+    "llm_calls": 10
+  },
+  "wall_s": 14.676
+}

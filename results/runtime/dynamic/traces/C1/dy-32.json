@@ -1,0 +1,204 @@
+{
+  "case_id": "dy-32",
+  "user_prompt": "I need to pull together our current inventory specifications alongside the vendor details we have on file, and simultaneously check on the status of our pending maintenance requests and any open change orders we've submitted to understand our full operational picture.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "C",
+  "state": "enriched",
+  "condition": "C1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to retrieve our current inventory specifications and cross-reference them with the vendor details we have on file.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "score": 75.5
+          },
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": 79.25
+          },
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": 77.5
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:Vendor:v1",
+              "sap.odm:entityType:ProductItem:v1"
+            ],
+            "business_groups": [
+              "proc_procure_fulfill_v1",
+              "proc_QualityDrivenMfgSupplyChain_v1"
+            ],
+            "lines_of_business": [
+              "Inventory Management",
+              "Procurement"
+            ],
+            "reason": "Activity requires retrieving inventory specifications (Material, ProductItem) and vendor details (Vendor) within procurement and supply chain management."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:ProductItem:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_QualityDrivenMfgSupplyChain_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Inventory Management\",\n    \"Procurement\"\n  ],\n  \"reason\": \"Activity requires retrieving inventory specifications (Material, ProductItem) and vendor details (Vendor) within procurement and supply chain management.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 3830,
+          "latency_s": 3.784,
+          "llm_calls": 2
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "I need to check the status of our pending maintenance requests and review all open change orders we've submitted.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+            "score": 43.0
+          },
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": 46.5
+          },
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": 43.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:ServiceTicket:v1",
+              "sap.odm:entityType:ChangeRequest:v1"
+            ],
+            "business_groups": [
+              "proc_integrated_service_change_mgmt_v1",
+              "proc_EngChangeAndProcurement_v1"
+            ],
+            "lines_of_business": [
+              "IT Service Management",
+              "Operations"
+            ],
+            "reason": "Activity involves tracking maintenance requests (service tickets) and reviewing open change orders (change requests) in a service and change management context."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_integrated_service_change_mgmt_v1\",\n    \"proc_EngChangeAndProcurement_v1\"\n  ],\n  \"lines_of_business\": [\n    \"IT Service Management\",\n    \"Operations\"\n  ],\n  \"reason\": \"Activity involves tracking maintenance requests (service tickets) and reviewing open change orders (change requests) in a service and change management context.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "siemens.plm:apiResource:SupplierQualificationAndServiceManagement:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+          ],
+          "tokens": 3666,
+          "latency_s": 3.785,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user's request is a multi-faceted, ad-hoc information gathering task requiring simultaneous access to four distinct operational data sources (inventory specs, vendor details, maintenance requests, change orders) rather than execution of a single end-to-end process workflow.\"\n}\n```",
+      "reason": "The user's request is a multi-faceted, ad-hoc information gathering task requiring simultaneous access to four distinct operational data sources (inventory specs, vendor details, maintenance requests, change orders) rather than execution of a single end-to-end process workflow.",
+      "tokens": 1680,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 4,
+      "sub_queries": [
+        "Pull our current inventory specifications",
+        "Retrieve vendor details we have on file",
+        "Check the status of our pending maintenance requests",
+        "Get information on any open change orders we've submitted"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 9444,
+    "latency_s": 7.569,
+    "llm_calls": 6
+  },
+  "wall_s": 7.603
+}

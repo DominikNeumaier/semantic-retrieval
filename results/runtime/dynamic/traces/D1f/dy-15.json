@@ -1,0 +1,351 @@
+{
+  "case_id": "dy-15",
+  "user_prompt": "Our finance team is struggling to reconcile payroll data across multiple departments because we can't easily track how individual pay rates align with our established pay bands and job levels. We need to ensure our payment structures remain competitive and compliant with market rates, but right now we're manually cross-referencing spreadsheets which is error-prone and time-consuming. Can you help us integrate our payroll processes so we have a single source of truth for all employee earnings and payment configurations?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Our finance team is struggling to reconcile payroll data across multiple departments because we can't easily track how individual pay rates align with our established pay bands and job levels. We need to ensure our payment structures remain competitive and compliant with market rates, but right now we're manually cross-referencing spreadsheets which is error-prone and time-consuming. Can you help us integrate our payroll processes so we have a single source of truth for all employee earnings and payment configurations?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "integrate-payroll-with-scheduling"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                  "type": "apiResource",
+                  "title": "Payroll Processing Data Management",
+                  "shortDescription": "Manages and exposes payroll calculations, earnings, and deductions data."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "process-payroll"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                  "type": "apiResource",
+                  "title": "Payroll Processing Data Management",
+                  "shortDescription": "Manages and exposes payroll calculations, earnings, and deductions data."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "adjust-salary-bands"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+                  "type": "apiResource",
+                  "title": "Compensation and Salary Management API",
+                  "shortDescription": "Manages employee compensation structures, salary data, and payroll integration."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Compensation:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Production Labor Productivity Metrics",
+                  "shortDescription": "Aggregates employee compensation and performance data to analyze production labor efficiency."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Compensation and Safety Risk Correlation Analytics",
+                  "shortDescription": "Aggregates compensation patterns and safety incident data to identify risk correlations."
+                },
+                {
+                  "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Sales Compensation Orchestrator",
+                  "shortDescription": "Automates compensation calculations and dispute resolution for sales teams."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.sf",
+                "title": "Compensation and Salary Management API",
+                "shortDescription": "Manages employee compensation structures, salary data, and payroll integration.",
+                "description": "Exposes comprehensive compensation and salary information for employees and workforce persons. Retrieves salary bands, variable compensation, bonuses, and payroll-relevant attributes. Manages compensation planning data and provides access to salary history and payroll integration touchpoints.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [
+                  "recalculate-compensation",
+                  "manage-employee-incentives",
+                  "adjust-salary-bands"
+                ],
+                "useCases": [
+                  "Payroll and HR systems update employee earnings to reflect overtime, new role classifications, or performance adjustments tied to production change success.",
+                  "Workforce planners align compensation structures with modified labor requirements in manufacturing operations."
+                ],
+                "tags": [
+                  "compensation",
+                  "salary-management",
+                  "payroll-integration",
+                  "employee-lifecycle"
+                ],
+                "partOfGroups": [
+                  "proc_ManufacturingChangeCompliance_v1"
+                ],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "type": "apiResource",
+                "namespace": "workday.hcm",
+                "title": "Payroll Processing Data Management",
+                "shortDescription": "Manages and exposes payroll calculations, earnings, and deductions data.",
+                "description": "This API resource provides access to payroll processing data including employee earnings, tax withholdings, deductions, and gross-to-net calculations. It retrieves and manages payroll records for Employee and WorkforcePerson entities, enabling integration with downstream payroll systems and financial consolidation platforms. The resource exposes real-time payroll snapshots and historical payroll records for compliance and audit purposes.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [
+                  "validate-employee-payments",
+                  "process-payroll",
+                  "manage-workforce-compensation-execution",
+                  "resource-allocation-scheduling",
+                  "identify-available-workforce",
+                  "integrate-payroll-with-scheduling"
+                ],
+                "useCases": [
+                  "Workforce scheduling integrates with payroll to ensure accurate compensation tracking for assigned service activities.",
+                  "Payroll and workforce data identifies two available technicians; their availability is checked and the nearest one is assigned to the job.",
+                  "HR payroll administrator executes end-to-end payroll processing with full control over employee and workforce person payment records",
+                  "Payroll system ensures accurate, timely compensation delivery while maintaining audit trail for regulatory compliance"
+                ],
+                "tags": [
+                  "compensation",
+                  "salary-management",
+                  "payroll-integration",
+                  "employee-lifecycle"
+                ],
+                "partOfGroups": [
+                  "proc_ServiceToProduction_v1",
+                  "proc_talent_compliance_ops_v1"
+                ],
+                "processNext": [
+                  "workday.hcm:agent:CompensationAdjustmentAutomation:v1"
+                ],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:agent:CompensationPolicyAutomationEngine:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+                "type": "agent",
+                "namespace": "sap.sf",
+                "title": "Compensation Policy Automation Engine",
+                "shortDescription": "Automates compensation policy enforcement and processes salary adjustments based on organizational rules.",
+                "description": "Monitors compensation changes across the workforce and automatically coordinates policy-driven salary adjustments according to defined organizational guidelines. Processes compensation events triggered by employee lifecycle transitions, performance outcomes, and market adjustments while enforcing compliance with compensation policies and payroll regulations.",
+                "entityTypes": [
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:Employee:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "compensation",
+                  "automation",
+                  "payroll",
+                  "policy-driven"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "reason": "This API provides integrated payroll data management with real-time earnings visibility, historical records for compliance, and capabilities to reconcile compensation across departments into a single authoritative source."
+              },
+              "result": {
+                "committed": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+          "picked_reason": "This API provides integrated payroll data management with real-time earnings visibility, historical records for compliance, and capabilities to reconcile compensation across departments into a single authoritative source.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 11,
+          "tokens": 24379,
+          "latency_s": 12.217,
+          "llm_calls": 11
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 24379,
+    "latency_s": 12.217,
+    "llm_calls": 11
+  },
+  "wall_s": 12.226
+}

@@ -1,0 +1,932 @@
+{
+  "case_id": "oos-18",
+  "user_prompt": "We need to implement a system that automatically converts our employee wellness program participation data into a real-time, department-wide competitive leaderboard with achievement badges and monthly reward tier assignments, so we can gamify our workplace safety and fitness initiatives while ensuring compliance with our existing HR data governance policies.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 1,
+    "falsely_picked": 0,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Implement a system to convert employee wellness program participation data into a real-time format suitable for processing and display",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "assess-engagement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                  "type": "apiResource",
+                  "title": "Journey Contact State API",
+                  "shortDescription": "REST API for querying and updating real-time contact engagement state within active customer journeys."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "People Analytics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Compliance and Risk Profile Analytics",
+                  "shortDescription": "Consolidates occupational safety data and incident patterns to assess employee risk exposure and safety culture maturity."
+                },
+                {
+                  "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trend Analytics",
+                  "shortDescription": "Aggregated performance metrics and trend analysis across employee populations and review cycles."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "track-engagement-metrics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Engagement Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1",
+                "type": "dataProduct",
+                "namespace": "workday.hcm",
+                "title": "Performance Metrics Aggregation",
+                "shortDescription": "Aggregates employee performance review data to provide workforce talent insights and trending analysis.",
+                "description": "This data product aggregates performance review outcomes and employee competency assessments to summarize talent distribution, skill gaps, and career progression trends across the organization. It provides metrics on performance rating distributions, development potential, and identifies high-performing segments for succession planning and workforce analytics initiatives.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:PerformanceReview:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources",
+                  "People Analytics"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "performance-management",
+                  "workforce-analytics",
+                  "talent-insights",
+                  "trending"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.sf",
+                "title": "Employee Performance Trend Analytics",
+                "shortDescription": "Aggregated performance metrics and trend analysis across employee populations and review cycles.",
+                "description": "This analytical data product provides aggregated views of employee performance data, enabling HR leaders and managers to identify talent trends, performance distributions, and development patterns across the organization. It consolidates performance ratings, competency assessments, and review cycle outcomes into dimensional analytics for workforce planning and succession management decisions.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:PerformanceReview:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources",
+                  "People Analytics"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "performance-management",
+                  "workforce-analytics",
+                  "talent-insights",
+                  "trending"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a resource specifically designed to handle employee wellness program participation data conversion and real-time formatting; available resources cover performance, compensation, and safety but not wellness programs."
+              },
+              "result": {
+                "refused": true,
+                "reason": "The landscape lacks a resource specifically designed to handle employee wellness program participation data conversion and real-time formatting; available resources cover performance, compensation, and safety but not wellness programs."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a resource specifically designed to handle employee wellness program participation data conversion and real-time formatting; available resources cover performance, compensation, and safety but not wellness programs.",
+          "tool_calls": 10,
+          "tokens": 31556,
+          "latency_s": 10.935,
+          "llm_calls": 10
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Create a department-wide competitive leaderboard that displays employee wellness metrics and rankings",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "People Analytics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Compliance and Risk Profile Analytics",
+                  "shortDescription": "Consolidates occupational safety data and incident patterns to assess employee risk exposure and safety culture maturity."
+                },
+                {
+                  "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trend Analytics",
+                  "shortDescription": "Aggregated performance metrics and trend analysis across employee populations and review cycles."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "track-engagement-metrics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Engagement Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "assess-benefits"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:BenefitsEnrollmentDataManagement:v1",
+                  "type": "apiResource",
+                  "title": "Benefits Enrollment Data Management API",
+                  "shortDescription": "Manages and retrieves employee benefits enrollment records and eligibility data."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1",
+                "type": "dataProduct",
+                "namespace": "workday.hcm",
+                "title": "Performance Metrics Aggregation",
+                "shortDescription": "Aggregates employee performance review data to provide workforce talent insights and trending analysis.",
+                "description": "This data product aggregates performance review outcomes and employee competency assessments to summarize talent distribution, skill gaps, and career progression trends across the organization. It provides metrics on performance rating distributions, development potential, and identifies high-performing segments for succession planning and workforce analytics initiatives.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:PerformanceReview:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources",
+                  "People Analytics"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "performance-management",
+                  "workforce-analytics",
+                  "talent-insights",
+                  "trending"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.sf",
+                "title": "Employee Performance Trend Analytics",
+                "shortDescription": "Aggregated performance metrics and trend analysis across employee populations and review cycles.",
+                "description": "This analytical data product provides aggregated views of employee performance data, enabling HR leaders and managers to identify talent trends, performance distributions, and development patterns across the organization. It consolidates performance ratings, competency assessments, and review cycle outcomes into dimensional analytics for workforce planning and succession management decisions.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:PerformanceReview:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources",
+                  "People Analytics"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "performance-management",
+                  "workforce-analytics",
+                  "talent-insights",
+                  "trending"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks wellness-specific analytics and gamification resources needed to create a competitive employee wellness leaderboard with wellness metrics and rankings."
+              },
+              "result": {
+                "refused": true,
+                "reason": "The landscape lacks wellness-specific analytics and gamification resources needed to create a competitive employee wellness leaderboard with wellness metrics and rankings."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks wellness-specific analytics and gamification resources needed to create a competitive employee wellness leaderboard with wellness metrics and rankings.",
+          "tool_calls": 10,
+          "tokens": 24555,
+          "latency_s": 11.575,
+          "llm_calls": 10
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Design and assign achievement badges and monthly reward tier assignments based on wellness program participation",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-employee-incentives"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+                  "type": "apiResource",
+                  "title": "Compensation and Salary Management API",
+                  "shortDescription": "Manages employee compensation structures, salary data, and payroll integration."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Capital Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+                  "type": "agent",
+                  "title": "Occupational Safety Incident Coordinator",
+                  "shortDescription": "Monitors and coordinates safety incidents with hazardous substance involvement for compliance."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:SafetyIncidentComplianceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Incident Compliance Analytics",
+                  "shortDescription": "Aggregates and analyzes incident data to provide safety compliance metrics and trends."
+                },
+                {
+                  "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                  "type": "apiResource",
+                  "title": "Sales Employee Hierarchy and Capability Directory API",
+                  "shortDescription": "Exposes employee organizational structure and sales capabilities for CRM operations."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "assess-engagement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                  "type": "apiResource",
+                  "title": "Journey Contact State API",
+                  "shortDescription": "REST API for querying and updating real-time contact engagement state within active customer journeys."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a dedicated resource for wellness program badge design and reward tier assignment; available compensation and engagement tools do not cover gamification or wellness participation tracking."
+              },
+              "result": {
+                "refused": true,
+                "reason": "The landscape lacks a dedicated resource for wellness program badge design and reward tier assignment; available compensation and engagement tools do not cover gamification or wellness participation tracking."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a dedicated resource for wellness program badge design and reward tier assignment; available compensation and engagement tools do not cover gamification or wellness participation tracking.",
+          "tool_calls": 8,
+          "tokens": 24091,
+          "latency_s": 10.737,
+          "llm_calls": 8
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Ensure the wellness gamification system maintains compliance with existing HR data governance policies",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "automate-compliance-checks"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                  "type": "agent",
+                  "title": "Safety Compliance Automation Coordinator",
+                  "shortDescription": "Automates safety validation across engineering changes, materials, and product items."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "orchestrate-compliance-checks"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                  "type": "agent",
+                  "title": "Safety Compliance Automation Coordinator",
+                  "shortDescription": "Automates safety validation across engineering changes, materials, and product items."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "coordinate-compliance-workflow"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                  "type": "agent",
+                  "title": "Safety Compliance Automation Coordinator",
+                  "shortDescription": "Automates safety validation across engineering changes, materials, and product items."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.sf",
+                "title": "Employee Lifecycle and Personnel Data Management API",
+                "shortDescription": "Exposes and manages complete employee and workforce person records throughout their organizational tenure.",
+                "description": "This API retrieves and manages comprehensive employee lifecycle data including personnel information, organizational assignments, and workforce person attributes. It provides access to employee records and person details maintained throughout the employment journey, enabling seamless data integration for HR processes and reporting.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "employee-data",
+                  "workforce-management",
+                  "personnel-records"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "type": "agent",
+                "namespace": "sap.ehs",
+                "title": "Safety Compliance Automation Coordinator",
+                "shortDescription": "Automates safety validation across engineering changes, materials, and product items.",
+                "description": "Monitors and processes engineering changes, materials, and product items to enforce safety compliance requirements and automate BOM validation workflows. Coordinates supplier qualification assessments and initiates compliance remediation actions when safety risks or regulatory gaps are detected. Automates incident prevention through continuous validation of product configurations against safety standards.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [
+                  "assess-material-safety",
+                  "automate-safety-assessments",
+                  "automate-compliance-checks",
+                  "coordinate-compliance-workflow",
+                  "validate-engineering-changes",
+                  "orchestrate-compliance-checks",
+                  "coordinate-safety-compliance"
+                ],
+                "useCases": [
+                  "Safety officers ensure all engineering changes trigger integrated compliance assessments across the organization.",
+                  "EHS team automates review of engineering changes to ensure material and product modifications meet safety and regulatory requirements before production",
+                  "Compliance automation prevents unsafe or non-compliant product items from advancing to manufacturing",
+                  "Compliance teams automate material and process safety validation to reduce manual review time.",
+                  "Operations leadership maintains consistent safety standards across all product variants and manufacturing locations."
+                ],
+                "tags": [
+                  "compliance",
+                  "bom-validation",
+                  "supplier-qualification",
+                  "automation"
+                ],
+                "partOfGroups": [
+                  "proc_ProductComplianceManufacturing_v1",
+                  "proc_talent_compliance_ops_v1"
+                ],
+                "processNext": [
+                  "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+                ],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-compliance-communications"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                  "type": "apiResource",
+                  "title": "Journey Contact State API",
+                  "shortDescription": "REST API for querying and updating real-time contact engagement state within active customer journeys."
+                }
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1",
+                "reason": "This API is the authoritative HR data management resource that enables wellness gamification systems to access and validate employee data in compliance with existing HR data governance policies."
+              },
+              "result": {
+                "committed": "sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1",
+          "picked_reason": "This API is the authoritative HR data management resource that enables wellness gamification systems to access and validate employee data in compliance with existing HR data governance policies.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 11,
+          "tokens": 39877,
+          "latency_s": 14.997,
+          "llm_calls": 11
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is for building a new HR/wellness system with gamification features, which is a custom software implementation project that falls outside the scope of these manufacturing and operations process management skills.\"\n}\n```",
+      "reason": "The request is for building a new HR/wellness system with gamification features, which is a custom software implementation project that falls outside the scope of these manufacturing and operations process management skills.",
+      "tokens": 1677,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 122151,
+    "latency_s": 48.244,
+    "llm_calls": 41
+  },
+  "wall_s": 48.285
+}

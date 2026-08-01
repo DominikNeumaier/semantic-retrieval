@@ -1,0 +1,1097 @@
+{
+  "case_id": "dy-16",
+  "user_prompt": "We need to understand how our upcoming engineering changes will affect our team's capacity and skill levels across the plant. Can you pull together an analysis that shows us the workforce impact from all the material and product modifications we have planned?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": null,
+  "skill_picked": "proc_019",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Aggregate workforce impact data across all planned changes",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                  "type": "apiResource",
+                  "title": "Change Request Approval Workflow API",
+                  "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Provisioning Integration API",
+                  "shortDescription": "Manages equipment provisioning requests linked to service tickets and change approvals."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                  "type": "agent",
+                  "title": "Incident Root Cause Analysis Agent",
+                  "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:WorkforcePerson:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Workforce Compensation API",
+                  "shortDescription": "Manages employee compensation and payroll data for procurement personnel."
+                },
+                {
+                  "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                  "type": "apiResource",
+                  "title": "Sales Employee Hierarchy and Capability Directory API",
+                  "shortDescription": "Exposes employee organizational structure and sales capabilities for CRM operations."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (16 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "People Analytics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Compliance and Risk Profile Analytics",
+                  "shortDescription": "Consolidates occupational safety data and incident patterns to assess employee risk exposure and safety culture maturity."
+                },
+                {
+                  "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trend Analytics",
+                  "shortDescription": "Aggregated performance metrics and trend analysis across employee populations and review cycles."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:dataProduct:ServiceHealthMetrics:v1"
+              },
+              "result_preview": {
+                "ordId": "corp.itsm:dataProduct:ServiceHealthMetrics:v1",
+                "type": "dataProduct",
+                "namespace": "corp.itsm",
+                "title": "Service Health Metrics",
+                "shortDescription": "Aggregated ITSM performance analytics tracking ticket resolution times, equipment availability, and change success rates.",
+                "description": "This analytical data product aggregates key performance indicators across the ITSM domain, including mean time to resolution (MTTR) for service tickets, equipment uptime percentages, and change request success rates. It enables operations teams and service managers to monitor service quality trends, identify bottlenecks in request fulfillment, and optimize resource allocation for incident response and change management processes.",
+                "entityTypes": [
+                  "sap.odm:entityType:ServiceTicket:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ChangeRequest:v1"
+                ],
+                "lineOfBusiness": [
+                  "IT Service Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "performance-analytics",
+                  "kpi-metrics",
+                  "operational-intelligence",
+                  "service-quality"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "corp.itsm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.sf",
+                "title": "Employee Performance Trend Analytics",
+                "shortDescription": "Aggregated performance metrics and trend analysis across employee populations and review cycles.",
+                "description": "This analytical data product provides aggregated views of employee performance data, enabling HR leaders and managers to identify talent trends, performance distributions, and development patterns across the organization. It consolidates performance ratings, competency assessments, and review cycle outcomes into dimensional analytics for workforce planning and succession management decisions.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:PerformanceReview:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources",
+                  "People Analytics"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "performance-management",
+                  "workforce-analytics",
+                  "talent-insights",
+                  "trending"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "my.mes",
+                "title": "Equipment Maintenance and Change Impact Analytics",
+                "shortDescription": "Aggregates equipment diagnostics, maintenance requests, and configuration changes to optimize asset performance.",
+                "description": "This data product summarizes maintenance tickets, equipment status, and change request impacts across the production floor. It provides metrics on equipment downtime, change approval workflows, and their correlation to service ticket resolution times, enabling data-driven maintenance prioritization and change management optimization.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "equipment-diagnostics",
+                  "maintenance-analytics",
+                  "change-impact"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Capital Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+                  "type": "agent",
+                  "title": "Occupational Safety Incident Coordinator",
+                  "shortDescription": "Monitors and coordinates safety incidents with hazardous substance involvement for compliance."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:SafetyIncidentComplianceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Incident Compliance Analytics",
+                  "shortDescription": "Aggregates and analyzes incident data to provide safety compliance metrics and trends."
+                },
+                {
+                  "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                  "type": "apiResource",
+                  "title": "Sales Employee Hierarchy and Capability Directory API",
+                  "shortDescription": "Exposes employee organizational structure and sales capabilities for CRM operations."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationStructureAutomationEngine:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+                "type": "agent",
+                "namespace": "workday.hcm",
+                "title": "Compensation Structure Automation Engine",
+                "shortDescription": "Automates compensation adjustments tied to organizational changes and material cost fluctuations.",
+                "description": "This agent monitors organizational structure changes, material cost indices, and product item classifications to automatically coordinate compensation plan updates. It processes engineering changes affecting job families and automates benefit structure recalibration based on material sourcing updates and product portfolio shifts, ensuring compensation competitiveness across the enterprise.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Capital Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "compensation-automation",
+                  "organizational-change-management",
+                  "cost-alignment"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "No resource in this landscape is designed to aggregate workforce impact data across all planned changes; available resources address only specific aspects like compensation automation or individual change management, not comprehensive workforce impact aggregation."
+              },
+              "result": {
+                "refused": true,
+                "reason": "No resource in this landscape is designed to aggregate workforce impact data across all planned changes; available resources address only specific aspects like compensation automation or individual change management, not comprehensive workforce impact aggregation."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "No resource in this landscape is designed to aggregate workforce impact data across all planned changes; available resources address only specific aspects like compensation automation or individual change management, not comprehensive workforce impact aggregation.",
+          "tool_calls": 12,
+          "tokens": 41552,
+          "latency_s": 15.145,
+          "llm_calls": 12
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Analyze skill level implications by role and department",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_skills",
+              "args": {},
+              "result_preview": [
+                {
+                  "skill_id": "proc_001",
+                  "description": "Manages production schedule adjustments triggered by demand forecasting or supply constraints, coordinating engineering changes, compliance verification, procurement updates, and workforce adjustments"
+                },
+                {
+                  "skill_id": "proc_002",
+                  "description": "This procurement and product lifecycle process manages the end-to-end journey from evaluating design costs and material impacts through vendor qualification, bill of materials validation, purchase ord"
+                },
+                {
+                  "skill_id": "proc_003",
+                  "description": "This skill covers the end-to-end order fulfillment process, from initial customer order validation through production execution and workforce management. It encompasses procurement strategy optimizati"
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "People Analytics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Compliance and Risk Profile Analytics",
+                  "shortDescription": "Consolidates occupational safety data and incident patterns to assess employee risk exposure and safety culture maturity."
+                },
+                {
+                  "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trend Analytics",
+                  "shortDescription": "Aggregated performance metrics and trend analysis across employee populations and review cycles."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "human-resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Change Lifecycle API",
+                  "shortDescription": "Exposes engineering changes and product items for workforce asset management."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Change Readiness and Workforce Impact Analytics",
+                  "shortDescription": "Aggregates engineering changes, materials, and product items to assess workforce readiness impact."
+                },
+                {
+                  "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                  "type": "dataProduct",
+                  "title": "Production Transition Capability and Skill Requirements Analytics",
+                  "shortDescription": "Combines engineering modifications, supply chain items, and manufacturing configurations to evaluate organizational capability for product transitions."
+                },
+                "... (3 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "workday.hcm",
+                "title": "Organizational Readiness Assessment for Product Transitions",
+                "shortDescription": "Evaluates staffing capabilities and competency levels against product modifications and operational transitions.",
+                "description": "This data product combines product modification data, supply chain updates, and operational transition information to quantify the human capital implications of business changes. It identifies training gaps, resource constraints, and capability misalignments triggered by product and process evolution. The insights support HR business partners in developing targeted capability-building strategies and managing organizational change adoption.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "human-resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "change-management",
+                  "capability-planning",
+                  "organizational-readiness"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "type": "dataProduct",
+                "namespace": "sap.s4",
+                "title": "Production Transition Capability and Skill Requirements Analytics",
+                "shortDescription": "Combines engineering modifications, supply chain items, and manufacturing configurations to evaluate organizational capability for product transitions.",
+                "description": "This data product synthesizes engineering change orders, component specifications, and production item details to generate metrics on organizational readiness for manufacturing transitions and competency gaps. It correlates product evolution activities with required skill development, identifies personnel training needs, and tracks adoption velocity across operational teams. Provides actionable intelligence for talent management, learning program prioritization, and operational readiness planning during product changes.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "human-resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "change-management-analytics",
+                  "organizational-readiness",
+                  "manufacturing-transitions"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:JobFamilyStructureManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:apiResource:JobFamilyStructureManagement:v1",
+                "type": "apiResource",
+                "namespace": "workday.hcm",
+                "title": "Job Family Structure Management API",
+                "shortDescription": "Manages and retrieves job family hierarchies, role mappings, and organizational structure data.",
+                "description": "This API exposes job family configurations and organizational role hierarchies that map to product engineering changes and line items. It provides access to retrieve, update, and manage job family structures linked to compensation bands and career progression frameworks. The resource enables downstream systems to access standardized job classifications and role-to-responsibility mappings for workforce planning and payroll integration.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "human-resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "organizational-structure",
+                  "job-classification",
+                  "workforce-planning"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "reason": "This data product synthesizes skill requirements and competency gaps by role and department, directly supporting the analysis of skill level implications through organizational readiness metrics and training needs identification."
+              },
+              "result": {
+                "committed": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+          "picked_reason": "This data product synthesizes skill requirements and competency gaps by role and department, directly supporting the analysis of skill level implications through organizational readiness metrics and training needs identification.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 22504,
+          "latency_s": 11.771,
+          "llm_calls": 10
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Generate comparative capacity analysis report",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:WorkforceScheduleAndAbsenceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Employee:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Sales Capacity and Time Off Management API",
+                  "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning."
+                },
+                {
+                  "ordId": "my.mes:apiResource:WorkforceScheduleAndAbsenceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Workforce Schedule and Absence Management API",
+                  "shortDescription": "Manages employee shift assignments and time-off requests in production operations."
+                },
+                "... (41 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:WorkforcePerson:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Workforce Compensation API",
+                  "shortDescription": "Manages employee compensation and payroll data for procurement personnel."
+                },
+                {
+                  "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                  "type": "apiResource",
+                  "title": "Sales Employee Hierarchy and Capability Directory API",
+                  "shortDescription": "Exposes employee organizational structure and sales capabilities for CRM operations."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (16 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+                "type": "dataProduct",
+                "namespace": "my.mes",
+                "title": "Production Labor Productivity Metrics",
+                "shortDescription": "Aggregates employee compensation and performance data to analyze production labor efficiency.",
+                "description": "Provides comprehensive metrics on labor productivity by synthesizing employee compensation records with production performance data. Summarizes key performance indicators including labor cost per unit produced, employee efficiency benchmarks, and compensation-to-output ratios across production shifts. Enables data-driven insights for workforce planning and labor cost optimization in manufacturing operations.",
+                "entityTypes": [
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:Employee:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "labor-analytics",
+                  "workforce-efficiency",
+                  "cost-analysis"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.sf",
+                "title": "Sales Team Earnings and Productivity Intelligence",
+                "shortDescription": "Consolidates pay structures and workforce productivity data to support sales organizational strategy and resource allocation.",
+                "description": "This dataProduct combines variable compensation distributions with sales team performance indicators to deliver actionable insights on earnings patterns, incentive program ROI, and staffing metrics. Designed to empower sales leadership with evidence-based analytics for workforce planning, retention strategy development, and compensation program optimization across the enterprise.",
+                "entityTypes": [
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:Employee:v1"
+                ],
+                "lineOfBusiness": [
+                  "sales"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "earnings-intelligence",
+                  "workforce-productivity",
+                  "sales-organization-metrics"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:WorkforceAvailabilityAndCapacity:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:WorkforceAvailabilityAndCapacity:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Workforce Availability and Capacity API",
+                "shortDescription": "Retrieves employee availability and time-off data for production capacity planning.",
+                "description": "Exposes real-time employee availability and time-off schedules to support dynamic production capacity planning and workforce allocation decisions. Provides access to employee work patterns and absence data, enabling Sales operations to coordinate resource availability with customer order commitments and optimize labor utilization across production schedules.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:TimeOff:v1"
+                ],
+                "lineOfBusiness": [
+                  "Sales"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "capacity-planning",
+                  "workforce-management",
+                  "sales-operations"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+                "reason": "This dataProduct aggregates employee and compensation data to provide comparative labor productivity metrics, efficiency benchmarks, and cost-to-output ratios\u2014exactly what a comparative capacity analysis report requires following workforce readiness assessment."
+              },
+              "result": {
+                "committed": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+          "picked_reason": "This dataProduct aggregates employee and compensation data to provide comparative labor productivity metrics, efficiency benchmarks, and cost-to-output ratios\u2014exactly what a comparative capacity analysis report requires following workforce readiness assessment.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 21704,
+          "latency_s": 11.229,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Present findings with visualizations or summary format",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:dataProduct:ManufacturingQualityMetricsHub:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Manufacturing"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+                "type": "dataProduct",
+                "namespace": "my.mes",
+                "title": "Production Labor Productivity Metrics",
+                "shortDescription": "Aggregates employee compensation and performance data to analyze production labor efficiency.",
+                "description": "Provides comprehensive metrics on labor productivity by synthesizing employee compensation records with production performance data. Summarizes key performance indicators including labor cost per unit produced, employee efficiency benchmarks, and compensation-to-output ratios across production shifts. Enables data-driven insights for workforce planning and labor cost optimization in manufacturing operations.",
+                "entityTypes": [
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:Employee:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "labor-analytics",
+                  "workforce-efficiency",
+                  "cost-analysis"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:ManufacturingQualityMetricsHub:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:dataProduct:ManufacturingQualityMetricsHub:v1",
+                "type": "dataProduct",
+                "namespace": "sap.s4",
+                "title": "Manufacturing Quality Metrics Hub",
+                "shortDescription": "Aggregates production order execution and quality inspection data for manufacturing analytics.",
+                "description": "Summarizes quality performance metrics across production orders and inspection results to provide actionable insights on defect rates, inspection compliance, and production yield. Delivers comprehensive dashboards and KPIs that enable root cause analysis and continuous improvement initiatives throughout the manufacturing process.",
+                "entityTypes": [
+                  "sap.odm:entityType:ProductionOrder:v1",
+                  "sap.odm:entityType:QualityInspection:v1"
+                ],
+                "lineOfBusiness": [
+                  "Manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "quality-analytics",
+                  "production-metrics",
+                  "compliance-monitoring"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:ManufacturingQualityMetricsHub:v1",
+                "reason": "Manufacturing Quality Metrics Hub delivers comprehensive dashboards and KPIs designed specifically for presenting findings with visualizations and actionable insights in manufacturing operations."
+              },
+              "result": {
+                "committed": "sap.s4:dataProduct:ManufacturingQualityMetricsHub:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:dataProduct:ManufacturingQualityMetricsHub:v1",
+          "picked_reason": "Manufacturing Quality Metrics Hub delivers comprehensive dashboards and KPIs designed specifically for presenting findings with visualizations and actionable insights in manufacturing operations.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 22215,
+          "latency_s": 11.684,
+          "llm_calls": 8
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_019",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_019\",\n  \"reason\": \"This skill manages the complete lifecycle of engineering changes including impact assessment and workforce readiness, which directly covers the user's need to analyze workforce capacity and skill level impacts from planned engineering changes.\"\n}\n```",
+      "reason": "This skill manages the complete lifecycle of engineering changes including impact assessment and workforce readiness, which directly covers the user's need to analyze workforce capacity and skill level impacts from planned engineering changes.",
+      "tokens": 1666,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Aggregate workforce impact data across all planned changes\",\n    \"Analyze skill level implications by role and department\",\n    \"Generate comparative capacity analysis report\",\n    \"Present findings with visualizations or summary format\"\n  ],\n  \"reason\": \"The skill covers engineering change lifecycle management including workforce readiness assessment, but the request specifically asks for a consolidated analysis showing cumulative workforce impact across multiple planned changes with skill level and capacity insights\u2014requiring aggregation, comparative analysis, and reporting activities not explicitly listed in the step sequence.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers engineering change lifecycle management including workforce readiness assessment, but the request specifically asks for a consolidated analysis showing cumulative workforce impact across multiple planned changes with skill level and capacity insights\u2014requiring aggregation, comparati",
+      "tokens": 464,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "We need to understand how our upcoming engineering changes will affect our team's capacity and skill levels across the plant. Can you pull together an analysis that shows us the workforce impact from all the material and product modifications we have planned?"
+      ],
+      "original_prompt": "We need to understand how our upcoming engineering changes will affect our team's capacity and skill levels across the plant. Can you pull together an analysis that shows us the workforce impact from all the material and product modifications we have planned?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 2,
+      "sub_queries": [
+        "Analyze how our upcoming engineering changes and material modifications will affect our team's capacity across the plant",
+        "Analyze how our upcoming engineering changes and product modifications will affect our team's skill levels across the plant"
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 110105,
+    "latency_s": 49.829,
+    "llm_calls": 41
+  },
+  "wall_s": 49.868
+}

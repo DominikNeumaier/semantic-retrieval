@@ -1,0 +1,908 @@
+{
+  "case_id": "dy-40",
+  "user_prompt": "We need to streamline our component sourcing workflow by simultaneously validating our internal part specifications against supplier certifications and pulling current inventory levels along with vendor capabilities to ensure we're not creating bottlenecks during our quarterly supply chain review.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "clean",
+  "condition": "F0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Validate our internal part specifications against supplier certifications",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:apiResource:MaterialInventoryAndSupplierCatalogManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 65045,
+          "latency_s": 11.445,
+          "llm_calls": 14,
+          "n_intents": 2,
+          "use_graph": false,
+          "decomp_trace": {
+            "tokens": 289,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Retrieve our internal part specifications",
+              "Retrieve supplier certifications and validate them against our internal part specifications"
+            ],
+            "original_prompt": "Validate our internal part specifications against supplier certifications"
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve our internal part specifications",
+              "trace": {
+                "tokens": 31741,
+                "latency_s": 5.542,
+                "llm_calls": 6,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 700,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.s4",
+                      "entity_types": [
+                        "sap.odm:entityType:ProductItem:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20592,
+                    "latency_s": 0.503
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8490,
+                    "latency_s": 5.541866779327393,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ProductItem:v1"
+                        },
+                        "n_results": 40
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:ChangeAutomationOrchestrator:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 67
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 5,
+                      "my.mes": 4,
+                      "sap.ariba": 3,
+                      "emarsys.cx": 3,
+                      "sap.s4": 2,
+                      "siemens.plm": 2,
+                      "sap.sf": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:EngineeringChange:v1": 13,
+                      "sap.odm:entityType:ProductItem:v1": 13,
+                      "sap.odm:entityType:Material:v1": 13,
+                      "sap.odm:entityType:Vendor:v1": 4,
+                      "sap.odm:entityType:ChangeRequest:v1": 1,
+                      "sap.odm:entityType:ITEquipment:v1": 1,
+                      "sap.odm:entityType:ServiceTicket:v1": 1,
+                      "sap.odm:entityType:Machine:v1": 1,
+                      "sap.odm:entityType:ProductionOrder:v1": 1,
+                      "sap.odm:entityType:HazardousSubstance:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 11,
+                      "agent": 7,
+                      "dataProduct": 2
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 20
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1959,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "siemens.plm:apiResource:MaterialInventoryAndSupplierCatalogManagement:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Retrieve supplier certifications and validate them against our internal part specifications",
+              "trace": {
+                "tokens": 31959,
+                "latency_s": 5.903,
+                "llm_calls": 6,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 714,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ariba",
+                      "entity_types": [
+                        "sap.odm:entityType:Contract:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "action_verb": "validate",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20598,
+                    "latency_s": 0.631
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8593,
+                    "latency_s": 5.903191804885864,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Contract:v1"
+                        },
+                        "n_results": 12
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:VendorSpendIntelligence:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 70
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "siemens.plm": 5,
+                      "sap.ariba": 4,
+                      "my.mes": 3,
+                      "sap.ehs": 3,
+                      "corp.itsm": 2,
+                      "sap.sf": 1,
+                      "workday.hcm": 1,
+                      "emarsys.cx": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Vendor:v1": 17,
+                      "sap.odm:entityType:Contract:v1": 11,
+                      "sap.odm:entityType:PurchaseOrder:v1": 11,
+                      "sap.odm:entityType:Material:v1": 7,
+                      "sap.odm:entityType:EngineeringChange:v1": 1,
+                      "sap.odm:entityType:ProductItem:v1": 1,
+                      "sap.odm:entityType:ChangeRequest:v1": 1,
+                      "sap.odm:entityType:ITEquipment:v1": 1,
+                      "sap.odm:entityType:ServiceTicket:v1": 1,
+                      "sap.odm:entityType:HazardousSubstance:v1": 1
+                    },
+                    "resource_types": {
+                      "agent": 8,
+                      "apiResource": 7,
+                      "dataProduct": 5
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 20
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2054,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 1056,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+              "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Pull current inventory levels for our components",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:VendorMaterialSupplyChainAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 67535,
+          "latency_s": 13.208,
+          "llm_calls": 16,
+          "n_intents": 2,
+          "use_graph": false,
+          "decomp_trace": {
+            "tokens": 409,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Pull current inventory levels for our components"
+            ],
+            "original_prompt": "Pull current inventory levels for our components",
+            "sub_queries_redecomposed": [
+              "Retrieve current stock quantities for all component SKUs from the inventory management system",
+              "Fetch the warehouse location and bin assignments for each component in active inventory"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve current stock quantities for all component SKUs from the inventory management system",
+              "trace": {
+                "tokens": 31562,
+                "latency_s": 6.026,
+                "llm_calls": 6,
+                "confidence": 0.95,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 717,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.s4",
+                      "entity_types": [
+                        "sap.odm:entityType:Material:v1",
+                        "sap.odm:entityType:ProductItem:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20601,
+                    "latency_s": 0.486
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8344,
+                    "latency_s": 6.026468753814697,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ProductItem:v1"
+                        },
+                        "n_results": 40
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.s4:apiResource:MaterialStockAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 67
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "emarsys.cx": 6,
+                      "corp.itsm": 4,
+                      "my.mes": 3,
+                      "sap.ariba": 2,
+                      "sap.crm": 1,
+                      "sap.ehs": 1,
+                      "sap.s4": 1,
+                      "sap.sf": 1,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Material:v1": 16,
+                      "sap.odm:entityType:Vendor:v1": 8,
+                      "sap.odm:entityType:EngineeringChange:v1": 7,
+                      "sap.odm:entityType:ProductItem:v1": 7,
+                      "sap.odm:entityType:HazardousSubstance:v1": 3,
+                      "sap.odm:entityType:Machine:v1": 1,
+                      "sap.odm:entityType:ProductionOrder:v1": 1,
+                      "sap.odm:entityType:Invoice:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 11,
+                      "agent": 6,
+                      "dataProduct": 3
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 20
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1900,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                    "confidence": 0.95
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Fetch the warehouse location and bin assignments for each component in active inventory",
+              "trace": {
+                "tokens": 34684,
+                "latency_s": 7.182,
+                "llm_calls": 7,
+                "confidence": 0.72,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 717,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.s4",
+                      "entity_types": [
+                        "sap.odm:entityType:Material:v1",
+                        "sap.odm:entityType:ProductionOrder:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20600,
+                    "latency_s": 0.558
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 11463,
+                    "latency_s": 7.181692123413086,
+                    "llm_calls": 5,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+                        },
+                        "n_results": 23
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.s4:dataProduct:InventorySnapshot:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.s4:dataProduct:WarehouseLocationInventory:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.s4:dataProduct:MaterialInventoryWarehouse:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 81
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "emarsys.cx": 6,
+                      "corp.itsm": 4,
+                      "my.mes": 2,
+                      "sap.crm": 2,
+                      "sap.ehs": 2,
+                      "sap.sf": 2,
+                      "sap.s4": 1,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Material:v1": 15,
+                      "sap.odm:entityType:Vendor:v1": 7,
+                      "sap.odm:entityType:EngineeringChange:v1": 7,
+                      "sap.odm:entityType:ProductItem:v1": 7,
+                      "sap.odm:entityType:HazardousSubstance:v1": 3,
+                      "sap.odm:entityType:Machine:v1": 2,
+                      "sap.odm:entityType:ProductionOrder:v1": 2,
+                      "sap.odm:entityType:Invoice:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 10,
+                      "agent": 7,
+                      "dataProduct": 3
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 20
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1904,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+                    "confidence": 0.72
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 880,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+              "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Retrieve vendor capabilities and capacity information",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:ProcurementVendorEngagementAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 64797,
+          "latency_s": 10.913,
+          "llm_calls": 14,
+          "n_intents": 2,
+          "use_graph": false,
+          "decomp_trace": {
+            "tokens": 276,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Retrieve vendor capabilities",
+              "Retrieve vendor capacity information"
+            ],
+            "original_prompt": "Retrieve vendor capabilities and capacity information"
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve vendor capabilities",
+              "trace": {
+                "tokens": 31823,
+                "latency_s": 5.318,
+                "llm_calls": 6,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 708,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ariba",
+                      "entity_types": [
+                        "sap.odm:entityType:Contract:v1",
+                        "sap.odm:entityType:PurchaseOrder:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20590,
+                    "latency_s": 0.513
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8515,
+                    "latency_s": 5.3184731006622314,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Contract:v1"
+                        },
+                        "n_results": 12
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+                        },
+                        "n_results": 21
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 21
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.ariba": 7,
+                      "corp.itsm": 4,
+                      "emarsys.cx": 3,
+                      "sap.ehs": 3,
+                      "my.mes": 2,
+                      "sap.sf": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Vendor:v1": 17,
+                      "sap.odm:entityType:PurchaseOrder:v1": 14,
+                      "sap.odm:entityType:Contract:v1": 11,
+                      "sap.odm:entityType:Material:v1": 3,
+                      "sap.odm:entityType:Campaign:v1": 2,
+                      "sap.odm:entityType:CustomerAccount:v1": 2,
+                      "sap.odm:entityType:ChangeRequest:v1": 1,
+                      "sap.odm:entityType:ITEquipment:v1": 1,
+                      "sap.odm:entityType:ServiceTicket:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 9,
+                      "dataProduct": 5,
+                      "agent": 6
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 20
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2010,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Retrieve vendor capacity information",
+              "trace": {
+                "tokens": 31794,
+                "latency_s": 5.595,
+                "llm_calls": 6,
+                "confidence": 0.85,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 709,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ariba",
+                      "entity_types": [
+                        "sap.odm:entityType:PurchaseOrder:v1",
+                        "sap.odm:entityType:Contract:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20591,
+                    "latency_s": 0.52
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8542,
+                    "latency_s": 5.5946879386901855,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+                        },
+                        "n_results": 21
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Contract:v1"
+                        },
+                        "n_results": 12
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 21
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.ariba": 7,
+                      "corp.itsm": 4,
+                      "my.mes": 4,
+                      "emarsys.cx": 3,
+                      "sap.sf": 1,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Vendor:v1": 18,
+                      "sap.odm:entityType:PurchaseOrder:v1": 13,
+                      "sap.odm:entityType:Contract:v1": 7,
+                      "sap.odm:entityType:Material:v1": 5,
+                      "sap.odm:entityType:ChangeRequest:v1": 1,
+                      "sap.odm:entityType:ITEquipment:v1": 1,
+                      "sap.odm:entityType:ServiceTicket:v1": 1,
+                      "sap.odm:entityType:Campaign:v1": 1,
+                      "sap.odm:entityType:CustomerAccount:v1": 1,
+                      "sap.odm:entityType:CustomerSegment:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 12,
+                      "dataProduct": 4,
+                      "agent": 4
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 20
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1952,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                    "confidence": 0.85
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 904,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+              "corp.itsm:dataProduct:VendorSpendIntelligence:v1"
+            ],
+            "confidence": 0.85
+          }
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request describes a specific, tactical supply chain review activity (validating specs, checking certifications, pulling inventory levels) rather than a complete end-to-end process lifecycle that any registered skill fully covers.\"\n}\n```",
+      "reason": "The request describes a specific, tactical supply chain review activity (validating specs, checking certifications, pulling inventory levels) rather than a complete end-to-end process lifecycle that any registered skill fully covers.",
+      "tokens": 1671,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 199384,
+    "latency_s": 35.566,
+    "llm_calls": 46
+  },
+  "wall_s": 73.272
+}

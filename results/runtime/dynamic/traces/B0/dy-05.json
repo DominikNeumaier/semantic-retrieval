@@ -1,0 +1,241 @@
+{
+  "case_id": "dy-05",
+  "user_prompt": "We need to track some updates we're making to meet regulatory requirements, including the equipment changes and related service work orders. Can you help us log this through the right system?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": null,
+  "skill_picked": "proc_007",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Log equipment changes in asset management system",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\", \"my.mes\"],\n  \"reason\": \"Equipment changes are typically tracked in IT Service Management (change requests) and manufacturing asset systems (ITEquipment entity in MES).\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Logging equipment changes requires writing/updating records in the asset management system, which is a live data modification action.\"\n}\n```",
+          "stage2_pool_size": 42,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Machine:v1",
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:ITEquipment:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Machine:v1\", \"sap.odm:entityType:EngineeringChange:v1\", \"sap.odm:entityType:ITEquipment:v1\"],\n  \"reason\": \"Logging equipment changes in asset management involves recording modifications to machines and IT equipment, often tracked through engineering or change management processes.\"\n}\n```",
+          "stage3_pool_size": 17,
+          "stage4_raw": "```json\n[\n  \"my.mes:apiResource:EquipmentChangeAndServiceManagement:v1\",\n  \"my.mes:apiResource:EquipmentServiceAndChangeManagement:v1\",\n  \"my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1\",\n  \"my.mes:apiResource:ServiceTicketChangeRequestManagement:v1\",\n  \"corp.itsm:apiResource:AssetChangeLifecycleAPI:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 3037,
+          "latency_s": 7.716,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.ehs:apiResource:ComplianceChangeServiceIntegration:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Document regulatory requirement details and compliance mapping",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ehs",
+            "corp.itsm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ehs\", \"corp.itsm\"],\n  \"reason\": \"EHS handles safety/environmental compliance and regulatory requirements; ITSM provides change request tracking for compliance mapping documentation.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Documenting and mapping regulatory requirements is a read-only, reference-building activity that produces compliance artifacts for analysis and audit trails, not live operational execution.\"\n}\n```",
+          "stage2_pool_size": 16,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Incident:v1",
+            "sap.odm:entityType:SafetyIncident:v1",
+            "sap.odm:entityType:ChangeRequest:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Incident:v1\", \"sap.odm:entityType:SafetyIncident:v1\", \"sap.odm:entityType:ChangeRequest:v1\"],\n  \"reason\": \"Regulatory compliance and requirement documentation primarily applies to incidents, safety incidents, and change requests which require compliance mapping and audit trails.\"\n}\n```",
+          "stage3_pool_size": 9,
+          "stage4_raw": "```json\n[\n  \"corp.itsm:dataProduct:IncidentComplianceAnalytics:v1\",\n  \"corp.itsm:dataProduct:IncidentEngagementReliability:v1\",\n  \"sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1\",\n  \"sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1\",\n  \"corp.itsm:dataProduct:SafetyIncidentMetrics:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2534,
+          "latency_s": 6.962,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Link service work orders to specific regulatory requirements",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:apiResource:ComplianceChangeServiceIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:SafetyChangeGovernanceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:agent:IncidentResponseCoordinator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm",
+            "sap.ehs"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\", \"sap.ehs\"],\n  \"reason\": \"Service work orders are managed in ITSM (corp.itsm has ChangeRequest entity and itsm-operations), while regulatory requirements most commonly relate to safety, environment, and compliance domains (sap.ehs covers Safety and Environment with compliance-relevant entities).\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Linking work orders to regulatory requirements is a master data curation task that requires creating or updating records in the work order system.\"\n}\n```",
+          "stage2_pool_size": 43,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ServiceTicket:v1",
+            "sap.odm:entityType:Contract:v1",
+            "sap.odm:entityType:HazardousSubstance:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:Contract:v1\",\n    \"sap.odm:entityType:HazardousSubstance:v1\"\n  ],\n  \"reason\": \"Service work orders are tracked as ServiceTickets, regulatory requirements are often codified in Contracts, and compliance concerns frequently involve HazardousSubstance management.\"\n}\n```",
+          "stage3_pool_size": 17,
+          "stage4_raw": "```json\n[\n  \"sap.ehs:apiResource:ComplianceChangeServiceIntegration:v1\",\n  \"sap.ehs:apiResource:SafetyChangeGovernanceManagement:v1\",\n  \"sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1\",\n  \"corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1\",\n  \"sap.ehs:agent:IncidentResponseCoordinator:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 3175,
+          "latency_s": 7.374,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_007",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_007\",\n  \"reason\": \"This skill manages the end-to-end lifecycle of service and change requests from capture through implementation, which directly covers logging regulatory compliance updates including equipment changes and service work orders.\"\n}\n```",
+      "reason": "This skill manages the end-to-end lifecycle of service and change requests from capture through implementation, which directly covers logging regulatory compliance updates including equipment changes and service work orders.",
+      "tokens": 1654,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Log equipment changes in asset management system\",\n    \"Document regulatory requirement details and compliance mapping\",\n    \"Link service work orders to specific regulatory requirements\"\n  ],\n  \"reason\": \"The skill covers service and change request lifecycle management, approval workflows, and stakeholder communication, but lacks specific steps for regulatory compliance documentation, asset/equipment tracking integration, and explicit linkage between work orders and regulatory requirements needed for audit trails.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers service and change request lifecycle management, approval workflows, and stakeholder communication, but lacks specific steps for regulatory compliance documentation, asset/equipment tracking integration, and explicit linkage between work orders and regulatory requirements needed for",
+      "tokens": 437,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "We need to track some updates we're making to meet regulatory requirements, including the equipment changes and related service work orders. Can you help us log this through the right system?"
+      ],
+      "original_prompt": "We need to track some updates we're making to meet regulatory requirements, including the equipment changes and related service work orders. Can you help us log this through the right system?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 2,
+      "sub_queries": [
+        "Log equipment changes made to meet regulatory requirements in the appropriate tracking system",
+        "Log related service work orders for regulatory compliance tracking in the appropriate system"
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 10837,
+    "latency_s": 22.052,
+    "llm_calls": 14
+  },
+  "wall_s": 22.087
+}

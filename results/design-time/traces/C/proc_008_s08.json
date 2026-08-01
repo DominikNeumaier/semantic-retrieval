@@ -1,0 +1,84 @@
+{
+  "case_id": "proc_008_s08",
+  "process": "proc_008",
+  "label": "order compliance fulfillment process: Approve fulfillment and schedule resource time \u2014 Authorize order fulfillment and reserve employee capacity and time allocations for delivery execution.",
+  "method": "C",
+  "expected_ordIds": [
+    "workday.hcm:apiResource:TimeOffBalanceManagement:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+      "score": 37.0
+    },
+    {
+      "ordId": "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1",
+      "score": 38.25
+    },
+    {
+      "ordId": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+      "score": 36.75
+    },
+    {
+      "ordId": "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+      "score": 36.25
+    },
+    {
+      "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+      "score": 37.5
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "anchors": {
+      "entity_types": [
+        "sap.odm:entityType:CustomerOrder:v1",
+        "sap.odm:entityType:Employee:v1",
+        "sap.odm:entityType:ProductionOrder:v1"
+      ],
+      "business_groups": [
+        "proc_order_compliance_fulfillment_v1",
+        "proc_order_to_production_v1"
+      ],
+      "lines_of_business": [
+        "Sales and Order Management",
+        "Manufacturing Execution"
+      ],
+      "reason": "Activity authorizes customer order fulfillment and allocates employee resources and time for delivery execution, directly involving orders, workforce capacity planning, and production scheduling."
+    },
+    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\",\n    \"proc_order_to_production_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Sales and Order Management\",\n    \"Manufacturing Execution\"\n  ],\n  \"reason\": \"Activity authorizes customer order fulfillment and allocates employee resources and time for delivery execution, directly involving orders, workforce capacity planning, and production scheduling.\"\n}\n```",
+    "max_hops": 2,
+    "hop_decay": 0.5,
+    "edge_weights": {
+      "co_exposes": 1.0,
+      "co_partOf": 2.0,
+      "calls": 3.0,
+      "processNext": 3.0
+    },
+    "scored_resources": 274,
+    "walk_top_ids": [
+      "workday.hcm:apiResource:PayrollDataExposure:v1",
+      "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1",
+      "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+      "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+      "my.mes:agent:ProductionChangeOrchestrator:v1",
+      "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1"
+    ],
+    "rerank_raw": "```json\n[\n  \"workday.hcm:apiResource:PayrollProcessingDataManagement:v1\",\n  \"sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1\",\n  \"workday.hcm:apiResource:WorkforceCompensationDataManagement:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"workday.hcm:apiResource:CompensationStructureDataExposure:v1\"\n]\n```\n\n**Rationale:**\n\n1. **PayrollProcessingDataManagement (rank 1):** Best match. Explicitly handles `resource-allocation-scheduling`, `identify-available-workforce`, and integrates payroll with scheduling. Directly supports \"reserve employee capacity and time allocations\" requirement.\n\n2. **EmployeeHierarchyAndOrganizationManagement (rank 2):** Strong secondary. Provides `manage-workforce-hierarchy` and `confirm-reporting-structure` needed for authorization chains and approval workflows in compliance fulfillment.\n\n3. **WorkforceCompensationDataManagement (rank 3):** Supports capacity planning via `evaluate-skill-requirements` and workforce cost projection, relevant for scheduling resource time with financial accountability.\n\n4. **ProductChangeImpactAndMaterialAnalytics (rank 4):** Data product providing cross-functional impact analysis including `evaluate-production-capacity` and `analyze-transition-capability`, useful for operational readiness of fulfillment execution.\n\n5. **CompensationStructureDataExposure (rank 5):** Provides workforce capacity validation against budget constraints, supporting approval authorization with financial compliance verification.",
+    "refused": false,
+    "previous_resolved": [],
+    "tokens": 4004,
+    "latency_s": 8.557,
+    "llm_calls": 2
+  },
+  "wall_s": 8.576
+}

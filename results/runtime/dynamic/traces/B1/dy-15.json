@@ -1,0 +1,281 @@
+{
+  "case_id": "dy-15",
+  "user_prompt": "Our finance team is struggling to reconcile payroll data across multiple departments because we can't easily track how individual pay rates align with our established pay bands and job levels. We need to ensure our payment structures remain competitive and compliant with market rates, but right now we're manually cross-referencing spreadsheets which is error-prone and time-consuming. Can you help us integrate our payroll processes so we have a single source of truth for all employee earnings and payment configurations?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "enriched",
+  "condition": "B1",
+  "skill_expected": null,
+  "skill_picked": "proc_018",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Map individual pay rates to established pay bands and job levels",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.sf",
+            "workday.hcm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.sf\", \"workday.hcm\"],\n  \"reason\": \"Pay rate mapping to bands and job levels is a core human resources compensation activity managed by HR/HCM systems.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Mapping pay rates to bands and job levels is a master data configuration task that requires write access to compensation structures, not just analytical observation.\"\n}\n```",
+          "stage2_pool_size": 43,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Employee:v1",
+            "sap.odm:entityType:Compensation:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Employee:v1\", \"sap.odm:entityType:Compensation:v1\"],\n  \"reason\": \"The activity maps pay rates to pay bands and job levels, which directly concerns employee compensation and classification data.\"\n}\n```",
+          "stage3_pool_size": 20,
+          "stage4_raw": "```json\n[\n  \"workday.hcm:apiResource:CompensationStructureDataExposure:v1\",\n  \"sap.sf:apiResource:CompensationAndSalaryManagement:v1\",\n  \"workday.hcm:apiResource:WorkforceCompensationDataManagement:v1\",\n  \"sap.sf:agent:CompensationPolicyAutomationEngine:v1\",\n  \"workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 4048,
+          "latency_s": 1.843,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Validate pay rate alignment with market rates and competitive benchmarking",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:dataProduct:CompensationTrendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.sf",
+            "workday.hcm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.sf\", \"workday.hcm\"],\n  \"reason\": \"Pay rate validation and market benchmarking are core HR compensation functions best supported by Human Capital Management systems that manage employee compensation data.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Validating pay rate alignment requires read-only analysis of market data and benchmarking metrics without executing changes to live compensation systems.\"\n}\n```",
+          "stage2_pool_size": 9,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Compensation:v1",
+            "sap.odm:entityType:Employee:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Compensation:v1\", \"sap.odm:entityType:Employee:v1\"],\n  \"reason\": \"This activity directly concerns validating employee pay rates against market benchmarks, which involves reading and comparing compensation data with employee records.\"\n}\n```",
+          "stage3_pool_size": 4,
+          "stage4_raw": "```json\n[\n  \"workday.hcm:dataProduct:CompensationTrendAnalytics:v1\",\n  \"sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 2,
+          "refused": false,
+          "tokens": 1912,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Create consolidated single source of truth for employee earnings and payment configurations",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:PayrollDataExposure:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.sf",
+            "workday.hcm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.sf\", \"workday.hcm\"],\n  \"reason\": \"Employee earnings and payment configurations are core HR/payroll functions managed by SuccessFactors and Workday HCM systems, both containing Employee and WorkforcePerson entities.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Creating a consolidated single source of truth requires writing and maintaining master data through agents or APIs, which is operational work.\"\n}\n```",
+          "stage2_pool_size": 43,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Employee:v1",
+            "sap.odm:entityType:Compensation:v1",
+            "sap.odm:entityType:WorkforcePerson:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Employee:v1\", \"sap.odm:entityType:Compensation:v1\", \"sap.odm:entityType:WorkforcePerson:v1\"],\n  \"reason\": \"This activity consolidates employee earnings and payment configurations, which directly concern employee master data, compensation records, and workforce person information.\"\n}\n```",
+          "stage3_pool_size": 20,
+          "stage4_raw": "```json\n[\n  \"workday.hcm:apiResource:WorkforceCompensationDataManagement:v1\",\n  \"workday.hcm:apiResource:PayrollProcessingDataManagement:v1\",\n  \"workday.hcm:apiResource:CompensationStructureDataExposure:v1\",\n  \"sap.sf:apiResource:CompensationAndSalaryManagement:v1\",\n  \"workday.hcm:apiResource:PayrollDataExposure:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 4081,
+          "latency_s": 1.729,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Reconcile payroll data across multiple departments",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:PayrollDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.sf",
+            "workday.hcm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.sf\", \"workday.hcm\"],\n  \"reason\": \"Payroll reconciliation requires human resources and employee data, which are the primary focuses of both SAP SuccessFactors and Workday HCM namespaces.\"\n}\n```",
+          "stage2_modalities": [
+            "operational",
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\", \"analytical\"],\n  \"reason\": \"Reconciliation requires both operational writes to correct payroll master data and analytical reads to compare and validate data across departments.\"\n}\n```",
+          "stage2_pool_size": 52,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Employee:v1",
+            "sap.odm:entityType:Compensation:v1",
+            "sap.odm:entityType:WorkforcePerson:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Compensation:v1\",\n    \"sap.odm:entityType:WorkforcePerson:v1\"\n  ],\n  \"reason\": \"Payroll reconciliation primarily involves employee compensation data across departments.\"\n}\n```",
+          "stage3_pool_size": 24,
+          "stage4_raw": "```json\n[\n  \"workday.hcm:apiResource:PayrollProcessingDataManagement:v1\",\n  \"workday.hcm:apiResource:WorkforceCompensationDataManagement:v1\",\n  \"workday.hcm:apiResource:PayrollDataExposure:v1\",\n  \"workday.hcm:apiResource:CompensationStructureDataExposure:v1\",\n  \"workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 4355,
+          "latency_s": 1.913,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_018",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_018\",\n  \"reason\": \"This skill orchestrates comprehensive compensation review and workforce cost analysis by integrating payroll data, organizational structure validation, and procurement services\u2014directly addressing the need to reconcile payroll data, align pay rates with pay bands, and ensure competitive/compliant payment structures.\"\n}\n```",
+      "reason": "This skill orchestrates comprehensive compensation review and workforce cost analysis by integrating payroll data, organizational structure validation, and procurement services\u2014directly addressing the need to reconcile payroll data, align pay rates with pay bands, and ensure competitive/compliant pa",
+      "tokens": 1735,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Map individual pay rates to established pay bands and job levels\",\n    \"Validate pay rate alignment with market rates and competitive benchmarking\",\n    \"Create consolidated single source of truth for employee earnings and payment configurations\",\n    \"Reconcile payroll data across multiple departments\"\n  ],\n  \"reason\": \"The skill focuses on compensation review and workforce cost analysis at a high organizational level, but does not explicitly address the concrete operational activities the finance team needs: reconciling payroll across departments, mapping individual rates to pay bands/levels, validating market competitiveness, or establishing an integrated payroll system as a single source of truth.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill focuses on compensation review and workforce cost analysis at a high organizational level, but does not explicitly address the concrete operational activities the finance team needs: reconciling payroll across departments, mapping individual rates to pay bands/levels, validating market com",
+      "tokens": 641,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "Our finance team is struggling to reconcile payroll data across multiple departments because we can't easily track how individual pay rates align with our established pay bands and job levels. We need to ensure our payment structures remain competitive and compliant with market rates, but right now we're manually cross-referencing spreadsheets which is error-prone and time-consuming. Can you help us integrate our payroll processes so we have a single source of truth for all employee earnings and payment configurations?"
+      ],
+      "original_prompt": "Our finance team is struggling to reconcile payroll data across multiple departments because we can't easily track how individual pay rates align with our established pay bands and job levels. We need to ensure our payment structures remain competitive and compliant with market rates, but right now we're manually cross-referencing spreadsheets which is error-prone and time-consuming. Can you help us integrate our payroll processes so we have a single source of truth for all employee earnings and payment configurations?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 3,
+      "sub_queries": [
+        "We need to reconcile payroll data across multiple departments and track how individual pay rates align with our established pay bands and job levels.",
+        "We need to ensure our payment structures remain competitive and compliant with market rates.",
+        "We need to integrate our payroll processes to create a single source of truth for all employee earnings and payment configurations."
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 16772,
+    "latency_s": 5.485,
+    "llm_calls": 18
+  },
+  "wall_s": 5.57
+}

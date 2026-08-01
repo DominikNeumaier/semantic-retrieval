@@ -1,0 +1,474 @@
+{
+  "case_id": "dy-14",
+  "user_prompt": "We need to record incoming shipments from our suppliers into the system, but I'm not sure if we should be using the invoicing module or if there's a different process for just logging what physically arrived at our warehouse before we even get the bills.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1,
+    "acceptable": 1,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "How do I record incoming shipments from suppliers into the system when physical goods arrive at the warehouse?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:SupplierQualityComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 44865,
+          "latency_s": 12.843,
+          "llm_calls": 8,
+          "confidence": 0.95,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 28,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 724,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "sap.s4",
+                "entity_types": [
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Material:v1"
+                ],
+                "action_verb": "validate",
+                "resource_type_hint": "apiResource"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29283,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 8580,
+              "latency_s": 5.459291696548462,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+                  },
+                  "n_results": 21
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:Material:v1"
+                  },
+                  "n_results": 58
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 79
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "sap.ariba": 6,
+                "my.mes": 4,
+                "corp.itsm": 4,
+                "siemens.plm": 2,
+                "emarsys.cx": 2,
+                "sap.ehs": 1,
+                "sap.s4": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:Vendor:v1": 18,
+                "sap.odm:entityType:PurchaseOrder:v1": 13,
+                "sap.odm:entityType:Contract:v1": 8,
+                "sap.odm:entityType:Material:v1": 5,
+                "sap.odm:entityType:HazardousSubstance:v1": 1,
+                "sap.odm:entityType:Incident:v1": 1,
+                "sap.odm:entityType:SafetyIncident:v1": 1,
+                "sap.odm:entityType:ProductionOrder:v1": 1,
+                "sap.odm:entityType:QualityInspection:v1": 1
+              },
+              "resource_types": {
+                "apiResource": 10,
+                "agent": 6,
+                "dataProduct": 4
+              },
+              "top_capabilities": {
+                "verify-vendor-compliance": 2,
+                "manage-supplier-orders": 1,
+                "update-purchase-orders": 1,
+                "coordinate-vendor-schedules": 1,
+                "analyze-material-supply": 1,
+                "validate-vendor-capacity": 1,
+                "assess-inventory-impact": 1,
+                "validate-vendor-material": 1
+              },
+              "n_candidates": 20
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1",
+                  "sap.odm:entityType:QualityInspection:v1"
+                ],
+                "business_groups": [
+                  "proc_procure_fulfill_v1",
+                  "proc_QualityDrivenMfgSupplyChain_v1",
+                  "proc_supply_production_compliance_v1"
+                ],
+                "lines_of_business": [
+                  "Procurement",
+                  "Inventory Management"
+                ],
+                "reason": "Recording incoming shipments involves purchase orders from vendors, material receipt and inventory, and quality inspection of received goods."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:QualityInspection:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_QualityDrivenMfgSupplyChain_v1\",\n    \"proc_supply_production_compliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Inventory Management\"\n  ],\n  \"reason\": \"Recording incoming shipments involves purchase orders from vendors, material receipt and inventory, and quality inspection of received goods.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\"\n]\n```\n\n**Rationale:** The activity describes a warehouse worker recording incoming shipments\u2014a transactional, operational task requiring system interaction. While none perfectly match \"goods receipt\" terminology, agents are preferred over dataProducts for this operational execution:\n\n1. **BOMComplianceAutomationAgent** - Best match: validates material specifications and bill-of-materials compliance, directly supporting receiving verification against purchase orders\n2. **EngineeringChangeAndMaterialProvisioning** - Manages material provisioning and inventory allocation workflows\n3. **ProductionChangeOrchestrator** - Coordinates material flow and updates across systems\n4. **AssetProvisioningOrchestrator** - Orchestrates material allocation and infrastructure coordination\n5. **AssetLifecycleChangeOrchestrator** - Tracks material changes and lifecycle management\n6. **SafetyComplianceAutomationCoordinator** - Validates material safety (relevant for inbound goods)\n7-8. **dataProducts** - Lower priority; analytical rather than transactional",
+              "refused": false,
+              "previous_resolved": [
+                "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+                "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                "my.mes:agent:SupplierQualityComplianceOrchestrator:v1",
+                "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1"
+              ],
+              "tokens": 4149,
+              "latency_s": 7.384,
+              "llm_calls": 2,
+              "n_new_from_graph": 8
+            },
+            "phase3_rerank": {
+              "tokens": 2129,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+              "confidence": 0.95
+            }
+          },
+          "decomp_trace": {
+            "tokens": 357,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 1,
+            "sub_queries": [
+              "How do I record incoming shipments from suppliers into the system when physical goods arrive at the warehouse?"
+            ],
+            "original_prompt": "How do I record incoming shipments from suppliers into the system when physical goods arrive at the warehouse?"
+          },
+          "n_detected": 1
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Should I use the invoicing module for logging received shipments, or is there a different process for recording arrivals before invoices are received?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 44858,
+          "latency_s": 14.966,
+          "llm_calls": 8,
+          "confidence": 0.92,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 28,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 725,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "sap.s4",
+                "entity_types": [
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Invoice:v1"
+                ],
+                "action_verb": "validate",
+                "resource_type_hint": "apiResource"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29290,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 8568,
+              "latency_s": 6.288160085678101,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+                  },
+                  "n_results": 21
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:Invoice:v1"
+                  },
+                  "n_results": 7
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 28
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "my.mes": 4,
+                "sap.ariba": 4,
+                "corp.itsm": 4,
+                "sap.ehs": 2,
+                "sap.s4": 2,
+                "emarsys.cx": 2,
+                "sap.crm": 1,
+                "siemens.plm": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:Vendor:v1": 14,
+                "sap.odm:entityType:PurchaseOrder:v1": 12,
+                "sap.odm:entityType:Material:v1": 7,
+                "sap.odm:entityType:Contract:v1": 7,
+                "sap.odm:entityType:Invoice:v1": 5,
+                "sap.odm:entityType:HazardousSubstance:v1": 1
+              },
+              "resource_types": {
+                "dataProduct": 7,
+                "apiResource": 8,
+                "agent": 5
+              },
+              "top_capabilities": {
+                "verify-vendor-compliance": 2,
+                "validate-vendor-material": 1,
+                "process-invoice": 1,
+                "verify-material-specification": 1,
+                "audit-procurement-compliance": 1,
+                "validate-material": 1,
+                "validate-material-impact": 1,
+                "receive-materials": 1
+              },
+              "n_candidates": 20
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Invoice:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "business_groups": [
+                  "proc_procure_fulfill_v1",
+                  "proc_QualityDrivenMfgSupplyChain_v1"
+                ],
+                "lines_of_business": [
+                  "Procurement",
+                  "Inventory Management"
+                ],
+                "reason": "Activity concerns received shipment recording and invoice timing within the procurement-to-fulfillment cycle."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:Vendor:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_QualityDrivenMfgSupplyChain_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Inventory Management\"\n  ],\n  \"reason\": \"Activity concerns received shipment recording and invoice timing within the procurement-to-fulfillment cycle.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity asks about logging received shipments and recording arrivals *before* invoices are received\u2014this is fundamentally about **goods receipt and inventory management** separate from invoicing processes.\n\n1. **BOM Compliance Automation Agent** (rank 1): Best match. Validates material specifications and bill-of-materials compliance, directly addressing how to properly record materials entering the system with correct compliance and specifications.\n\n2. **Engineering Change and Material Provisioning Agent** (rank 2): Allocates inventory and manages material provisioning\u2014relevant to tracking incoming shipments and material availability.\n\n3. **Production Change Orchestrator** (rank 3): Coordinates material flow and material updates, applicable to the logistics of receiving and recording shipments.\n\n4. **Asset Lifecycle Change Orchestrator** (rank 4): Tracks change lifecycle and material impact assessment for incoming items.\n\n5. **Safety Compliance Automation Coordinator** (rank 5): Validates material safety on receipt\u2014important for compliance when goods arrive.\n\n6. **Asset Provisioning Orchestrator** (rank 6): Coordinates material availability and allocation, relevant to recording asset receipt.\n\n7-8. **DataProducts** ranked lower because the activity describes operational processes (receiving/logging) rather than analytical reads, though they provide supporting capability assessment context.",
+              "refused": false,
+              "previous_resolved": [
+                "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+                "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1"
+              ],
+              "tokens": 4208,
+              "latency_s": 8.678,
+              "llm_calls": 2,
+              "n_new_from_graph": 8
+            },
+            "phase3_rerank": {
+              "tokens": 2067,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+              "confidence": 0.92
+            }
+          },
+          "decomp_trace": {
+            "tokens": 401,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 1,
+            "sub_queries": [
+              "Should I use the invoicing module for logging received shipments, or is there a different process for recording arrivals before invoices are received?"
+            ],
+            "original_prompt": "Should I use the invoicing module for logging received shipments, or is there a different process for recording arrivals before invoices are received?"
+          },
+          "n_detected": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user is asking for guidance on a specific operational procedure (receiving/logging shipments) rather than needing to execute a complete end-to-end business process; this is an ad-hoc question about system configuration and process choice, not a registered workflow.\"\n}\n```",
+      "reason": "The user is asking for guidance on a specific operational procedure (receiving/logging shipments) rather than needing to execute a complete end-to-end business process; this is an ad-hoc question about system configuration and process choice, not a registered workflow.",
+      "tokens": 1686,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 91768,
+    "latency_s": 27.809,
+    "llm_calls": 18
+  },
+  "wall_s": 35.458
+}

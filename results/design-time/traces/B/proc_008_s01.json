@@ -1,0 +1,63 @@
+{
+  "case_id": "proc_008_s01",
+  "process": "proc_008",
+  "label": "order compliance fulfillment process: Receive and validate customer order \u2014 Capture incoming customer orders and validate order completeness against account eligibility criteria.",
+  "method": "B",
+  "expected_ordIds": [
+    "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 1,
+    "r_at_5": 1,
+    "mrr": 1.0,
+    "first_hit_rank": 1,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "b_ns_correct": 1,
+    "b_tool_given_ns": 1
+  },
+  "trace": {
+    "stage1_namespaces": [
+      "sap.crm",
+      "sap.s4"
+    ],
+    "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.crm\", \"sap.s4\"],\n  \"reason\": \"Order receipt and validation requires customer account management (CRM) and inventory/material validation (S4), which are the core systems for sales order processing.\"\n}\n```",
+    "stage2_modalities": [
+      "operational"
+    ],
+    "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Receiving and validating customer orders requires live execution\u2014capturing data, applying business rules, and determining eligibility\u2014all of which are transactional actions that modify system state.\"\n}\n```",
+    "stage2_pool_size": 38,
+    "stage3_entity_types": [
+      "sap.odm:entityType:CustomerOrder:v1",
+      "sap.odm:entityType:CustomerAccount:v1",
+      "sap.odm:entityType:Material:v1"
+    ],
+    "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:CustomerOrder:v1\", \"sap.odm:entityType:CustomerAccount:v1\", \"sap.odm:entityType:Material:v1\"],\n  \"reason\": \"The activity receives and validates customer orders against account eligibility, directly operating on CustomerOrder and CustomerAccount entities, with Material referenced in order line items.\"\n}\n```",
+    "stage3_pool_size": 20,
+    "stage4_raw": "```json\n[\n  \"sap.s4:apiResource:CustomerOrderManagementAPI:v1\",\n  \"sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1\",\n  \"sap.s4:apiResource:CustomerAccountFinancialAPI:v1\",\n  \"sap.crm:apiResource:CustomerAccountDisputeManagement:v1\"\n]\n```",
+    "stage4_valid_count": 4,
+    "refused": false,
+    "tokens": 3765,
+    "latency_s": 1.609,
+    "llm_calls": 4
+  },
+  "wall_s": 1.634
+}

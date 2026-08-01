@@ -1,0 +1,499 @@
+{
+  "case_id": "oos-03",
+  "user_prompt": "We need to automatically flag employees who are disengaging from Slack and email communications as early warning signals\u2014right now our managers only find out about retention risks after exit interviews, and we want to identify flight-risk patterns at least 60 days before someone actually leaves.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "clean",
+  "condition": "F0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Monitor and analyze employee engagement patterns in Slack and email communications to detect disengagement signals and communication behavior changes",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 22723,
+          "latency_s": 14.111,
+          "llm_calls": 9,
+          "use_graph": false,
+          "picked_ord_id": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+          "picked_reason": "This data product provides employee engagement trending and insights through workforce analytics and talent metrics. While it aggregates performance review data rather than direct communication channels, it is the best available resource in the CLEAN-ORD landscape for monitoring and analyzing employee engagement patterns, identifying disengagement signals through performance trends, and tracking behavior changes across the organization. It operates in the Human Resources and People Analytics domain and directly exposes Employee entity type needed for employee-level engagement monitoring.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "monitor analyze employee engagement patterns Slack email communications disengagement signals behavior changes",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+                "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1",
+                "emarsys.cx:agent:OpportunityEngagementOrchestrator:v1",
+                "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                "sap.sf:dataProduct:IncidentResolutionAndComplianceAnalytics:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "employee engagement monitoring communication analysis disengagement detection",
+                "top_k": 5
+              },
+              "result_summary": "1 items",
+              "result_ord_ids": [
+                "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "Slack email communication analysis behavior monitoring engagement signals",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                "emarsys.cx:agent:OpportunityScoringOrchestrator:v1",
+                "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                "emarsys.cx:agent:OpportunityEngagementOrchestrator:v1",
+                "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+                "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                "emarsys.cx:agent:OpportunityEnrichmentOrchestrator:v1",
+                "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Employee:v1"
+              },
+              "result_summary": "20 items",
+              "result_ord_ids": [
+                "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                "my.mes:apiResource:WorkforceScheduleAndAbsenceManagement:v1",
+                "my.mes:apiResource:WorkforceAvailabilityAndCapacity:v1",
+                "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+                "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+                "sap.crm:apiResource:SalesTeamAvailabilityAndCapacityService:v1",
+                "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                "sap.crm:agent:SalesCompensationOrchestrator:v1",
+                "sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1",
+                "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                "sap.ehs:apiResource:EmployeeSafetyIncidentReporting:v1",
+                "sap.ehs:dataProduct:EmployeeCompensationSafetyRiskAnalytics:v1",
+                "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "sap.s4:apiResource:WorkforceOrgStructureAPI:v1",
+                "sap.s4:apiResource:WorkforceCapacityAndTimeOffManagement:v1",
+                "sap.sf:apiResource:EmployeeCompensationManagement:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "employee disengagement detection communication patterns analytics trending insights",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+                "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1",
+                "workday.hcm:dataProduct:CompensationTrendAnalytics:v1",
+                "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                "sap.ehs:dataProduct:ProductionQualityWorkforcePerformanceAnalytics:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "workforce engagement monitoring HR analytics people insights behavior communication",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                "sap.ehs:dataProduct:ProductionQualityWorkforcePerformanceAnalytics:v1",
+                "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1",
+                "sap.sf:dataProduct:IncidentResolutionAndComplianceAnalytics:v1",
+                "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+                "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+                "sap.sf:dataProduct:WorkforceQualityAndProductionMetrics:v1",
+                "sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1",
+                "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1"
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "reason": "This data product provides employee engagement trending and insights through workforce analytics and talent metrics. While it aggregates performance review data rather than direct communication channels, it is the best available resource in the CLEAN-ORD landscape for monitoring and analyzing employee engagement patterns, identifying disengagement signals through performance trends, and tracking behavior changes across the organization. It operates in the Human Resources and People Analytics domain and directly exposes Employee entity type needed for employee-level engagement monitoring."
+              },
+              "result": {
+                "committed": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Create an early warning system that identifies flight-risk employees based on disengagement patterns, with predictions at least 60 days before potential departure, to enable proactive manager intervention",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 26663,
+          "latency_s": 14.137,
+          "llm_calls": 11,
+          "use_graph": false,
+          "picked_ord_id": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+          "picked_reason": "Employee Performance Trend Analytics provides aggregated performance metrics and trend analysis across employee populations with multi-cycle review data consolidation. It exposes Employee and PerformanceReview entity types with talent-insights and trending tags, enabling identification of disengagement patterns through performance trajectory analysis. This foundational data product supports 60+ day early warning detection by tracking performance distributions and development patterns over time, enabling managers to intervene proactively with at-risk talent before departure.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "early warning system flight-risk employees disengagement patterns prediction departure intervention",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+                "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                "sap.sf:dataProduct:IncidentResolutionAndComplianceAnalytics:v1",
+                "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1",
+                "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+                "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "employee turnover risk analytics predictive model attrition",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "workday.hcm:dataProduct:CompensationTrendAnalytics:v1",
+                "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1",
+                "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1",
+                "sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1",
+                "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+                "emarsys.cx:dataProduct:OpportunitySalesForecasting:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "employee engagement disengagement monitoring retention survey",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+                "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1",
+                "sap.sf:dataProduct:IncidentResolutionAndComplianceAnalytics:v1",
+                "workday.hcm:agent:PerformanceReviewOrchestrator:v1",
+                "sap.sf:dataProduct:WorkforceQualityAndProductionMetrics:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Employee:v1"
+              },
+              "result_summary": "20 items",
+              "result_ord_ids": [
+                "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                "my.mes:apiResource:WorkforceScheduleAndAbsenceManagement:v1",
+                "my.mes:apiResource:WorkforceAvailabilityAndCapacity:v1",
+                "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+                "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+                "sap.crm:apiResource:SalesTeamAvailabilityAndCapacityService:v1",
+                "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                "sap.crm:agent:SalesCompensationOrchestrator:v1",
+                "sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1",
+                "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                "sap.ehs:apiResource:EmployeeSafetyIncidentReporting:v1",
+                "sap.ehs:dataProduct:EmployeeCompensationSafetyRiskAnalytics:v1",
+                "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "sap.s4:apiResource:WorkforceOrgStructureAPI:v1",
+                "sap.s4:apiResource:WorkforceCapacityAndTimeOffManagement:v1",
+                "sap.sf:apiResource:EmployeeCompensationManagement:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "predictive analytics workforce attrition leave probability churn forecast",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "emarsys.cx:dataProduct:OpportunitySalesForecasting:v1",
+                "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                "workday.hcm:apiResource:TimeOffAndCapacityAllocationManagement:v1",
+                "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+                "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "my.mes:apiResource:WorkforceAvailabilityAndCapacity:v1",
+                "sap.s4:apiResource:WorkforceCapacityAndTimeOffManagement:v1",
+                "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1",
+                "workday.hcm:apiResource:EmployeeTimeOffAvailabilityExposure:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "risk prediction early warning system identification employee leaving",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+                "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1",
+                "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                "sap.sf:dataProduct:IncidentResolutionAndComplianceAnalytics:v1",
+                "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "siemens.plm:dataProduct:IncidentAndSafetyAnalytics:v1",
+                "workday.hcm:agent:OccupationalSafetyIncidentMonitoring:v1",
+                "workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "manager intervention proactive employee retention talent management",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "workday.hcm:agent:PerformanceReviewOrchestrator:v1",
+                "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1",
+                "sap.sf:agent:TalentAcquisitionAndCampaignOrchestrator:v1",
+                "workday.hcm:agent:PerformanceReviewCoordination:v1",
+                "sap.sf:agent:PerformanceReviewCycleCoordinator:v1",
+                "sap.sf:agent:TalentAcquisitionCampaignOrchestrator:v1",
+                "sap.sf:apiResource:EmployeeChangeAndITServiceManagement:v1",
+                "workday.hcm:agent:RecruitmentCampaignAutomationOrchestrator:v1"
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                "reason": "Employee Performance Trend Analytics provides aggregated performance metrics and trend analysis across employee populations with multi-cycle review data consolidation. It exposes Employee and PerformanceReview entity types with talent-insights and trending tags, enabling identification of disengagement patterns through performance trajectory analysis. This foundational data product supports 60+ day early warning detection by tracking performance distributions and development patterns over time, enabling managers to intervene proactively with at-risk talent before departure."
+              },
+              "result": {
+                "committed": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"This request requires a new employee engagement monitoring and retention risk prediction capability that doesn't align with any of the registered skills, which focus on manufacturing, procurement, product launches, and operational processes rather than HR analytics and early warning systems.\"\n}\n```",
+      "reason": "This request requires a new employee engagement monitoring and retention risk prediction capability that doesn't align with any of the registered skills, which focus on manufacturing, procurement, product launches, and operational processes rather than HR analytics and early warning systems.",
+      "tokens": 1683,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 51443,
+    "latency_s": 28.248,
+    "llm_calls": 22
+  },
+  "wall_s": 40.87
+}

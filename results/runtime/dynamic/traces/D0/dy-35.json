@@ -1,0 +1,598 @@
+{
+  "case_id": "dy-35",
+  "user_prompt": "I need to pull together a comprehensive view of our current operational health by analyzing both our recent campaign safety incidents and engagement issues alongside our product economics to understand cost drivers and supplier dependencies\u2014so I can brief leadership on where we're experiencing the most friction across both customer-facing and manufacturing operations.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Analyze our recent campaign safety incidents and engagement issues to identify operational friction points in our customer-facing operations",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:SafetyIncident:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+                  "type": "agent",
+                  "title": "Incident Safety Coordinator",
+                  "shortDescription": "Automates safety incident detection and coordinates response workflows across ITSM."
+                },
+                {
+                  "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+                  "type": "agent",
+                  "title": "Occupational Safety Incident Coordinator",
+                  "shortDescription": "Monitors and coordinates safety incidents with hazardous substance involvement for compliance."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Incident Compliance Analytics",
+                  "shortDescription": "Aggregates incident and safety incident data for compliance reporting and trend analysis."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Campaign:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Access Management API",
+                  "shortDescription": "Manages provisioning and access control for campaign-related customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Customer Account Lifecycle API",
+                  "shortDescription": "Manages campaign-driven customer account provisioning and lifecycle operations."
+                },
+                "... (29 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Marketing and Customer Experience"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                  "type": "apiResource",
+                  "title": "Journey Contact State API",
+                  "shortDescription": "REST API for querying and updating real-time contact engagement state within active customer journeys."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Contact Engagement API",
+                  "shortDescription": "Manages real-time contact engagement states and campaign interactions across channels."
+                },
+                {
+                  "ordId": "sap.crm:apiResource:CampaignContactStateOrchestration:v1",
+                  "type": "apiResource",
+                  "title": "Customer Interaction Journey API",
+                  "shortDescription": "Retrieves and synchronizes customer touchpoint data across marketing campaigns and multi-channel communications."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1"
+              },
+              "result_preview": {
+                "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                "type": "dataProduct",
+                "namespace": "emarsys.cx",
+                "title": "Engagement Incident Metrics",
+                "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues.",
+                "description": "Summarizes incident patterns across customer journeys and engagement campaigns, providing metrics on safety incidents and campaign disruptions. Delivers actionable insights on incident frequency, impact on customer touchpoints, and remediation trends to optimize engagement reliability and compliance posture.",
+                "entityTypes": [
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "customer-experience"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "incident-analytics",
+                  "engagement-reliability",
+                  "compliance-monitoring"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "emarsys.cx:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.ehs",
+                "title": "Safety Event Performance Dashboard",
+                "shortDescription": "Consolidates incident and safety occurrence data to track organizational compliance posture and operational stability indicators.",
+                "description": "Consolidates Incident and SafetyIncident entity data to deliver operational stability metrics and regulatory adherence tracking. Analyzes safety event patterns to identify resolution efficiency benchmarks, compliance trend trajectories, and stakeholder communication outcomes. Enables data-driven safety program enhancements and supports regulatory accountability through detailed performance trend analysis.",
+                "entityTypes": [
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "customer-experience"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "safety-performance",
+                  "compliance-tracking",
+                  "incident-reporting"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:agent:IncidentComplianceOrchestrator:v1"
+              },
+              "result_preview": {
+                "ordId": "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+                "type": "agent",
+                "namespace": "emarsys.cx",
+                "title": "Risk Event Response Automation Engine",
+                "shortDescription": "Detects regulatory risks, orchestrates mitigation protocols, and validates adherence during customer engagement initiatives.",
+                "description": "Tracks adverse events and regulatory exposures within customer engagement programs, triggering automated compliance procedures and coordinating remediation efforts. Analyzes event information to satisfy regulatory mandates, integrates with control assessment frameworks, and schedules alerts to appropriate business units. Maintains real-time visibility into regulatory posture and resolution progress metrics to uphold required safety governance standards across the customer lifecycle.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1",
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "Sales"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "risk-governance",
+                  "event-response-automation",
+                  "regulatory-adherence"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "emarsys.cx:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                "reason": "Directly aggregates campaign incidents and safety-related engagement issues to identify operational friction points in customer-facing operations through incident frequency and impact analysis."
+              },
+              "result": {
+                "committed": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+          "picked_reason": "Directly aggregates campaign incidents and safety-related engagement issues to identify operational friction points in customer-facing operations through incident frequency and impact analysis.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 23980,
+          "latency_s": 12.468,
+          "llm_calls": 10
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+            "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Provide a comprehensive analysis of product economics including cost drivers and supplier dependencies to understand manufacturing operational constraints",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Manufacturing"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+                "type": "dataProduct",
+                "namespace": "sap.ariba",
+                "title": "Supply Chain Product Intelligence",
+                "shortDescription": "Aggregates engineering changes, materials, and product data for procurement insights.",
+                "description": "This data product summarizes engineering change patterns, material sourcing trends, and product item performance across the procurement lifecycle. It provides metrics on change velocity, material availability, and product adoption rates to support strategic sourcing and vendor optimization decisions.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "product-lifecycle",
+                  "sourcing-optimization",
+                  "material-management"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:dataProduct:VendorSpendIntelligence:v1"
+              },
+              "result_preview": {
+                "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                "type": "dataProduct",
+                "namespace": "corp.itsm",
+                "title": "Vendor Spend Intelligence",
+                "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics.",
+                "description": "This data product synthesizes Contract, PurchaseOrder, and Vendor information to provide comprehensive spend visibility and vendor performance insights. It summarizes procurement metrics including contract utilization, order frequency, and vendor reliability trends to enable data-driven sourcing decisions and supplier relationship optimization.",
+                "entityTypes": [
+                  "sap.odm:entityType:Contract:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "spend-analytics",
+                  "vendor-performance",
+                  "procurement-metrics",
+                  "sourcing-intelligence"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "corp.itsm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.ariba",
+                "title": "Procurement Spend Analytics",
+                "shortDescription": "Aggregated spend metrics and vendor performance trends across purchase orders and contracts.",
+                "description": "A derived analytical data product that consolidates procurement spend data across vendors, purchase orders, and active contracts. It provides pre-calculated KPIs including category spend distribution, vendor spend concentration, contract utilization rates, and period-over-period spend variance. This product enables procurement teams to identify optimization opportunities, monitor vendor performance, and support strategic sourcing decisions.",
+                "entityTypes": [
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1",
+                  "sap.odm:entityType:Contract:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "spend-analytics",
+                  "vendor-performance",
+                  "procurement-metrics",
+                  "sourcing-intelligence"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+                "reason": "This data product directly addresses product economics through comprehensive spend analysis, cost drivers via category spend distribution, and supplier dependencies through vendor performance and concentration metrics."
+              },
+              "result": {
+                "committed": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+          "picked_reason": "This data product directly addresses product economics through comprehensive spend analysis, cost drivers via category spend distribution, and supplier dependencies through vendor performance and concentration metrics.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 20974,
+          "latency_s": 12.825,
+          "llm_calls": 10
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is a strategic analytics and briefing exercise requiring ad-hoc synthesis across multiple operational domains (safety incidents, engagement, product economics, supplier dependencies) rather than execution of any single registered end-to-end process.\"\n}\n```",
+      "reason": "The request is a strategic analytics and briefing exercise requiring ad-hoc synthesis across multiple operational domains (safety incidents, engagement, product economics, supplier dependencies) rather than execution of any single registered end-to-end process.",
+      "tokens": 1685,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 3,
+      "sub_queries": [
+        "Analyze our recent campaign safety incidents and engagement issues to identify operational friction points",
+        "Analyze our product economics including cost drivers and supplier dependencies",
+        "Synthesize insights from safety incidents, engagement issues, and product economics into a comprehensive operational health briefing for leadership"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 46920,
+    "latency_s": 25.293,
+    "llm_calls": 22
+  },
+  "wall_s": 25.299
+}

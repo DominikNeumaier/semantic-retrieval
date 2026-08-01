@@ -1,0 +1,167 @@
+{
+  "case_id": "dy-26",
+  "user_prompt": "I need to pull together our current payroll structure and benefit allocations for the upcoming fiscal review, and at the same time, I need to log and track some equipment upgrades we're rolling out across departments to stay audit-ready. Can you help me access both of those workflows in a single request?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to access and review our current payroll structure and benefit allocations for the upcoming fiscal review.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:dataProduct:CompensationTrendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "workday.hcm",
+            "sap.sf"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"workday.hcm\", \"sap.sf\"],\n  \"reason\": \"Payroll structure and benefit allocations are core HR functions managed through these Human Capital Management and Human Resources systems.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\"modalities\": [\"analytical\"], \"reason\": \"Reviewing payroll structure and benefit allocations is a read-only examination for fiscal planning purposes, not executing payroll changes or updates.\"}\n```",
+          "stage2_pool_size": 9,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Compensation:v1",
+            "sap.odm:entityType:Employee:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Compensation:v1\", \"sap.odm:entityType:Employee:v1\"],\n  \"reason\": \"The activity requires accessing payroll structure and benefit allocations, which directly concerns compensation data and employee records for fiscal review purposes.\"\n}\n```",
+          "stage3_pool_size": 4,
+          "stage4_raw": "```json\n[\n  \"workday.hcm:dataProduct:CompensationTrendAnalytics:v1\",\n  \"sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 2,
+          "refused": false,
+          "tokens": 1936,
+          "latency_s": 5.997,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+            "sap.ehs:apiResource:ComplianceChangeServiceIntegration:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "I need to log and track equipment upgrades being rolled out across departments to maintain audit readiness.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:ServiceHealthMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:ProcurementOperationalMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\", \"my.mes\"],\n  \"reason\": \"Equipment upgrades require IT Service Management for change tracking and My.MES for equipment asset management with audit compliance.\"\n}\n```",
+          "stage2_modalities": [
+            "operational",
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\", \"analytical\"],\n  \"reason\": \"Equipment upgrades require operational logging/recording for audit compliance, plus analytical tracking and dashboards to monitor rollout status across departments.\"\n}\n```",
+          "stage2_pool_size": 58,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ITEquipment:v1",
+            "sap.odm:entityType:ChangeRequest:v1",
+            "sap.odm:entityType:EngineeringChange:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ITEquipment:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\"\n  ],\n  \"reason\": \"Equipment upgrades are tracked as ITEquipment with formal change management through ChangeRequest or EngineeringChange entities for audit compliance.\"\n}\n```",
+          "stage3_pool_size": 19,
+          "stage4_raw": "```json\n[\n  \"corp.itsm:apiResource:AssetChangeLifecycleAPI:v1\",\n  \"corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1\",\n  \"corp.itsm:dataProduct:ServiceHealthMetrics:v1\",\n  \"my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1\",\n  \"corp.itsm:dataProduct:ProcurementOperationalMetrics:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 3382,
+          "latency_s": 6.285,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user is requesting two separate, distinct workflows (payroll/benefits review and equipment upgrade tracking) that don't form a single cohesive process; proc_018 covers compensation review but no skill covers equipment upgrade lifecycle management end-to-end.\"\n}\n```",
+      "reason": "The user is requesting two separate, distinct workflows (payroll/benefits review and equipment upgrade tracking) that don't form a single cohesive process; proc_018 covers compensation review but no skill covers equipment upgrade lifecycle management end-to-end.",
+      "tokens": 1695,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 2,
+      "sub_queries": [
+        "Pull together our current payroll structure and benefit allocations for the upcoming fiscal review",
+        "Log and track equipment upgrades we're rolling out across departments to stay audit-ready"
+      ],
+      "routed_ok": true,
+      "count_ok": true,
+      "verdict": "green"
+    }
+  },
+  "trace": {
+    "tokens": 7297,
+    "latency_s": 12.282,
+    "llm_calls": 10
+  },
+  "wall_s": 12.297
+}

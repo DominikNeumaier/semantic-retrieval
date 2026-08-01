@@ -1,0 +1,248 @@
+{
+  "case_id": "dy-23",
+  "user_prompt": "I need to pull together our incident tracking data for the quarterly board review while simultaneously updating several customer cases that are stuck in our resolution queue\u2014can you help me access both of those systems in one go so I don't have to toggle between platforms?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to pull together our incident tracking data for the quarterly board review.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY AGENTS BY CAPABILITY:\nProcurement/Supplier expenses:\n-  \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY AGENTS BY CAPABILITY:\nIncident tracking & reporting:\n- corp.itsm:agent:IncidentRootCauseAnalyzer - analyzes incidents, generates diagnostic reports, correlates patterns\n- corp.itsm:agent:IncidentSafetyCoordinator - tracks incident lifecycle, safety incidents\n- sap.ehs:agent:IncidentRootCauseAnalyzer - analyzes safety incidents for root causes, corrective actions\n- sap.ehs:agent:IncidentResponseCoordinator - coordinates safety incident workflows\n\nProcurement/Supplier expenses:\n- sap.s4:agent:ProcurementMatchingAgent - matches requisitions to vendors by cost/quality\n- sap.ariba:apiResource:PurchaseOrderNetworkAPI - REST API for PO lifecycle\n\nProduction Compliance:\n- my.mes:agent:SupplierQualityComplianceOrchestrator - monitors vendor compliance, material inspections, escalation\n- my.mes:agent:BillOfMaterialsComplianceValidator - validates BOM compliance vs supplier quals\n- sap.s4:agent:BOMComplianceAutomationAgent - automates compliance verification\n\nBEST MATCHES FOR TYPICAL QUERIES:\n- Quarterly incident tracking for board review \u2192 corp.itsm:agent:IncidentRootCauseAnalyzer (generates diagnostic reports)\n- Material expenses breakdown by supplier \u2192 ProcurementMatchingAgent or PurchaseOrderNetworkAPI\n- Production compliance gaps \u2192 SupplierQualityComplianceOrchestrator\n"
+              },
+              "result_preview": {
+                "stored_bytes": 1429,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                "reason": "This agent processes service tickets and incidents to generate diagnostic reports and analyze incident patterns\u2014exactly what's needed for assembling incident tracking data for a quarterly board review."
+              },
+              "result_preview": {
+                "committed": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+          "picked_reason": "This agent processes service tickets and incidents to generate diagnostic reports and analyze incident patterns\u2014exactly what's needed for assembling incident tracking data for a quarterly board review.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 6,
+          "tokens": 36309,
+          "latency_s": 16.435,
+          "llm_calls": 6
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+            "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "I need to update several customer cases that are stuck in our resolution queue.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY AGENTS BY CAPABILITY:\nIncident/Case Lifecycle Management:\n- corp.itsm:agent:IncidentSafetyCoordinator - tracks incident lifecycle through resolution, coordinates response workflows, escalation\n- corp.itsm:agent:IncidentRootCauseAnalyzer - analyzes incidents, generates diagnostic reports\n\nIncident tracking & reporting (Safety/EHS):\n- sap.ehs:agent:IncidentRootCauseAnalyzer - analyzes safety incidents for root causes, corrective actions\n- sap.ehs:agent:IncidentResponseCoordinator - coordinates safety incident workflows\n\nProcurement/Supplier expenses:\n- sap.s4:agent:ProcurementMatchingAgent - matches requisitions to vendors by cost/quality\n- sap.ariba:apiResource:PurchaseOrderNetworkAPI - REST API for PO lifecycle\n\nProduction Compliance:\n- my.mes:agent:SupplierQualityComplianceOrchestrator - monitors vendor compliance, material inspections\n- my.mes:agent:BillOfMaterialsComplianceValidator - validates BOM compliance\n- sap.s4:agent:BOMComplianceAutomationAgent - automates compliance verification\n\nTYPICAL WORKFLOW PATTERNS:\n1. Incident analysis \u2192 lifecycle tracking: IncidentRootCauseAnalyzer \u2192 IncidentSafetyCoordinator\n2. Case resolution workflow: Use IncidentSafetyCoordinator for updating/tracking stuck cases"
+              },
+              "result_preview": {
+                "stored_bytes": 1368,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+                "reason": "Tracks incident lifecycle through resolution and coordinates workflows, directly addressing the need to update customer cases stuck in the resolution queue."
+              },
+              "result_preview": {
+                "committed": "corp.itsm:agent:IncidentSafetyCoordinator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+          "picked_reason": "Tracks incident lifecycle through resolution and coordinates workflows, directly addressing the need to update customer cases stuck in the resolution queue.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 3,
+          "tokens": 14546,
+          "latency_s": 13.238,
+          "llm_calls": 3
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"User is requesting ad-hoc access to two disparate systems (incident tracking and customer case management) for simultaneous viewing, which is a platform/technical integration request rather than a business process workflow that any single registered skill covers.\"\n}\n```",
+      "reason": "User is requesting ad-hoc access to two disparate systems (incident tracking and customer case management) for simultaneous viewing, which is a platform/technical integration request rather than a business process workflow that any single registered skill covers.",
+      "tokens": 1678,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 2,
+      "sub_queries": [
+        "Pull together incident tracking data for the quarterly board review",
+        "Update several customer cases that are stuck in the resolution queue"
+      ],
+      "routed_ok": true,
+      "count_ok": true,
+      "verdict": "green"
+    }
+  },
+  "trace": {
+    "tokens": 52794,
+    "latency_s": 29.673,
+    "llm_calls": 11
+  },
+  "wall_s": 29.685
+}

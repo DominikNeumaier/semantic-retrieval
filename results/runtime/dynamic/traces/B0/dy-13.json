@@ -1,0 +1,211 @@
+{
+  "case_id": "dy-13",
+  "user_prompt": "We need to track a equipment modification we're rolling out next month and manage the related service requests from our field teams. Can you help me set up the workflow to document this change and keep everyone updated on the status?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": null,
+  "skill_picked": "proc_007",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Document equipment modification specifications and scope",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeProductDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:EngineeringChangeOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "my.mes",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"my.mes\", \"sap.s4\"],\n  \"reason\": \"Equipment modification specifications require manufacturing/PLM expertise (my.mes has ITEquipment entity) and engineering change management (sap.s4 has EngineeringChange entity).\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Documenting equipment modification specifications and scope is a record-creation activity that establishes master data for operational execution and approval workflows.\"\n}\n```",
+          "stage2_pool_size": 40,
+          "stage3_entity_types": [
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:Machine:v1",
+            "sap.odm:entityType:ProductItem:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:EngineeringChange:v1\", \"sap.odm:entityType:Machine:v1\", \"sap.odm:entityType:ProductItem:v1\"],\n  \"reason\": \"Documenting equipment modification specifications and scope involves recording changes to equipment/machines through engineering change processes and their impact on product items.\"\n}\n```",
+          "stage3_pool_size": 13,
+          "stage4_raw": "```json\n[\n  \"sap.s4:apiResource:EngineeringChangeManagementAPI:v1\",\n  \"sap.s4:apiResource:EngineeringChangeProductDataAPI:v1\",\n  \"my.mes:apiResource:EngineeringChangeProductIntegration:v1\",\n  \"sap.s4:agent:EngineeringChangeOrchestrator:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2842,
+          "latency_s": 7.566,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Track rollout timeline and deployment schedule",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:dataProduct:ProcurementOperationalMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:AssetMaintenanceAndChangeAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:ServiceHealthMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\", \"sap.s4\"],\n  \"reason\": \"Rollout timeline and deployment schedule tracking requires IT service management (change requests, deployments) and manufacturing/inventory execution coordination.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Tracking rollout timelines and deployment schedules is a read-only monitoring and reporting activity that provides visibility into project status without driving live execution.\"\n}\n```",
+          "stage2_pool_size": 15,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ChangeRequest:v1",
+            "sap.odm:entityType:ProductionOrder:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:ChangeRequest:v1\", \"sap.odm:entityType:ProductionOrder:v1\"],\n  \"reason\": \"Tracking rollout timelines and deployment schedules primarily involves managing change requests and coordinating production order timelines.\"\n}\n```",
+          "stage3_pool_size": 6,
+          "stage4_raw": "```json\n[\n  \"corp.itsm:dataProduct:ProcurementOperationalMetrics:v1\",\n  \"sap.s4:dataProduct:AssetMaintenanceAndChangeAnalytics:v1\",\n  \"corp.itsm:dataProduct:ServiceHealthMetrics:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2249,
+          "latency_s": 5.954,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Establish field team communication and status update cadence",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm",
+            "sap.sf"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\", \"sap.sf\"],\n  \"reason\": \"Field team communication and status updates are operational IT service management functions, with HR involvement for workforce coordination and scheduling.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Establishing communication cadence and status updates requires agent coordination and operational execution, not analytical data products.\"\n}\n```",
+          "stage2_pool_size": 43,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Employee:v1",
+            "sap.odm:entityType:WorkforcePerson:v1",
+            "sap.odm:entityType:ServiceTicket:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Employee:v1\", \"sap.odm:entityType:WorkforcePerson:v1\", \"sap.odm:entityType:ServiceTicket:v1\"],\n  \"reason\": \"Field team communication and status updates primarily involve coordinating employees/workforce personnel and tracking service or work activities.\"\n}\n```",
+          "stage3_pool_size": 13,
+          "stage4_raw": "```json\n[]\n```\n\nThe activity \"Establish field team communication and status update cadence\" requires capabilities for team messaging, communication scheduling, status reporting, or collaboration tools. None of the candidate resources address these needs:\n\n- The ITSM resources focus on change requests, incident management, and asset provisioning\n- The SAP SuccessFactors resources focus on HR functions (compensation, time-off, employee lifecycle, performance reviews)\n- None provide communication platforms, messaging, scheduling, or field team coordination capabilities\n\nThis is a genuine gap in the landscape\u2014no meaningful match exists among the candidates.",
+          "stage4_valid_count": 0,
+          "refused": true,
+          "tokens": 2910,
+          "latency_s": 7.383,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_007",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_007\",\n  \"reason\": \"This skill manages the complete lifecycle of service and change requests from initial capture through implementation coordination, which directly matches the need to set up workflow for documenting the equipment modification and managing related field service requests with status tracking.\"\n}\n```",
+      "reason": "This skill manages the complete lifecycle of service and change requests from initial capture through implementation coordination, which directly matches the need to set up workflow for documenting the equipment modification and managing related field service requests with status tracking.",
+      "tokens": 1671,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Document equipment modification specifications and scope\",\n    \"Track rollout timeline and deployment schedule\",\n    \"Establish field team communication and status update cadence\"\n  ],\n  \"reason\": \"The skill covers service and change request lifecycle management including assessment, approvals, and stakeholder communication, but lacks specific steps for documenting the equipment modification details, managing the rollout schedule/timeline, and establishing structured communication channels to keep field teams updated on status.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers service and change request lifecycle management including assessment, approvals, and stakeholder communication, but lacks specific steps for documenting the equipment modification details, managing the rollout schedule/timeline, and establishing structured communication channels to ",
+      "tokens": 452,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "We need to track a equipment modification we're rolling out next month and manage the related service requests from our field teams. Can you help me set up the workflow to document this change and keep everyone updated on the status?"
+      ],
+      "original_prompt": "We need to track a equipment modification we're rolling out next month and manage the related service requests from our field teams. Can you help me set up the workflow to document this change and keep everyone updated on the status?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 2,
+      "sub_queries": [
+        "Set up a workflow to document and track an equipment modification being rolled out next month",
+        "Manage and coordinate service requests from field teams related to the equipment modification, keeping everyone updated on status"
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 10124,
+    "latency_s": 20.903,
+    "llm_calls": 14
+  },
+  "wall_s": 20.937
+}

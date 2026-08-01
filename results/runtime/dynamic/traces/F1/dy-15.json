@@ -1,0 +1,883 @@
+{
+  "case_id": "dy-15",
+  "user_prompt": "Our finance team is struggling to reconcile payroll data across multiple departments because we can't easily track how individual pay rates align with our established pay bands and job levels. We need to ensure our payment structures remain competitive and compliant with market rates, but right now we're manually cross-referencing spreadsheets which is error-prone and time-consuming. Can you help us integrate our payroll processes so we have a single source of truth for all employee earnings and payment configurations?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": "proc_018",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Map individual pay rates to established pay bands and job levels",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:JobFamilyStructureManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 44528,
+          "latency_s": 15.046,
+          "llm_calls": 8,
+          "confidence": 0.92,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 25,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 712,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "sap.sf",
+                "entity_types": [
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:Employee:v1"
+                ],
+                "action_verb": "analyse",
+                "resource_type_hint": "dataProduct"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29275,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 8433,
+              "latency_s": 9.341560125350952,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:Compensation:v1"
+                  },
+                  "n_results": 10
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:Employee:v1"
+                  },
+                  "n_results": 44
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "sap.crm:agent:SalesCompensationOrchestrator:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 44
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "workday.hcm": 7,
+                "sap.sf": 4,
+                "my.mes": 4,
+                "sap.crm": 2,
+                "sap.ehs": 1,
+                "corp.itsm": 1,
+                "emarsys.cx": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:Employee:v1": 18,
+                "sap.odm:entityType:Compensation:v1": 10,
+                "sap.odm:entityType:WorkforcePerson:v1": 4,
+                "sap.odm:entityType:TimeOff:v1": 4,
+                "sap.odm:entityType:EngineeringChange:v1": 2,
+                "sap.odm:entityType:ProductItem:v1": 2,
+                "sap.odm:entityType:Material:v1": 1
+              },
+              "resource_types": {
+                "apiResource": 9,
+                "agent": 5,
+                "dataProduct": 6
+              },
+              "top_capabilities": {
+                "validate-compensation-alignment": 2,
+                "manage-pay-adjustments": 1,
+                "adjust-compensation": 1,
+                "forecast-labor-costs": 1,
+                "approve-salary-adjustments": 1,
+                "apply-hazard-allowances": 1,
+                "recalculate-compensation": 1,
+                "manage-employee-incentives": 1
+              },
+              "n_candidates": 20
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "business_groups": [
+                  "proc_workforce_comp_benefits_v1",
+                  "proc_ChangeTalentIntegration_v1",
+                  "proc_talent_compliance_ops_v1"
+                ],
+                "lines_of_business": [
+                  "Human Resources",
+                  "Human Capital Management"
+                ],
+                "reason": "This activity directly manages employee compensation by aligning individual pay rates with standardized pay bands and job levels, core to workforce compensation and HR operations."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Compensation:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:WorkforcePerson:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_workforce_comp_benefits_v1\",\n    \"proc_ChangeTalentIntegration_v1\",\n    \"proc_talent_compliance_ops_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Human Resources\",\n    \"Human Capital Management\"\n  ],\n  \"reason\": \"This activity directly manages employee compensation by aligning individual pay rates with standardized pay bands and job levels, core to workforce compensation and HR operations.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity is about mapping individual pay rates to established pay bands and job levels - a **master data CRUD operation on compensation structures**.\n\n1. **sap.s4:agent:BOMComplianceAutomationAgent:v1** - Best match. While focused on BOM validation, it handles material-to-standard mapping and compliance verification, which is structurally similar to mapping rates to bands (validating items against established standards/rules).\n\n2. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** - Strong second. Coordinates material provisioning and manages material lifecycle alignment with standards, similar to coordinating pay rates with pay band structures.\n\n3. **sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1** - Analytical read on workforce and operational readiness; provides insights on capability assessment relevant to compensation structure planning.\n\n4. **my.mes:agent:ProductionChangeOrchestrator:v1** - Orchestrates material and specification changes; the coordination pattern parallels rate-to-band mapping workflows.\n\n5. **sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1** - Supports capability and operational readiness assessment, useful for validating compensation band structures against organizational capacity.\n\nNote: None of these resources perfectly match compensation/payroll domain, but these are the closest analogs for \"mapping entities to established structural categories.\"",
+              "refused": false,
+              "previous_resolved": [
+                "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+                "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+                "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+                "workday.hcm:apiResource:JobFamilyStructureManagement:v1",
+                "workday.hcm:apiResource:CompensationStructureDataExposure:v1"
+              ],
+              "tokens": 4142,
+              "latency_s": 5.704,
+              "llm_calls": 2,
+              "n_new_from_graph": 5
+            },
+            "phase3_rerank": {
+              "tokens": 1966,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+              "confidence": 0.92
+            }
+          },
+          "decomp_trace": {
+            "tokens": 350,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 1,
+            "sub_queries": [
+              "Map individual pay rates to established pay bands and job levels"
+            ],
+            "original_prompt": "Map individual pay rates to established pay bands and job levels"
+          },
+          "n_detected": 1
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Validate pay rate alignment with market rates and competitive benchmarking",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:dataProduct:CompensationTrendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 44430,
+          "latency_s": 14.569,
+          "llm_calls": 8,
+          "confidence": 0.92,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 28,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 714,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "sap.sf",
+                "entity_types": [
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:Employee:v1"
+                ],
+                "action_verb": "validate",
+                "resource_type_hint": "dataProduct"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29275,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 8415,
+              "latency_s": 9.867161750793457,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:Compensation:v1"
+                  },
+                  "n_results": 10
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:Employee:v1"
+                  },
+                  "n_results": 44
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 44
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "workday.hcm": 6,
+                "my.mes": 4,
+                "sap.sf": 4,
+                "sap.crm": 2,
+                "sap.ehs": 1,
+                "corp.itsm": 1,
+                "emarsys.cx": 1,
+                "sap.ariba": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:Employee:v1": 19,
+                "sap.odm:entityType:Compensation:v1": 10,
+                "sap.odm:entityType:WorkforcePerson:v1": 5,
+                "sap.odm:entityType:TimeOff:v1": 4,
+                "sap.odm:entityType:EngineeringChange:v1": 1,
+                "sap.odm:entityType:Material:v1": 1,
+                "sap.odm:entityType:ProductItem:v1": 1
+              },
+              "resource_types": {
+                "dataProduct": 6,
+                "apiResource": 9,
+                "agent": 5
+              },
+              "top_capabilities": {
+                "validate-compensation-alignment": 2,
+                "manage-pay-adjustments": 1,
+                "adjust-compensation": 1,
+                "forecast-labor-costs": 1,
+                "approve-salary-adjustments": 1,
+                "apply-hazard-allowances": 1,
+                "recalculate-compensation": 1,
+                "manage-employee-incentives": 1
+              },
+              "n_candidates": 20
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:PerformanceReview:v1"
+                ],
+                "business_groups": [
+                  "proc_workforce_comp_benefits_v1",
+                  "proc_ChangeTalentIntegration_v1"
+                ],
+                "lines_of_business": [
+                  "Human Resources",
+                  "Human Capital Management"
+                ],
+                "reason": "Validating pay rates against market benchmarks is a compensation management activity involving employee records and HR business processes."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Compensation:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:PerformanceReview:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_workforce_comp_benefits_v1\",\n    \"proc_ChangeTalentIntegration_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Human Resources\",\n    \"Human Capital Management\"\n  ],\n  \"reason\": \"Validating pay rates against market benchmarks is a compensation management activity involving employee records and HR business processes.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity \"Validate pay rate alignment with market rates and competitive benchmarking\" requires analytical comparison and validation capabilities. The top two data products best support this analytical read workload:\n\n1. **EngineeringChangeImpactAndWorkforceReadiness** \u2013 Most relevant: includes workforce assessment, capability evaluation, and readiness validation capabilities that align with benchmarking and alignment validation.\n\n2. **ProductChangeImpactAndMaterialAnalytics** \u2013 Strong match: provides cross-functional impact analysis and evaluation capabilities needed for competitive assessments.\n\n3. **BOMComplianceAutomationAgent** \u2013 High relevance: validates specifications and compliance standards, supporting benchmarking validation.\n\n4-8: The remaining agents support complementary orchestration, provisioning, and compliance workflows that could support implementation after validation.",
+              "refused": false,
+              "previous_resolved": [
+                "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+                "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+                "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+                "workday.hcm:apiResource:CompensationStructureDataExposure:v1"
+              ],
+              "tokens": 4051,
+              "latency_s": 4.702,
+              "llm_calls": 2,
+              "n_new_from_graph": 8
+            },
+            "phase3_rerank": {
+              "tokens": 1975,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "workday.hcm:dataProduct:CompensationTrendAnalytics:v1",
+              "confidence": 0.92
+            }
+          },
+          "decomp_trace": {
+            "tokens": 288,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Validate pay rate alignment with market rates",
+              "Perform competitive benchmarking analysis"
+            ],
+            "original_prompt": "Validate pay rate alignment with market rates and competitive benchmarking"
+          },
+          "n_detected": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Create consolidated single source of truth for employee earnings and payment configurations",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 44401,
+          "latency_s": 12.7,
+          "llm_calls": 8,
+          "confidence": 0.92,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 24,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 714,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "sap.sf",
+                "entity_types": [
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:Employee:v1"
+                ],
+                "action_verb": "orchestrate",
+                "resource_type_hint": "dataProduct"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29276,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 8310,
+              "latency_s": 7.199250221252441,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:Compensation:v1"
+                  },
+                  "n_results": 10
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:Employee:v1"
+                  },
+                  "n_results": 44
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "sap.sf:dataProduct:EmployeeEarningsAndPaymentConfigurationSOT:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 44
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "workday.hcm": 6,
+                "sap.sf": 4,
+                "my.mes": 3,
+                "sap.crm": 2,
+                "sap.ariba": 1,
+                "sap.s4": 1,
+                "sap.ehs": 1,
+                "corp.itsm": 1,
+                "emarsys.cx": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:Employee:v1": 20,
+                "sap.odm:entityType:Compensation:v1": 10,
+                "sap.odm:entityType:WorkforcePerson:v1": 7,
+                "sap.odm:entityType:TimeOff:v1": 3
+              },
+              "resource_types": {
+                "apiResource": 10,
+                "dataProduct": 6,
+                "agent": 4
+              },
+              "top_capabilities": {
+                "validate-compensation-alignment": 2,
+                "analyze-workforce-spend": 1,
+                "align-vendor-compensation": 1,
+                "optimize-contingent-labor": 1,
+                "retrieve-payroll": 1,
+                "validate-compensation": 1,
+                "extract-earnings": 1,
+                "manage-pay-adjustments": 1
+              },
+              "n_candidates": 20
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "business_groups": [
+                  "proc_workforce_comp_benefits_v1",
+                  "proc_talent_compliance_ops_v1"
+                ],
+                "lines_of_business": [
+                  "Human Capital Management",
+                  "Human Resources"
+                ],
+                "reason": "Activity focuses on consolidating employee earnings and payment data, directly involving compensation and employee entities within workforce and benefits management."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Compensation:v1\",\n    \"sap.odm:entityType:WorkforcePerson:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_workforce_comp_benefits_v1\",\n    \"proc_talent_compliance_ops_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Human Capital Management\",\n    \"Human Resources\"\n  ],\n  \"reason\": \"Activity focuses on consolidating employee earnings and payment data, directly involving compensation and employee entities within workforce and benefits management.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requests creating a **consolidated single source of truth for employee earnings and payment configurations** \u2014 this is fundamentally about master data management for compensation/payroll.\n\n1. **sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1** (BEST MATCH): This API resource directly manages employee organizational structure, hierarchies, and compensation-related data governance. Use cases explicitly mention \"Ensure compensation decisions align with correct organizational structure\" and \"Map compensation budgets to organizational cost centers\" \u2014 perfect alignment with establishing a consolidated earnings and payment configuration system.\n\n2. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1**: While not a direct match, this agent manages master data synchronization and coordinated updates across product lifecycles. The patterns of coordinating configuration changes, tracking status, and maintaining compliance could apply to earnings configuration workflows.\n\n3. **sap.s4:agent:BOMComplianceAutomationAgent:v1**: Automates validation and compliance verification of master data (bill-of-materials). The capability to \"automate-compliance-verification\" and enforce standards mirrors what's needed for payment configuration governance.\n\n4. **my.mes:agent:ProductionChangeOrchestrator:v1**: Orchestrates coordinated updates across systems and synchronizes changes \u2014 relevant for orchestrating earnings/payment configuration changes across dependent systems.\n\nThe dataProducts and other agents focus on analytics, operational readiness, and safety \u2014 not appropriate for establishing a master data system for compensation.",
+              "refused": false,
+              "previous_resolved": [
+                "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+                "sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1",
+                "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+                "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+              ],
+              "tokens": 4074,
+              "latency_s": 5.501,
+              "llm_calls": 2,
+              "n_new_from_graph": 4
+            },
+            "phase3_rerank": {
+              "tokens": 2027,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+              "confidence": 0.92
+            }
+          },
+          "decomp_trace": {
+            "tokens": 293,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Create a consolidated single source of truth for employee earnings data",
+              "Create a consolidated single source of truth for payment configurations"
+            ],
+            "original_prompt": "Create consolidated single source of truth for employee earnings and payment configurations"
+          },
+          "n_detected": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Reconcile payroll data across multiple departments",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 44438,
+          "latency_s": 9.586,
+          "llm_calls": 8,
+          "confidence": 0.92,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 28,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 710,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "sap.sf",
+                "entity_types": [
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:Employee:v1"
+                ],
+                "action_verb": "validate",
+                "resource_type_hint": "dataProduct"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29272,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 8415,
+              "latency_s": 4.889743804931641,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:Compensation:v1"
+                  },
+                  "n_results": 10
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:Employee:v1"
+                  },
+                  "n_results": 44
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "sap.crm:agent:SalesCompensationOrchestrator:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 44
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "workday.hcm": 6,
+                "my.mes": 3,
+                "sap.sf": 3,
+                "sap.ariba": 2,
+                "sap.crm": 2,
+                "sap.s4": 1,
+                "sap.ehs": 1,
+                "corp.itsm": 1,
+                "emarsys.cx": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:Employee:v1": 18,
+                "sap.odm:entityType:Compensation:v1": 10,
+                "sap.odm:entityType:WorkforcePerson:v1": 6,
+                "sap.odm:entityType:TimeOff:v1": 2,
+                "sap.odm:entityType:Invoice:v1": 1,
+                "sap.odm:entityType:Material:v1": 1,
+                "sap.odm:entityType:PurchaseOrder:v1": 1,
+                "sap.odm:entityType:Vendor:v1": 1,
+                "sap.odm:entityType:Contract:v1": 1
+              },
+              "resource_types": {
+                "dataProduct": 7,
+                "apiResource": 8,
+                "agent": 5
+              },
+              "top_capabilities": {
+                "analyze-workforce-spend": 1,
+                "align-vendor-compensation": 1,
+                "optimize-contingent-labor": 1,
+                "retrieve-payroll": 1,
+                "validate-compensation": 1,
+                "extract-earnings": 1,
+                "manage-pay-adjustments": 1,
+                "adjust-compensation": 1
+              },
+              "n_candidates": 20
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "business_groups": [
+                  "proc_workforce_comp_benefits_v1",
+                  "proc_talent_compliance_ops_v1"
+                ],
+                "lines_of_business": [
+                  "Human Resources",
+                  "Finance"
+                ],
+                "reason": "Payroll reconciliation involves employee compensation data validation across organizational departments, mapping to HR and finance business functions."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Compensation:v1\",\n    \"sap.odm:entityType:WorkforcePerson:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_workforce_comp_benefits_v1\",\n    \"proc_talent_compliance_ops_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Human Resources\",\n    \"Finance\"\n  ],\n  \"reason\": \"Payroll reconciliation involves employee compensation data validation across organizational departments, mapping to HR and finance business functions.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\"\n]\n```\n\n**Reasoning:**\n\nPayroll reconciliation across departments requires coordinating data and validating consistency across organizational units. The top candidates align with this need:\n\n1. **BOM Compliance Automation Agent** - Best match: automates validation and verification workflows, critical for reconciliation accuracy\n2. **Engineering Change Impact dataProduct** - Strong analytical capability to assess workforce readiness and capability gaps across departments\n3. **Asset Lifecycle Change Orchestrator** - Coordinates cross-functional workflows and change approvals, essential for multi-department reconciliation\n4. **Production Change Orchestrator** - Orchestrates coordination across systems and departments\n5. **Employee Hierarchy API** - Provides organizational structure needed to map payroll across departments and validate reporting hierarchies\n6. **Asset Provisioning Orchestrator** - Coordinates resource allocation across multiple departments\n7. **Safety Compliance Coordinator** - Less relevant but provides compliance automation for validation\n8. **Product Analytics dataProduct** - Least relevant; focuses on production transitions rather than payroll reconciliation",
+              "refused": false,
+              "previous_resolved": [
+                "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "sap.sf:apiResource:EmployeeCompensationManagement:v1"
+              ],
+              "tokens": 4026,
+              "latency_s": 4.696,
+              "llm_calls": 2,
+              "n_new_from_graph": 8
+            },
+            "phase3_rerank": {
+              "tokens": 2015,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+              "confidence": 0.92
+            }
+          },
+          "decomp_trace": {
+            "tokens": 360,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 1,
+            "sub_queries": [
+              "Reconcile payroll data across multiple departments"
+            ],
+            "original_prompt": "Reconcile payroll data across multiple departments"
+          },
+          "n_detected": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_018",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_018\",\n  \"reason\": \"This skill orchestrates comprehensive compensation review and workforce cost analysis by integrating payroll data, organizational structure validation, and procurement services\u2014directly addressing the need to reconcile payroll data, align pay rates with pay bands, and ensure competitive/compliant payment structures.\"\n}\n```",
+      "reason": "This skill orchestrates comprehensive compensation review and workforce cost analysis by integrating payroll data, organizational structure validation, and procurement services\u2014directly addressing the need to reconcile payroll data, align pay rates with pay bands, and ensure competitive/compliant pa",
+      "tokens": 1735,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Map individual pay rates to established pay bands and job levels\",\n    \"Validate pay rate alignment with market rates and competitive benchmarking\",\n    \"Create consolidated single source of truth for employee earnings and payment configurations\",\n    \"Reconcile payroll data across multiple departments\"\n  ],\n  \"reason\": \"The skill focuses on compensation review and workforce cost analysis at a high organizational level, but does not explicitly address the concrete operational activities the finance team needs: reconciling payroll across departments, mapping individual rates to pay bands/levels, validating market competitiveness, or establishing an integrated payroll system as a single source of truth.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill focuses on compensation review and workforce cost analysis at a high organizational level, but does not explicitly address the concrete operational activities the finance team needs: reconciling payroll across departments, mapping individual rates to pay bands/levels, validating market com",
+      "tokens": 641,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 180173,
+    "latency_s": 51.901,
+    "llm_calls": 34
+  },
+  "wall_s": 72.602
+}

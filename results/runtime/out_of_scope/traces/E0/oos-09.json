@@ -1,0 +1,181 @@
+{
+  "case_id": "oos-09",
+  "user_prompt": "We need to automatically flag when our spending with certified minority-owned and women-owned suppliers falls below our contractual diversity targets by business unit and fiscal quarter, then generate exception reports that our procurement team can use to adjust sourcing decisions before we breach our supplier diversity commitments to our major clients.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 1,
+    "falsely_picked": 0,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Set up automated monitoring to flag when spending with certified minority-owned and women-owned suppliers falls below contractual diversity targets, segmented by business unit and fiscal quarter",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nRESOLVED ACTIVITIES:\n\n1. Supplier financial health monitoring (90d):\n   - No specific resource found; likely future enhancement\n\n2. Ledger vs. supply chain discrepancy flagging:\n   - MATCH: sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n   - 3-way matching (invoice \u2192 PO \u2192 contract), flags exceptions\n\n3. Employee engagement monitoring (Slack/email):\n   - NO MATCH - Activity requires communication analytics not in landscape\n\n4. Flight-risk employee early warning (predictive, 60d lead):\n   - NO MATCH - Activity requires predictive HR analytics not in landscape\n\n5. Regulatory rule matching to vendor agreements:\n   - MATCH: sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1\n   - Automates vendor safety compliance verification across contracts\n\n6. Real-time cash flow visibility (hour-by-hour projections, alerts):\n   - NO MATCH - No treasury/liquidity/cash flow forecasting resources in landscape\n\n7. Dynamic pricing band order flagging:\n   - NO MATCH - Landscape has order mgmt and invoice reconciliation, but no price band validation\n\n8. Sales discount audit with threshold validation (customer segments, margin targets):\n   - NO MATCH - sap.crm has sales/opportunity agents (qualification, compensation, campaign); sap.s4 has order automation\n   - Missing: pre-order discount governance, segment-level threshold enforcement, margin verification before accounting\n\n9. Turnover velocity trends to identify slow-moving/obsolete SKUs:\n   - NO MATCH - Landscape has procurement/order/invoice/quality agents but no inventory analytics\n   - Missing: Inventory turnover velocity trend analysis, slow-SKU detection, inventory aging forecasting\n   - Explored: sap.s4 (order mgmt, BOM), my.mes (quality/manufacturing), sap.ariba (invoice/procurement)\n\n10. SKU clearance protocols & safety stock optimization:\n    - NO MATCH - Activity requires inventory management, clearance workflows, and dynamic safety stock adjustment\n    - Missing: SKU clearance/disposal protocols, safety stock level adjustment, inventory optimization agents\n    - Explored: sap.s4 (procurement matching, BOM compliance, order automation\u2014no inventory mgmt), my.mes (quality/production/BOM validation\u2014no inventory mgmt)\n    - Confirmed: No dedicated inventory management/analytics system in landscape\n\n11. Diversity spend monitoring by business unit & fiscal quarter:\n    - NO MATCH - Activity requires diversity supplier spend tracking with contractual target monitoring\n    - Missing: Diversity supplier spend analytics, minority/women-owned supplier tracking, target enforcement by BU/quarter\n    - Explored: sap.ariba (invoice reconciliation, vendor compliance\u2014focused on safety/safety; no diversity tracking), sap.ehs (compliance orchestration\u2014focused on safety; no diversity monitoring), sap.s4 (procurement matching, BOM\u2014no diversity spend)\n    - Confirmed: No diversity spend monitoring or diversity supplier analytics in landscape\n\nKey systems:\n- sap.s4: ERP (Procurement, Order Mgmt, Safety, Asset Lifecycle); OpportunityToOrderAutomationEngine does order creation\n- sap.crm: Sales/opportunity mgmt (qualification, compensation orchestration)\n- sap.ariba: Procurement/vendor reconciliation (post-order invoice matching, material coordination, hazardous material tracking)\n- sap.ehs: EHS/Regulatory compliance (safety incidents, vendor safety compliance, compliance campaigns)\n- my.mes: Manufacturing execution (quality, production orchestration, supplier compliance, BOM validation)\n- sap.sf: HR transactional\n- workday.hcm: HR transactional\n- emarsys.cx: Marketing/CX orchestration\n- No dedicated treasury/liquidity/pricing governance/discount audit/inventory management/diversity spend monitoring system\n"
+              },
+              "result_preview": {
+                "stored_bytes": 3842,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks any resource for diversity supplier spend monitoring, tracking minority/women-owned supplier spending against contractual targets by business unit and fiscal quarter."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape lacks any resource for diversity supplier spend monitoring, tracking minority/women-owned supplier spending against contractual targets by business unit and fiscal quarter."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks any resource for diversity supplier spend monitoring, tracking minority/women-owned supplier spending against contractual targets by business unit and fiscal quarter.",
+          "tool_calls": 5,
+          "tokens": 41047,
+          "latency_s": 24.87,
+          "llm_calls": 5
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Generate exception reports on supplier diversity shortfalls for the procurement team to use in adjusting sourcing decisions and preventing breaches of supplier diversity commitments to major clients",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nRESOLVED ACTIVITIES:\n\n1. Supplier financial health monitori \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a diversity supplier spend monitoring or analytics system to detect shortfalls against diversity commitments and generate exception reports for sourcing adjustments."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape lacks a diversity supplier spend monitoring or analytics system to detect shortfalls against diversity commitments and generate exception reports for sourcing adjustments."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a diversity supplier spend monitoring or analytics system to detect shortfalls against diversity commitments and generate exception reports for sourcing adjustments.",
+          "tool_calls": 2,
+          "tokens": 7168,
+          "latency_s": 4.638,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request requires a specialized supplier diversity monitoring and exception reporting process that is not represented in the registered skills; while some skills mention vendor/supplier management, none cover the specific end-to-end workflow of tracking diversity metrics against contractual targets, triggering automated flagging, and generating diversity compliance exception reports.\"\n}\n```",
+      "reason": "The request requires a specialized supplier diversity monitoring and exception reporting process that is not represented in the registered skills; while some skills mention vendor/supplier management, none cover the specific end-to-end workflow of tracking diversity metrics against contractual targe",
+      "tokens": 1703,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 50304,
+    "latency_s": 29.508,
+    "llm_calls": 9
+  },
+  "wall_s": 29.521
+}

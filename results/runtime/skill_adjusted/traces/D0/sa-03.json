@@ -1,0 +1,992 @@
+{
+  "case_id": "sa-03",
+  "user_prompt": "We need to prepare for launching our new product revision and ensure everything is ready for manufacturing. This includes validating that all our materials and components meet regulatory requirements and that our suppliers are properly verified. We also need to make sure our production team is properly staffed and compensated according to our updated labor requirements for this new revision. Can you orchestrate the complete preparation phase, including workforce readiness assessment and ensuring our financial structures align with the production needs?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": "proc_029",
+  "skill_picked": "proc_029",
+  "expected_gaps": [
+    "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+    "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Verify supplier qualifications and certifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Vendor:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Vendor Management API",
+                  "shortDescription": "Exposes purchase orders and vendor data for ITSM procurement workflows."
+                },
+                {
+                  "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Contract Compliance Orchestrator",
+                  "shortDescription": "Automates vendor contract and purchase order compliance monitoring across procurement lifecycle."
+                },
+                "... (39 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+                "type": "agent",
+                "namespace": "sap.ehs",
+                "title": "Vendor Compliance Automation Orchestrator",
+                "shortDescription": "Automates vendor safety compliance verification across purchase orders and contracts.",
+                "description": "Coordinates automated validation of vendor safety certifications and compliance status during purchase order creation and contract execution. Monitors vendor contract adherence to EHS requirements and processes compliance exceptions through escalation workflows. Automates reconciliation between vendor safety profiles, contract terms, and procurement activities to ensure continuous compliance alignment.",
+                "entityTypes": [
+                  "sap.odm:entityType:Contract:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "invoice-management",
+                  "three-way-matching",
+                  "vendor-reconciliation",
+                  "automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:agent:SupplierQualityComplianceOrchestrator:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:agent:SupplierQualityComplianceOrchestrator:v1",
+                "type": "agent",
+                "namespace": "my.mes",
+                "title": "Supplier Quality Compliance Orchestrator",
+                "shortDescription": "Automates vendor performance monitoring and procurement compliance validation.",
+                "description": "Monitors supplier quality metrics and vendor compliance status by coordinating across purchase orders and contracts. Processes incoming material inspections and automatically escalates non-conformance issues to designated vendors. Orchestrates quality certifications and supplier audit schedules to maintain manufacturing standards.",
+                "entityTypes": [
+                  "sap.odm:entityType:Contract:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "supplier-management",
+                  "quality-assurance",
+                  "compliance-automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:MaterialHazardDataExchange:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:apiResource:MaterialHazardDataExchange:v1",
+                "type": "apiResource",
+                "namespace": "sap.ehs",
+                "title": "Chemical Substance & Supplier Safety Registry API",
+                "shortDescription": "Retrieves hazardous chemical inventory records and supplier safety certifications for regulatory and operational needs.",
+                "description": "Provides comprehensive access to chemical inventory data, regulatory hazard classifications, and supplier safety documentation for environmental health and safety operations. Integrates chemical-supplier relationships with compliance tracking and incident prevention workflows. Enables real-time lookups of substance characteristics and supplier safety credentials to support regulatory reporting, environmental monitoring, and procurement risk assessments.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Environment, Health and Safety"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "chemical-inventory",
+                  "supplier-certification",
+                  "regulatory-hazard-data"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+                "reason": "This agent automates validation of vendor safety certifications and compliance status, directly addressing the requirement to verify supplier qualifications and certifications."
+              },
+              "result": {
+                "committed": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+          "picked_reason": "This agent automates validation of vendor safety certifications and compliance status, directly addressing the requirement to verify supplier qualifications and certifications.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 24094,
+          "latency_s": 920.616,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Assess and plan workforce staffing levels",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.sf:apiResource:EmployeeProductivityAndCapacityPlanning:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "People Analytics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Compliance and Risk Profile Analytics",
+                  "shortDescription": "Consolidates occupational safety data and incident patterns to assess employee risk exposure and safety culture maturity."
+                },
+                {
+                  "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trend Analytics",
+                  "shortDescription": "Aggregated performance metrics and trend analysis across employee populations and review cycles."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Capital Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+                  "type": "agent",
+                  "title": "Occupational Safety Incident Coordinator",
+                  "shortDescription": "Monitors and coordinates safety incidents with hazardous substance involvement for compliance."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:SafetyIncidentComplianceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Incident Compliance Analytics",
+                  "shortDescription": "Aggregates and analyzes incident data to provide safety compliance metrics and trends."
+                },
+                {
+                  "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                  "type": "apiResource",
+                  "title": "Sales Employee Hierarchy and Capability Directory API",
+                  "shortDescription": "Exposes employee organizational structure and sales capabilities for CRM operations."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeProductivityAndCapacityPlanning:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:apiResource:EmployeeProductivityAndCapacityPlanning:v1",
+                "type": "apiResource",
+                "namespace": "sap.sf",
+                "title": "Employee Productivity and Capacity Planning API",
+                "shortDescription": "Retrieves workforce capacity metrics and production scheduling data for resource optimization.",
+                "description": "Exposes employee productivity metrics and production order capacity data to enable workforce planning and resource allocation. Manages access to machine utilization rates correlated with employee shift assignments and production order requirements. Provides real-time capacity visibility across manufacturing and service operations through integrated workforce and production data.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Capital Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "workforce-planning",
+                  "capacity-optimization",
+                  "production-integration"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:WorkforceOrgStructureAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:WorkforceOrgStructureAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Workforce Organization Structure API",
+                "shortDescription": "Retrieves and manages employee organizational hierarchy and reporting relationships.",
+                "description": "Exposes comprehensive workforce organizational data including employee hierarchies, reporting structures, and personnel assignments. Manages access to workforce person records and their positional relationships within the enterprise. Provides real-time queries on organizational dependencies and employee classification for planning and compliance purposes.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Capital Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "workforce-management",
+                  "organizational-structure",
+                  "employee-hierarchy"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeProductivityAndCapacityPlanning:v1",
+                "reason": "This API provides workforce capacity metrics and production scheduling data enabling assessment and planning of staffing levels through real-time capacity visibility and resource optimization capabilities."
+              },
+              "result": {
+                "committed": "sap.sf:apiResource:EmployeeProductivityAndCapacityPlanning:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.sf:apiResource:EmployeeProductivityAndCapacityPlanning:v1",
+          "picked_reason": "This API provides workforce capacity metrics and production scheduling data enabling assessment and planning of staffing levels through real-time capacity visibility and resource optimization capabilities.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 25188,
+          "latency_s": 12.865,
+          "llm_calls": 10
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Review and align compensation structures with labor requirements",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeProductivityAndCapacityPlanning:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:agent:CompensationPolicyAutomationEngine:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+                "type": "agent",
+                "namespace": "sap.sf",
+                "title": "Compensation Policy Automation Engine",
+                "shortDescription": "Automates compensation policy enforcement and processes salary adjustments based on organizational rules.",
+                "description": "Monitors compensation changes across the workforce and automatically coordinates policy-driven salary adjustments according to defined organizational guidelines. Processes compensation events triggered by employee lifecycle transitions, performance outcomes, and market adjustments while enforcing compliance with compensation policies and payroll regulations.",
+                "entityTypes": [
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:Employee:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "compensation",
+                  "automation",
+                  "payroll",
+                  "policy-driven"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.sf",
+                "title": "Compensation and Salary Management API",
+                "shortDescription": "Manages employee compensation structures, salary data, and payroll integration.",
+                "description": "Exposes comprehensive compensation and salary information for employees and workforce persons. Retrieves salary bands, variable compensation, bonuses, and payroll-relevant attributes. Manages compensation planning data and provides access to salary history and payroll integration touchpoints.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "compensation",
+                  "salary-management",
+                  "payroll-integration",
+                  "employee-lifecycle"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+                "type": "agent",
+                "namespace": "workday.hcm",
+                "title": "Workforce Compensation Framework Processor",
+                "shortDescription": "Executes systematic wage determination and compensation adjustments according to enterprise guidelines and regulatory requirements.",
+                "description": "Orchestrates compensation data flows and validates salary structures against organizational frameworks and compliance mandates. Processes compensation modifications triggered by career progressions, evaluation cycles, and business-driven policy changes while maintaining audit trails and identifying policy exceptions. Synchronizes workforce compensation records with established pay structures and reconciles adjustments across employee populations.",
+                "entityTypes": [
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:Employee:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "salary management",
+                  "compliance orchestration",
+                  "workforce administration",
+                  "automated adjustment"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+                "reason": "Agent that validates salary structures against organizational frameworks and reconciles compensation adjustments across employee populations to align with labor requirements."
+              },
+              "result": {
+                "committed": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+          "picked_reason": "Agent that validates salary structures against organizational frameworks and reconciles compensation adjustments across employee populations to align with labor requirements.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 17464,
+          "latency_s": 10.25,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Validate financial structures against production budget needs",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Finance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Procurement Automation Orchestrator",
+                  "shortDescription": "Automates vendor engagement and procurement workflows through targeted marketing communications."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                "... (10 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Manufacturing"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:ProcurementMetricsHub:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+                "type": "dataProduct",
+                "namespace": "sap.s4",
+                "title": "Procurement Metrics Hub",
+                "shortDescription": "Aggregated procurement KPIs tracking vendor performance, order cycle times, and spend analysis.",
+                "description": "Delivers real-time analytical views of procurement operations, including vendor scorecards, purchase order aging, invoice reconciliation status, and material cost trends. Enables procurement teams to optimize supplier relationships, reduce cycle times, and identify cost-saving opportunities across the supply chain.",
+                "entityTypes": [
+                  "sap.odm:entityType:Vendor:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Invoice:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement",
+                  "Finance"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "vendor-analytics",
+                  "spend-management",
+                  "supply-chain-kpis",
+                  "procurement-intelligence"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:CompensationStructureDataExposure:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+                "type": "apiResource",
+                "namespace": "workday.hcm",
+                "title": "Compensation Structure Data Exposure",
+                "shortDescription": "Retrieves and manages compensation grade levels, salary bands, and pay structures.",
+                "description": "Exposes compensation structure definitions including grade levels, salary bands, and pay grade hierarchies for Employee and WorkforcePerson entities. Provides access to compensation planning data and enables retrieval of compensation frameworks used across the organization for payroll and HR planning purposes.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Finance"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "payroll",
+                  "workforce",
+                  "compensation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "ERP"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Procurement Automation Orchestrator",
+                  "shortDescription": "Automates vendor engagement and procurement workflows through targeted marketing communications."
+                },
+                {
+                  "ordId": "sap.s4:agent:ProcurementMatchingAgent:v1",
+                  "type": "agent",
+                  "title": "Procurement Matching Agent",
+                  "shortDescription": "Autonomously matches purchase requisitions to optimal vendors based on cost, quality, and delivery performance."
+                }
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+                "reason": "This API validates and exposes compensation structures (financial structures including salary bands and grade hierarchies) needed for production budget planning, and is a logical successor to the prior compensation policy enforcement step."
+              },
+              "result": {
+                "committed": "workday.hcm:apiResource:CompensationStructureDataExposure:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+          "picked_reason": "This API validates and exposes compensation structures (financial structures including salary bands and grade hierarchies) needed for production budget planning, and is a logical successor to the prior compensation policy enforcement step.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 27295,
+          "latency_s": 14.037,
+          "llm_calls": 9
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_029",
+      "skill_id_expected": "proc_029",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Verify supplier qualifications and certifications\",\n    \"Assess and plan workforce staffing levels\",\n    \"Review and align compensation structures with labor requirements\",\n    \"Validate financial structures against production budget needs\"\n  ],\n  \"reason\": \"The skill covers material/component regulatory validation and safety hazard identification, but the step list is incomplete and explicitly omits supplier verification, workforce staffing assessment, compensation planning, and financial alignment\u2014all concretely named in the request.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers material/component regulatory validation and safety hazard identification, but the step list is incomplete and explicitly omits supplier verification, workforce staffing assessment, compensation planning, and financial alignment\u2014all concretely named in the request.",
+      "tokens": 606,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 94647,
+    "latency_s": 957.768,
+    "llm_calls": 38
+  },
+  "wall_s": 957.848
+}

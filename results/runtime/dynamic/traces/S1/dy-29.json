@@ -1,0 +1,140 @@
+{
+  "case_id": "dy-29",
+  "user_prompt": "We need to pull our current production queue status and see which items are scheduled for the next shift, while simultaneously checking our active campaign outreach to identify which contacts have engaged with our latest messaging so we can coordinate our manufacturing timeline with customer communication touchpoints.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "S",
+  "state": "enriched",
+  "condition": "S1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull the current production queue status and show me which items are scheduled for the next shift",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:ProductionOrderAndMachineScheduling:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "my.mes:apiResource:WorkforceScheduleAndAbsenceManagement:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13614,
+          "latency_s": 0.0,
+          "llm_calls": 1
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "siemens.plm:apiResource:MachineProductionOrderIntegration:v1",
+            "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Check our active campaign outreach and identify which contacts have engaged with our latest messaging",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.crm:apiResource:CampaignContactStateOrchestration:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13623,
+          "latency_s": 0.0,
+          "llm_calls": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request combines two distinct ad-hoc lookups (production queue status and campaign engagement metrics) that don't align with any single end-to-end process skill; it requires real-time operational dashboards rather than a multi-step workflow.\"\n}\n```",
+      "reason": "The request combines two distinct ad-hoc lookups (production queue status and campaign engagement metrics) that don't align with any single end-to-end process skill; it requires real-time operational dashboards rather than a multi-step workflow.",
+      "tokens": 1683,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 3,
+      "sub_queries": [
+        "Pull our current production queue status and identify which items are scheduled for the next shift",
+        "Check our active campaign outreach to identify which contacts have engaged with our latest messaging",
+        "Coordinate our manufacturing timeline with customer communication touchpoints based on production queue and campaign engagement data"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 29187,
+    "latency_s": 0.0,
+    "llm_calls": 4
+  },
+  "wall_s": 0.017
+}

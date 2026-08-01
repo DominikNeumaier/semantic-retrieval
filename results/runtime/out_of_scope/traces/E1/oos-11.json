@@ -1,0 +1,428 @@
+{
+  "case_id": "oos-11",
+  "user_prompt": "Our multinational procurement team sources materials from 47 countries with payment terms ranging from 30-180 days, and we currently lack visibility into which of our outstanding purchase orders face material FX exposure\u2014we need a system that automatically flags POs with foreign currency commitments exceeding our 2% margin threshold and recommends hedging actions tied to our actual payment dates, not just spot rates today.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "enriched",
+  "condition": "E1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Build a system that provides visibility into outstanding purchase orders and identifies which ones have foreign currency commitments",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY GAPS IDENTIFIED:\n- No travel/flight management systems\n \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.s4/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.s4/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1007
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY GAPS IDENTIFIED:\n- No travel/flight management systems\n- No airline rebooking or cancellation management\n- No mobility/transportation platforms\n- No reservation or ticketing systems\n- No weather/operational delay systems\n- NO BLOCKCHAIN/DLT CAPABILITIES\n- NO WORKPLACE COMMUNICATION MONITORING\n- NO REGULATORY UPDATE INGESTION\n- NO SALES DISCOUNT AUDIT\n\nRESOLVED ACTIVITIES:\n1. Supplier financial health monitoring (90d): NO MATCH\n2. Ledger vs. supply chain discrepancy flagging: MATCH - sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n3. Employee engagement monitoring: NO MATCH\n4. Flight-risk employee early warning: NO MATCH\n5. Regulatory rule matching to vendor agreements: MATCH - sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1\n6. Real-time cash flow visibility: NO MATCH\n7. Dynamic pricing band order flagging: NO MATCH\n8. Sales discount audit: NO MATCH\n9. Turnover velocity trends: NO MATCH\n10. SKU clearance protocols: NO MATCH\n11. Diversity spend monitoring: NO MATCH\n12. Wiki policy/procedure sync: NO MATCH\n13. Hedging recommendation engine: NO MATCH\n14. ESG platform for emissions tracking: NO MATCH\n15. Internal candidate recommendation: MATCH - sap.sf:agent:SkillsAndCapabilityMatchingOrchestrator:v1\n16. Contract commercial terms extraction: NO MATCH\n17. Compare extracted commercial terms: NO MATCH\n18. Lease modification reconciliation: NO MATCH\n19. Automated data integration pipeline: NO MATCH\n20. GRI/CSRD compliance reporting: NO MATCH\n21. No-show fee flagging: NO MATCH\n22. Match no-show fees to contracts: NO MATCH\n23. Dispute decision logic: NO MATCH\n24. Employee wellness program data conversion: NO MATCH\n25. Subsidy calculation for shared rides: NO MATCH\n26. Automatically split/rebook flights: NO MATCH\n27. Blockchain tx reconciliation with AP ledger: NO MATCH\n28. Monitor employee engagement in Slack/email communications: NO MATCH\n29. Regulatory update alerts for supply chain contracts: NO MATCH\n30. Sales discount threshold audit by customer segment: NO MATCH\n31. PO visibility with foreign currency commitments: MATCH - sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1 (exposes PurchaseOrder entity with real-time status tracking, supports bulk operations for visibility)"
+              },
+              "result_preview": {
+                "stored_bytes": 2367,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+                "reason": "REST API that enables programmatic access to purchase order lifecycle management including real-time status tracking, which can expose outstanding POs and their currency attributes for visibility into foreign currency commitments."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+          "picked_reason": "REST API that enables programmatic access to purchase order lifecycle management including real-time status tracking, which can expose outstanding POs and their currency attributes for visibility into foreign currency commitments.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 67033,
+          "latency_s": 24.557,
+          "llm_calls": 8
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Create an automated flagging mechanism that identifies POs with FX exposure exceeding a 2% margin threshold",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY GAPS IDENTIFIED:\n- No travel/flight management systems\n \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.ariba/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.ariba/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 870
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.odm/ord_enriched.json"
+              },
+              "result_preview": {
+                "error": "file not found: benchmark/landscape/systems_enriched/sap.odm/ord_enriched.json"
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.odm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.odm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-independent\",\n  \"description\": \"SAP One Domain Model entity type taxonomy for the benchmark landscape. 40 canonical business objects servi \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 667
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY GAPS IDENTIFIED:\n- No travel/flight management systems\n- No airline rebooking or cancellation management\n- No mobility/transportation platforms\n- No reservation or ticketing systems\n- No weather/operational delay systems\n- NO BLOCKCHAIN/DLT CAPABILITIES\n- NO WORKPLACE COMMUNICATION MONITORING\n- NO REGULATORY UPDATE INGESTION\n- NO SALES DISCOUNT AUDIT\n- NO FX EXPOSURE FLAGGING/THRESHOLD MONITORING - critical gap for currency risk management\n\nRESOLVED ACTIVITIES:\n1. Supplier financial health monitoring (90d): NO MATCH\n2. Ledger vs. supply chain discrepancy flagging: MATCH - sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n3. Employee engagement monitoring: NO MATCH\n4. Flight-risk employee early warning: NO MATCH\n5. Regulatory rule matching to vendor agreements: MATCH - sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1\n6. Real-time cash flow visibility: NO MATCH\n7. Dynamic pricing band order flagging: NO MATCH\n8. Sales discount audit: NO MATCH\n9. Turnover velocity trends: NO MATCH\n10. SKU clearance protocols: NO MATCH\n11. Diversity spend monitoring: NO MATCH\n12. Wiki policy/procedure sync: NO MATCH\n13. Hedging recommendation engine: NO MATCH\n14. ESG platform for emissions tracking: NO MATCH\n15. Internal candidate recommendation: MATCH - sap.sf:agent:SkillsAndCapabilityMatchingOrchestrator:v1\n16. Contract commercial terms extraction: NO MATCH\n17. Compare extracted commercial terms: NO MATCH\n18. Lease modification reconciliation: NO MATCH\n19. Automated data integration pipeline: NO MATCH\n20. GRI/CSRD compliance reporting: NO MATCH\n21. No-show fee flagging: NO MATCH\n22. Match no-show fees to contracts: NO MATCH\n23. Dispute decision logic: NO MATCH\n24. Employee wellness program data conversion: NO MATCH\n25. Subsidy calculation for shared rides: NO MATCH\n26. Automatically split/rebook flights: NO MATCH\n27. Blockchain tx reconciliation with AP ledger: NO MATCH\n28. Monitor employee engagement in Slack/email communications: NO MATCH\n29. Regulatory update alerts for supply chain contracts: NO MATCH\n30. Sales discount threshold audit by customer segment: NO MATCH\n31. PO visibility with foreign currency commitments: MATCH - sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1\n32. FX exposure threshold flagging (2% margin): NO MATCH - no FX risk/treasury agent exists for threshold-based flagging"
+              },
+              "result_preview": {
+                "stored_bytes": 2476,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 8,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "No agent or resource in the landscape provides automated flagging of POs based on FX exposure margin thresholds; existing agents focus on invoice reconciliation and compliance, not currency risk management."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "No agent or resource in the landscape provides automated flagging of POs based on FX exposure margin thresholds; existing agents focus on invoice reconciliation and compliance, not currency risk management."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "No agent or resource in the landscape provides automated flagging of POs based on FX exposure margin thresholds; existing agents focus on invoice reconciliation and compliance, not currency risk management.",
+          "tool_calls": 9,
+          "tokens": 86580,
+          "latency_s": 34.904,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Develop a hedging recommendation engine that suggests hedging actions based on actual payment dates rather than spot rates",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "landscape"
+              },
+              "result_preview": {
+                "error": "path not allowed: 'landscape'. Allowed roots: ('benchmark',)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.odm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 11
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "No hedging recommendation engine exists in the landscape; the landscape lacks FX risk advisory, hedging strategy, and forward-looking financial risk modeling capabilities."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "No hedging recommendation engine exists in the landscape; the landscape lacks FX risk advisory, hedging strategy, and forward-looking financial risk modeling capabilities."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "No hedging recommendation engine exists in the landscape; the landscape lacks FX risk advisory, hedging strategy, and forward-looking financial risk modeling capabilities.",
+          "tool_calls": 3,
+          "tokens": 9467,
+          "latency_s": 8.508,
+          "llm_calls": 3
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request requires a specialized financial risk management system for FX exposure monitoring and hedging recommendations\u2014a capability not present in any registered skill, which focus on procurement, production, compliance, and fulfillment processes rather than treasury or financial hedging operations.\"\n}\n```",
+      "reason": "The request requires a specialized financial risk management system for FX exposure monitoring and hedging recommendations\u2014a capability not present in any registered skill, which focus on procurement, production, compliance, and fulfillment processes rather than treasury or financial hedging operati",
+      "tokens": 1715,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 165204,
+    "latency_s": 67.969,
+    "llm_calls": 22
+  },
+  "wall_s": 68.022
+}

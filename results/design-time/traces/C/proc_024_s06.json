@@ -1,0 +1,71 @@
+{
+  "case_id": "proc_024_s06",
+  "process": "proc_024",
+  "label": "ProcurementSafetyCompliance process: Analyze safety performance metrics and compensation impact \u2014 Correlate employee safety compliance with performance data to inform compensation and incentive decisions.",
+  "method": "C",
+  "expected_ordIds": [
+    "sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+      "score": 37.75
+    },
+    {
+      "ordId": "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+      "score": 37.75
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "anchors": {
+      "entity_types": [
+        "sap.odm:entityType:Employee:v1",
+        "sap.odm:entityType:Compensation:v1",
+        "sap.odm:entityType:SafetyIncident:v1",
+        "sap.odm:entityType:PerformanceReview:v1"
+      ],
+      "business_groups": [],
+      "lines_of_business": [
+        "Human Resources",
+        "Environment, Health & Safety",
+        "Procurement"
+      ],
+      "reason": "Activity correlates employee safety compliance metrics with compensation decisions, directly involving employee, compensation, and safety incident entities across HR, EHS, and procurement domains."
+    },
+    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Compensation:v1\",\n    \"sap.odm:entityType:SafetyIncident:v1\",\n    \"sap.odm:entityType:PerformanceReview:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Human Resources\",\n    \"Environment, Health & Safety\",\n    \"Procurement\"\n  ],\n  \"reason\": \"Activity correlates employee safety compliance metrics with compensation decisions, directly involving employee, compensation, and safety incident entities across HR, EHS, and procurement domains.\"\n}\n```",
+    "max_hops": 2,
+    "hop_decay": 0.5,
+    "edge_weights": {
+      "co_exposes": 1.0,
+      "co_partOf": 2.0,
+      "calls": 3.0,
+      "processNext": 3.0
+    },
+    "scored_resources": 249,
+    "walk_top_ids": [
+      "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+      "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+      "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+      "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+      "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+      "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+      "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+    ],
+    "rerank_raw": "```json\n[\n  \"emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1\",\n  \"emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requires **analyzing safety performance metrics and compensation impact** \u2014 this is fundamentally an analytical, read-heavy operation that correlates employee safety compliance data with performance data to inform compensation decisions.\n\n- **dataProducts are the best fit** because the activity explicitly calls for analysis and correlation of metrics to inform decisions (analytical reads, not transactional work).\n\n- The two emarsys dataProducts are selected as closest matches despite being product/inventory-focused, because they demonstrate the analytical aggregation pattern needed (metrics \u2192 insights \u2192 decision support).\n\n- **None of the candidates are ideal** \u2014 all 8 resources are either ITSM/engineering-focused agents or product analytics dataProducts. The activity actually requires **HR/compensation analytics** resources (employee safety records, performance metrics, compensation data), which aren't present in this candidate set.\n\n- The ITSM agents (AccessProvisioning, AssetProvisioning, ChangeAutomation, ChangeReleaseCoordinator) are organizational workflow orchestrators, not safety/compensation analysts.\n\n- The BillOfMaterialsComplianceValidator is compliance-focused but on materials, not employee safety.\n\n**Recommendation:** This activity should ideally use dedicated HR or Safety Analytics resources not present here. The dataProducts are the least poor choices given the analytical nature of the task.",
+    "refused": false,
+    "previous_resolved": [],
+    "tokens": 2169,
+    "latency_s": 6.185,
+    "llm_calls": 2
+  },
+  "wall_s": 6.2
+}

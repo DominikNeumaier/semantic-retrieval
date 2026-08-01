@@ -1,0 +1,141 @@
+{
+  "case_id": "dy-37",
+  "user_prompt": "I need to pull current production schedules and equipment status to finalize our procurement forecast for next quarter, and simultaneously submit a maintenance request for our assembly line since we're seeing performance degradation that needs urgent attention from our service team.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "A",
+  "state": "enriched",
+  "condition": "A1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull current production schedules and equipment status to help finalize our procurement forecast for next quarter",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+            "score": 0.5384
+          },
+          {
+            "ordId": "sap.crm:apiResource:ProductionOrderMachineInventoryService:v1",
+            "score": 0.5344
+          },
+          {
+            "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+            "score": 0.5116
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": 0.504
+          },
+          {
+            "ordId": "my.mes:dataProduct:CustomerOrderFulfillmentAndOEECorrelation:v1",
+            "score": 0.4825
+          }
+        ],
+        "method_trace": {
+          "embedding_model": "text-embedding-3-large",
+          "resource_count": 273,
+          "tokens": 29280,
+          "latency_s": 0.0
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+            "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Submit a maintenance request for our assembly line due to performance degradation that requires urgent attention from the service team",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1",
+            "score": 0.4638
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+            "score": 0.4581
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": 0.4289
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1",
+            "score": 0.4281
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+            "score": 0.4138
+          }
+        ],
+        "method_trace": {
+          "embedding_model": "text-embedding-3-large",
+          "resource_count": 273,
+          "tokens": 29284,
+          "latency_s": 0.0
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request involves two distinct processes (procurement forecasting + maintenance request submission) that don't align with any single skill's end-to-end workflow; the maintenance component specifically requires proc_010, but that doesn't cover the procurement forecasting aspect, and no skill orchestrates both together.\"\n}\n```",
+      "reason": "The request involves two distinct processes (procurement forecasting + maintenance request submission) that don't align with any single skill's end-to-end workflow; the maintenance component specifically requires proc_010, but that doesn't cover the procurement forecasting aspect, and no skill orche",
+      "tokens": 1687,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 2,
+      "sub_queries": [
+        "Pull current production schedules and equipment status to finalize our procurement forecast for next quarter",
+        "Submit a maintenance request for our assembly line due to performance degradation that needs urgent attention from our service team"
+      ],
+      "routed_ok": true,
+      "count_ok": true,
+      "verdict": "green"
+    }
+  },
+  "trace": {
+    "tokens": 60520,
+    "latency_s": 0.0,
+    "llm_calls": 2
+  },
+  "wall_s": 0.355
+}

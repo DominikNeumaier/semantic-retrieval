@@ -1,0 +1,164 @@
+{
+  "case_id": "dy-23",
+  "user_prompt": "I need to pull together our incident tracking data for the quarterly board review while simultaneously updating several customer cases that are stuck in our resolution queue\u2014can you help me access both of those systems in one go so I don't have to toggle between platforms?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "enriched",
+  "condition": "B1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to pull together our incident tracking data for the quarterly board review.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\"],\n  \"reason\": \"Incident tracking data is core to IT Service Management, making corp.itsm the primary source for the quarterly board review.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Pulling incident tracking data for board review is a read-only, aggregated reporting task that belongs in the analytical modality.\"\n}\n```",
+          "stage2_pool_size": 7,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Incident:v1",
+            "sap.odm:entityType:SafetyIncident:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Incident:v1\", \"sap.odm:entityType:SafetyIncident:v1\"],\n  \"reason\": \"The activity explicitly references incident tracking data collection, which directly corresponds to Incident and SafetyIncident entity types.\"\n}\n```",
+          "stage3_pool_size": 3,
+          "stage4_raw": "```json\n[\n  \"corp.itsm:dataProduct:IncidentComplianceAnalytics:v1\",\n  \"corp.itsm:dataProduct:IncidentEngagementReliability:v1\",\n  \"corp.itsm:dataProduct:SafetyIncidentMetrics:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2014,
+          "latency_s": 1.157,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+            "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "I need to update several customer cases that are stuck in our resolution queue.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm",
+            "sap.crm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\", \"sap.crm\"],\n  \"reason\": \"Customer cases in a resolution queue primarily fall under IT Service Management (ITSM) for case/ticket management, with CRM providing customer account context and support history.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Updating customer cases requires direct action on master data through agents or APIs, which is operational work.\"\n}\n```",
+          "stage2_pool_size": 40,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ServiceTicket:v1",
+            "sap.odm:entityType:CustomerAccount:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:ServiceTicket:v1\", \"sap.odm:entityType:CustomerAccount:v1\"],\n  \"reason\": \"Customer cases in a resolution queue typically correspond to service tickets or support incidents tracked against customer accounts.\"\n}\n```",
+          "stage3_pool_size": 18,
+          "stage4_raw": "```json\n[\n  \"corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1\",\n  \"sap.crm:apiResource:CustomerAccountDisputeManagement:v1\",\n  \"corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1\",\n  \"corp.itsm:agent:IncidentRootCauseAnalyzer:v1\"\n]\n```",
+          "stage4_valid_count": 4,
+          "refused": false,
+          "tokens": 3682,
+          "latency_s": 1.573,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"User is requesting ad-hoc access to two disparate systems (incident tracking and customer case management) for simultaneous viewing, which is a platform/technical integration request rather than a business process workflow that any single registered skill covers.\"\n}\n```",
+      "reason": "User is requesting ad-hoc access to two disparate systems (incident tracking and customer case management) for simultaneous viewing, which is a platform/technical integration request rather than a business process workflow that any single registered skill covers.",
+      "tokens": 1678,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 2,
+      "sub_queries": [
+        "Pull together incident tracking data for the quarterly board review",
+        "Update several customer cases that are stuck in the resolution queue"
+      ],
+      "routed_ok": true,
+      "count_ok": true,
+      "verdict": "green"
+    }
+  },
+  "trace": {
+    "tokens": 7635,
+    "latency_s": 2.73,
+    "llm_calls": 10
+  },
+  "wall_s": 2.781
+}

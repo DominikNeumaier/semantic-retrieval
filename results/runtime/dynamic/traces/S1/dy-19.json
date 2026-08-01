@@ -1,0 +1,214 @@
+{
+  "case_id": "dy-19",
+  "user_prompt": "We need to check our current compliance status for the hazardous materials we're storing across all our facilities and understand what regulatory requirements we need to meet. Can you pull a report showing our inventory levels and which items require updated certifications or documentation?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "S",
+  "state": "enriched",
+  "condition": "S1",
+  "skill_expected": null,
+  "skill_picked": "proc_004",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Pull compliance status report across all facilities",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceInventoryExchange:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.s4:dataProduct:IncidentSafetyAnalyticsHub:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13621,
+          "latency_s": 2.281,
+          "llm_calls": 1
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Generate inventory levels report for hazardous materials",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceInventoryExchange:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.s4:apiResource:HazardousSubstanceInventoryAPI:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13616,
+          "latency_s": 2.269,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Identify items requiring updated certifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.ehs:apiResource:MaterialVendorHazardousSubstanceCompliance:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.ehs:apiResource:PurchaseOrderVendorSafetyCompliance:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13629,
+          "latency_s": 2.44,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Identify items requiring updated documentation",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "siemens.plm:apiResource:EngineringChangeManagement:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeProductDataAPI:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.ariba:apiResource:EngineeringChangeAndProductItemManagement:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13608,
+          "latency_s": 2.857,
+          "llm_calls": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_004",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_004\",\n  \"reason\": \"This skill directly manages hazardous substance compliance, identification of hazardous materials, and assessment across manufacturing operations, which comprehensively covers the user's request for compliance status, inventory levels, and certification requirements for stored hazardous materials.\"\n}\n```",
+      "reason": "This skill directly manages hazardous substance compliance, identification of hazardous materials, and assessment across manufacturing operations, which comprehensively covers the user's request for compliance status, inventory levels, and certification requirements for stored hazardous materials.",
+      "tokens": 1683,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Pull compliance status report across all facilities\",\n    \"Generate inventory levels report for hazardous materials\",\n    \"Identify items requiring updated certifications\",\n    \"Identify items requiring updated documentation\"\n  ],\n  \"reason\": \"The skill covers identification of hazardous materials and execution of regulatory compliance programs, but lacks specific steps for generating reports on current inventory levels, compliance status across facilities, and identifying which items need certification or documentation updates.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers identification of hazardous materials and execution of regulatory compliance programs, but lacks specific steps for generating reports on current inventory levels, compliance status across facilities, and identifying which items need certification or documentation updates.",
+      "tokens": 457,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "We need to check our current compliance status for the hazardous materials we're storing across all our facilities and understand what regulatory requirements we need to meet. Can you pull a report showing our inventory levels and which items require updated certifications or documentation?"
+      ],
+      "original_prompt": "We need to check our current compliance status for the hazardous materials we're storing across all our facilities and understand what regulatory requirements we need to meet. Can you pull a report showing our inventory levels and which items require updated certifications or documentation?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 3,
+      "sub_queries": [
+        "Check our current compliance status for hazardous materials storage across all facilities against applicable regulatory requirements",
+        "Pull a report showing our hazardous materials inventory levels across all facilities",
+        "Identify which hazardous materials items require updated certifications or documentation"
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 56614,
+    "latency_s": 9.847,
+    "llm_calls": 6
+  },
+  "wall_s": 9.857
+}

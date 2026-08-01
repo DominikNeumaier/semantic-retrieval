@@ -1,0 +1,476 @@
+{
+  "case_id": "oos-03",
+  "user_prompt": "We need to automatically flag employees who are disengaging from Slack and email communications as early warning signals\u2014right now our managers only find out about retention risks after exit interviews, and we want to identify flight-risk patterns at least 60 days before someone actually leaves.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 1,
+    "falsely_picked": 0,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Monitor and analyze employee engagement patterns in Slack and email communications to detect disengagement signals and communication behavior changes",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "People Analytics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Compliance and Risk Profile Analytics",
+                  "shortDescription": "Consolidates occupational safety data and incident patterns to assess employee risk exposure and safety culture maturity."
+                },
+                {
+                  "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trend Analytics",
+                  "shortDescription": "Aggregated performance metrics and trend analysis across employee populations and review cycles."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "track-engagement-metrics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Engagement Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "assess-engagement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                  "type": "apiResource",
+                  "title": "Journey Contact State API",
+                  "shortDescription": "REST API for querying and updating real-time contact engagement state within active customer journeys."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "detect-anomalies"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Engagement Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "type": "dataProduct",
+                "namespace": "sap.crm",
+                "title": "Employee Performance Trending and Insights",
+                "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics.",
+                "description": "This data product synthesizes employee performance review data to summarize key talent trends, capability gaps, and performance patterns across the sales organization. It delivers actionable insights on workforce development, engagement trajectories, and high-potential employee identification to support strategic people analytics and succession planning initiatives.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:PerformanceReview:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources",
+                  "People Analytics"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "performance-management",
+                  "workforce-analytics",
+                  "talent-insights",
+                  "trending"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "No ORD resource exists for monitoring employee engagement patterns in Slack and email communications to detect disengagement signals and behavior changes; the landscape lacks workplace communication analysis capabilities."
+              },
+              "result": {
+                "refused": true,
+                "reason": "No ORD resource exists for monitoring employee engagement patterns in Slack and email communications to detect disengagement signals and behavior changes; the landscape lacks workplace communication analysis capabilities."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "No ORD resource exists for monitoring employee engagement patterns in Slack and email communications to detect disengagement signals and behavior changes; the landscape lacks workplace communication analysis capabilities.",
+          "tool_calls": 9,
+          "tokens": 21827,
+          "latency_s": 10.345,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Create an early warning system that identifies flight-risk employees based on disengagement patterns, with predictions at least 60 days before potential departure, to enable proactive manager intervention",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "People Analytics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Compliance and Risk Profile Analytics",
+                  "shortDescription": "Consolidates occupational safety data and incident patterns to assess employee risk exposure and safety culture maturity."
+                },
+                {
+                  "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trend Analytics",
+                  "shortDescription": "Aggregated performance metrics and trend analysis across employee populations and review cycles."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "assess-engagement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                  "type": "apiResource",
+                  "title": "Journey Contact State API",
+                  "shortDescription": "REST API for querying and updating real-time contact engagement state within active customer journeys."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "detect-anomalies"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Engagement Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Employee:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Sales Capacity and Time Off Management API",
+                  "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning."
+                },
+                {
+                  "ordId": "my.mes:apiResource:WorkforceScheduleAndAbsenceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Workforce Schedule and Absence Management API",
+                  "shortDescription": "Manages employee shift assignments and time-off requests in production operations."
+                },
+                "... (41 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "type": "dataProduct",
+                "namespace": "sap.crm",
+                "title": "Employee Performance Trending and Insights",
+                "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics.",
+                "description": "This data product synthesizes employee performance review data to summarize key talent trends, capability gaps, and performance patterns across the sales organization. It delivers actionable insights on workforce development, engagement trajectories, and high-potential employee identification to support strategic people analytics and succession planning initiatives.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:PerformanceReview:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources",
+                  "People Analytics"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "performance-management",
+                  "workforce-analytics",
+                  "talent-insights",
+                  "trending"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "reason": "This data product aggregates employee engagement trajectories and performance trends, providing the workforce analytics foundation needed to identify disengagement patterns and detect flight-risk employees for proactive managerial intervention."
+              },
+              "result": {
+                "committed": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+          "picked_reason": "This data product aggregates employee engagement trajectories and performance trends, providing the workforce analytics foundation needed to identify disengagement patterns and detect flight-risk employees for proactive managerial intervention.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 35402,
+          "latency_s": 13.626,
+          "llm_calls": 10
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"This request requires a new employee engagement monitoring and retention risk prediction capability that doesn't align with any of the registered skills, which focus on manufacturing, procurement, product launches, and operational processes rather than HR analytics and early warning systems.\"\n}\n```",
+      "reason": "This request requires a new employee engagement monitoring and retention risk prediction capability that doesn't align with any of the registered skills, which focus on manufacturing, procurement, product launches, and operational processes rather than HR analytics and early warning systems.",
+      "tokens": 1683,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 59286,
+    "latency_s": 23.971,
+    "llm_calls": 21
+  },
+  "wall_s": 23.994
+}

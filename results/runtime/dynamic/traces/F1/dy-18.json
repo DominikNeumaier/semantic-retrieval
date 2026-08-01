@@ -1,0 +1,471 @@
+{
+  "case_id": "dy-18",
+  "user_prompt": "I need to check the status of an order we placed last month and see if we can adjust the production schedule to move up the delivery date. Can you help me find where that information is tracked?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Check the status of an order we placed last month",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:CustomerOrderAndAccountManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 44924,
+          "latency_s": 13.65,
+          "llm_calls": 8,
+          "confidence": 0.92,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 24,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 715,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "sap.s4",
+                "entity_types": [
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:CustomerOrder:v1"
+                ],
+                "action_verb": "retrieve",
+                "resource_type_hint": "dataProduct"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29274,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 8758,
+              "latency_s": 6.500481843948364,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+                  },
+                  "n_results": 21
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:CustomerOrder:v1"
+                  },
+                  "n_results": 15
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 36
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "corp.itsm": 5,
+                "my.mes": 5,
+                "emarsys.cx": 4,
+                "sap.ariba": 2,
+                "sap.crm": 2,
+                "sap.s4": 1,
+                "siemens.plm": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:PurchaseOrder:v1": 10,
+                "sap.odm:entityType:Vendor:v1": 10,
+                "sap.odm:entityType:CustomerAccount:v1": 7,
+                "sap.odm:entityType:CustomerOrder:v1": 7,
+                "sap.odm:entityType:Contract:v1": 5,
+                "sap.odm:entityType:ProductionOrder:v1": 3,
+                "sap.odm:entityType:Machine:v1": 2,
+                "sap.odm:entityType:QualityInspection:v1": 1
+              },
+              "resource_types": {
+                "apiResource": 14,
+                "dataProduct": 3,
+                "agent": 3
+              },
+              "top_capabilities": {
+                "manage-customer-accounts": 2,
+                "validate-order": 2,
+                "receive-log-orders": 1,
+                "track-service-tickets": 1,
+                "enable-order-processing": 1,
+                "enrich-customer-order": 1,
+                "enhance-order-fulfillment-data": 1,
+                "enrich-customer-orders": 1
+              },
+              "n_candidates": 20
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:CustomerOrder:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1"
+                ],
+                "business_groups": [
+                  "proc_order_compliance_fulfillment_v1",
+                  "proc_procure_fulfill_v1"
+                ],
+                "lines_of_business": [
+                  "Sales and Order Management",
+                  "Procurement"
+                ],
+                "reason": "Checking order status involves tracking a customer or purchase order through fulfillment and procurement processes."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\",\n    \"proc_procure_fulfill_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Sales and Order Management\",\n    \"Procurement\"\n  ],\n  \"reason\": \"Checking order status involves tracking a customer or purchase order through fulfillment and procurement processes.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "siemens.plm:agent:BOMComplianceValidator:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity \"Check the status of an order we placed last month\" is fundamentally about **tracking/monitoring order status** \u2014 a read operation on order/purchase order master data to retrieve current state.\n\n**Top choice - AssetLifecycleChangeOrchestrator (agent):** While this resource emphasizes orchestration, it includes `track-change-lifecycle` which covers tracking order/change states across the lifecycle, and handles engineering changes that typically follow purchase orders.\n\n**Second - EngineeringChangeAndMaterialProvisioning (agent):** Includes `track-change-status` capability, directly relevant to status checking; covers the provisioning workflow initiated by purchase orders.\n\n**Third & Fourth - DataProducts:** These analytical resources (`EngineeringChangeImpactAndWorkforceReadiness` and `ProductChangeImpactAndMaterialAnalytics`) are secondary but relevant for understanding the broader impact and readiness context of an order placed last month.\n\n**Excluded:**\n- Material Receipt APIs are for inbound logistics (future state), not status checking of already-placed orders\n- BOM Compliance agents focus on validation, not status tracking\n- Production Change Orchestrator is for active orchestration, not historical status querying",
+              "refused": false,
+              "previous_resolved": [
+                "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+                "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+                "my.mes:apiResource:CustomerOrderAndAccountManagement:v1",
+                "my.mes:dataProduct:ProductionOrderQualityMetrics:v1"
+              ],
+              "tokens": 4108,
+              "latency_s": 7.15,
+              "llm_calls": 2,
+              "n_new_from_graph": 4
+            },
+            "phase3_rerank": {
+              "tokens": 2069,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+              "confidence": 0.92
+            }
+          },
+          "decomp_trace": {
+            "tokens": 324,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 1,
+            "sub_queries": [
+              "Check the status of an order we placed last month"
+            ],
+            "original_prompt": "Check the status of an order we placed last month"
+          },
+          "n_detected": 1
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Adjust the production schedule to move up the delivery date for that order",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:CustomerOrderAndAccountManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:CustomerOrderFulfillmentAndOEECorrelation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 44631,
+          "latency_s": 13.142,
+          "llm_calls": 8,
+          "confidence": 0.92,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 26,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 711,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "sap.s4",
+                "entity_types": [
+                  "sap.odm:entityType:ProductionOrder:v1",
+                  "sap.odm:entityType:CustomerOrder:v1"
+                ],
+                "action_verb": "orchestrate",
+                "resource_type_hint": "apiResource"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29277,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 8521,
+              "latency_s": 4.733619928359985,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+                  },
+                  "n_results": 23
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:CustomerOrder:v1"
+                  },
+                  "n_results": 15
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 38
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "my.mes": 6,
+                "sap.s4": 5,
+                "sap.ariba": 3,
+                "sap.crm": 3,
+                "siemens.plm": 1,
+                "sap.ehs": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:ProductionOrder:v1": 16,
+                "sap.odm:entityType:Machine:v1": 11,
+                "sap.odm:entityType:QualityInspection:v1": 6,
+                "sap.odm:entityType:CustomerAccount:v1": 2,
+                "sap.odm:entityType:CustomerOrder:v1": 1,
+                "sap.odm:entityType:EngineeringChange:v1": 1,
+                "sap.odm:entityType:Material:v1": 1,
+                "sap.odm:entityType:ProductItem:v1": 1,
+                "sap.odm:entityType:SalesOpportunity:v1": 1
+              },
+              "resource_types": {
+                "apiResource": 11,
+                "agent": 2,
+                "dataProduct": 6
+              },
+              "top_capabilities": {
+                "schedule-machines": 2,
+                "manage-material-updates": 1,
+                "validate-engineering-specifications": 1,
+                "sequence-work-orders": 1,
+                "coordinate-material-flow": 1,
+                "manage-change-impact": 1,
+                "orchestrate-production-change": 1,
+                "orchestrate-production-execution": 1
+              },
+              "n_candidates": 19
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:CustomerOrder:v1",
+                  "sap.odm:entityType:ProductionOrder:v1",
+                  "sap.odm:entityType:ChangeRequest:v1"
+                ],
+                "business_groups": [
+                  "proc_order_to_production_v1",
+                  "proc_ManufacturingChangeCompliance_v1",
+                  "proc_QualityDrivenMfgSupplyChain_v1"
+                ],
+                "lines_of_business": [
+                  "Manufacturing",
+                  "Operations"
+                ],
+                "reason": "Adjusting production schedules to accelerate order delivery involves customer orders, production orders, and change management in the manufacturing and operations domain."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_to_production_v1\",\n    \"proc_ManufacturingChangeCompliance_v1\",\n    \"proc_QualityDrivenMfgSupplyChain_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Operations\"\n  ],\n  \"reason\": \"Adjusting production schedules to accelerate order delivery involves customer orders, production orders, and change management in the manufacturing and operations domain.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "siemens.plm:agent:BOMComplianceValidator:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:BOMComplianceValidator:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity is about adjusting production schedules to accelerate delivery\u2014a direct production scheduling action.\n\n1. **ProductionChangeOrchestrator** (top): Explicitly handles schedule-machines, orchestrate-production-execution, and sequence-work-orders. Most directly aligned with moving up delivery dates.\n\n2. **ProductChangeImpactAndMaterialAnalytics** (dataProduct): Evaluates production capacity and operational readiness\u2014essential analytical input before committing to accelerated schedules.\n\n3. **EngineeringChangeAndMaterialProvisioning**: Manages material provisioning and tracks change status; supports rapid schedule changes by ensuring material availability.\n\n4. **AssetLifecycleChangeOrchestrator**: Coordinates workflow and assesses production line adjustments needed for changes.\n\n5. **AssetProvisioningOrchestrator**: Ensures machines and equipment are allocated and ready for the accelerated timeline.\n\n6. **BOMComplianceAutomationAgent**: Validates materials remain compliant during schedule acceleration.\n\n7. **BOMComplianceValidator**: Quick validation that materials still meet standards.\n\n8. **EngineeringChangeImpactAndWorkforceReadiness** (dataProduct): Assesses whether workforce can execute the accelerated schedule (lowest priority for this activity but still relevant).",
+              "refused": false,
+              "previous_resolved": [
+                "my.mes:apiResource:CustomerOrderAndAccountManagement:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "my.mes:dataProduct:CustomerOrderFulfillmentAndOEECorrelation:v1",
+                "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+                "sap.crm:apiResource:ProductionOrderAndMachineAllocationService:v1"
+              ],
+              "tokens": 4127,
+              "latency_s": 8.408,
+              "llm_calls": 2,
+              "n_new_from_graph": 7
+            },
+            "phase3_rerank": {
+              "tokens": 1995,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+              "confidence": 0.92
+            }
+          },
+          "decomp_trace": {
+            "tokens": 359,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 1,
+            "sub_queries": [
+              "Adjust the production schedule to move up the delivery date for that order"
+            ],
+            "original_prompt": "Adjust the production schedule to move up the delivery date for that order"
+          },
+          "n_detected": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"This is an ad-hoc lookup request (checking order status) combined with a one-off adjustment need, not a full end-to-end process that any skill completely covers.\"\n}\n```",
+      "reason": "This is an ad-hoc lookup request (checking order status) combined with a one-off adjustment need, not a full end-to-end process that any skill completely covers.",
+      "tokens": 1659,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 91538,
+    "latency_s": 26.792,
+    "llm_calls": 18
+  },
+  "wall_s": 34.849
+}

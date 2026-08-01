@@ -1,0 +1,110 @@
+{
+  "case_id": "dy-05",
+  "user_prompt": "We need to track some updates we're making to meet regulatory requirements, including the equipment changes and related service work orders. Can you help us log this through the right system?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "We need to track some updates we're making to meet regulatory requirements, including the equipment changes and related service work orders. Can you help us log this through the right system?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "my.mes",
+            "corp.itsm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"my.mes\", \"corp.itsm\"],\n  \"reason\": \"Equipment changes and regulatory compliance tracking belong in Manufacturing Execution (my.mes with ITEquipment and ChangeRequest), while service work orders are managed through IT Service Management (corp.itsm with ChangeRequest).\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Logging equipment changes and creating service work orders are transactional actions that require live system updates and master data modification.\"\n}\n```",
+          "stage2_pool_size": 42,
+          "stage3_entity_types": [
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:ServiceTicket:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:EngineeringChange:v1\", \"sap.odm:entityType:ServiceTicket:v1\"],\n  \"reason\": \"The activity involves tracking equipment changes for regulatory compliance and related service work orders, which map directly to engineering changes and service tickets.\"\n}\n```",
+          "stage3_pool_size": 15,
+          "stage4_raw": "```json\n[\n  \"my.mes:apiResource:EquipmentChangeAndServiceManagement:v1\",\n  \"my.mes:apiResource:ServiceTicketChangeRequestManagement:v1\",\n  \"corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1\",\n  \"my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1\",\n  \"corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 3041,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.ehs:apiResource:ComplianceChangeServiceIntegration:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 3041,
+    "latency_s": 0.0,
+    "llm_calls": 4
+  },
+  "wall_s": 0.013
+}

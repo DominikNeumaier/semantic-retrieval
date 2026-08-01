@@ -1,0 +1,130 @@
+{
+  "case_id": "proc_008_s08",
+  "process": "proc_008",
+  "label": "order compliance fulfillment process: Approve fulfillment and schedule resource time \u2014 Authorize order fulfillment and reserve employee capacity and time allocations for delivery execution.",
+  "method": "F",
+  "expected_ordIds": [
+    "workday.hcm:apiResource:TimeOffBalanceManagement:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+      "score": null
+    },
+    {
+      "ordId": "siemens.plm:apiResource:CustomerOrderAndAccountProvisioningManagement:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.crm:apiResource:ProductionOrderAndMachineAllocationService:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "tokens": 8954,
+    "latency_s": 8.468,
+    "llm_calls": 6,
+    "use_graph": false,
+    "picked_ord_id": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+    "picked_reason": "Directly manages order fulfillment lifecycle with capability to fulfill-customer-orders and allocate resources. Exposes CustomerOrder and CustomerAccount entities. Best positioned to authorize fulfillment approval and coordinate resource/time allocations for delivery execution in compliance fulfillment workflow.",
+    "refused": false,
+    "refuse_reason": "",
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "embedding_search",
+        "args": {
+          "query": "approve fulfillment schedule resource time authorize order delivery",
+          "top_k": 10
+        },
+        "result_summary": "10 items",
+        "result_ord_ids": [
+          "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+          "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+          "siemens.plm:apiResource:CustomerOrderAndAccountProvisioningManagement:v1",
+          "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+          "sap.crm:apiResource:ProductionOrderAndMachineAllocationService:v1",
+          "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+          "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+          "sap.crm:agent:VendorMaterialProcurementCoordinator:v1",
+          "my.mes:dataProduct:CustomerOrderFulfillmentAndOEECorrelation:v1",
+          "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "progressive_filter",
+        "args": {
+          "query": "order fulfillment approval scheduling resource capacity",
+          "top_k": 5
+        },
+        "result_summary": "5 items",
+        "result_ord_ids": [
+          "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+          "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+          "sap.s4:apiResource:ProductionPerformanceAPI:v1",
+          "sap.s4:apiResource:ProductionExecutionAPI:v1",
+          "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1"
+        },
+        "result_summary": "object"
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1"
+        },
+        "result_summary": "object"
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "siemens.plm:apiResource:CustomerOrderAndAccountProvisioningManagement:v1"
+        },
+        "result_summary": "object"
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+          "reason": "Directly manages order fulfillment lifecycle with capability to fulfill-customer-orders and allocate resources. Exposes CustomerOrder and CustomerAccount entities. Best positioned to authorize fulfillment approval and coordinate resource/time allocations for delivery execution in compliance fulfillment workflow."
+        },
+        "result": {
+          "committed": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1"
+        }
+      }
+    ]
+  },
+  "wall_s": 15.53
+}

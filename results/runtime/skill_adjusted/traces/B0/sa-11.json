@@ -1,0 +1,237 @@
+{
+  "case_id": "sa-11",
+  "user_prompt": "We need to orchestrate a production transition that's been triggered by recent engineering changes to one of our product lines. This should coordinate assessments to ensure our workforce is ready for the transition, validate that all equipment meets the new specifications, provision the necessary assets, and communicate the changes to our affected customers. As part of this process, we'll also need to track how these product changes flow through our materials and components, including automated coordination across all related items. Can you help us manage this comprehensive transition while ensuring all service requests and equipment documentation are kept current throughout the changeover?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": "proc_023",
+  "skill_picked": "proc_023",
+  "expected_gaps": [
+    "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+    "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track product changes through materials and components",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.s4",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.s4\", \"my.mes\"],\n  \"reason\": \"Tracking product changes through materials and components requires managing engineering changes (sap.s4) and coordinating material/component changes in manufacturing execution (my.mes).\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Tracking product changes is a read-only, observational activity that monitors data lineage and impact analysis rather than executing operational transactions.\"\n}\n```",
+          "stage2_pool_size": 17,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:ProductItem:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:EngineeringChange:v1\", \"sap.odm:entityType:ProductItem:v1\"],\n  \"reason\": \"Tracking product changes through materials and components involves monitoring Material modifications, EngineeringChange documentation, and ProductItem revisions.\"\n}\n```",
+          "stage3_pool_size": 5,
+          "stage4_raw": "```json\n[\n  \"my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1\",\n  \"sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2257,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Automate coordination across related items",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:agent:EngineeringChangeOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:apiResource:ProductionMachineAndOrderManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.s4",
+            "siemens.plm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.s4\", \"siemens.plm\"],\n  \"reason\": \"Both namespaces handle Material and related entities (EngineeringChange, ProductItem, Vendor) across manufacturing and procurement workflows, enabling coordination of interconnected supply chain and production items.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Coordinating across related items requires active orchestration and state management, which is fundamentally operational work.\"\n}\n```",
+          "stage2_pool_size": 42,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ProductionOrder:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:EngineeringChange:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\"\n  ],\n  \"reason\": \"Coordination across related items typically involves managing interdependencies between production orders, materials, and changes in manufacturing workflows.\"\n}\n```",
+          "stage3_pool_size": 21,
+          "stage4_raw": "```json\n[\n  \"sap.s4:agent:EngineeringChangeOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"siemens.plm:apiResource:ProductionMachineAndOrderManagement:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 3403,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Update service requests documentation",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\"],\n  \"reason\": \"Service requests documentation is directly managed by IT Service Management, which is the primary LoB and focus of the corp.itsm namespace.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Updating documentation is a direct work action that modifies master content and requires agent or API execution to persist changes.\"\n}\n```",
+          "stage2_pool_size": 22,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ServiceTicket:v1",
+            "sap.odm:entityType:ChangeRequest:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:ServiceTicket:v1\", \"sap.odm:entityType:ChangeRequest:v1\"],\n  \"reason\": \"Service requests documentation updates primarily concern service tickets and change requests, which are the core entities for tracking and documenting service-related activities.\"\n}\n```",
+          "stage3_pool_size": 3,
+          "stage4_raw": "```json\n[]\n```\n\nThe activity \"Update service requests documentation\" requires a documentation or content management capability. None of the candidate resources provide documentation management, authoring, or update functionality. The available resources are focused on workflow automation, asset provisioning, and incident analysis\u2014none of which directly support updating documentation.",
+          "stage4_valid_count": 0,
+          "refused": true,
+          "tokens": 2018,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Update equipment documentation",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "my.mes",
+            "corp.itsm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"my.mes\", \"corp.itsm\"],\n  \"reason\": \"Equipment documentation updates are primarily managed in Manufacturing Execution (MES) with ITEquipment entities, supported by IT Service Management for change tracking and requests.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Updating equipment documentation is a direct action that modifies master data records and requires write access through an agent or API resource.\"\n}\n```",
+          "stage2_pool_size": 42,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ITEquipment:v1",
+            "sap.odm:entityType:Machine:v1",
+            "sap.odm:entityType:EngineeringChange:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:ITEquipment:v1\", \"sap.odm:entityType:Machine:v1\", \"sap.odm:entityType:EngineeringChange:v1\"],\n  \"reason\": \"Equipment documentation updates typically involve IT/physical equipment records, machinery specifications, and associated engineering change documentation.\"\n}\n```",
+          "stage3_pool_size": 17,
+          "stage4_raw": "```json\n[\n  \"my.mes:apiResource:EquipmentChangeAndServiceManagement:v1\",\n  \"my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1\",\n  \"my.mes:apiResource:EquipmentServiceAndChangeManagement:v1\",\n  \"my.mes:apiResource:ServiceTicketChangeRequestManagement:v1\",\n  \"corp.itsm:apiResource:AssetChangeLifecycleAPI:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 3022,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_023",
+      "skill_id_expected": "proc_023",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track product changes through materials and components\",\n    \"Automate coordination across related items\",\n    \"Update service requests documentation\",\n    \"Update equipment documentation\"\n  ],\n  \"reason\": \"The skill covers the core production transition orchestration (workforce assessments, equipment validation, asset provisioning, and customer communications), but the request explicitly requires tracking material/component impact flows, automated cross-item coordination, and maintaining current service requests and equipment documentation\u2014concrete activities not listed in the skill's steps.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers the core production transition orchestration (workforce assessments, equipment validation, asset provisioning, and customer communications), but the request explicitly requires tracking material/component impact flows, automated cross-item coordination, and maintaining current servi",
+      "tokens": 632,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 11332,
+    "latency_s": 0.0,
+    "llm_calls": 17
+  },
+  "wall_s": 0.052
+}

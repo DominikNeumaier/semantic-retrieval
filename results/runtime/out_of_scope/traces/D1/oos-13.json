@@ -1,0 +1,351 @@
+{
+  "case_id": "oos-13",
+  "user_prompt": "Our manufacturing plants are experiencing high turnover in specialized maintenance roles, and we need a way to automatically identify which of our current operators have transferable skills that could fill these gaps\u2014ideally something that can scan our existing employee training records and certifications to recommend internal candidates for upskilling programs before we resort to external hiring.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Our manufacturing plants are experiencing high turnover in specialized maintenance roles, and we need a way to automatically identify which of our current operators have transferable skills that could fill these gaps\u2014ideally something that can scan our existing employee training records and certifications to recommend internal candidates for upskilling programs before we resort to external hiring.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "skill-matching"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "assess-skill-gaps"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                  "type": "dataProduct",
+                  "title": "Production Transition Capability and Skill Requirements Analytics",
+                  "shortDescription": "Combines engineering modifications, supply chain items, and manufacturing configurations to evaluate organizational capability for product transitions."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "identify-training-needs"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Change Readiness and Workforce Impact Analytics",
+                  "shortDescription": "Aggregates engineering changes, materials, and product items to assess workforce readiness impact."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "evaluate-skill-gaps"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                  "type": "dataProduct",
+                  "title": "Production Transition Capability and Skill Requirements Analytics",
+                  "shortDescription": "Combines engineering modifications, supply chain items, and manufacturing configurations to evaluate organizational capability for product transitions."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "identify-skill-gaps"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                  "type": "dataProduct",
+                  "title": "Production Transition Capability and Skill Requirements Analytics",
+                  "shortDescription": "Combines engineering modifications, supply chain items, and manufacturing configurations to evaluate organizational capability for product transitions."
+                },
+                {
+                  "ordId": "workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Organizational Readiness Assessment for Product Transitions",
+                  "shortDescription": "Evaluates staffing capabilities and competency levels against product modifications and operational transitions."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources and Talent Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ehs:dataProduct:ProductionQualityWorkforcePerformanceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Production Quality and Workforce Performance Analytics",
+                  "shortDescription": "Aggregates production order and quality inspection metrics to analyze workforce safety and quality performance."
+                },
+                {
+                  "ordId": "sap.sf:dataProduct:WorkforceQualityAndProductionMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Against Manufacturing Standards",
+                  "shortDescription": "Combines staff capability assessments with production output and quality compliance data to evaluate operational effectiveness."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "workday.hcm",
+                "title": "Organizational Readiness Assessment for Product Transitions",
+                "shortDescription": "Evaluates staffing capabilities and competency levels against product modifications and operational transitions.",
+                "description": "This data product combines product modification data, supply chain updates, and operational transition information to quantify the human capital implications of business changes. It identifies training gaps, resource constraints, and capability misalignments triggered by product and process evolution. The insights support HR business partners in developing targeted capability-building strategies and managing organizational change adoption.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "human-resources"
+                ],
+                "capabilities": [
+                  "assess-organizational-readiness",
+                  "forecast-change-impact",
+                  "identify-skill-gaps"
+                ],
+                "useCases": [
+                  "Leadership evaluates workforce readiness before major product line transitions",
+                  "HR identifies high-risk departments that need change management support"
+                ],
+                "tags": [
+                  "change-management",
+                  "capability-planning",
+                  "organizational-readiness"
+                ],
+                "partOfGroups": [
+                  "proc_ProductTransitionCompliance_v1"
+                ],
+                "processNext": [
+                  "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1"
+                ],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "recommend-retraining"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                  "type": "dataProduct",
+                  "title": "Production Transition Capability and Skill Requirements Analytics",
+                  "shortDescription": "Combines engineering modifications, supply chain items, and manufacturing configurations to evaluate organizational capability for product transitions."
+                }
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "track-employee-competency"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Hierarchy and Organization Management API",
+                  "shortDescription": "Exposes employee organizational structure and hierarchical relationships."
+                }
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1",
+                "reason": "This data product evaluates staffing capabilities and competency levels to identify skill gaps and develop targeted upskilling strategies, enabling HR to recommend internal candidates for specialized maintenance roles based on training records and transferable skills analysis."
+              },
+              "result": {
+                "committed": "workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1",
+          "picked_reason": "This data product evaluates staffing capabilities and competency levels to identify skill gaps and develop targeted upskilling strategies, enabling HR to recommend internal candidates for specialized maintenance roles based on training records and transferable skills analysis.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 14,
+          "tokens": 40785,
+          "latency_s": 16.295,
+          "llm_calls": 14
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request describes a custom HR/talent management process (skills gap analysis and internal candidate matching) that does not match any of the registered manufacturing, procurement, compliance, or order fulfillment skills.\"\n}\n```",
+      "reason": "The request describes a custom HR/talent management process (skills gap analysis and internal candidate matching) that does not match any of the registered manufacturing, procurement, compliance, or order fulfillment skills.",
+      "tokens": 1687,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 42939,
+    "latency_s": 16.295,
+    "llm_calls": 16
+  },
+  "wall_s": 16.306
+}

@@ -1,0 +1,464 @@
+{
+  "case_id": "sa-15",
+  "user_prompt": "We need to set up a comprehensive engineering change management process that takes us from the initial impact assessment all the way through to production handoff. The process should coordinate with our workforce teams to ensure they're ready for the changes, validate that our supply chain can support the transition, and also verify that we have the right staffing levels and skills in place to execute effectively. Additionally, we need to make sure our operational teams can actually handle the product modifications we're planning, including updating our component data and inventory systems accordingly. Can you help us design a workflow that manages all of these interdependencies from start to finish?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "?",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0gf",
+  "skill_expected": "proc_019",
+  "skill_picked": "proc_019",
+  "expected_gaps": [
+    "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+    "workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1"
+  ],
+  "metrics": {
+    "top1_acc": null,
+    "acceptable": null,
+    "candidate_recall": null,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Operational Capability Assessment for Product Transitions",
+        "source": "gap_forced",
+        "candidates": [
+          {
+            "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ProductItem:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Change Lifecycle API",
+                  "shortDescription": "Exposes engineering changes and product items for workforce asset management."
+                },
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                "... (37 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Product Lifecycle Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+                  "type": "apiResource",
+                  "title": "Engineering Change & Product Item Integration API",
+                  "shortDescription": "Exposes engineering changes and product items for production scheduling validation"
+                },
+                {
+                  "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+                  "type": "apiResource",
+                  "title": "Equipment Change and Service Integration API",
+                  "shortDescription": "Manages equipment changes, service requests, and diagnostics coordination."
+                },
+                {
+                  "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor information for production planning."
+                },
+                "... (17 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Operations"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Vendor Management API",
+                  "shortDescription": "Exposes purchase orders and vendor data for ITSM procurement workflows."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "type": "dataProduct",
+                "namespace": "sap.s4",
+                "title": "Production Transition Capability and Skill Requirements Analytics",
+                "shortDescription": "Combines engineering modifications, supply chain items, and manufacturing configurations to evaluate organizational capability for product transitions.",
+                "description": "This data product synthesizes engineering change orders, component specifications, and production item details to generate metrics on organizational readiness for manufacturing transitions and competency gaps. It correlates product evolution activities with required skill development, identifies personnel training needs, and tracks adoption velocity across operational teams. Provides actionable intelligence for talent management, learning program prioritization, and operational readiness planning during product changes.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "human-resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "change-management-analytics",
+                  "organizational-readiness",
+                  "manufacturing-transitions"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "reason": "Synthesizes engineering changes and production configurations to evaluate organizational capability, skill requirements, and readiness for product transitions."
+              },
+              "result": {
+                "committed": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+          "picked_reason": "Synthesizes engineering changes and production configurations to evaluate organizational capability, skill requirements, and readiness for product transitions.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 21773,
+          "latency_s": 18.892,
+          "llm_calls": 8
+        }
+      },
+      {
+        "step_name": "Organizational Readiness Assessment for Product Transitions",
+        "source": "gap_forced",
+        "candidates": [
+          {
+            "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Product Lifecycle Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+                  "type": "apiResource",
+                  "title": "Engineering Change & Product Item Integration API",
+                  "shortDescription": "Exposes engineering changes and product items for production scheduling validation"
+                },
+                {
+                  "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+                  "type": "apiResource",
+                  "title": "Equipment Change and Service Integration API",
+                  "shortDescription": "Manages equipment changes, service requests, and diagnostics coordination."
+                },
+                {
+                  "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor information for production planning."
+                },
+                "... (17 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                  "type": "apiResource",
+                  "title": "Change Request Approval Workflow API",
+                  "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Provisioning Integration API",
+                  "shortDescription": "Manages equipment provisioning requests linked to service tickets and change approvals."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                  "type": "agent",
+                  "title": "Incident Root Cause Analysis Agent",
+                  "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:EngineeringChange:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Change Lifecycle API",
+                  "shortDescription": "Exposes engineering changes and product items for workforce asset management."
+                },
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                "... (37 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "type": "dataProduct",
+                "namespace": "sap.s4",
+                "title": "Production Transition Capability and Skill Requirements Analytics",
+                "shortDescription": "Combines engineering modifications, supply chain items, and manufacturing configurations to evaluate organizational capability for product transitions.",
+                "description": "This data product synthesizes engineering change orders, component specifications, and production item details to generate metrics on organizational readiness for manufacturing transitions and competency gaps. It correlates product evolution activities with required skill development, identifies personnel training needs, and tracks adoption velocity across operational teams. Provides actionable intelligence for talent management, learning program prioritization, and operational readiness planning during product changes.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "human-resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "change-management-analytics",
+                  "organizational-readiness",
+                  "manufacturing-transitions"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.crm",
+                "title": "Material Change Readiness and Workforce Impact Analytics",
+                "shortDescription": "Aggregates engineering changes, materials, and product items to assess workforce readiness impact.",
+                "description": "This data product aggregates engineering changes, material specifications, and product item configurations to provide comprehensive metrics on workforce readiness and change adoption across the organization. It summarizes the correlation between product lifecycle modifications and employee competency requirements, enabling proactive workforce planning and training interventions. The analytics deliver actionable insights on change velocity, skill gap identification, and organizational readiness to support product transitions.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "human-resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "product-lifecycle-management",
+                  "workforce-readiness",
+                  "change-analytics"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "reason": "This data product directly evaluates organizational capability and skill requirements for product transitions by correlating engineering changes with workforce readiness metrics and competency gaps."
+              },
+              "result": {
+                "committed": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+          "picked_reason": "This data product directly evaluates organizational capability and skill requirements for product transitions by correlating engineering changes with workforce readiness metrics and competency gaps.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 25342,
+          "latency_s": 23.248,
+          "llm_calls": 9
+        }
+      }
+    ]
+  },
+  "trace": {
+    "tokens": 47115,
+    "latency_s": 0.0,
+    "llm_calls": 0
+  },
+  "wall_s": 0.0
+}

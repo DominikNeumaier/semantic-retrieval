@@ -1,0 +1,166 @@
+{
+  "case_id": "dy-34",
+  "user_prompt": "I need to pull together compensation figures and tax withholdings for our quarterly reconciliation, and at the same time I'd like to grant our marketing team access to manage client engagement initiatives across our accounts. Can you help me set this up efficiently in a single request?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to retrieve compensation figures and tax withholdings data for quarterly reconciliation purposes.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:dataProduct:CompensationTrendAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "workday.hcm",
+            "sap.sf"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"workday.hcm\", \"sap.sf\"],\n  \"reason\": \"Compensation and tax withholding data are human resources and payroll functions, best managed in HCM systems that handle employee financial records and regulatory compliance.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\"modalities\": [\"analytical\"], \"reason\": \"Retrieving compensation and tax data for reconciliation is read-only analysis of historical records, not driving live execution or master data changes.\"}\n```",
+          "stage2_pool_size": 9,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Compensation:v1",
+            "sap.odm:entityType:Employee:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Compensation:v1\", \"sap.odm:entityType:Employee:v1\"],\n  \"reason\": \"The activity requires compensation figures and tax withholding data for quarterly reconciliation, which are directly managed by Compensation and Employee entities.\"\n}\n```",
+          "stage3_pool_size": 4,
+          "stage4_raw": "```json\n[\n  \"sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1\",\n  \"workday.hcm:dataProduct:CompensationTrendAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 2,
+          "refused": false,
+          "tokens": 1935,
+          "latency_s": 5.819,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "corp.itsm:apiResource:CampaignAccessManagementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "I need to grant the marketing team access permissions to manage client engagement initiatives across our accounts.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:CampaignCustomerAccountEngagementBridge:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:CampaignCustomerAccountSegmentationService:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "emarsys.cx",
+            "sap.crm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"emarsys.cx\", \"sap.crm\"],\n  \"reason\": \"Both namespaces contain Campaign and CustomerAccount entities with Marketing and Customer Experience LoB coverage, directly supporting marketing team access for client engagement initiatives.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Granting access permissions is an operational activity that modifies user roles and entitlements in the system to enable the marketing team to perform live work.\"\n}\n```",
+          "stage2_pool_size": 39,
+          "stage3_entity_types": [
+            "sap.odm:entityType:CustomerAccount:v1",
+            "sap.odm:entityType:Campaign:v1",
+            "sap.odm:entityType:SalesOpportunity:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:Campaign:v1\",\n    \"sap.odm:entityType:SalesOpportunity:v1\"\n  ],\n  \"reason\": \"Marketing team managing client engagement initiatives primarily involves customer accounts, campaigns, and sales opportunities.\"\n}\n```",
+          "stage3_pool_size": 19,
+          "stage4_raw": "```json\n[\n  \"emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1\",\n  \"emarsys.cx:apiResource:CampaignContactEngagementAPI:v1\",\n  \"sap.crm:apiResource:CampaignCustomerAccountEngagementBridge:v1\",\n  \"sap.crm:apiResource:CampaignCustomerAccountSegmentationService:v1\",\n  \"sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 3210,
+          "latency_s": 6.755,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request combines two unrelated tasks (payroll/tax reconciliation and access management for marketing) that don't fit any single registered skill\u2014proc_018 covers compensation analysis but not access provisioning, and no skill addresses both needs together.\"\n}\n```",
+      "reason": "The request combines two unrelated tasks (payroll/tax reconciliation and access management for marketing) that don't fit any single registered skill\u2014proc_018 covers compensation analysis but not access provisioning, and no skill addresses both needs together.",
+      "tokens": 1685,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 2,
+      "sub_queries": [
+        "Pull together compensation figures and tax withholdings for our quarterly reconciliation",
+        "Grant our marketing team access to manage client engagement initiatives across our accounts"
+      ],
+      "routed_ok": true,
+      "count_ok": true,
+      "verdict": "green"
+    }
+  },
+  "trace": {
+    "tokens": 7101,
+    "latency_s": 12.574,
+    "llm_calls": 10
+  },
+  "wall_s": 12.594
+}

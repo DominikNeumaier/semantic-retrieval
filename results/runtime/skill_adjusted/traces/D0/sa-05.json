@@ -1,0 +1,754 @@
+{
+  "case_id": "sa-05",
+  "user_prompt": "We need to orchestrate our complete manufacturing workflow from securing materials with our suppliers through final production execution and ensuring all our compliance documentation is properly filed. As part of this end-to-end process, we also need to track and reconcile all the financial documents coming in from our vendors that are tied to our material orders. Additionally, please include monitoring our production line performance metrics so we can evaluate how efficiently our equipment is running and identify any bottlenecks in our output. Make sure quality validation checkpoints are integrated throughout to catch any issues early, and we'll need comprehensive reporting at each stage to maintain our regulatory compliance standards.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": "proc_021",
+  "skill_picked": "proc_021",
+  "expected_gaps": [
+    "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+    "sap.s4:apiResource:ProductionPerformanceAPI:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track and reconcile vendor financial documents",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Finance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Procurement Automation Orchestrator",
+                  "shortDescription": "Automates vendor engagement and procurement workflows through targeted marketing communications."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                "... (10 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Invoice:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                {
+                  "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Invoice and Material Procurement Analytics",
+                  "shortDescription": "Aggregates invoice and material procurement metrics for spend analysis."
+                },
+                "... (4 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "type": "agent",
+                "namespace": "sap.ariba",
+                "title": "Vendor Invoice Reconciliation Agent",
+                "shortDescription": "Autonomously matches vendor invoices to POs and contracts, flags discrepancies for approval.",
+                "description": "This agent automatically reconciles incoming vendor invoices against purchase orders and master contracts using three-way matching logic. It validates line-item quantities, pricing, and terms; flags exceptions such as overbilling, duplicate invoices, or policy violations; and routes approved invoices for payment processing. This reduces manual touchpoints, accelerates cash flow, and minimizes payment disputes.",
+                "entityTypes": [
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1",
+                  "sap.odm:entityType:Contract:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "invoice-management",
+                  "three-way-matching",
+                  "vendor-reconciliation",
+                  "automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "reason": "This agent autonomously reconciles vendor invoices against POs and contracts using three-way matching, validating quantities and pricing while flagging discrepancies\u2014the perfect fit for tracking and reconciling vendor financial documents."
+              },
+              "result": {
+                "committed": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+          "picked_reason": "This agent autonomously reconciles vendor invoices against POs and contracts using three-way matching, validating quantities and pricing while flagging discrepancies\u2014the perfect fit for tracking and reconciling vendor financial documents.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 21485,
+          "latency_s": 8.022,
+          "llm_calls": 8
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Monitor production line performance metrics",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Manufacturing"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Manufacturing Execution"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                  "type": "apiResource",
+                  "title": "Equipment OEE Analytics API",
+                  "shortDescription": "REST API for real-time machine performance metrics and OEE calculations."
+                },
+                {
+                  "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+                  "type": "agent",
+                  "title": "Production Quality Monitor Agent",
+                  "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Production Order Quality Metrics",
+                  "shortDescription": "Aggregated quality performance and defect rates per production order."
+                },
+                "... (5 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Equipment OEE Analytics API",
+                "shortDescription": "REST API for real-time machine performance metrics and OEE calculations.",
+                "description": "Exposes comprehensive OEE (Overall Equipment Effectiveness) data for production machines, including availability, performance, and quality rates. Enables real-time dashboarding, historical trend analysis, and predictive maintenance insights by aggregating machine telemetry and production order execution data.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Manufacturing Execution"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "oee-monitoring",
+                  "machine-analytics",
+                  "performance-metrics",
+                  "production-efficiency"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:ProductionPerformanceAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:ProductionPerformanceAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Production Performance API",
+                "shortDescription": "Retrieves machine efficiency and production order metrics for OEE monitoring.",
+                "description": "Exposes real-time and historical data on machine utilization, production order progress, and performance indicators. Manages access to equipment performance metrics and manufacturing KPIs, enabling systems to retrieve consolidated efficiency data for production analytics and continuous improvement initiatives.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Manufacturing Execution"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "oee-monitoring",
+                  "machine-analytics",
+                  "performance-metrics",
+                  "production-efficiency"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:ProductionPerformanceMetrics:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:apiResource:ProductionPerformanceMetrics:v1",
+                "type": "apiResource",
+                "namespace": "siemens.plm",
+                "title": "Manufacturing Output Analytics API",
+                "shortDescription": "Delivers equipment utilization and production order execution data for manufacturing performance analysis and throughput optimization.",
+                "description": "Supplies current and historical operational data on equipment productivity, production order status, and manufacturing KPIs. Facilitates access to consolidated equipment performance telemetry and production metrics, enabling downstream systems to query aggregated efficiency information for production intelligence, benchmarking, and operational enhancement programs.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Manufacturing Execution"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "equipment-utilization",
+                  "production-analytics",
+                  "throughput-metrics",
+                  "manufacturing-optimization"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                "reason": "Exposes real-time OEE calculations and machine performance metrics with dashboarding and predictive maintenance for production line monitoring."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+          "picked_reason": "Exposes real-time OEE calculations and machine performance metrics with dashboarding and predictive maintenance for production line monitoring.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 17705,
+          "latency_s": 9.535,
+          "llm_calls": 10
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Identify equipment bottlenecks",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:apiResource:ProductionPerformanceMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Equipment OEE Analytics API",
+                "shortDescription": "REST API for real-time machine performance metrics and OEE calculations.",
+                "description": "Exposes comprehensive OEE (Overall Equipment Effectiveness) data for production machines, including availability, performance, and quality rates. Enables real-time dashboarding, historical trend analysis, and predictive maintenance insights by aggregating machine telemetry and production order execution data.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Manufacturing Execution"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "oee-monitoring",
+                  "machine-analytics",
+                  "performance-metrics",
+                  "production-efficiency"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Machine:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                  "type": "apiResource",
+                  "title": "Equipment OEE Analytics API",
+                  "shortDescription": "REST API for real-time machine performance metrics and OEE calculations."
+                },
+                {
+                  "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+                  "type": "agent",
+                  "title": "Production Quality Monitor Agent",
+                  "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Order Fulfillment API",
+                  "shortDescription": "Retrieves and manages production order status and equipment data for procurement operations."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Manufacturing Execution"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                  "type": "apiResource",
+                  "title": "Equipment OEE Analytics API",
+                  "shortDescription": "REST API for real-time machine performance metrics and OEE calculations."
+                },
+                {
+                  "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+                  "type": "agent",
+                  "title": "Production Quality Monitor Agent",
+                  "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Production Order Quality Metrics",
+                  "shortDescription": "Aggregated quality performance and defect rates per production order."
+                },
+                "... (5 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:ProductionPerformanceMetrics:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:apiResource:ProductionPerformanceMetrics:v1",
+                "type": "apiResource",
+                "namespace": "siemens.plm",
+                "title": "Manufacturing Output Analytics API",
+                "shortDescription": "Delivers equipment utilization and production order execution data for manufacturing performance analysis and throughput optimization.",
+                "description": "Supplies current and historical operational data on equipment productivity, production order status, and manufacturing KPIs. Facilitates access to consolidated equipment performance telemetry and production metrics, enabling downstream systems to query aggregated efficiency information for production intelligence, benchmarking, and operational enhancement programs.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Manufacturing Execution"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "equipment-utilization",
+                  "production-analytics",
+                  "throughput-metrics",
+                  "manufacturing-optimization"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:ProductionPerformanceAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:ProductionPerformanceAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Production Performance API",
+                "shortDescription": "Retrieves machine efficiency and production order metrics for OEE monitoring.",
+                "description": "Exposes real-time and historical data on machine utilization, production order progress, and performance indicators. Manages access to equipment performance metrics and manufacturing KPIs, enabling systems to retrieve consolidated efficiency data for production analytics and continuous improvement initiatives.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Manufacturing Execution"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "oee-monitoring",
+                  "machine-analytics",
+                  "performance-metrics",
+                  "production-efficiency"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:ProductionPerformanceMetrics:v1",
+                "reason": "This API delivers equipment utilization and throughput metrics essential for identifying production bottlenecks, following naturally from OEE analytics."
+              },
+              "result": {
+                "committed": "siemens.plm:apiResource:ProductionPerformanceMetrics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "siemens.plm:apiResource:ProductionPerformanceMetrics:v1",
+          "picked_reason": "This API delivers equipment utilization and throughput metrics essential for identifying production bottlenecks, following naturally from OEE analytics.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 22320,
+          "latency_s": 12.438,
+          "llm_calls": 9
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_021",
+      "skill_id_expected": "proc_021",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track and reconcile vendor financial documents\",\n    \"Monitor production line performance metrics\",\n    \"Identify equipment bottlenecks\"\n  ],\n  \"reason\": \"The skill covers core manufacturing orchestration, supplier management, quality validation, production execution, and compliance reporting, but explicitly lacks vendor invoice/financial reconciliation, equipment performance monitoring, and bottleneck identification\u2014all of which are concretely named requirements in the request.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers core manufacturing orchestration, supplier management, quality validation, production execution, and compliance reporting, but explicitly lacks vendor invoice/financial reconciliation, equipment performance monitoring, and bottleneck identification\u2014all of which are concretely named ",
+      "tokens": 628,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 62138,
+    "latency_s": 29.995,
+    "llm_calls": 28
+  },
+  "wall_s": 30.03
+}

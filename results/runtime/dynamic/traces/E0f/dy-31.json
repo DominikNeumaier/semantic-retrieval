@@ -1,0 +1,224 @@
+{
+  "case_id": "dy-31",
+  "user_prompt": "I need to pull together our current safety performance metrics across all reported events while simultaneously ensuring our chemical inventory documentation stays current with regulatory standards\u2014can I get both of those data sets integrated into one dashboard view?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull together our current safety performance metrics across all reported events",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1",
+                "reason": "Analyzes safety incidents and provides trend analysis across enterprise to synthesize current safety performance metrics from all reported events."
+              },
+              "result_preview": {
+                "committed": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1",
+          "picked_reason": "Analyzes safety incidents and provides trend analysis across enterprise to synthesize current safety performance metrics from all reported events.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 1,
+          "tokens": 3238,
+          "latency_s": 4.248,
+          "llm_calls": 1
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "corp.itsm:dataProduct:IncidentEngagementReliability:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Ensure our chemical inventory documentation stays current with regulatory standards",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE SYSTEMS (11 total):\n- workday.hcm: HCM with compensation agents but NO API resources\n- sap.sf: SuccessFactors HCM - INCLUDES:\n  * apiResource:EmployeeCompensationManagement:v1\n  * agent:Comp \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 10
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE SYSTEMS (11 total):\n- workday.hcm: HCM with compensation agents but NO API resources\n- sap.sf: SuccessFactors HCM - INCLUDES:\n  * apiResource:EmployeeCompensationManagement:v1\n  * agent:CompensationPolicyAutomationEngine:v1\n  * agent:SkillsAndCapabilityMatchingOrchestrator:v1 (WORKFORCE SKILLS INVENTORY & CAPABILITY ANALYSIS)\n- sap.s4: ERP - INCLUDES:\n  * agent:AssetLifecycleChangeOrchestrator:v1 (asset/equipment tracking, change orchestration, audit-ready)\n  * agent:BOMComplianceAutomationAgent:v1\n  * agent:ProcurementMatchingAgent:v1\n  * agent:OpportunityToOrderAutomationEngine:v1\n  * MaterialReceiptInboundAPI (NO production queue/shift scheduling APIs)\n- sap.crm: CRM - AGENTS ONLY (opportunity qualification, sales coordination, campaigns) - NO customer case management APIs/agents\n- sap.ehs: Safety/health - AGENTS INCLUDING:\n  * agent:IncidentRootCauseAnalyzer:v1 (ANALYZES SAFETY INCIDENTS, identifies root causes, trend analysis)\n  * agent:SafetyComplianceAutomationCoordinator:v1 (validates materials against safety standards, automates BOM validation, chemical inventory compliance with regulatory standards)\n  * agent:IncidentResponseCoordinator:v1 (emergency response, incident workflows)\n  * agent:VendorComplianceAutomationOrchestrator:v1 (vendor safety certifications verification)\n  * agent:VendorComplianceInvoiceAutomation:v1 (supplier invoice validation)\n  * agent:ComplianceCampaignOrchestrator:v1 (compliance campaigns, safety interventions)\n- sap.ariba: Procurement - AGENTS + APIs\n- corp.itsm: IT service management AGENTS ONLY\n- emarsys.cx: Customer experience/marketing AGENTS ONLY\n- my.mes: Manufacturing - AGENTS ONLY\n- siemens.plm: PLM AGENTS ONLY\n- sap.odm: Entity type repository\n\nKEY ACTIVITY MATCHES:\n1. Chemical inventory documentation regulatory compliance: sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              },
+              "result_preview": {
+                "stored_bytes": 1864,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "reason": "Automates validation of materials (including chemical inventory) against safety standards and regulatory requirements to keep documentation current and compliant."
+              },
+              "result_preview": {
+                "committed": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+          "picked_reason": "Automates validation of materials (including chemical inventory) against safety standards and regulatory requirements to keep documentation current and compliant.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 5,
+          "tokens": 30441,
+          "latency_s": 18.491,
+          "llm_calls": 5
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 34002,
+    "latency_s": 22.739,
+    "llm_calls": 7
+  },
+  "wall_s": 22.754
+}

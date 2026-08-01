@@ -1,0 +1,378 @@
+{
+  "case_id": "dy-27",
+  "user_prompt": "We need to pull together our supplier payment terms and current commitments against what we've got coming in from our clients this quarter\u2014basically reconcile who we owe and what we're expecting to collect so we can forecast our cash position accurately.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "clean",
+  "condition": "F0f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull together our supplier payment terms and current financial commitments we owe",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:dataProduct:MaterialInvoiceFinancialMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 12160,
+          "latency_s": 8.76,
+          "llm_calls": 9,
+          "use_graph": false,
+          "picked_ord_id": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+          "picked_reason": "Directly exposes vendor invoice records with payment terms and vendor-specific billing information. Provides real-time access to invoice-to-PO matching and manages payment terms, making it ideal for pulling together supplier payment terms and current financial commitments owed.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "supplier payment terms financial commitments owed",
+                "top_k": 10
+              },
+              "result_summary": "10 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "Supplier"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "PaymentTerms"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "vendor supplier accounts payable financial obligations",
+                "top_k": 10
+              },
+              "result_summary": "10 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "Vendor"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "payment terms contracts commitments liabilities",
+                "top_k": 5
+              },
+              "result_summary": "5 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                "reason": "Directly exposes vendor invoice records with payment terms and vendor-specific billing information. Provides real-time access to invoice-to-PO matching and manages payment terms, making it ideal for pulling together supplier payment terms and current financial commitments owed."
+              },
+              "result": {
+                "committed": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+              }
+            }
+          ]
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+            "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Pull together our client invoices and expected collections coming in this quarter",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 7198,
+          "latency_s": 6.026,
+          "llm_calls": 5,
+          "use_graph": false,
+          "picked_ord_id": "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+          "picked_reason": "This data product aggregates customer invoice and material transaction data to measure customer monetization and revenue performance. It directly supports pulling together client invoices and analyzing expected collections, with Finance line of business alignment and Invoice entity type exposure.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "client invoices collections quarter",
+                "top_k": 10
+              },
+              "result_summary": "10 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "Invoice"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "Collection"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+                "reason": "This data product aggregates customer invoice and material transaction data to measure customer monetization and revenue performance. It directly supports pulling together client invoices and analyzing expected collections, with Finance line of business alignment and Invoice entity type exposure."
+              },
+              "result": {
+                "committed": "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Reconcile supplier obligations against client receivables to forecast our cash position",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 17939,
+          "latency_s": 10.717,
+          "llm_calls": 10,
+          "use_graph": false,
+          "picked_ord_id": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+          "picked_reason": "This API provides access to customer account financial data including balances, payment terms, aging analysis, and receivables management. Combined with the Vendor Invoice Reconciliation Agent's payable management, it enables reconciliation of both sides of the cash position (receivables from clients and payables to suppliers) needed for accurate cash forecasting.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "reconcile supplier obligations client receivables cash position forecast",
+                "top_k": 10
+              },
+              "result_summary": "10 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "Receivable"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "Payable"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "cash position forecast liquidity payables receivables reconciliation",
+                "top_k": 10
+              },
+              "result_summary": "10 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "cash flow forecast working capital liquidity supplier payable client receivable",
+                "top_k": 10
+              },
+              "result_summary": "10 items"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "treasury cash management accounts payable accounts receivable AP AR reconciliation",
+                "top_k": 10
+              },
+              "result_summary": "10 items"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+                "reason": "This API provides access to customer account financial data including balances, payment terms, aging analysis, and receivables management. Combined with the Vendor Invoice Reconciliation Agent's payable management, it enables reconciliation of both sides of the cash position (receivables from clients and payables to suppliers) needed for accurate cash forecasting."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 37651,
+    "latency_s": 25.503,
+    "llm_calls": 25
+  },
+  "wall_s": 32.264
+}

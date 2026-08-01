@@ -1,0 +1,164 @@
+{
+  "case_id": "dy-30",
+  "user_prompt": "Can you pull up the current status of ticket #12847 and check who our top-performing sales representative is in the Northeast region so I can route this escalation appropriately, then also retrieve what products that employee is certified to sell?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull up the current status of ticket #12847 and identify who our top-performing sales representative is in the Northeast region.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm",
+            "sap.crm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\", \"sap.crm\"],\n  \"reason\": \"Ticket #12847 status belongs to IT Service Management (corp.itsm), while top-performing sales rep identification requires Sales and Customer data (sap.crm).\"\n}\n```",
+          "stage2_modalities": [
+            "operational",
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\", \"analytical\"],\n  \"reason\": \"Pulling ticket status is operational (agent retrieves live data), while identifying top-performing sales rep requires analytical KPI/reporting lookup.\"\n}\n```",
+          "stage2_pool_size": 56,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ServiceTicket:v1",
+            "sap.odm:entityType:Employee:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:ServiceTicket:v1\", \"sap.odm:entityType:Employee:v1\"],\n  \"reason\": \"The activity involves checking a ticket status (ServiceTicket) and identifying a top-performing sales representative (Employee) in a specific region.\"\n}\n```",
+          "stage3_pool_size": 11,
+          "stage4_raw": "```json\n[\n  \"corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1\",\n  \"sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1\",\n  \"sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2885,
+          "latency_s": 6.782,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Retrieve what products our top-performing Northeast sales representative is certified to sell.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.crm",
+            "sap.sf"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.crm\", \"sap.sf\"],\n  \"reason\": \"sap.crm contains sales representative and product certification data, while sap.sf provides employee details to identify the top performer by region.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"This is a read-only lookup of certifications and sales performance data for reporting/visibility purposes, with no operational action or master data modification.\"\n}\n```",
+          "stage2_pool_size": 14,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Employee:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductItem:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:ProductItem:v1\"\n  ],\n  \"reason\": \"The activity retrieves product certifications for a sales representative, requiring data on the employee, the products they're certified for (materials/product items), and their sales performance.\"\n}\n```",
+          "stage3_pool_size": 9,
+          "stage4_raw": "```json\n[\n  \"sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1\",\n  \"sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1\",\n  \"sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2472,
+          "latency_s": 7.306,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request combines three ad-hoc lookups (ticket status, top sales rep identification, employee certifications) that don't align with any registered process\u2014none of the skills cover sales performance analytics, employee certification management, or general ticket triage workflows.\"\n}\n```",
+      "reason": "The request combines three ad-hoc lookups (ticket status, top sales rep identification, employee certifications) that don't align with any registered process\u2014none of the skills cover sales performance analytics, employee certification management, or general ticket triage workflows.",
+      "tokens": 1682,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 3,
+      "sub_queries": [
+        "Pull up the current status of ticket #12847",
+        "Identify the top-performing sales representative in the Northeast region",
+        "Retrieve what products that top-performing Northeast sales representative is certified to sell"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 7311,
+    "latency_s": 14.088,
+    "llm_calls": 10
+  },
+  "wall_s": 14.109
+}

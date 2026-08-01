@@ -1,0 +1,140 @@
+{
+  "case_id": "dy-30",
+  "user_prompt": "Can you pull up the current status of ticket #12847 and check who our top-performing sales representative is in the Northeast region so I can route this escalation appropriately, then also retrieve what products that employee is certified to sell?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "S",
+  "state": "clean",
+  "condition": "S0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1.0,
+    "acceptable": 1.0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull up the current status of ticket #12847 and identify who our top-performing sales representative is in the Northeast region.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.crm:dataProduct:SalesOpportunityPipelineAnalytics:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "sap.crm:apiResource:SalesTeamAvailabilityAndCapacityService:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13641,
+          "latency_s": 2.769,
+          "llm_calls": 1
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Retrieve what products our top-performing Northeast sales representative is certified to sell.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.crm:apiResource:SalesTeamAvailabilityAndCapacityService:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeProductDataAPI:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "sap.crm:agent:OpportunityQualificationAdvisor:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13630,
+          "latency_s": 2.453,
+          "llm_calls": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request combines three ad-hoc lookups (ticket status, top sales rep identification, employee certifications) that don't align with any registered process\u2014none of the skills cover sales performance analytics, employee certification management, or general ticket triage workflows.\"\n}\n```",
+      "reason": "The request combines three ad-hoc lookups (ticket status, top sales rep identification, employee certifications) that don't align with any registered process\u2014none of the skills cover sales performance analytics, employee certification management, or general ticket triage workflows.",
+      "tokens": 1682,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 3,
+      "sub_queries": [
+        "Pull up the current status of ticket #12847",
+        "Identify the top-performing sales representative in the Northeast region",
+        "Retrieve what products that top-performing Northeast sales representative is certified to sell"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 29225,
+    "latency_s": 5.222,
+    "llm_calls": 4
+  },
+  "wall_s": 5.228
+}

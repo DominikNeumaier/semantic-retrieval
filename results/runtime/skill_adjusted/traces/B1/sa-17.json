@@ -1,0 +1,195 @@
+{
+  "case_id": "sa-17",
+  "user_prompt": "We need to conduct a comprehensive review of our current compensation structure and analyze our total workforce costs across the organization. This should include validating our organizational structure to ensure accuracy, processing our benefits enrollment data, and coordinating with our procurement team on vendor costs. As part of this analysis, we also need to understand our employee hierarchy and their respective capability levels to ensure compensation aligns with roles and responsibilities. Additionally, we'll need to review our salary bands and grade levels to confirm they're being applied consistently across the company.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "B",
+  "state": "enriched",
+  "condition": "B1",
+  "skill_expected": "proc_018",
+  "skill_picked": "proc_018",
+  "expected_gaps": [
+    "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+    "workday.hcm:apiResource:CompensationStructureDataExposure:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Analyze employee hierarchy and capability levels",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.sf",
+            "workday.hcm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.sf\", \"workday.hcm\"],\n  \"reason\": \"Both namespaces contain Employee and WorkforcePerson entities essential for analyzing employee hierarchy and capability levels in human resources systems.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Analyzing employee hierarchy and capability levels is a read-only examination of organizational structure and workforce data, requiring dashboards and KPIs rather than live execution or master data changes.\"\n}\n```",
+          "stage2_pool_size": 9,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Employee:v1",
+            "sap.odm:entityType:PerformanceReview:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:PerformanceReview:v1\"\n  ],\n  \"reason\": \"The activity analyzes employee hierarchy and capability levels, which directly involves employee data and performance review records that capture capability assessments.\"\n}\n```",
+          "stage3_pool_size": 4,
+          "stage4_raw": "```json\n[\n  \"sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1\",\n  \"sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1\",\n  \"workday.hcm:dataProduct:PerformanceMetricsAggregation:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 1938,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Review and validate salary bands and grade levels for consistency",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:dataProduct:CompensationTrendAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.sf",
+            "workday.hcm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.sf\", \"workday.hcm\"],\n  \"reason\": \"Salary bands and grade levels are core HR compensation structures managed by human capital management systems.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Reviewing and validating salary bands requires read-only analysis of master data patterns and consistency checks, with no live execution or changes to payroll systems.\"\n}\n```",
+          "stage2_pool_size": 9,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Compensation:v1",
+            "sap.odm:entityType:Employee:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Compensation:v1\", \"sap.odm:entityType:Employee:v1\"],\n  \"reason\": \"Salary bands and grade levels are compensation structures directly associated with employees, making these the primary entity types affected by this validation activity.\"\n}\n```",
+          "stage3_pool_size": 4,
+          "stage4_raw": "```json\n[\n  \"sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1\",\n  \"workday.hcm:dataProduct:CompensationTrendAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 2,
+          "refused": false,
+          "tokens": 1897,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Confirm compensation alignment with roles and responsibilities",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "workday.hcm",
+            "sap.sf"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"workday.hcm\", \"sap.sf\"],\n  \"reason\": \"Compensation alignment requires workforce and HR data to verify employee roles, responsibilities, and corresponding pay structures.\"\n}\n```",
+          "stage2_modalities": [
+            "operational",
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\", \"analytical\"],\n  \"reason\": \"Confirming compensation alignment requires both operational approval/update actions on compensation records and analytical review of role-responsibility mappings and compensation data.\"\n}\n```",
+          "stage2_pool_size": 52,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Employee:v1",
+            "sap.odm:entityType:Compensation:v1",
+            "sap.odm:entityType:PerformanceReview:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Compensation:v1\",\n    \"sap.odm:entityType:PerformanceReview:v1\"\n  ],\n  \"reason\": \"This activity confirms compensation alignment with roles and responsibilities, which directly involves employee data, compensation records, and performance review information.\"\n}\n```",
+          "stage3_pool_size": 24,
+          "stage4_raw": "```json\n[\n  \"workday.hcm:apiResource:WorkforceCompensationDataManagement:v1\",\n  \"sap.sf:apiResource:EmployeeCompensationManagement:v1\",\n  \"workday.hcm:apiResource:CompensationStructureDataExposure:v1\",\n  \"workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1\",\n  \"sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 4355,
+          "latency_s": 1.797,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_018",
+      "skill_id_expected": "proc_018",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Analyze employee hierarchy and capability levels\",\n    \"Review and validate salary bands and grade levels for consistency\",\n    \"Confirm compensation alignment with roles and responsibilities\"\n  ],\n  \"reason\": \"The skill covers payroll data integration, organizational structure validation, benefits enrollment, and procurement spend analysis, but the step list is incomplete and does not explicitly include activities for assessing employee hierarchy/capability levels, reviewing salary band consistency, or validating compensation-to-role alignment\u2014all of which are concretely named in the request.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers payroll data integration, organizational structure validation, benefits enrollment, and procurement spend analysis, but the step list is incomplete and does not explicitly include activities for assessing employee hierarchy/capability levels, reviewing salary band consistency, or va",
+      "tokens": 624,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 8814,
+    "latency_s": 1.797,
+    "llm_calls": 13
+  },
+  "wall_s": 1.824
+}

@@ -1,0 +1,534 @@
+{
+  "case_id": "dy-29",
+  "user_prompt": "We need to pull our current production queue status and see which items are scheduled for the next shift, while simultaneously checking our active campaign outreach to identify which contacts have engaged with our latest messaging so we can coordinate our manufacturing timeline with customer communication touchpoints.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull the current production queue status and show me which items are scheduled for the next shift",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                  "type": "apiResource",
+                  "title": "Equipment OEE Analytics API",
+                  "shortDescription": "REST API for real-time machine performance metrics and OEE calculations."
+                },
+                {
+                  "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+                  "type": "agent",
+                  "title": "Production Quality Monitor Agent",
+                  "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Production Order Quality Metrics",
+                  "shortDescription": "Aggregated quality performance and defect rates per production order."
+                },
+                "... (20 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Manufacturing"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Production Order and Machine Scheduling API",
+                "shortDescription": "Retrieves and manages production orders and machine assignments for real-time scheduling.",
+                "description": "Exposes production order details and machine capacity information to enable dynamic scheduling and order execution. Provides access to machine availability, production order status, and scheduling constraints. Manages updates to order sequencing and machine allocations across manufacturing facilities.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "production-planning",
+                  "machine-scheduling",
+                  "order-execution"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:ProductionExecutionAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:ProductionExecutionAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Production Execution API",
+                "shortDescription": "Retrieves and manages machine status and production order execution data.",
+                "description": "Exposes real-time production order and machine data to enable monitoring of manufacturing execution. Provides access to production order details, machine operational status, and scheduling information for production planning and shop floor control systems.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "production-planning",
+                  "shop-floor-control",
+                  "machine-monitoring"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+                "reason": "This API directly retrieves production order status and manages machine scheduling for real-time visibility into queue status and next-shift item scheduling."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+          "picked_reason": "This API directly retrieves production order status and manages machine scheduling for real-time visibility into queue status and next-shift item scheduling.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 19446,
+          "latency_s": 10.456,
+          "llm_calls": 8
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "siemens.plm:apiResource:MachineProductionOrderIntegration:v1",
+            "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Check our active campaign outreach and identify which contacts have engaged with our latest messaging",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Campaign:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Access Management API",
+                  "shortDescription": "Manages provisioning and access control for campaign-related customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Customer Account Lifecycle API",
+                  "shortDescription": "Manages campaign-driven customer account provisioning and lifecycle operations."
+                },
+                "... (29 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Marketing and CX"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                  "type": "agent",
+                  "title": "Segment-Driven Campaign Optimizer Agent",
+                  "shortDescription": "AI agent that autonomously identifies high-value customer segments and optimizes campaign targeting and messaging."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Campaign Performance Analytics Data Product",
+                  "shortDescription": "Aggregated campaign metrics across channels with segment performance breakdown."
+                },
+                {
+                  "ordId": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1",
+                  "type": "agent",
+                  "title": "Campaign Audience Optimization Coordinator",
+                  "shortDescription": "Monitors and optimizes campaign performance across customer segments in real time."
+                },
+                "... (2 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                "type": "apiResource",
+                "namespace": "emarsys.cx",
+                "title": "Campaign Contact Engagement API",
+                "shortDescription": "Manages real-time contact engagement states and campaign interactions across channels.",
+                "description": "Provides programmatic access to campaign contact engagement data, enabling retrieval and management of customer interaction states throughout omnichannel journey orchestration. Exposes contact engagement records linked to campaigns and customer accounts to support real-time personalization and journey state tracking across marketing touchpoints.",
+                "entityTypes": [
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerAccount:v1"
+                ],
+                "lineOfBusiness": [
+                  "Marketing and Customer Experience"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "journey-orchestration",
+                  "contact-state",
+                  "real-time-engagement",
+                  "omnichannel"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "emarsys.cx:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:apiResource:JourneyContactStateAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                "type": "apiResource",
+                "namespace": "emarsys.cx",
+                "title": "Journey Contact State API",
+                "shortDescription": "REST API for querying and updating real-time contact engagement state within active customer journeys.",
+                "description": "Exposes real-time contact state data for customers currently enrolled in active journeys, including engagement metrics, journey step progress, and interaction history. Enables external systems to query contact journey status, update custom attributes mid-journey, and trigger journey state changes based on external events. Essential for omnichannel orchestration and real-time personalization decisions.",
+                "entityTypes": [
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:Campaign:v1"
+                ],
+                "lineOfBusiness": [
+                  "Marketing and Customer Experience"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "journey-orchestration",
+                  "contact-state",
+                  "real-time-engagement",
+                  "omnichannel"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "emarsys.cx:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "emarsys.cx",
+                "title": "Campaign Performance Analytics Data Product",
+                "shortDescription": "Aggregated campaign metrics across channels with segment performance breakdown.",
+                "description": "Provides unified analytics views combining campaign delivery metrics, engagement rates, and ROI across email, SMS, and push channels. Includes segment-level performance attribution and cohort analysis to enable data-driven optimization of marketing spend and campaign targeting strategies.",
+                "entityTypes": [
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerSegment:v1",
+                  "sap.odm:entityType:CustomerAccount:v1"
+                ],
+                "lineOfBusiness": [
+                  "Marketing and CX"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "campaign-analytics",
+                  "performance-metrics",
+                  "segment-attribution",
+                  "roi-tracking"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "emarsys.cx:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                "reason": "This API directly manages real-time contact engagement states and campaign interactions, providing the exact capability needed to identify which contacts have engaged with the latest campaign messaging across channels."
+              },
+              "result": {
+                "committed": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+          "picked_reason": "This API directly manages real-time contact engagement states and campaign interactions, providing the exact capability needed to identify which contacts have engaged with the latest campaign messaging across channels.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 24044,
+          "latency_s": 13.472,
+          "llm_calls": 10
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request combines two distinct ad-hoc lookups (production queue status and campaign engagement metrics) that don't align with any single end-to-end process skill; it requires real-time operational dashboards rather than a multi-step workflow.\"\n}\n```",
+      "reason": "The request combines two distinct ad-hoc lookups (production queue status and campaign engagement metrics) that don't align with any single end-to-end process skill; it requires real-time operational dashboards rather than a multi-step workflow.",
+      "tokens": 1683,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 3,
+      "sub_queries": [
+        "Pull our current production queue status and identify which items are scheduled for the next shift",
+        "Check our active campaign outreach to identify which contacts have engaged with our latest messaging",
+        "Coordinate our manufacturing timeline with customer communication touchpoints based on production queue and campaign engagement data"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 45440,
+    "latency_s": 23.928,
+    "llm_calls": 20
+  },
+  "wall_s": 23.945
+}

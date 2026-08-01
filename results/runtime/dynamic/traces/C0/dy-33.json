@@ -1,0 +1,205 @@
+{
+  "case_id": "dy-33",
+  "user_prompt": "I need to simultaneously log incoming shipments from our suppliers while also tracking the modifications we're making to our product line and ensuring our field technicians can submit their equipment maintenance needs through a single integrated workflow.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "C",
+  "state": "clean",
+  "condition": "C0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to log incoming shipments from our suppliers and track modifications to our product line in an integrated system.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+            "score": 71.0
+          },
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": 71.0
+          },
+          {
+            "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "score": 71.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:ProductItem:v1",
+              "sap.odm:entityType:EngineeringChange:v1",
+              "sap.odm:entityType:PurchaseOrder:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Inventory Management",
+              "Product Lifecycle Management",
+              "Procurement"
+            ],
+            "reason": "Activity involves logging incoming shipments (material tracking via PurchaseOrder), managing product line modifications (EngineeringChange and ProductItem), and integrating supplier data within inventory and PLM contexts."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Inventory Management\",\n    \"Product Lifecycle Management\",\n    \"Procurement\"\n  ],\n  \"reason\": \"Activity involves logging incoming shipments (material tracking via PurchaseOrder), managing product line modifications (EngineeringChange and ProductItem), and integrating supplier data within inventory and PLM contexts.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 273,
+          "walk_top_ids": [
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+            "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+            "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+            "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1\",\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 1983,
+          "latency_s": 3.665,
+          "llm_calls": 2
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "I need to set up a workflow where field technicians can submit their equipment maintenance needs.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": 37.0
+          },
+          {
+            "ordId": "sap.ehs:apiResource:SafetyChangeGovernanceManagement:v1",
+            "score": 37.0
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": 36.5
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": 37.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:ServiceTicket:v1",
+              "sap.odm:entityType:Employee:v1",
+              "sap.odm:entityType:Machine:v1",
+              "sap.odm:entityType:ChangeRequest:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Operations",
+              "IT Service Management"
+            ],
+            "reason": "Field technicians submit maintenance requests that create service tickets, involve employee actors, reference equipment/machines, and may trigger change requests in operations and ITSM workflows."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Operations\",\n    \"IT Service Management\"\n  ],\n  \"reason\": \"Field technicians submit maintenance requests that create service tickets, involve employee actors, reference equipment/machines, and may trigger change requests in operations and ITSM workflows.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 236,
+          "walk_top_ids": [
+            "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "corp.itsm:dataProduct:ServiceHealthMetrics:v1",
+            "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "sap.ehs:apiResource:SafetyChangeGovernanceManagement:v1",
+            "sap.sf:apiResource:EmployeeChangeAndITServiceManagement:v1",
+            "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "corp.itsm:dataProduct:ProcurementOperationalMetrics:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"my.mes:apiResource:EquipmentChangeAndServiceManagement:v1\",\n  \"sap.ehs:apiResource:SafetyChangeGovernanceManagement:v1\",\n  \"corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1\",\n  \"corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1"
+          ],
+          "tokens": 1966,
+          "latency_s": 3.683,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request requires three distinct, simultaneous workflows (incoming shipment logging, product line modifications, and field technician maintenance requests) that no single skill covers end-to-end as an integrated process.\"\n}\n```",
+      "reason": "The request requires three distinct, simultaneous workflows (incoming shipment logging, product line modifications, and field technician maintenance requests) that no single skill covers end-to-end as an integrated process.",
+      "tokens": 1663,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 3,
+      "sub_queries": [
+        "Log incoming shipments from our suppliers",
+        "Track modifications we're making to our product line",
+        "Enable field technicians to submit equipment maintenance needs through an integrated workflow"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 5874,
+    "latency_s": 7.348,
+    "llm_calls": 6
+  },
+  "wall_s": 7.37
+}

@@ -1,0 +1,181 @@
+{
+  "case_id": "dy-22",
+  "user_prompt": "We need to pull together a comprehensive view of our production risks and costs right now - I want to see both our material expenses broken down by supplier along with any compliance gaps, and at the same time analyze our recent safety incidents and trends across all our manufacturing sites. Can you get me both of those datasets so we can address cost optimization and safety improvements in our next operations review?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "enriched",
+  "condition": "B1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Show me our material expenses broken down by supplier and identify any compliance gaps in our production operations",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ariba",
+            "sap.ehs"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ariba\", \"sap.ehs\"],\n  \"reason\": \"SAP Ariba provides supplier and material expense data through Vendor and PurchaseOrder entities, while SAP EHS covers compliance and safety/environment gaps in production operations.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical",
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\", \"operational\"],\n  \"reason\": \"Viewing expense breakdowns and compliance gaps requires analytical dashboards and data products, but identifying gaps typically triggers operational actions like remediation, audit workflows, or corrective measures.\"\n}\n```",
+          "stage2_pool_size": 53,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1",
+            "sap.odm:entityType:PurchaseOrder:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\"\n  ],\n  \"reason\": \"The activity analyzes material expenses by supplier and production compliance, which directly involves material procurement data, vendor relationships, and purchase orders.\"\n}\n```",
+          "stage3_pool_size": 21,
+          "stage4_raw": "```json\n[\n  \"sap.ariba:dataProduct:ProcurementSpendAnalytics:v1\",\n  \"sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1\",\n  \"sap.ariba:apiResource:MaterialAndVendorProcurementData:v1\",\n  \"sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1\",\n  \"sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 4128,
+          "latency_s": 2.087,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+            "sap.s4:dataProduct:IncidentSafetyAnalyticsHub:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Analyze our recent safety incidents and trends across all manufacturing sites",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:IncidentSafetyAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ehs",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ehs\", \"my.mes\"],\n  \"reason\": \"Safety incident analysis requires EHS (Environment, Health & Safety) data for compliance and incident records, plus MES for manufacturing site operational data and safety-related change requests.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Safety incident analysis is read-only examination of historical data and trends with no live execution or master data changes required.\"\n}\n```",
+          "stage2_pool_size": 18,
+          "stage3_entity_types": [
+            "sap.odm:entityType:SafetyIncident:v1",
+            "sap.odm:entityType:Incident:v1",
+            "sap.odm:entityType:Employee:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:SafetyIncident:v1\", \"sap.odm:entityType:Incident:v1\", \"sap.odm:entityType:Employee:v1\"],\n  \"reason\": \"The activity directly analyzes safety incidents and trends, which primarily involve SafetyIncident records, with Incident as a related entity type, and Employee data for incident attribution across manufacturing sites.\"\n}\n```",
+          "stage3_pool_size": 8,
+          "stage4_raw": "```json\n[\n  \"sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1\",\n  \"my.mes:dataProduct:IncidentSafetyAnalytics:v1\",\n  \"sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1\",\n  \"sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1\",\n  \"sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2553,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request requires two distinct analytical datasets (supplier cost breakdown and safety incident analysis) for a strategic review, not a single end-to-end operational process; this is an ad-hoc cross-functional reporting need rather than a registered skill's workflow.\"\n}\n```",
+      "reason": "The request requires two distinct analytical datasets (supplier cost breakdown and safety incident analysis) for a strategic review, not a single end-to-end operational process; this is an ad-hoc cross-functional reporting need rather than a registered skill's workflow.",
+      "tokens": 1709,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 3,
+      "sub_queries": [
+        "Pull material expenses broken down by supplier to support cost optimization analysis",
+        "Identify and report on compliance gaps across our production operations",
+        "Analyze recent safety incidents and trends across all manufacturing sites"
+      ],
+      "routed_ok": true,
+      "count_ok": false,
+      "verdict": "yellow"
+    }
+  },
+  "trace": {
+    "tokens": 8679,
+    "latency_s": 2.087,
+    "llm_calls": 10
+  },
+  "wall_s": 2.128
+}

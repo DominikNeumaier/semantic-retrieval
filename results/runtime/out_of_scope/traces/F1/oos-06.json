@@ -1,0 +1,816 @@
+{
+  "case_id": "oos-06",
+  "user_prompt": "Our sales team is manually adjusting prices on large B2B orders based on competitor intel and customer volume history, but we need a way to automatically flag orders that fall outside our dynamic pricing bands\u2014especially when our reps are discounting beyond threshold for specific customer segments\u2014so we can audit whether deals are staying within our margin targets before they hit the accounting system.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Set up dynamic pricing bands for B2B orders that account for competitor intelligence and customer volume history",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 45357,
+          "latency_s": 23.762,
+          "llm_calls": 17,
+          "use_graph": true,
+          "picked_ord_id": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+          "picked_reason": "Customer Order Management API provides core B2B order processing, customer account management, and order history tracking capabilities essential for implementing dynamic pricing bands. It enables access to customer hierarchies, order data, and line-item details needed to configure pricing based on customer volume history and account eligibility.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "dynamic pricing bands B2B competitor intelligence volume history",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+                "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+                "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+                "siemens.plm:dataProduct:CustomerOpportunityCostAndQualificationAnalytics:v1",
+                "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+                "sap.ariba:dataProduct:CustomerAndOpportunityInsights:v1",
+                "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                "sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-pricing"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-pricing-strategy"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "calculate-pricing"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "B2B order pricing strategy competitor analytics customer segmentation volume",
+                "top_k": 8
+              },
+              "result_summary": "8 items",
+              "result_ord_ids": [
+                "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                "sap.ariba:dataProduct:CustomerAndOpportunityInsights:v1",
+                "siemens.plm:dataProduct:CustomerOpportunityCostAndQualificationAnalytics:v1",
+                "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+                "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+                "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                "my.mes:dataProduct:CustomerOrderFulfillmentAndOEECorrelation:v1",
+                "sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "order pricing revenue management B2B dynamic price bands",
+                "top_k": 8
+              },
+              "result_summary": "8 items",
+              "result_ord_ids": [
+                "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+                "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+                "siemens.plm:dataProduct:CustomerOpportunityCostAndQualificationAnalytics:v1",
+                "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+                "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                "sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1",
+                "my.mes:dataProduct:CustomerOrderFulfillmentAndOEECorrelation:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-order-pricing"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "dynamic pricing B2B orders competitor intelligence volume",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+                "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+                "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "determine-price"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "set-pricing"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "order management pricing tier bands configuration sales",
+                "top_k": 8
+              },
+              "result_summary": "8 items",
+              "result_ord_ids": [
+                "siemens.plm:apiResource:ProductConfigurationAndCustomerCampaignManagement:v1",
+                "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+                "siemens.plm:apiResource:CustomerOrderAndAccountLifecycleManagement:v1",
+                "siemens.plm:apiResource:CustomerOrderAndAccountProvisioningManagement:v1",
+                "my.mes:apiResource:CustomerOrderAndAccountManagement:v1",
+                "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1",
+                "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+                "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1"
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "configure-pricing-tier"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "pricing engine calculation algorithm discount strategy competitive rate",
+                "top_k": 8
+              },
+              "result_summary": "8 items",
+              "result_ord_ids": [
+                "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+                "siemens.plm:dataProduct:CustomerOpportunityCostAndQualificationAnalytics:v1",
+                "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+                "sap.sf:dataProduct:SalesCompensationAndEmployeeMetricsAnalytics:v1",
+                "sap.crm:dataProduct:ProductChangeImpactAnalytics:v1",
+                "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+                "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+                "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1"
+              ]
+            },
+            {
+              "step": 8,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "sales price list tier volume discount B2B customer",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "siemens.plm:dataProduct:CustomerOpportunityCostAndQualificationAnalytics:v1",
+                "sap.ariba:dataProduct:CustomerAndOpportunityInsights:v1",
+                "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+                "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1"
+              ]
+            },
+            {
+              "step": 9,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+                "reason": "Customer Order Management API provides core B2B order processing, customer account management, and order history tracking capabilities essential for implementing dynamic pricing bands. It enables access to customer hierarchies, order data, and line-item details needed to configure pricing based on customer volume history and account eligibility."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Create an automated flagging system to detect orders that fall outside the established dynamic pricing bands",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:OpportunityToOrderAutomationEngine:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:ProcurementMatchingAgent:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:OpportunityScoringOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 29614,
+          "latency_s": 15.758,
+          "llm_calls": 15,
+          "use_graph": true,
+          "picked_ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+          "picked_reason": "The Vendor Invoice Reconciliation Agent provides autonomous flagging and exception detection capabilities with three-way matching logic to validate pricing against contracts and policies. While designed for procurement, its core pattern of detecting anomalies, flagging discrepancies outside established thresholds, and routing exceptions for approval directly applies to flagging sales orders outside dynamic pricing bands. The agent automates the detection and flagging workflow required for the activity.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "automated flagging system detect orders dynamic pricing bands",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "sap.s4:agent:OpportunityToOrderAutomationEngine:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "sap.s4:agent:ProcurementMatchingAgent:v1",
+                "emarsys.cx:agent:OpportunityScoringOrchestrator:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "detect-pricing-anomalies"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-pricing-rules"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "flag-orders"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "monitor-pricing"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "flagging orders price exceptions anomaly detection",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "my.mes:dataProduct:CustomerOrderFulfillmentAndOEECorrelation:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "siemens.plm:agent:QualityAssuranceAndDefectPrevention:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "order pricing validation bands thresholds automated detection",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "siemens.plm:agent:QualityAssuranceAndDefectPrevention:v1",
+                "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "my.mes:agent:ProductionQualityMonitor:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "SalesOrder"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "automated flagging orders pricing bands detection",
+                "top_k": 5
+              },
+              "result_summary": "4 items",
+              "result_ord_ids": [
+                "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+                "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+                "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+                "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "pricing rule validation order anomaly detection system",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "siemens.plm:agent:QualityAssuranceAndDefectPrevention:v1",
+                "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+                "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "sales order pricing threshold flag exceed dynamic band",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "my.mes:dataProduct:CustomerOrderFulfillmentAndOEECorrelation:v1",
+                "sap.s4:agent:OpportunityToOrderAutomationEngine:v1",
+                "siemens.plm:apiResource:CustomerOrderAndAccountProvisioningManagement:v1",
+                "siemens.plm:dataProduct:CustomerOpportunityCostAndQualificationAnalytics:v1",
+                "corp.itsm:agent:VendorContractComplianceOrchestrator:v1"
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "order pricing compliance out of band exception rule engine",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+                "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+                "siemens.plm:agent:BOMComplianceValidator:v1",
+                "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "validate-order-pricing"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "reason": "The Vendor Invoice Reconciliation Agent provides autonomous flagging and exception detection capabilities with three-way matching logic to validate pricing against contracts and policies. While designed for procurement, its core pattern of detecting anomalies, flagging discrepancies outside established thresholds, and routing exceptions for approval directly applies to flagging sales orders outside dynamic pricing bands. The agent automates the detection and flagging workflow required for the activity."
+              },
+              "result": {
+                "committed": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Implement an audit mechanism to verify that sales representative discounts stay within defined thresholds for specific customer segments and maintain margin targets before orders reach accounting",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:CustomerAndOpportunityInsights:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 34353,
+          "latency_s": 16.851,
+          "llm_calls": 17,
+          "use_graph": true,
+          "picked_ord_id": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+          "picked_reason": "This API provides order validation and completeness verification capabilities essential for implementing an audit mechanism. It manages customer orders and can enforce validation rules for customer accounts and order data, supporting the audit workflow to verify discount thresholds and margin targets before orders proceed to accounting. The validate-order capability directly addresses the requirement to audit sales representative discounts within defined parameters.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "audit mechanism verify sales representative discounts thresholds customer segments margin targets orders accounting",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.crm:agent:SalesCompensationOrchestrator:v1",
+                "sap.ariba:dataProduct:CustomerAndOpportunityInsights:v1",
+                "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "siemens.plm:dataProduct:CustomerOpportunityCostAndQualificationAnalytics:v1",
+                "sap.crm:apiResource:CampaignCustomerAccountSegmentationService:v1",
+                "siemens.plm:apiResource:CustomerOrderAndAccountProvisioningManagement:v1",
+                "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                "corp.itsm:agent:VendorContractComplianceOrchestrator:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "validate-discount"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "verify-margin"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "audit-discount"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "audit discount threshold verification order processing sales",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+                "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+                "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+                "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-order-approval"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "order discount approval sales representative margin validation before accounting",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "siemens.plm:apiResource:CustomerOrderAndAccountProvisioningManagement:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "sap.crm:agent:VendorMaterialProcurementCoordinator:v1",
+                "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+                "siemens.plm:apiResource:CustomerOrderAndAccountLifecycleManagement:v1",
+                "my.mes:apiResource:CustomerOrderAndAccountManagement:v1",
+                "sap.crm:agent:SalesProductChangeCoordinator:v1",
+                "sap.crm:agent:SalesCompensationOrchestrator:v1",
+                "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "validate-order"
+              },
+              "result_summary": "2 items",
+              "result_ord_ids": [
+                "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+                "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "audit-order"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-pricing"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "sales pricing discount approval threshold customer segment margin approval workflow",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "siemens.plm:dataProduct:CustomerOpportunityCostAndQualificationAnalytics:v1",
+                "sap.ariba:dataProduct:CustomerAndOpportunityInsights:v1",
+                "sap.crm:agent:SalesProductChangeCoordinator:v1",
+                "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                "sap.crm:agent:VendorMaterialProcurementCoordinator:v1",
+                "sap.crm:agent:SalesCompensationOrchestrator:v1",
+                "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+                "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+                "emarsys.cx:agent:ProductLifecycleOrchestrator:v1"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "approve-discount"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "audit compliance order terms pricing verification before submission accounting finance",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+                "sap.ehs:dataProduct:MaterialInvoiceComplianceCostAnalytics:v1",
+                "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+                "my.mes:agent:SupplierQualityComplianceOrchestrator:v1",
+                "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                "siemens.plm:apiResource:CustomerOrderAndAccountProvisioningManagement:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1",
+                "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1"
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "verify-pricing"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+                "reason": "This API provides order validation and completeness verification capabilities essential for implementing an audit mechanism. It manages customer orders and can enforce validation rules for customer accounts and order data, supporting the audit workflow to verify discount thresholds and margin targets before orders proceed to accounting. The validate-order capability directly addresses the requirement to audit sales representative discounts within defined parameters."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is for a pricing audit and flagging system for B2B orders, which is a financial/sales operations control function not covered by any of the registered skills that focus on production, procurement, compliance, and fulfillment processes.\"\n}\n```",
+      "reason": "The request is for a pricing audit and flagging system for B2B orders, which is a financial/sales operations control function not covered by any of the registered skills that focus on production, procurement, compliance, and fulfillment processes.",
+      "tokens": 1704,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 111432,
+    "latency_s": 56.371,
+    "llm_calls": 51
+  },
+  "wall_s": 87.514
+}

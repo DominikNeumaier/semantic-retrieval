@@ -1,0 +1,403 @@
+{
+  "case_id": "oos-08",
+  "user_prompt": "We need to automatically flag SKUs that are approaching slow-moving or obsolete status based on turnover velocity trends, so we can initiate clearance protocols or adjust safety stock levels before excess inventory ties up working capital for another quarter.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 1,
+    "falsely_picked": 0,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Analyze turnover velocity trends to identify SKUs approaching slow-moving or obsolete status",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nRESOLVED ACTIVITIES:\n\n1. Supplier financial health monitori \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1276
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.odm/ord_enriched.json"
+              },
+              "result_preview": {
+                "error": "file not found: benchmark/landscape/systems_enriched/sap.odm/ord_enriched.json"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.odm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.odm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-independent\",\n  \"description\": \"SAP One Domain Model entity type taxonomy for the benchmark landscape. 40 canonical business objects servi \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 667
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.odm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 11
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/emarsys.cx/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/emarsys.cx/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"emarsys.cx:package:Core:v1\",\n      \"title\": \"emarsys.cx Core Package\",\n      \"shortDescri \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1221
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nRESOLVED ACTIVITIES:\n\n1. Supplier financial health monitoring (90d):\n   - No specific resource found; likely future enhancement\n\n2. Ledger vs. supply chain discrepancy flagging:\n   - MATCH: sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n   - 3-way matching (invoice \u2192 PO \u2192 contract), flags exceptions\n\n3. Employee engagement monitoring (Slack/email):\n   - NO MATCH - Activity requires communication analytics not in landscape\n\n4. Flight-risk employee early warning (predictive, 60d lead):\n   - NO MATCH - Activity requires predictive HR analytics not in landscape\n\n5. Regulatory rule matching to vendor agreements:\n   - MATCH: sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1\n   - Automates vendor safety compliance verification across contracts\n\n6. Real-time cash flow visibility (hour-by-hour projections, alerts):\n   - NO MATCH - No treasury/liquidity/cash flow forecasting resources in landscape\n\n7. Dynamic pricing band order flagging:\n   - NO MATCH - Landscape has order mgmt and invoice reconciliation, but no price band validation\n\n8. Sales discount audit with threshold validation (customer segments, margin targets):\n   - NO MATCH - sap.crm has sales/opportunity agents (qualification, compensation, campaign); sap.s4 has order automation\n   - Missing: pre-order discount governance, segment-level threshold enforcement, margin verification before accounting\n\n9. Turnover velocity trends to identify slow-moving/obsolete SKUs:\n   - NO MATCH - Landscape has procurement/order/invoice/quality agents but no inventory analytics\n   - Missing: Inventory turnover velocity trend analysis, slow-SKU detection, inventory aging forecasting\n   - Explored: sap.s4 (order mgmt, BOM), my.mes (quality/manufacturing), sap.ariba (invoice/procurement)\n   - No dedicated inventory management/analytics system in landscape\n\nKey systems:\n- sap.s4: ERP (Procurement, Order Mgmt, Safety, Asset Lifecycle); OpportunityToOrderAutomationEngine does order creation\n- sap.crm: Sales/opportunity mgmt (qualification, compensation orchestration)\n- sap.ariba: Procurement/vendor reconciliation (post-order invoice matching, material coordination)\n- my.mes: Manufacturing execution (quality, production orchestration, supplier compliance)\n- sap.ehs: EHS/Regulatory compliance\n- workday.hcm, sap.sf: HR transactional\n- emarsys.cx: Marketing/CX orchestration\n- No dedicated treasury/liquidity/pricing governance/discount audit/inventory management system\n"
+              },
+              "result_preview": {
+                "stored_bytes": 2591,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 8,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks inventory turnover velocity analytics or slow-SKU detection capabilities; it has procurement/ordering/quality agents but no inventory management system."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape lacks inventory turnover velocity analytics or slow-SKU detection capabilities; it has procurement/ordering/quality agents but no inventory management system."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks inventory turnover velocity analytics or slow-SKU detection capabilities; it has procurement/ordering/quality agents but no inventory management system.",
+          "tool_calls": 11,
+          "tokens": 110597,
+          "latency_s": 31.175,
+          "llm_calls": 11
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Automatically flag SKUs that meet slow-moving or obsolete criteria based on velocity analysis",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nRESOLVED ACTIVITIES:\n\n1. Supplier financial health monitori \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "No inventory turnover velocity analysis or slow-moving SKU detection resource exists in the landscape; procurement, order, and quality agents lack inventory aging/velocity analytics capabilities."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "No inventory turnover velocity analysis or slow-moving SKU detection resource exists in the landscape; procurement, order, and quality agents lack inventory aging/velocity analytics capabilities."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "No inventory turnover velocity analysis or slow-moving SKU detection resource exists in the landscape; procurement, order, and quality agents lack inventory aging/velocity analytics capabilities.",
+          "tool_calls": 2,
+          "tokens": 6315,
+          "latency_s": 4.587,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Initiate clearance protocols and adjust safety stock levels for flagged SKUs to optimize working capital",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nRESOLVED ACTIVITIES:\n\n1. Supplier financial health monitori \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.odm/ord_enriched.json"
+              },
+              "result_preview": {
+                "error": "file not found: benchmark/landscape/systems_enriched/sap.odm/ord_enriched.json"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "landscape"
+              },
+              "result_preview": {
+                "error": "path not allowed: 'landscape'. Allowed roots: ('benchmark',)"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1276
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nRESOLVED ACTIVITIES:\n\n1. Supplier financial health monitoring (90d):\n   - No specific resource found; likely future enhancement\n\n2. Ledger vs. supply chain discrepancy flagging:\n   - MATCH: sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n   - 3-way matching (invoice \u2192 PO \u2192 contract), flags exceptions\n\n3. Employee engagement monitoring (Slack/email):\n   - NO MATCH - Activity requires communication analytics not in landscape\n\n4. Flight-risk employee early warning (predictive, 60d lead):\n   - NO MATCH - Activity requires predictive HR analytics not in landscape\n\n5. Regulatory rule matching to vendor agreements:\n   - MATCH: sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1\n   - Automates vendor safety compliance verification across contracts\n\n6. Real-time cash flow visibility (hour-by-hour projections, alerts):\n   - NO MATCH - No treasury/liquidity/cash flow forecasting resources in landscape\n\n7. Dynamic pricing band order flagging:\n   - NO MATCH - Landscape has order mgmt and invoice reconciliation, but no price band validation\n\n8. Sales discount audit with threshold validation (customer segments, margin targets):\n   - NO MATCH - sap.crm has sales/opportunity agents (qualification, compensation, campaign); sap.s4 has order automation\n   - Missing: pre-order discount governance, segment-level threshold enforcement, margin verification before accounting\n\n9. Turnover velocity trends to identify slow-moving/obsolete SKUs:\n   - NO MATCH - Landscape has procurement/order/invoice/quality agents but no inventory analytics\n   - Missing: Inventory turnover velocity trend analysis, slow-SKU detection, inventory aging forecasting\n   - Explored: sap.s4 (order mgmt, BOM), my.mes (quality/manufacturing), sap.ariba (invoice/procurement)\n\n10. SKU clearance protocols & safety stock optimization:\n    - NO MATCH - Activity requires inventory management, clearance workflows, and dynamic safety stock adjustment\n    - Missing: SKU clearance/disposal protocols, safety stock level adjustment, inventory optimization agents\n    - Explored: sap.s4 (procurement matching, BOM compliance, order automation\u2014no inventory mgmt), my.mes (quality/production/BOM validation\u2014no inventory mgmt)\n    - Confirmed: No dedicated inventory management/analytics system in landscape\n\nKey systems:\n- sap.s4: ERP (Procurement, Order Mgmt, Safety, Asset Lifecycle); OpportunityToOrderAutomationEngine does order creation\n- sap.crm: Sales/opportunity mgmt (qualification, compensation orchestration)\n- sap.ariba: Procurement/vendor reconciliation (post-order invoice matching, material coordination)\n- my.mes: Manufacturing execution (quality, production orchestration, supplier compliance, BOM validation)\n- sap.ehs: EHS/Regulatory compliance\n- workday.hcm, sap.sf: HR transactional\n- emarsys.cx: Marketing/CX orchestration\n- No dedicated treasury/liquidity/pricing governance/discount audit/inventory management system\n"
+              },
+              "result_preview": {
+                "stored_bytes": 3061,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a dedicated inventory management system with SKU clearance protocols and safety stock optimization capabilities required by this activity."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape lacks a dedicated inventory management system with SKU clearance protocols and safety stock optimization capabilities required by this activity."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a dedicated inventory management system with SKU clearance protocols and safety stock optimization capabilities required by this activity.",
+          "tool_calls": 7,
+          "tokens": 32575,
+          "latency_s": 21.494,
+          "llm_calls": 7
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is for an automated inventory monitoring and flagging system based on turnover trends, which is a specialized inventory management capability not fully covered by any registered skill\u2014most skills focus on procurement, production, compliance, or order fulfillment rather than inventory velocity analysis and clearance protocols.\"\n}\n```",
+      "reason": "The request is for an automated inventory monitoring and flagging system based on turnover trends, which is a specialized inventory management capability not fully covered by any registered skill\u2014most skills focus on procurement, production, compliance, or order fulfillment rather than inventory vel",
+      "tokens": 1687,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 151542,
+    "latency_s": 57.256,
+    "llm_calls": 22
+  },
+  "wall_s": 57.28
+}

@@ -1,0 +1,844 @@
+{
+  "case_id": "dy-23",
+  "user_prompt": "I need to pull together our incident tracking data for the quarterly board review while simultaneously updating several customer cases that are stuck in our resolution queue\u2014can you help me access both of those systems in one go so I don't have to toggle between platforms?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull together incident tracking data for the quarterly board review",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:dataProduct:IncidentResolutionMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 91176,
+          "latency_s": 40.276,
+          "llm_calls": 19,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 513,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Pull together incident tracking data for the quarterly board review"
+            ],
+            "original_prompt": "Pull together incident tracking data for the quarterly board review",
+            "sub_queries_redecomposed": [
+              "Retrieve all incident records from the current quarter with status, severity, category, and resolution time metrics",
+              "Aggregate incident data by department/team and calculate key performance indicators including incident count, average resolution time, and trend analysis for board presentation"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve all incident records from the current quarter with status, severity, category, and resolution time metrics",
+              "trace": {
+                "tokens": 44778,
+                "latency_s": 12.719,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 724,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "corp.itsm",
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:ChangeRequest:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29283,
+                    "latency_s": 0.47
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8532,
+                    "latency_s": 5.404136657714844,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:IncidentEngagementReliability:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 48
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 5,
+                      "emarsys.cx": 3,
+                      "sap.ehs": 3,
+                      "my.mes": 2,
+                      "sap.crm": 1,
+                      "workday.hcm": 1,
+                      "sap.ariba": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Incident:v1": 16,
+                      "sap.odm:entityType:SafetyIncident:v1": 16,
+                      "sap.odm:entityType:HazardousSubstance:v1": 6
+                    },
+                    "resource_types": {
+                      "dataProduct": 10,
+                      "agent": 6
+                    },
+                    "top_capabilities": {
+                      "track-safety-metrics": 2,
+                      "monitor-vendor-incidents": 1,
+                      "escalate-compliance-issues": 1,
+                      "collect-safety-metrics": 1,
+                      "aggregate-incident-data": 1,
+                      "establish-safety-baseline": 1,
+                      "monitor-incidents": 1,
+                      "track-engagement-metrics": 1
+                    },
+                    "n_candidates": 16
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:ServiceTicket:v1",
+                        "sap.odm:entityType:SafetyIncident:v1"
+                      ],
+                      "business_groups": [
+                        "proc_integrated_service_change_mgmt_v1",
+                        "proc_SafetyComplianceOrchestration_v1"
+                      ],
+                      "lines_of_business": [
+                        "IT Service Management",
+                        "Environment, Health & Safety"
+                      ],
+                      "reason": "Activity retrieves incident metrics (status, severity, category, resolution time) which directly map to the Incident entity and relate to incident management processes spanning IT service management and safety compliance domains."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Incident:v1\",\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:SafetyIncident:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_integrated_service_change_mgmt_v1\",\n    \"proc_SafetyComplianceOrchestration_v1\"\n  ],\n  \"lines_of_business\": [\n    \"IT Service Management\",\n    \"Environment, Health & Safety\"\n  ],\n  \"reason\": \"Activity retrieves incident metrics (status, severity, category, resolution time) which directly map to the Incident entity and relate to incident management processes spanning IT service management and safety compliance domains.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"my.mes:apiResource:EquipmentChangeAndServiceManagement:v1\",\n  \"siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requires **retrieving incident records with metrics** (status, severity, category, resolution time) \u2014 this is an **analytical/reporting use case on historical incident data**.\n\n1. **sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1** (dataProduct) - Best match. DataProducts are designed for analytical reads and aggregations. This resource explicitly handles impact analysis and readiness assessments with cross-functional metrics.\n\n2. **sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1** (dataProduct) - Second best. Also a dataProduct focused on capability assessment and analytics, combining multiple data dimensions for reporting and evaluation.\n\n3. **my.mes:apiResource:EquipmentChangeAndServiceManagement:v1** (apiResource) - Provides CRUD access to service tickets and change requests with tracking/monitoring capabilities, suitable for retrieving incident records programmatically.\n\n4. **siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1** (apiResource) - API resource that explicitly manages service tickets and can track change-related incidents with documentation.\n\n*Excluded agents* as they focus on orchestration and workflow automation rather than analytical retrieval. The activity is read-only analytics, not a worker-driven orchestration task.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+                      "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+                      "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+                      "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                      "emarsys.cx:dataProduct:SafetyIncidentComplianceAnalytics:v1"
+                    ],
+                    "tokens": 3991,
+                    "latency_s": 7.315,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 4
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2248,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.crm:dataProduct:IncidentResolutionMetrics:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Aggregate incident data by department/team and calculate key performance indicators including incident count, average resolution time, and trend analysis for board presentation",
+              "trace": {
+                "tokens": 45136,
+                "latency_s": 27.557,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 26,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 729,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "corp.itsm",
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:Employee:v1"
+                      ],
+                      "action_verb": "analyse",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29289,
+                    "latency_s": 0.874
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8757,
+                    "latency_s": 19.809956550598145,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Employee:v1"
+                        },
+                        "n_results": 44
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:IncidentEngagementReliability:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 68
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 5,
+                      "sap.ehs": 4,
+                      "emarsys.cx": 3,
+                      "my.mes": 2,
+                      "sap.crm": 1,
+                      "sap.sf": 1,
+                      "workday.hcm": 1,
+                      "sap.ariba": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Incident:v1": 18,
+                      "sap.odm:entityType:SafetyIncident:v1": 18,
+                      "sap.odm:entityType:HazardousSubstance:v1": 6
+                    },
+                    "resource_types": {
+                      "dataProduct": 12,
+                      "agent": 6
+                    },
+                    "top_capabilities": {
+                      "track-safety-metrics": 2,
+                      "monitor-vendor-incidents": 1,
+                      "escalate-compliance-issues": 1,
+                      "collect-safety-metrics": 1,
+                      "aggregate-incident-data": 1,
+                      "establish-safety-baseline": 1,
+                      "monitor-incidents": 1,
+                      "track-engagement-metrics": 1
+                    },
+                    "n_candidates": 18
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:Employee:v1",
+                        "sap.odm:entityType:PerformanceReview:v1"
+                      ],
+                      "business_groups": [
+                        "proc_SafetyComplianceOrchestration_v1",
+                        "proc_integrated_service_change_mgmt_v1"
+                      ],
+                      "lines_of_business": [
+                        "IT Service Management",
+                        "Operations"
+                      ],
+                      "reason": "Activity aggregates incident data by department/team with KPI analysis for governance, anchoring on Incident entity, Employee organizational structure, and incident management processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Incident:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:PerformanceReview:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_SafetyComplianceOrchestration_v1\",\n    \"proc_integrated_service_change_mgmt_v1\"\n  ],\n  \"lines_of_business\": [\n    \"IT Service Management\",\n    \"Operations\"\n  ],\n  \"reason\": \"Activity aggregates incident data by department/team with KPI analysis for governance, anchoring on Incident entity, Employee organizational structure, and incident management processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity requires **analytical aggregation and KPI calculation** for a board presentation\u2014this is a classic analytical/reporting use case, not operational execution.\n\n1. **sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics** (Rank 1) - Best match. It's a dataProduct designed for cross-functional impact analysis and operational readiness scorecards, directly supporting executive decision-making and board-level presentations.\n\n2. **sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness** (Rank 2) - Second dataProduct offering analytics for readiness assessment and executive steering committee validation\u2014aligned with board presentation needs.\n\n3. **sap.s4:agent:AssetLifecycleChangeOrchestrator** (Rank 3) - Agent that tracks change lifecycle end-to-end, enabling historical data collection for trend analysis and incident metrics.\n\n4-8. **Remaining agents** - Less ideal but included because they track or coordinate incident-related changes. They support data collection but lack explicit analytics/reporting capabilities. Ranked by relevance to incident data aggregation.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+                      "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+                      "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+                      "emarsys.cx:dataProduct:SafetyIncidentComplianceAnalytics:v1",
+                      "my.mes:dataProduct:IncidentSafetyAnalytics:v1"
+                    ],
+                    "tokens": 4172,
+                    "latency_s": 7.747,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 8
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2189,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.crm:dataProduct:IncidentResolutionMetrics:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 749,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.crm:dataProduct:IncidentResolutionMetrics:v1",
+              "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+            "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Update several customer cases that are stuck in the resolution queue",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:ServiceHealthMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 88802,
+          "latency_s": 24.364,
+          "llm_calls": 19,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 489,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Update several customer cases that are stuck in the resolution queue"
+            ],
+            "original_prompt": "Update several customer cases that are stuck in the resolution queue",
+            "sub_queries_redecomposed": [
+              "Identify customer cases currently stuck in the resolution queue",
+              "Update the status and details of the identified stuck customer cases"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Identify customer cases currently stuck in the resolution queue",
+              "trace": {
+                "tokens": 43734,
+                "latency_s": 12.236,
+                "llm_calls": 8,
+                "confidence": 0.85,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 23,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 714,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "corp.itsm",
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:ChangeRequest:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29274,
+                    "latency_s": 0.746
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8497,
+                    "latency_s": 4.893959999084473,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:IncidentEngagementReliability:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 48
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 8,
+                      "emarsys.cx": 4,
+                      "my.mes": 3,
+                      "sap.ariba": 2,
+                      "sap.crm": 2,
+                      "sap.sf": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Incident:v1": 13,
+                      "sap.odm:entityType:SafetyIncident:v1": 13,
+                      "sap.odm:entityType:CustomerAccount:v1": 6,
+                      "sap.odm:entityType:HazardousSubstance:v1": 5,
+                      "sap.odm:entityType:CustomerOrder:v1": 3,
+                      "sap.odm:entityType:SalesOpportunity:v1": 2,
+                      "sap.odm:entityType:ServiceTicket:v1": 1,
+                      "sap.odm:entityType:ITEquipment:v1": 1,
+                      "sap.odm:entityType:ChangeRequest:v1": 1,
+                      "sap.odm:entityType:Campaign:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 3,
+                      "dataProduct": 12,
+                      "agent": 5
+                    },
+                    "top_capabilities": {
+                      "manage-customer-accounts": 2,
+                      "track-safety-metrics": 2,
+                      "receive-log-orders": 1,
+                      "track-service-tickets": 1,
+                      "fulfill-customer-orders": 1,
+                      "allocate-inventory": 1,
+                      "monitor-incidents": 1,
+                      "track-engagement-metrics": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:ServiceTicket:v1",
+                        "sap.odm:entityType:CustomerAccount:v1"
+                      ],
+                      "business_groups": [
+                        "proc_integrated_service_change_mgmt_v1"
+                      ],
+                      "lines_of_business": [
+                        "IT Service Management",
+                        "customer-service"
+                      ],
+                      "reason": "Identifying stuck customer cases in resolution queue requires tracking incidents/service tickets linked to customer accounts within service management processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Incident:v1\",\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_integrated_service_change_mgmt_v1\"\n  ],\n  \"lines_of_business\": [\n    \"IT Service Management\",\n    \"customer-service\"\n  ],\n  \"reason\": \"Identifying stuck customer cases in resolution queue requires tracking incidents/service tickets linked to customer accounts within service management processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                      "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                      "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                      "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                      "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                      "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                      "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                      "sap.crm:agent:CampaignAudienceOptimizationAgent:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"emarsys.cx:apiResource:JourneyContactStateAPI:v1\",\n  \"corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1\",\n  \"emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1\",\n  \"emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity \"Identify customer cases currently stuck in the resolution queue\" requires:\n1. **Real-time query capability** to check contact/case states\n2. **Historical/analytical data** on case statuses and engagement metrics\n3. **Queue/status tracking** functionality\n\n**Top pick - JourneyContactStateAPI (emarsys.cx:apiResource:JourneyContactStateAPI:v1):**\n- Has `query-campaign-status` and `track-campaign-engagement` capabilities that directly support identifying stuck cases\n- `update-contact-state` allows state inspection within active journeys\n- Explicitly designed for querying real-time engagement state\n\n**Second - CustomerEngagementServiceMetrics (corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1):**\n- DataProduct providing service performance aggregates, relevant for identifying bottlenecks/stuck cases in resolution queues\n- Service metrics would show queue health and stuck case indicators\n\n**Third - CampaignPerformanceAnalytics (emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1):**\n- Analytical view of campaign/engagement performance across channels\n- Helps identify engagement patterns indicating stuck resolution states\n\n**Fourth - SegmentDrivenCampaignOptimizer (emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1):**\n- Agent could autonomously identify problematic segments with stuck cases\n- Proactive monitoring capability aligns with the identification task\n\nExcluded: Campaign Access Management API (access control, not case identification), Campaign Audience Optimization Agent (targeting focus, not queue analysis), Vendor Performance Analytics (vendor-focused, wrong domain).",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                      "corp.itsm:dataProduct:ServiceHealthMetrics:v1",
+                      "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                      "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+                      "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1"
+                    ],
+                    "tokens": 3172,
+                    "latency_s": 7.342,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 3
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2077,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                    "confidence": 0.85
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Update the status and details of the identified stuck customer cases",
+              "trace": {
+                "tokens": 43762,
+                "latency_s": 12.128,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 24,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 714,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.crm",
+                      "entity_types": [
+                        "sap.odm:entityType:CustomerAccount:v1",
+                        "sap.odm:entityType:Incident:v1"
+                      ],
+                      "action_verb": "validate",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29275,
+                    "latency_s": 0.449
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8483,
+                    "latency_s": 5.085218906402588,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:CustomerAccount:v1"
+                        },
+                        "n_results": 57
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 81
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 8,
+                      "emarsys.cx": 7,
+                      "sap.crm": 3,
+                      "sap.ehs": 1,
+                      "sap.s4": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:CustomerAccount:v1": 18,
+                      "sap.odm:entityType:Campaign:v1": 11,
+                      "sap.odm:entityType:CustomerOrder:v1": 7,
+                      "sap.odm:entityType:Incident:v1": 2,
+                      "sap.odm:entityType:SafetyIncident:v1": 2,
+                      "sap.odm:entityType:CustomerSegment:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 17,
+                      "dataProduct": 3
+                    },
+                    "top_capabilities": {
+                      "manage-customer-accounts": 2,
+                      "receive-log-orders": 1,
+                      "track-service-tickets": 1,
+                      "verify-customer-compliance": 1,
+                      "map-campaign-to-safety": 1,
+                      "assess-safety-compliance": 1,
+                      "evaluate-customer-safety-risk": 1,
+                      "validate-account-obligations": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:ServiceTicket:v1",
+                        "sap.odm:entityType:CustomerAccount:v1",
+                        "sap.odm:entityType:Incident:v1"
+                      ],
+                      "business_groups": [
+                        "proc_integrated_service_change_mgmt_v1",
+                        "proc_order_compliance_fulfillment_v1"
+                      ],
+                      "lines_of_business": [
+                        "customer-service",
+                        "customer-experience-management"
+                      ],
+                      "reason": "Activity involves tracking and resolving stuck customer cases, which are primarily service tickets requiring status updates and incident management."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:Incident:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_integrated_service_change_mgmt_v1\",\n    \"proc_order_compliance_fulfillment_v1\"\n  ],\n  \"lines_of_business\": [\n    \"customer-service\",\n    \"customer-experience-management\"\n  ],\n  \"reason\": \"Activity involves tracking and resolving stuck customer cases, which are primarily service tickets requiring status updates and incident management.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                      "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                      "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                      "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                      "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                      "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                      "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                      "sap.crm:agent:CampaignAudienceOptimizationAgent:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"emarsys.cx:apiResource:JourneyContactStateAPI:v1\",\n  \"emarsys.cx:apiResource:CampaignContactEngagementAPI:v1\",\n  \"corp.itsm:apiResource:CampaignAccessManagementAPI:v1\",\n  \"emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1\",\n  \"sap.crm:agent:CampaignAudienceOptimizationAgent:v1\",\n  \"corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1\",\n  \"emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1\",\n  \"sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1\"\n]\n```\n\n**Reasoning:**\n\n1. **JourneyContactStateAPI** (rank 1): Direct match\u2014explicitly has `update-contact-state` capability and manages real-time contact engagement state, perfect for updating stuck case details.\n\n2. **CampaignContactEngagementAPI** (rank 2): Strong match\u2014handles contact engagement states and has `activate-contact-engagement` and `manage-marketing-campaigns` capabilities for updating customer case statuses across channels.\n\n3. **CampaignAccessManagementAPI** (rank 3): Relevant for case management context\u2014has `capture-service-request` capability and manages customer account permissions tied to service requests.\n\n4. **SegmentDrivenCampaignOptimizer Agent** (rank 4): Agent type suits operational updates; can autonomously identify and optimize responses for stuck cases within customer segments.\n\n5. **CampaignAudienceOptimizationAgent** (rank 5): Agent type; can analyze and help optimize handling of stuck customer cases.\n\n6. **CustomerEngagementServiceMetrics** (rank 6): Data product for contextual metrics on engagement patterns to inform case status updates.\n\n7. **CampaignPerformanceAnalytics** (rank 7): Analytical data to support decision-making on case statuses.\n\n8. **VendorPerformanceAndSegmentationAnalytics** (rank 8): Least relevant; focused on vendor metrics rather than direct customer case management.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                      "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                      "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                      "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+                      "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1"
+                    ],
+                    "tokens": 3237,
+                    "latency_s": 7.043,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 4
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2053,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 817,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+              "corp.itsm:dataProduct:ServiceHealthMetrics:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"User is requesting ad-hoc access to two disparate systems (incident tracking and customer case management) for simultaneous viewing, which is a platform/technical integration request rather than a business process workflow that any single registered skill covers.\"\n}\n```",
+      "reason": "User is requesting ad-hoc access to two disparate systems (incident tracking and customer case management) for simultaneous viewing, which is a platform/technical integration request rather than a business process workflow that any single registered skill covers.",
+      "tokens": 1678,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 181987,
+    "latency_s": 64.64,
+    "llm_calls": 40
+  },
+  "wall_s": 89.173
+}

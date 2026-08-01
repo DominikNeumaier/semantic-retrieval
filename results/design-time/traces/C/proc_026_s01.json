@@ -1,0 +1,82 @@
+{
+  "case_id": "proc_026_s01",
+  "process": "proc_026",
+  "label": "product launch transition process: Receive incoming material shipments \u2014 Validate and log all inbound materials from vendors against purchase orders to establish baseline inventory for production launch.",
+  "method": "C",
+  "expected_ordIds": [
+    "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+      "score": 65.0
+    },
+    {
+      "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+      "score": 65.0
+    },
+    {
+      "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+      "score": 65.0
+    },
+    {
+      "ordId": "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+      "score": 65.0
+    },
+    {
+      "ordId": "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+      "score": 65.0
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "anchors": {
+      "entity_types": [
+        "sap.odm:entityType:Material:v1",
+        "sap.odm:entityType:PurchaseOrder:v1",
+        "sap.odm:entityType:ProductionOrder:v1",
+        "sap.odm:entityType:Vendor:v1"
+      ],
+      "business_groups": [],
+      "lines_of_business": [
+        "Inventory Management",
+        "Manufacturing"
+      ],
+      "reason": "Activity involves receiving and validating inbound materials against purchase orders for production launch, directly touching material management, purchase orders, vendor relationships, and production execution."
+    },
+    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:Vendor:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Inventory Management\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Activity involves receiving and validating inbound materials against purchase orders for production launch, directly touching material management, purchase orders, vendor relationships, and production execution.\"\n}\n```",
+    "max_hops": 2,
+    "hop_decay": 0.5,
+    "edge_weights": {
+      "co_exposes": 1.0,
+      "co_partOf": 2.0,
+      "calls": 3.0,
+      "processNext": 3.0
+    },
+    "scored_resources": 111,
+    "walk_top_ids": [
+      "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+      "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+      "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+      "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+      "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+      "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+      "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+    ],
+    "rerank_raw": "```json\n[\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\",\n  \"corp.itsm:agent:ChangeReleaseCoordinator:v1\",\n  \"corp.itsm:agent:ChangeAutomationOrchestrator:v1\",\n  \"emarsys.cx:agent:ProductLifecycleOrchestrator:v1\",\n  \"emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1\"\n]\n```\n\n**Rationale:**\n\n1. **BillOfMaterialsComplianceValidator** (rank 1): Direct match. The activity requires validation of inbound materials against purchase orders\u2014this agent explicitly handles BOM validation and supplier qualification, which aligns perfectly with establishing baseline inventory.\n\n2. **ChangeReleaseCoordinator** (rank 2): Strong fit. Coordinates product releases with inventory management, directly relevant to the product launch transition and inventory baseline establishment.\n\n3. **ChangeAutomationOrchestrator** (rank 3): Good match. Handles material updates and engineering changes during product launches, supporting the material receipt and logging workflow.\n\n4. **ProductLifecycleOrchestrator** (rank 4): Moderate fit. Automates inventory synchronization across product changes, applicable to launch logistics.\n\n5. **ProductChangeAndInventoryAnalytics** (rank 5): Weaker but relevant. While this is a dataProduct (analytical), it aggregates material updates and inventory metrics, useful for post-validation reporting if needed.\n\nThe three ITSM agents handling access/asset provisioning were excluded as they target IT assets rather than physical materials/inventory.",
+    "refused": false,
+    "previous_resolved": [],
+    "tokens": 2182,
+    "latency_s": 5.401,
+    "llm_calls": 2
+  },
+  "wall_s": 5.412
+}

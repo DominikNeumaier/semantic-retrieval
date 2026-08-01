@@ -1,0 +1,67 @@
+{
+  "case_id": "proc_008_s08",
+  "process": "proc_008",
+  "label": "order compliance fulfillment process: Approve fulfillment and schedule resource time \u2014 Authorize order fulfillment and reserve employee capacity and time allocations for delivery execution.",
+  "method": "B",
+  "expected_ordIds": [
+    "workday.hcm:apiResource:TimeOffBalanceManagement:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.s4:apiResource:WorkforceCapacityAndTimeOffManagement:v1",
+      "score": null
+    },
+    {
+      "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+      "score": null
+    },
+    {
+      "ordId": "workday.hcm:apiResource:TimeOffAndCapacityAllocationManagement:v1",
+      "score": null
+    },
+    {
+      "ordId": "workday.hcm:apiResource:EmployeeTimeOffAvailabilityExposure:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "b_ns_correct": 1,
+    "b_tool_given_ns": 0
+  },
+  "trace": {
+    "stage1_namespaces": [
+      "sap.s4",
+      "workday.hcm"
+    ],
+    "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.s4\", \"workday.hcm\"],\n  \"reason\": \"Order fulfillment authorization requires inventory/material management (sap.s4) and employee time/capacity allocation (workday.hcm).\"\n}\n```",
+    "stage2_modalities": [
+      "operational"
+    ],
+    "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"This activity requires live execution: authorizing fulfillment and reserving employee capacity are direct actions that create/update master data and commit resources.\"\n}\n```",
+    "stage2_pool_size": 42,
+    "stage3_entity_types": [
+      "sap.odm:entityType:Employee:v1",
+      "sap.odm:entityType:CustomerOrder:v1",
+      "sap.odm:entityType:TimeOff:v1"
+    ],
+    "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Employee:v1\", \"sap.odm:entityType:CustomerOrder:v1\", \"sap.odm:entityType:TimeOff:v1\"],\n  \"reason\": \"The activity reserves employee capacity and time allocations for order fulfillment execution, directly reading/writing Employee schedules, CustomerOrder fulfillment status, and TimeOff constraints.\"\n}\n```",
+    "stage3_pool_size": 19,
+    "stage4_raw": "```json\n[\n  \"sap.s4:apiResource:CustomerOrderManagementAPI:v1\",\n  \"sap.s4:apiResource:WorkforceCapacityAndTimeOffManagement:v1\",\n  \"workday.hcm:apiResource:PayrollProcessingDataManagement:v1\",\n  \"workday.hcm:apiResource:TimeOffAndCapacityAllocationManagement:v1\",\n  \"workday.hcm:apiResource:EmployeeTimeOffAvailabilityExposure:v1\"\n]\n```",
+    "stage4_valid_count": 5,
+    "refused": false,
+    "tokens": 3961,
+    "latency_s": 2.071,
+    "llm_calls": 4
+  },
+  "wall_s": 2.102
+}

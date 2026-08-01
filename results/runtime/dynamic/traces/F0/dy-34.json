@@ -1,0 +1,616 @@
+{
+  "case_id": "dy-34",
+  "user_prompt": "I need to pull together compensation figures and tax withholdings for our quarterly reconciliation, and at the same time I'd like to grant our marketing team access to manage client engagement initiatives across our accounts. Can you help me set this up efficiently in a single request?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "clean",
+  "condition": "F0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull together compensation figures and tax withholdings for our quarterly reconciliation",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:PayrollDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 64279,
+          "latency_s": 11.308,
+          "llm_calls": 14,
+          "n_intents": 2,
+          "use_graph": false,
+          "decomp_trace": {
+            "tokens": 290,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Pull compensation figures for quarterly reconciliation",
+              "Pull tax withholdings for quarterly reconciliation"
+            ],
+            "original_prompt": "Pull together compensation figures and tax withholdings for our quarterly reconciliation"
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Pull compensation figures for quarterly reconciliation",
+              "trace": {
+                "tokens": 31324,
+                "latency_s": 5.417,
+                "llm_calls": 6,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 19,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 708,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.sf",
+                      "entity_types": [
+                        "sap.odm:entityType:Compensation:v1",
+                        "sap.odm:entityType:Employee:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20593,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8249,
+                    "latency_s": 5.416865348815918,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Compensation:v1"
+                        },
+                        "n_results": 10
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Employee:v1"
+                        },
+                        "n_results": 44
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.crm:dataProduc:SalesCompensationDataProduct:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 44
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "workday.hcm": 5,
+                      "my.mes": 4,
+                      "sap.crm": 3,
+                      "sap.sf": 3,
+                      "sap.ariba": 1,
+                      "sap.ehs": 1,
+                      "corp.itsm": 1,
+                      "emarsys.cx": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Employee:v1": 17,
+                      "sap.odm:entityType:Compensation:v1": 10,
+                      "sap.odm:entityType:TimeOff:v1": 4,
+                      "sap.odm:entityType:WorkforcePerson:v1": 3,
+                      "sap.odm:entityType:EngineeringChange:v1": 2,
+                      "sap.odm:entityType:Material:v1": 2,
+                      "sap.odm:entityType:ProductItem:v1": 2
+                    },
+                    "resource_types": {
+                      "dataProduct": 6,
+                      "apiResource": 7,
+                      "agent": 6
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 19
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1774,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Pull tax withholdings for quarterly reconciliation",
+              "trace": {
+                "tokens": 31665,
+                "latency_s": 5.891,
+                "llm_calls": 6,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 711,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.s4",
+                      "entity_types": [
+                        "sap.odm:entityType:Invoice:v1",
+                        "sap.odm:entityType:Compensation:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20594,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8488,
+                    "latency_s": 5.891470193862915,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Invoice:v1"
+                        },
+                        "n_results": 7
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Compensation:v1"
+                        },
+                        "n_results": 10
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 17
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "workday.hcm": 6,
+                      "my.mes": 3,
+                      "sap.ariba": 3,
+                      "sap.crm": 3,
+                      "sap.s4": 2,
+                      "emarsys.cx": 1,
+                      "sap.ehs": 1,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Employee:v1": 12,
+                      "sap.odm:entityType:Invoice:v1": 7,
+                      "sap.odm:entityType:Material:v1": 7,
+                      "sap.odm:entityType:WorkforcePerson:v1": 6,
+                      "sap.odm:entityType:Compensation:v1": 5,
+                      "sap.odm:entityType:Vendor:v1": 2,
+                      "sap.odm:entityType:PurchaseOrder:v1": 1,
+                      "sap.odm:entityType:Contract:v1": 1,
+                      "sap.odm:entityType:TimeOff:v1": 1,
+                      "sap.odm:entityType:PerformanceReview:v1": 1
+                    },
+                    "resource_types": {
+                      "dataProduct": 10,
+                      "apiResource": 6,
+                      "agent": 4
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 20
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1872,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "workday.hcm:apiResource:PayrollDataExposure:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 1000,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+              "workday.hcm:apiResource:PayrollDataExposure:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "corp.itsm:apiResource:CampaignAccessManagementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Grant our marketing team access to manage client engagement initiatives across our accounts",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CampaignSegmentationDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:ProcurementVendorEngagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 64972,
+          "latency_s": 12.347,
+          "llm_calls": 15,
+          "n_intents": 2,
+          "use_graph": false,
+          "decomp_trace": {
+            "tokens": 485,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Grant our marketing team access to manage client engagement initiatives across our accounts"
+            ],
+            "original_prompt": "Grant our marketing team access to manage client engagement initiatives across our accounts",
+            "sub_queries_redecomposed": [
+              "Grant marketing team access permissions to manage client engagement initiatives",
+              "Apply access across all company accounts for the marketing team"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Grant marketing team access permissions to manage client engagement initiatives",
+              "trace": {
+                "tokens": 31627,
+                "latency_s": 5.598,
+                "llm_calls": 6,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 712,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.crm",
+                      "entity_types": [
+                        "sap.odm:entityType:Campaign:v1",
+                        "sap.odm:entityType:Employee:v1"
+                      ],
+                      "action_verb": "orchestrate",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20597,
+                    "latency_s": 0.784
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8483,
+                    "latency_s": 5.597815752029419,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Campaign:v1"
+                        },
+                        "n_results": 32
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Employee:v1"
+                        },
+                        "n_results": 44
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 76
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "emarsys.cx": 9,
+                      "corp.itsm": 6,
+                      "sap.crm": 2,
+                      "workday.hcm": 1,
+                      "my.mes": 1,
+                      "sap.ariba": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Campaign:v1": 17,
+                      "sap.odm:entityType:CustomerAccount:v1": 17,
+                      "sap.odm:entityType:CustomerSegment:v1": 3,
+                      "sap.odm:entityType:PurchaseOrder:v1": 1,
+                      "sap.odm:entityType:Vendor:v1": 1,
+                      "sap.odm:entityType:Incident:v1": 1,
+                      "sap.odm:entityType:SafetyIncident:v1": 1,
+                      "sap.odm:entityType:Invoice:v1": 1,
+                      "sap.odm:entityType:Material:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 15,
+                      "dataProduct": 4,
+                      "agent": 1
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 20
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1835,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Apply access across all company accounts for the marketing team",
+              "trace": {
+                "tokens": 31953,
+                "latency_s": 6.749,
+                "llm_calls": 6,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 713,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.crm",
+                      "entity_types": [
+                        "sap.odm:entityType:CustomerAccount:v1",
+                        "sap.odm:entityType:Campaign:v1"
+                      ],
+                      "action_verb": "orchestrate",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20597,
+                    "latency_s": 1.204
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8760,
+                    "latency_s": 6.749392747879028,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:CustomerAccount:v1"
+                        },
+                        "n_results": 57
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Campaign:v1"
+                        },
+                        "n_results": 32
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 57
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 9,
+                      "emarsys.cx": 5,
+                      "sap.crm": 5,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:CustomerAccount:v1": 19,
+                      "sap.odm:entityType:Campaign:v1": 16,
+                      "sap.odm:entityType:CustomerSegment:v1": 5,
+                      "sap.odm:entityType:CustomerOrder:v1": 3,
+                      "sap.odm:entityType:EngineeringChange:v1": 1,
+                      "sap.odm:entityType:Material:v1": 1,
+                      "sap.odm:entityType:ProductItem:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 14,
+                      "agent": 3,
+                      "dataProduct": 3
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 20
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1883,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 907,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+              "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request combines two unrelated tasks (payroll/tax reconciliation and access management for marketing) that don't fit any single registered skill\u2014proc_018 covers compensation analysis but not access provisioning, and no skill addresses both needs together.\"\n}\n```",
+      "reason": "The request combines two unrelated tasks (payroll/tax reconciliation and access management for marketing) that don't fit any single registered skill\u2014proc_018 covers compensation analysis but not access provisioning, and no skill addresses both needs together.",
+      "tokens": 1685,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 131277,
+    "latency_s": 23.655,
+    "llm_calls": 31
+  },
+  "wall_s": 49.798
+}

@@ -1,0 +1,63 @@
+{
+  "case_id": "proc_033_s02",
+  "process": "proc_033",
+  "label": "procure fulfill process: Enrich customer order context \u2014 Augment incoming customer orders with account history and order enrichment data to ensure fulfillment accuracy.",
+  "method": "B",
+  "expected_ordIds": [
+    "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "b_ns_correct": 0,
+    "b_tool_given_ns": null
+  },
+  "trace": {
+    "stage1_namespaces": [
+      "sap.crm",
+      "sap.s4"
+    ],
+    "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.crm\", \"sap.s4\"],\n  \"reason\": \"SAP CRM holds customer account and order context data, while SAP S4 contains material and inventory management for fulfillment accuracy.\"\n}\n```",
+    "stage2_modalities": [
+      "operational"
+    ],
+    "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Enriching customer orders with account history is a prerequisite operational task that directly feeds fulfillment accuracy and execution, not a read-only analytical lookup.\"\n}\n```",
+    "stage2_pool_size": 38,
+    "stage3_entity_types": [
+      "sap.odm:entityType:CustomerOrder:v1",
+      "sap.odm:entityType:CustomerAccount:v1",
+      "sap.odm:entityType:Material:v1"
+    ],
+    "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:Material:v1\"\n  ],\n  \"reason\": \"The activity enriches customer orders with account history and order data for fulfillment, directly involving CustomerOrder, CustomerAccount, and Material entities.\"\n}\n```",
+    "stage3_pool_size": 20,
+    "stage4_raw": "```json\n[\n  \"sap.s4:apiResource:CustomerOrderManagementAPI:v1\",\n  \"sap.s4:apiResource:CustomerAccountFinancialAPI:v1\",\n  \"sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1\",\n  \"sap.crm:apiResource:CustomerAccountDisputeManagement:v1\"\n]\n```",
+    "stage4_valid_count": 4,
+    "refused": false,
+    "tokens": 3270,
+    "latency_s": 5.691,
+    "llm_calls": 4
+  },
+  "wall_s": 5.704
+}

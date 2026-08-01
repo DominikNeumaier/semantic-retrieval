@@ -1,0 +1,154 @@
+{
+  "case_id": "dy-20",
+  "user_prompt": "I need to figure out who reports to whom across our company and understand the chain of command structure. Can you help me pull together the reporting relationships and organizational breakdown?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to figure out who reports to whom across our company and understand the chain of command structure. Can you help me pull together the reporting relationships and organizational breakdown?",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.sf:package:Core:v1\",\n      \"title\": \"sap.sf Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1072
+              }
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1099
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\n- siemens.plm: PLM agents for engineering changes, BOM compliance, material provisioning\n- corp.itsm: ITSM agents for IT infrastructure automation\n- sap.odm: Canonical entity type taxonomy\n- sap.s4: ERP core (procurement, BOM, asset lifecycle)\n- sap.ariba: Procurement (vendor reconciliation, supplier compliance)\n- sap.sf: HR agents (performance reviews, talent acquisition, compensation, skills matching) - NO org hierarchy/reporting structure\n- workday.hcm: HR agents (performance reviews, compensation, safety) - NO org hierarchy/reporting structure\n- emarsys.cx: Marketing/CX campaign orchestration\n- sap.ehs: Safety/environmental compliance, incident management\n- my.mes: Manufacturing Execution System (production quality, supplier compliance, engineering changes)\n\nHR COMPENSATION CAPABILITIES (verified):\n- sap.sf:agent:CompensationPolicyAutomationEngine: policy-driven salary adjustments\n- workday.hcm:agent:CompensationAdjustmentAutomation: merit increases based on performance\n- workday.hcm:agent:CompensationStructureAutomationEngine: compensation plan updates\n\nORDER & PRODUCTION SCHEDULING CAPABILITIES (verified):\n- my.mes:agent:ProductionChangeOrchestrator: Orchestrates production changes\n- my.mes:agent:ProductionQualityMonitor: Monitors ProductionOrders\n- sap.s4:agent:OpportunityToOrderAutomationEngine: Creates orders from opportunities\n\nNOTE: Landscape lacks organizational hierarchy/reporting structure capability. Both HR systems focus on transactional workflows (reviews, compensation, recruitment) not org design."
+              },
+              "result_preview": {
+                "stored_bytes": 1561,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape has no dedicated resource for organizational hierarchy, reporting relationships, or chain of command management; HR systems focus on transactional workflows rather than org design."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape has no dedicated resource for organizational hierarchy, reporting relationships, or chain of command management; HR systems focus on transactional workflows rather than org design."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape has no dedicated resource for organizational hierarchy, reporting relationships, or chain of command management; HR systems focus on transactional workflows rather than org design.",
+          "tool_calls": 4,
+          "tokens": 19558,
+          "latency_s": 13.232,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user is requesting organizational structure and reporting relationship information, which is a one-off organizational lookup that doesn't match any of the registered skills that focus on operational processes (procurement, manufacturing, launches, compliance, etc.).\"\n}\n```",
+      "reason": "The user is requesting organizational structure and reporting relationship information, which is a one-off organizational lookup that doesn't match any of the registered skills that focus on operational processes (procurement, manufacturing, launches, compliance, etc.).",
+      "tokens": 1659,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "I need to figure out who reports to whom across our company and understand the chain of command structure. Can you help me pull together the reporting relationships and organizational breakdown?"
+      ],
+      "original_prompt": "I need to figure out who reports to whom across our company and understand the chain of command structure. Can you help me pull together the reporting relationships and organizational breakdown?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 1,
+      "sub_queries": [
+        "Pull together the reporting relationships and organizational structure across the company to understand the chain of command"
+      ],
+      "routed_ok": true,
+      "count_ok": true,
+      "verdict": "green"
+    }
+  },
+  "trace": {
+    "tokens": 21217,
+    "latency_s": 13.232,
+    "llm_calls": 5
+  },
+  "wall_s": 13.236
+}

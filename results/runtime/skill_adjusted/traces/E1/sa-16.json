@@ -1,0 +1,237 @@
+{
+  "case_id": "sa-16",
+  "user_prompt": "We need to adjust our production schedule due to a significant surge in Q2 demand forecasting and some critical supply constraints we're facing with our primary vendors. This will require coordinating engineering changes across our product lines, verifying compliance requirements, updating our procurement orders, and adjusting our workforce capacity planning. As part of this broader initiative, we'll also need to ensure our team members are compensated fairly for any overtime or shift changes resulting from the schedule adjustments, including updating any applicable merit considerations. Can you help us orchestrate all these moving pieces together, including the financial and compensation updates that will flow from these workforce adjustments?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "E",
+  "state": "enriched",
+  "condition": "E1",
+  "skill_expected": "proc_001",
+  "skill_picked": "proc_001",
+  "expected_gaps": [
+    "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+    "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Update employee compensation and overtime pay",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1099
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1099
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:OpportunityToOrderAutomationEngine:v1 \u2014 converts qualified opportunities to orders\n2. sap.crm:agent:OpportunityQualificationAdvisor:v1 \u2014 evaluates opportunities against CustomerAccount characteristics\n\nPROCUREMENT AGENTS (sap.s4, sap.ariba):\n- sap.s4:agent:ProcurementMatchingAgent:v1 \u2014 matches purchase requisitions to vendors\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 \u2014 reconciles invoices to POs\n\nPRODUCT LIFECYCLE & MATERIALS TRACKING (siemens.plm, sap.s4):\n- siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1 \u2014 coordinates engineering changes, syncs config updates, tracks material lifecycle\n- siemens.plm:agent:BOMComplianceValidator:v1 \u2014 validates BOM against regulatory/supplier standards\n- sap.s4:agent:AssetLifecycleChangeOrchestrator:v1 \u2014 coordinates engineering changes with asset provisioning\n- sap.s4:agent:BOMComplianceAutomationAgent:v1 \u2014 validates material specs & automates BOM updates\n\nINCIDENT MGMT & EQUIPMENT (corp.itsm):\n- corp.itsm:agent:IncidentRootCauseAnalyzer:v1 \u2014 analyzes service tickets\n- corp.itsm:agent:AssetProvisioningOrchestrator:v1 \u2014 manages asset lifecycle provisioning\n- corp.itsm:agent:ChangeAutomationOrchestrator:v1 \u2014 automates change coordination\n- corp.itsm:agent:IncidentSafetyCoordinator:v1, corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1 \u2014 safety incidents\n- corp.itsm:agent:VendorContractComplianceOrchestrator:v1 \u2014 vendor contract/PO compliance\n- corp.itsm:agent:ChangeReleaseCoordinator:v1 \u2014 automates product releases\n\nCUSTOMER ACCOUNT & COMMUNICATIONS:\n- sap.crm:agent:SalesProductChangeCoordinator:v1 \u2014 identifies affected accounts for engineering changes\n- emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1 \u2014 customer communication strategy\n\nHR & COMPENSATION (workday.hcm):\n- workday.hcm:agent:CompensationAdjustmentAutomation:v1 \u2014 processes merit increases & compensation adjustments based on performance/policy; integrates with payroll cycles; related entities: Employee, Compensation\n- workday.hcm:agent:CompensationChangeProcessor:v1 \u2014 compensation adjustments tied to organizational changes\n- workday.hcm:agent:CompensationStructureAutomationEngine:v1 \u2014 compensation structure updates tied to org changes/material costs\n- workday.hcm:agent:PerformanceReviewCoordination:v1, workday.hcm:agent:PerformanceReviewOrchestrator:v1 \u2014 performance review management\n- workday.hcm:agent:OccupationalSafetyIncidentMonitoring:v1 \u2014 workplace hazard tracking\n"
+              },
+              "result_preview": {
+                "stored_bytes": 2635,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+                "reason": "This agent autonomously processes compensation adjustments and integrates with payroll cycles to implement approved adjustments on schedule, directly fulfilling the activity to update employee compensation."
+              },
+              "result_preview": {
+                "committed": "workday.hcm:agent:CompensationAdjustmentAutomation:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+          "picked_reason": "This agent autonomously processes compensation adjustments and integrates with payroll cycles to implement approved adjustments on schedule, directly fulfilling the activity to update employee compensation.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 5,
+          "tokens": 30767,
+          "latency_s": 36.818,
+          "llm_calls": 5
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Process merit consideration adjustments",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:agent:CompensationChangeProcessor:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationChangeProcessor:v1",
+                "reason": "Processes compensation adjustments following merit evaluation, handling the organizational and policy-driven changes that follow automated merit increases."
+              },
+              "result_preview": {
+                "committed": "workday.hcm:agent:CompensationChangeProcessor:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:agent:CompensationChangeProcessor:v1",
+          "picked_reason": "Processes compensation adjustments following merit evaluation, handling the organizational and policy-driven changes that follow automated merit increases.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 1,
+          "tokens": 3310,
+          "latency_s": 11.475,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Coordinate financial/payroll system updates",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:Opportunit \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+                "reason": "Processes compensation adjustments and integrates with payroll cycles to coordinate financial/payroll system updates following organizational compensation changes."
+              },
+              "result_preview": {
+                "committed": "workday.hcm:agent:CompensationAdjustmentAutomation:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+          "picked_reason": "Processes compensation adjustments and integrates with payroll cycles to coordinate financial/payroll system updates following organizational compensation changes.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 2,
+          "tokens": 7150,
+          "latency_s": 12.97,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_001",
+      "skill_id_expected": "proc_001",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Update employee compensation and overtime pay\",\n    \"Process merit consideration adjustments\",\n    \"Coordinate financial/payroll system updates\"\n  ],\n  \"reason\": \"The skill covers production schedule adjustments, engineering coordination, compliance verification, procurement updates, and workforce capacity planning, but explicitly lacks the compensation management, overtime pay updates, and merit adjustment activities that the request specifically names as required outcomes of the workforce changes.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers production schedule adjustments, engineering coordination, compliance verification, procurement updates, and workforce capacity planning, but explicitly lacks the compensation management, overtime pay updates, and merit adjustment activities that the request specifically names as re",
+      "tokens": 627,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 41854,
+    "latency_s": 61.263,
+    "llm_calls": 9
+  },
+  "wall_s": 61.273
+}

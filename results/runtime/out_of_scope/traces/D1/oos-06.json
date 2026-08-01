@@ -1,0 +1,860 @@
+{
+  "case_id": "oos-06",
+  "user_prompt": "Our sales team is manually adjusting prices on large B2B orders based on competitor intel and customer volume history, but we need a way to automatically flag orders that fall outside our dynamic pricing bands\u2014especially when our reps are discounting beyond threshold for specific customer segments\u2014so we can audit whether deals are staying within our margin targets before they hit the accounting system.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 1,
+    "falsely_picked": 0,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Set up dynamic pricing bands for B2B orders that account for competitor intelligence and customer volume history",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:CustomerOrder:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Service Ticket and Order Management API",
+                  "shortDescription": "Retrieves and manages customer service tickets and orders with status tracking."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Provisioning Order API",
+                  "shortDescription": "Exposes and manages customer account orders for ITSM provisioning workflows."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Account Order Enrichment API",
+                  "shortDescription": "Retrieves and manages integrated customer account and order data for engagement targeting."
+                },
+                "... (12 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Sales and Order Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:agent:OpportunityToOrderAutomationEngine:v1",
+                  "type": "agent",
+                  "title": "Opportunity-to-Order Automation Engine",
+                  "shortDescription": "Monitors sales opportunities and automates order creation workflows."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "optimize-order-sequencing"
+              },
+              "result_preview": [
+                {
+                  "ordId": "siemens.plm:apiResource:MachineProductionOrderIntegration:v1",
+                  "type": "apiResource",
+                  "title": "Machine Production Order Integration API",
+                  "shortDescription": "Retrieves and manages machine-production order relationships for execution tracking."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Sales"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                  "type": "agent",
+                  "title": "Change Release Coordinator",
+                  "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Sales Capacity and Time Off Management API",
+                  "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:HazardousSubstanceComplianceManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Compliance Management API",
+                  "shortDescription": "Manages and exposes hazardous substance data for regulatory compliance in sales operations."
+                },
+                "... (12 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "plan-sales-capacity"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Sales Capacity and Time Off Management API",
+                  "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:CustomerSegment:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Customer Engagement Service Metrics",
+                  "shortDescription": "Aggregates service performance and engagement patterns across customer accounts and segments."
+                },
+                {
+                  "ordId": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                  "type": "agent",
+                  "title": "Segment-Driven Campaign Optimizer Agent",
+                  "shortDescription": "AI agent that autonomously identifies high-value customer segments and optimizes campaign targeting and messaging."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Campaign Performance Analytics Data Product",
+                  "shortDescription": "Aggregated campaign metrics across channels with segment performance breakdown."
+                },
+                "... (8 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "personalize-campaign-strategy"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Account Campaign Management API",
+                  "shortDescription": "Manages and retrieves customer accounts linked to marketing campaigns"
+                }
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Customer Order Management API",
+                "shortDescription": "Retrieves and manages customer orders and account details for order processing",
+                "description": "Exposes customer account information and order data to enable real-time order retrieval, modification, and status tracking. Provides access to customer account hierarchies, order histories, and line-item details for downstream sales and customer service operations. Manages customer order lifecycle events including creation, amendment, and fulfillment coordination.",
+                "entityTypes": [
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Sales and Customer"
+                ],
+                "capabilities": [
+                  "validate-order",
+                  "retrieve-account-eligibility",
+                  "verify-order-completeness"
+                ],
+                "useCases": [
+                  "Sales team receives new customer order and confirms it meets account and product requirements"
+                ],
+                "tags": [
+                  "dispute-resolution",
+                  "customer-service",
+                  "account-management",
+                  "crm"
+                ],
+                "partOfGroups": [
+                  "proc_order_compliance_fulfillment_v1"
+                ],
+                "processNext": [
+                  "emarsys.cx:apiResource:JourneyContactStateAPI:v1"
+                ],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1"
+              },
+              "result_preview": {
+                "ordId": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                "type": "agent",
+                "namespace": "emarsys.cx",
+                "title": "Segment-Driven Campaign Optimizer Agent",
+                "shortDescription": "AI agent that autonomously identifies high-value customer segments and optimizes campaign targeting and messaging.",
+                "description": "This agent continuously analyzes CustomerSegment performance data and engagement metrics to recommend real-time campaign optimizations. It evaluates segment characteristics against Campaign performance indicators, automatically adjusts audience targeting parameters, and generates personalized messaging recommendations. The agent reduces manual campaign tuning effort while improving conversion rates through data-driven segment-to-campaign alignment.",
+                "entityTypes": [
+                  "sap.odm:entityType:CustomerSegment:v1",
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerAccount:v1"
+                ],
+                "lineOfBusiness": [
+                  "Marketing and CX"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "campaign-optimization",
+                  "audience-targeting",
+                  "ai-driven",
+                  "segmentation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "emarsys.cx:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a resource for dynamic pricing band configuration with competitor intelligence and customer volume history integration; available resources focus on order management and campaign optimization but not pricing strategy setup."
+              },
+              "result": {
+                "refused": true,
+                "reason": "The landscape lacks a resource for dynamic pricing band configuration with competitor intelligence and customer volume history integration; available resources focus on order management and campaign optimization but not pricing strategy setup."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a resource for dynamic pricing band configuration with competitor intelligence and customer volume history integration; available resources focus on order management and campaign optimization but not pricing strategy setup.",
+          "tool_calls": 13,
+          "tokens": 43825,
+          "latency_s": 17.313,
+          "llm_calls": 13
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Create an automated flagging system to detect orders that fall outside the established dynamic pricing bands",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "detect-anomalies"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Engagement Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:CustomerOrder:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Service Ticket and Order Management API",
+                  "shortDescription": "Retrieves and manages customer service tickets and orders with status tracking."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Provisioning Order API",
+                  "shortDescription": "Exposes and manages customer account orders for ITSM provisioning workflows."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Account Order Enrichment API",
+                  "shortDescription": "Retrieves and manages integrated customer account and order data for engagement targeting."
+                },
+                "... (12 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1"
+              },
+              "result_preview": {
+                "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                "type": "dataProduct",
+                "namespace": "emarsys.cx",
+                "title": "Engagement Incident Metrics",
+                "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues.",
+                "description": "Summarizes incident patterns across customer journeys and engagement campaigns, providing metrics on safety incidents and campaign disruptions. Delivers actionable insights on incident frequency, impact on customer touchpoints, and remediation trends to optimize engagement reliability and compliance posture.",
+                "entityTypes": [
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "customer-experience"
+                ],
+                "capabilities": [
+                  "monitor-incidents",
+                  "track-engagement-metrics",
+                  "detect-anomalies",
+                  "identify-safety-issues",
+                  "monitor-transition-incidents",
+                  "track-safety-metrics"
+                ],
+                "useCases": [
+                  "Manufacturing supervisors detect real-time equipment failures to prevent production disruptions.",
+                  "Customer experience tracks engagement quality and incident correlation with new capabilities.",
+                  "Safety officers track incident trends across facilities for compliance reporting.",
+                  "Customer experience teams correlate production incidents with fulfillment delays.",
+                  "Operations team monitors production incidents during transition for rapid issue resolution.",
+                  "Safety compliance monitors for any safety-related incidents emerging during transition."
+                ],
+                "tags": [
+                  "incident-analytics",
+                  "engagement-reliability",
+                  "compliance-monitoring"
+                ],
+                "partOfGroups": [
+                  "proc_ProductionTransitionMarketReadiness_v1",
+                  "proc_QualityDrivenMfgSupplyChain_v1"
+                ],
+                "processNext": [],
+                "partOfPackage": "emarsys.cx:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Sales"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                  "type": "agent",
+                  "title": "Change Release Coordinator",
+                  "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Sales Capacity and Time Off Management API",
+                  "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:HazardousSubstanceComplianceManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Compliance Management API",
+                  "shortDescription": "Manages and exposes hazardous substance data for regulatory compliance in sales operations."
+                },
+                "... (12 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "enable-order-processing"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Account Order Enrichment API",
+                  "shortDescription": "Retrieves and manages integrated customer account and order data for engagement targeting."
+                }
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Sales and Order Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:agent:OpportunityToOrderAutomationEngine:v1",
+                  "type": "agent",
+                  "title": "Opportunity-to-Order Automation Engine",
+                  "shortDescription": "Monitors sales opportunities and automates order creation workflows."
+                }
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:agent:OpportunityToOrderAutomationEngine:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:agent:OpportunityToOrderAutomationEngine:v1",
+                "type": "agent",
+                "namespace": "sap.s4",
+                "title": "Opportunity-to-Order Automation Engine",
+                "shortDescription": "Monitors sales opportunities and automates order creation workflows.",
+                "description": "Automates the conversion of qualified sales opportunities into customer orders by continuously monitoring opportunity status changes and customer account eligibility. Coordinates with procurement and production planning systems to ensure order fulfillment readiness. Processes opportunity data against customer credit limits and inventory availability to streamline order creation.",
+                "entityTypes": [
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:SalesOpportunity:v1"
+                ],
+                "lineOfBusiness": [
+                  "Sales and Order Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "sales-automation",
+                  "order-processing",
+                  "workflow-orchestration"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                "reason": "This dataProduct provides anomaly detection capabilities to flag deviations from established norms, applicable to monitoring orders outside pricing bands."
+              },
+              "result": {
+                "committed": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+          "picked_reason": "This dataProduct provides anomaly detection capabilities to flag deviations from established norms, applicable to monitoring orders outside pricing bands.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 11,
+          "tokens": 50628,
+          "latency_s": 17.471,
+          "llm_calls": 11
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Implement an audit mechanism to verify that sales representative discounts stay within defined thresholds for specific customer segments and maintain margin targets before orders reach accounting",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "verify-order-compliance"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "audit-order-discount"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "validate-discount-thresholds"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-order-pricing"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:CustomerOrder:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Service Ticket and Order Management API",
+                  "shortDescription": "Retrieves and manages customer service tickets and orders with status tracking."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Provisioning Order API",
+                  "shortDescription": "Exposes and manages customer account orders for ITSM provisioning workflows."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Account Order Enrichment API",
+                  "shortDescription": "Retrieves and manages integrated customer account and order data for engagement targeting."
+                },
+                "... (12 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Sales"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                  "type": "agent",
+                  "title": "Change Release Coordinator",
+                  "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Sales Capacity and Time Off Management API",
+                  "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:HazardousSubstanceComplianceManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Compliance Management API",
+                  "shortDescription": "Manages and exposes hazardous substance data for regulatory compliance in sales operations."
+                },
+                "... (12 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:agent:SalesCompensationOrchestrator:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+                "type": "agent",
+                "namespace": "sap.crm",
+                "title": "Sales Compensation Orchestrator",
+                "shortDescription": "Automates compensation calculations and dispute resolution for sales teams.",
+                "description": "Monitors sales performance metrics and employee compensation eligibility to automate calculation workflows. Coordinates dispute resolution processes by processing compensation claims against established policies and employee records. Orchestrates compensation payouts and adjustments based on real-time opportunity closure and quota attainment data.",
+                "entityTypes": [
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:Employee:v1"
+                ],
+                "lineOfBusiness": [
+                  "Sales"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "compensation-management",
+                  "sales-automation",
+                  "dispute-resolution"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Finance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Procurement Automation Orchestrator",
+                  "shortDescription": "Automates vendor engagement and procurement workflows through targeted marketing communications."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                "... (10 more)"
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "No resource in the landscape specializes in discount threshold validation, sales margin auditing, or pre-accounting order compliance verification for customer segments."
+              },
+              "result": {
+                "refused": true,
+                "reason": "No resource in the landscape specializes in discount threshold validation, sales margin auditing, or pre-accounting order compliance verification for customer segments."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "No resource in the landscape specializes in discount threshold validation, sales margin auditing, or pre-accounting order compliance verification for customer segments.",
+          "tool_calls": 13,
+          "tokens": 39399,
+          "latency_s": 13.859,
+          "llm_calls": 13
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is for a pricing audit and flagging system for B2B orders, which is a financial/sales operations control function not covered by any of the registered skills that focus on production, procurement, compliance, and fulfillment processes.\"\n}\n```",
+      "reason": "The request is for a pricing audit and flagging system for B2B orders, which is a financial/sales operations control function not covered by any of the registered skills that focus on production, procurement, compliance, and fulfillment processes.",
+      "tokens": 1704,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 135960,
+    "latency_s": 48.643,
+    "llm_calls": 39
+  },
+  "wall_s": 48.719
+}

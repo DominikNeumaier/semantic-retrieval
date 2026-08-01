@@ -1,0 +1,684 @@
+{
+  "case_id": "dy-10",
+  "user_prompt": "I need to understand which of our products are driving the most cost and why\u2014like breaking down material expenses, design complexity, and whether we're overpaying certain suppliers compared to our benchmarks. Can you show me which items in our portfolio have the most expensive components and where our supply chain dependencies might be creating risk?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1,
+    "acceptable": 1,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Analyze which of our products are driving the most cost and provide a detailed breakdown of material expenses and design complexity for each product.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:ProductChangeImpactAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 44964,
+          "latency_s": 14.02,
+          "llm_calls": 8,
+          "confidence": 0.92,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 26,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 728,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "sap.s4",
+                "entity_types": [
+                  "sap.odm:entityType:ProductItem:v1",
+                  "sap.odm:entityType:Material:v1"
+                ],
+                "action_verb": "analyse",
+                "resource_type_hint": "dataProduct"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29290,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 8555,
+              "latency_s": 5.087672233581543,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:ProductItem:v1"
+                  },
+                  "n_results": 40
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:Material:v1"
+                  },
+                  "n_results": 58
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:agent:ChangeAutomationOrchestrator:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 67
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "my.mes": 5,
+                "corp.itsm": 5,
+                "emarsys.cx": 3,
+                "sap.crm": 3,
+                "siemens.plm": 3,
+                "sap.s4": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:Material:v1": 17,
+                "sap.odm:entityType:EngineeringChange:v1": 16,
+                "sap.odm:entityType:ProductItem:v1": 16,
+                "sap.odm:entityType:Invoice:v1": 3,
+                "sap.odm:entityType:CustomerAccount:v1": 1,
+                "sap.odm:entityType:SalesOpportunity:v1": 1
+              },
+              "resource_types": {
+                "dataProduct": 11,
+                "apiResource": 2,
+                "agent": 7
+              },
+              "top_capabilities": {
+                "validate-bom-compliance": 2,
+                "audit-material-standards": 1,
+                "verify-cost-targets": 1,
+                "identify-cost-optimization": 1,
+                "evaluate-complexity": 1,
+                "analyze-product-costs": 1,
+                "compare-complexity-benchmarks": 1,
+                "analyze-product-economics": 1
+              },
+              "n_candidates": 20
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:ProductItem:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "business_groups": [
+                  "proc_product_launch_compliance_v1",
+                  "proc_QualityDrivenMfgSupplyChain_v1",
+                  "proc_order_to_production_v1"
+                ],
+                "lines_of_business": [
+                  "Product Lifecycle Management",
+                  "Manufacturing"
+                ],
+                "reason": "Activity analyzes product costs, material expenses, and design complexity, requiring product, material, and engineering change entity data across PLM and manufacturing domains."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_product_launch_compliance_v1\",\n    \"proc_QualityDrivenMfgSupplyChain_v1\",\n    \"proc_order_to_production_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Product Lifecycle Management\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Activity analyzes product costs, material expenses, and design complexity, requiring product, material, and engineering change entity data across PLM and manufacturing domains.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "siemens.plm:agent:BOMComplianceValidator:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:BOMComplianceValidator:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requires **analytical capability** to break down product costs, material expenses, and design complexity\u2014this is a pure analytical read rather than operational execution.\n\n1. **sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1** (1st) - Best match. DataProduct explicitly designed for analyzing material requirements, operational impact, and capability assessment across product transitions. Directly supports cost and complexity analysis.\n\n2. **sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1** (2nd) - DataProduct providing analytics on change impact, though more workforce-focused. Still valuable for understanding complexity implications.\n\n3. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** (3rd) - Agent with evaluate-change-impact and assess-engineering-changes capabilities; can surface material data needed for cost breakdown analysis.\n\n4. **sap.s4:agent:AssetLifecycleChangeOrchestrator:v1** (4th) - Assess-material-impact capability; tracks lifecycle data useful for complexity profiling.\n\n5. **corp.itsm:agent:AssetProvisioningOrchestrator:v1** (5th) - Evaluate-material-impact; helps identify material cost drivers.\n\n6-8. Remaining agents have narrower compliance/operational focus; included as alternatives but less aligned with analytical cost breakdown requirement.",
+              "refused": false,
+              "previous_resolved": [
+                "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+                "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+                "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                "sap.crm:dataProduct:ProductChangeImpactAnalytics:v1",
+                "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1"
+              ],
+              "tokens": 4212,
+              "latency_s": 8.932,
+              "llm_calls": 2,
+              "n_new_from_graph": 6
+            },
+            "phase3_rerank": {
+              "tokens": 2179,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+              "confidence": 0.92
+            }
+          },
+          "decomp_trace": {
+            "tokens": 375,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 1,
+            "sub_queries": [
+              "Analyze which of our products are driving the most cost and provide a detailed breakdown of material expenses and design complexity for each product."
+            ],
+            "original_prompt": "Analyze which of our products are driving the most cost and provide a detailed breakdown of material expenses and design complexity for each product."
+          },
+          "n_detected": 1
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Identify whether we are overpaying certain suppliers compared to industry benchmarks and provide supplier cost analysis.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ProductionQualityMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 44868,
+          "latency_s": 12.452,
+          "llm_calls": 8,
+          "confidence": 0.92,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 24,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 725,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "sap.ariba",
+                "entity_types": [
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Invoice:v1"
+                ],
+                "action_verb": "analyse",
+                "resource_type_hint": "dataProduct"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29284,
+              "latency_s": 0.522
+            },
+            "phase1b_guided_d": {
+              "tokens": 8624,
+              "latency_s": 5.592171907424927,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+                  },
+                  "n_results": 21
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:Invoice:v1"
+                  },
+                  "n_results": 7
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:dataProduct:VendorSpendIntelligence:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 28
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "sap.ariba": 5,
+                "my.mes": 4,
+                "corp.itsm": 4,
+                "sap.ehs": 2,
+                "siemens.plm": 2,
+                "emarsys.cx": 2,
+                "sap.s4": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:Vendor:v1": 14,
+                "sap.odm:entityType:PurchaseOrder:v1": 13,
+                "sap.odm:entityType:Contract:v1": 8,
+                "sap.odm:entityType:Material:v1": 5,
+                "sap.odm:entityType:Invoice:v1": 4,
+                "sap.odm:entityType:ProductionOrder:v1": 1,
+                "sap.odm:entityType:QualityInspection:v1": 1,
+                "sap.odm:entityType:ProductItem:v1": 1,
+                "sap.odm:entityType:EngineeringChange:v1": 1,
+                "sap.odm:entityType:CustomerAccount:v1": 1
+              },
+              "resource_types": {
+                "dataProduct": 10,
+                "agent": 5,
+                "apiResource": 5
+              },
+              "top_capabilities": {
+                "identify-cost-optimization": 1,
+                "evaluate-complexity": 1,
+                "analyze-product-costs": 1,
+                "compare-complexity-benchmarks": 1,
+                "analyze-product-economics": 1,
+                "execute-procurement-orders": 1,
+                "manage-vendor-orders": 1,
+                "track-purchase-fulfillment": 1
+              },
+              "n_candidates": 20
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:Vendor:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Invoice:v1",
+                  "sap.odm:entityType:Contract:v1"
+                ],
+                "business_groups": [
+                  "proc_procure_fulfill_v1",
+                  "proc_EngChangeAndProcurement_v1",
+                  "proc_supplychain_risk_compliance_v1"
+                ],
+                "lines_of_business": [
+                  "Procurement",
+                  "Finance"
+                ],
+                "reason": "Activity focuses on supplier cost analysis and benchmark comparison, anchored on vendor, purchase, and contract data within procurement and supply chain processes."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:Contract:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_EngChangeAndProcurement_v1\",\n    \"proc_supplychain_risk_compliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Finance\"\n  ],\n  \"reason\": \"Activity focuses on supplier cost analysis and benchmark comparison, anchored on vendor, purchase, and contract data within procurement and supply chain processes.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"sap.ariba:apiResource:MaterialAndVendorProcurementData:v1\",\n  \"sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requires **supplier cost analysis and overpayment identification against industry benchmarks** \u2014 this is fundamentally a procurement analytics and data query task, not operational orchestration.\n\n1. **MaterialAndVendorProcurementData (API)** \u2014 Best match. Directly retrieves vendor specifications, pricing, and procurement data needed to compare supplier costs and identify outliers against benchmarks.\n\n2. **MaterialAndVendorMasterDataAPI (API)** \u2014 Strong secondary. Provides vendor master records and material specifications essential for cost comparison and identifying alternate suppliers at better rates.\n\n3. **ProductChangeImpactAndMaterialAnalytics (dataProduct)** \u2014 Provides analytical capability to assess material requirements and costs across operational changes, supporting benchmarking analysis.\n\n4. **EngineeringChangeImpactAndWorkforceReadiness (dataProduct)** \u2014 Analytical resource that could support total-cost-of-ownership analysis including material and operational cost impacts.\n\n**Rejected:**\n- Material Receipt Inbound API, Engineering Change Agents, Production Orchestrator \u2014 These handle execution/operations, not analytical supplier benchmarking\n- Asset Lifecycle Change Orchestrator \u2014 Focuses on change workflow, not cost analysis",
+              "refused": false,
+              "previous_resolved": [
+                "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1",
+                "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+                "sap.ariba:dataProduct:ProductionQualityMetrics:v1",
+                "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+              ],
+              "tokens": 4129,
+              "latency_s": 6.86,
+              "llm_calls": 2,
+              "n_new_from_graph": 4
+            },
+            "phase3_rerank": {
+              "tokens": 2106,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+              "confidence": 0.92
+            }
+          },
+          "decomp_trace": {
+            "tokens": 301,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Identify whether we are overpaying certain suppliers compared to industry benchmarks",
+              "Provide supplier cost analysis"
+            ],
+            "original_prompt": "Identify whether we are overpaying certain suppliers compared to industry benchmarks and provide supplier cost analysis."
+          },
+          "n_detected": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Analyze our portfolio to identify items with the most expensive components and assess supply chain dependencies that might be creating operational or strategic risk.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ProductionQualityMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 44954,
+          "latency_s": 13.442,
+          "llm_calls": 8,
+          "confidence": 0.92,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 26,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 731,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "sap.s4",
+                "entity_types": [
+                  "sap.odm:entityType:ProductItem:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1"
+                ],
+                "action_verb": "analyse",
+                "resource_type_hint": "dataProduct"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29290,
+              "latency_s": 0.475
+            },
+            "phase1b_guided_d": {
+              "tokens": 8614,
+              "latency_s": 5.8962578773498535,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:ProductItem:v1"
+                  },
+                  "n_results": 40
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+                  },
+                  "n_results": 21
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:dataProduct:VendorSpendIntelligence:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 61
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "my.mes": 5,
+                "corp.itsm": 5,
+                "emarsys.cx": 3,
+                "sap.ariba": 2,
+                "sap.ehs": 2,
+                "sap.crm": 1,
+                "sap.s4": 1,
+                "siemens.plm": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:EngineeringChange:v1": 15,
+                "sap.odm:entityType:Material:v1": 15,
+                "sap.odm:entityType:ProductItem:v1": 15,
+                "sap.odm:entityType:Contract:v1": 2,
+                "sap.odm:entityType:PurchaseOrder:v1": 2,
+                "sap.odm:entityType:Vendor:v1": 2,
+                "sap.odm:entityType:Invoice:v1": 2,
+                "sap.odm:entityType:ProductionOrder:v1": 1,
+                "sap.odm:entityType:QualityInspection:v1": 1
+              },
+              "resource_types": {
+                "dataProduct": 12,
+                "apiResource": 2,
+                "agent": 6
+              },
+              "top_capabilities": {
+                "validate-bom-compliance": 1,
+                "audit-material-standards": 1,
+                "verify-cost-targets": 1,
+                "identify-cost-optimization": 1,
+                "evaluate-complexity": 1,
+                "analyze-product-costs": 1,
+                "compare-complexity-benchmarks": 1,
+                "analyze-product-economics": 1
+              },
+              "n_candidates": 20
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:ProductItem:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1"
+                ],
+                "business_groups": [
+                  "proc_supplychain_risk_compliance_v1",
+                  "proc_QualityDrivenMfgSupplyChain_v1",
+                  "proc_procure_fulfill_v1"
+                ],
+                "lines_of_business": [
+                  "Procurement",
+                  "Manufacturing"
+                ],
+                "reason": "Portfolio analysis of expensive components and supply chain dependencies requires tracking product items, materials, vendors, and purchase orders across procurement and manufacturing operations to identify strategic risks."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_supplychain_risk_compliance_v1\",\n    \"proc_QualityDrivenMfgSupplyChain_v1\",\n    \"proc_procure_fulfill_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Portfolio analysis of expensive components and supply chain dependencies requires tracking product items, materials, vendors, and purchase orders across procurement and manufacturing operations to identify strategic risks.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requires **analytical capability to identify expensive components and assess supply chain dependencies/risks** \u2014 this is fundamentally a portfolio analysis and risk assessment task.\n\n1. **Data Products ranked first** (sap.s4 and sap.sf): These provide analytical reads combining component data, material requirements, and impact analysis \u2014 directly suited for portfolio analysis and dependency assessment.\n\n2. **Engineering Change agents ranked second-third**: While operationally focused, these agents manage BOMs, material specifications, and supply chain feasibility \u2014 essential context for understanding dependencies.\n\n3. **BOM Compliance agent ranked next**: Validates materials and detects sourcing conflicts, directly supporting dependency and risk identification.\n\n4. **Remaining agents**: Support orchestration and provisioning but are less aligned with the analytical/assessment focus of the activity.",
+              "refused": false,
+              "previous_resolved": [
+                "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+                "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1",
+                "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                "sap.ariba:dataProduct:ProductionQualityMetrics:v1",
+                "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1"
+              ],
+              "tokens": 4119,
+              "latency_s": 7.546,
+              "llm_calls": 2,
+              "n_new_from_graph": 6
+            },
+            "phase3_rerank": {
+              "tokens": 2200,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+              "confidence": 0.92
+            }
+          },
+          "decomp_trace": {
+            "tokens": 311,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Analyze our portfolio to identify items with the most expensive components",
+              "Assess supply chain dependencies that might be creating operational or strategic risk"
+            ],
+            "original_prompt": "Analyze our portfolio to identify items with the most expensive components and assess supply chain dependencies that might be creating operational or strategic risk."
+          },
+          "n_detected": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is a strategic cost analysis and supply chain risk assessment task that requires ad-hoc analysis across multiple dimensions (material costs, design complexity, supplier benchmarking, supply chain dependencies) rather than execution of a specific registered end-to-end process.\"\n}\n```",
+      "reason": "The request is a strategic cost analysis and supply chain risk assessment task that requires ad-hoc analysis across multiple dimensions (material costs, design complexity, supplier benchmarking, supply chain dependencies) rather than execution of a specific registered end-to-end process.",
+      "tokens": 1699,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 136884,
+    "latency_s": 39.914,
+    "llm_calls": 26
+  },
+  "wall_s": 53.926
+}

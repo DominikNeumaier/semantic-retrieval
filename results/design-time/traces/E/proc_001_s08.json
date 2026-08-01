@@ -1,0 +1,106 @@
+{
+  "case_id": "proc_001_s08",
+  "process": "proc_001",
+  "label": "ManufacturingChangeCompliance process: Adjust Compensation for Modified Workload \u2014 Recalculate employee compensation and incentives based on revised labor allocation, shift assignments, or skill premium requirements for the modified production roles.",
+  "method": "E",
+  "expected_ordIds": [
+    "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "workday.hcm:agent:CompensationChangeProcessor:v1",
+      "score": null
+    },
+    {
+      "ordId": "workday.hcm:package:Core:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "read_notes",
+        "args": {},
+        "result_preview": {
+          "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes (Manufacturing Execution), sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY FINDING - ManufacturingChange \u2026(truncated)"
+        }
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "list_dir",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/workday.hcm"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched/workday.hcm",
+          "entries": [
+            {
+              "name": "ord_enriched.json",
+              "kind": "file"
+            }
+          ],
+          "entries_count": 1
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "read_file",
+        "args": {
+          "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+        },
+        "result_preview": {
+          "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+          "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+          "truncated": true,
+          "total_lines": 1099
+        }
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "write_notes",
+        "args": {
+          "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes (Manufacturing Execution), sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY FINDING - ManufacturingChangeCompliance Process:\nAgent: my.mes:agent:ProductionChangeOrchestrator:v1\n- Directly part of proc_ManufacturingChangeCompliance_v1 (BPMN process group)\n- Orchestrates engineering changes across production materials and items\n- Key capabilities: manage-change-impact, schedule-machines, orchestrate-production-change, synchronize-engineering-change\n- Coordinates with material and product item management for production order adjustments\n- Related to EngineeringChange, Material, ProductItem entities\n- DOCUMENT ENGINEERING CHANGE: This agent orchestrates engineering changes which necessarily involves creating and publishing formal change records as part of its workflow\n\nPROCUREMENT/SUPPLIER COORDINATION FOR MANUFACTURING CHANGES:\nAgent: sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1\n- Automates coordination of material updates and engineering changes across procurement workflows\n- Monitors engineering changes, automatically coordinating updates across purchase orders and product items\n- Validates material specifications against compliance requirements\n- Ensures propagation of updates through procurement network\n- Related to EngineeringChange, Material, ProductItem, PurchaseOrder entities\n- PERFECT FIT for: Coordinate Procurement and Supplier Adjustments activity\n\nSupporting API: sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1\n- REST API for creating, updating, monitoring purchase orders\n- Capabilities: coordinate-vendor-procurement, validate-purchase-orders, verify-vendor-compliance\n- Exposes PurchaseOrder, Vendor entities\n\nEHS SAFETY COMPLIANCE:\nAgent: sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\n- Monitors engineering changes, materials, product items for safety compliance\n\nITSC CHANGE MANAGEMENT:\ncorp.itsm has ChangeAutomationOrchestrator and ChangeReleaseCoordinator agents\nsiemens.plm has EngineeringChangeAndMaterialProvisioning agent\n\nHR COMPENSATION MANAGEMENT:\nAgent: workday.hcm:agent:CompensationChangeProcessor:v1\n- PERFECT FIT for: ManufacturingChangeCompliance > Adjust Compensation for Modified Workload\n- Monitors engineering changes and material/product updates that impact compensation structures\n- Processes and coordinates salary adjustments across affected employee populations\n- Automates validation of compensation modifications against benefit eligibility and payroll processing timelines\n- Related to EngineeringChange, Material, ProductItem entities\n- Directly ties compensation adjustments to organizational changes from manufacturing compliance\nAgent: workday.hcm:agent:CompensationStructureAutomationEngine:v1\n- Broader compensation automation tied to org structure changes and material cost fluctuations"
+        },
+        "result_preview": {
+          "stored_bytes": 2878,
+          "truncated": false,
+          "cap_bytes": 4096
+        }
+      },
+      {
+        "step": 4,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "workday.hcm:agent:CompensationChangeProcessor:v1",
+          "reason": "This agent directly monitors engineering changes (from ManufacturingChangeCompliance) and processes corresponding compensation adjustments across affected employee populations, automating validation against payroll timelines."
+        },
+        "result_preview": {
+          "committed": "workday.hcm:agent:CompensationChangeProcessor:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "workday.hcm:agent:CompensationChangeProcessor:v1",
+    "picked_reason": "This agent directly monitors engineering changes (from ManufacturingChangeCompliance) and processes corresponding compensation adjustments across affected employee populations, automating validation against payroll timelines.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 5,
+    "tokens": 23770,
+    "latency_s": 20.65,
+    "llm_calls": 5
+  },
+  "wall_s": 20.654
+}

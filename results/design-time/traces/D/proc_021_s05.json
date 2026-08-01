@@ -1,0 +1,284 @@
+{
+  "case_id": "proc_021_s05",
+  "process": "proc_021",
+  "label": "QualityDrivenMfgSupplyChain process: Provision materials for engineering changes \u2014 Allocate materials and coordinate production item updates when engineering change orders are released.",
+  "method": "D",
+  "expected_ordIds": [
+    "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.s4:agent:EngineeringChangeOrchestrator:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_lines_of_business",
+        "args": {},
+        "result_preview": [
+          "ERP",
+          "Environment, Health & Safety",
+          "Environment, Health and Safety",
+          "... (44 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_entity_types",
+        "args": {},
+        "result_preview": [
+          "sap.odm:entityType:Campaign:v1",
+          "sap.odm:entityType:ChangeRequest:v1",
+          "sap.odm:entityType:Compensation:v1",
+          "... (23 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_business_groups",
+        "args": {},
+        "result_preview": []
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:EngineeringChange:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+            "type": "apiResource",
+            "title": "Asset Change Lifecycle API",
+            "shortDescription": "Exposes engineering changes and product items for workforce asset management."
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "type": "agent",
+            "title": "Asset Provisioning Orchestrator",
+            "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "type": "agent",
+            "title": "Change Automation Orchestrator",
+            "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+          },
+          "... (37 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:Material:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "type": "agent",
+            "title": "Asset Provisioning Orchestrator",
+            "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "type": "agent",
+            "title": "Change Automation Orchestrator",
+            "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "type": "agent",
+            "title": "Change Release Coordinator",
+            "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+          },
+          "... (55 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_in_lob",
+        "args": {
+          "line_of_business": "Manufacturing"
+        },
+        "result_preview": [
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "type": "apiResource",
+            "title": "Material and Vendor Master Data API",
+            "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "type": "apiResource",
+            "title": "Vendor Material Invoice Management API",
+            "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "type": "apiResource",
+            "title": "Material and Vendor Procurement API",
+            "shortDescription": "Exposes material master data and vendor information for procurement operations."
+          },
+          "... (7 more)"
+        ]
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+          "type": "agent",
+          "namespace": "sap.ariba",
+          "title": "Material and Engineering Change Coordinator",
+          "shortDescription": "Automates coordination of material updates and engineering changes across procurement workflows.",
+          "description": "This agent monitors engineering changes and material modifications, automatically coordinating updates across related product items and purchase orders. It processes change requests, validates material specifications against compliance requirements, and ensures seamless propagation of updates through the procurement network to minimize disruptions and maintain data consistency.",
+          "entityTypes": [
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductItem:v1"
+          ],
+          "lineOfBusiness": [
+            "Procurement"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "material-management",
+            "engineering-changes",
+            "supply-chain-automation"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "sap.ariba:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.s4:agent:EngineeringChangeOrchestrator:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.s4:agent:EngineeringChangeOrchestrator:v1",
+          "type": "agent",
+          "namespace": "sap.s4",
+          "title": "Engineering Change Orchestrator",
+          "shortDescription": "Automates and coordinates engineering changes across materials and product items.",
+          "description": "Monitors incoming engineering change requests and automatically orchestrates the downstream provisioning of affected materials and product items. Coordinates change workflows across procurement, production planning, and asset management domains to ensure consistent application of design modifications. Processes compliance validations and triggers synchronized updates to maintain data integrity throughout the enterprise.",
+          "entityTypes": [
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductItem:v1"
+          ],
+          "lineOfBusiness": [
+            "IT Service Management"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "change-automation",
+            "orchestration",
+            "provisioning"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "sap.s4:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "my.mes:agent:ProductionChangeOrchestrator:v1"
+        },
+        "result_preview": {
+          "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+          "type": "agent",
+          "namespace": "my.mes",
+          "title": "Production Change Orchestrator",
+          "shortDescription": "Automates and coordinates engineering changes across production materials and items.",
+          "description": "Orchestrates the propagation of engineering changes throughout the production environment by monitoring change requests, automating impact assessments on materials and product items, and coordinating synchronized updates across dependent production workflows. Processes change notifications to ensure manufacturing execution systems remain synchronized with engineering modifications while maintaining asset lifecycle integrity.",
+          "entityTypes": [
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductItem:v1"
+          ],
+          "lineOfBusiness": [
+            "it-service-management"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "asset-lifecycle",
+            "change-automation",
+            "provisioning-orchestration"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "my.mes:package:Core:v1"
+        }
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "sap.s4:agent:EngineeringChangeOrchestrator:v1",
+          "reason": "Automates and coordinates the provisioning of materials and product items in response to engineering change releases across procurement and production planning domains."
+        },
+        "result": {
+          "committed": "sap.s4:agent:EngineeringChangeOrchestrator:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "sap.s4:agent:EngineeringChangeOrchestrator:v1",
+    "picked_reason": "Automates and coordinates the provisioning of materials and product items in response to engineering change releases across procurement and production planning domains.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 10,
+    "tokens": 25659,
+    "latency_s": 11.833,
+    "llm_calls": 10
+  },
+  "wall_s": 11.838
+}

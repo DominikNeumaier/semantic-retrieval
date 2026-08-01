@@ -1,0 +1,462 @@
+{
+  "case_id": "dy-09",
+  "user_prompt": "I need to pull up a customer's recent purchases and modify one of their orders before it ships out. Can you help me access their account information and make those changes?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1,
+    "acceptable": 1,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Access a customer's account information and retrieve their recent purchases",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerEngagementProfileAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 43530,
+          "latency_s": 5.079,
+          "llm_calls": 8,
+          "confidence": 0.92,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 22,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 714,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "sap.crm",
+                "entity_types": [
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerOrder:v1"
+                ],
+                "action_verb": "retrieve",
+                "resource_type_hint": "apiResource"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29275,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 8497,
+              "latency_s": 5.078623056411743,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:CustomerAccount:v1"
+                  },
+                  "n_results": 57
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:CustomerOrder:v1"
+                  },
+                  "n_results": 15
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 57
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "corp.itsm": 8,
+                "emarsys.cx": 6,
+                "sap.s4": 2,
+                "my.mes": 1,
+                "sap.ariba": 1,
+                "sap.crm": 1,
+                "siemens.plm": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:CustomerAccount:v1": 20,
+                "sap.odm:entityType:Campaign:v1": 11,
+                "sap.odm:entityType:CustomerOrder:v1": 9,
+                "sap.odm:entityType:CustomerSegment:v1": 1
+              },
+              "resource_types": {
+                "apiResource": 19,
+                "dataProduct": 1
+              },
+              "top_capabilities": {
+                "manage-customer-accounts": 2,
+                "enable-order-processing": 1,
+                "enrich-customer-order": 1,
+                "enhance-order-fulfillment-data": 1,
+                "enrich-customer-orders": 1,
+                "validate-customer-context": 1,
+                "populate-account-details": 1,
+                "update-product-catalog": 1
+              },
+              "n_candidates": 20
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerOrder:v1"
+                ],
+                "business_groups": [
+                  "proc_order_compliance_fulfillment_v1"
+                ],
+                "lines_of_business": [
+                  "Sales and Order Management",
+                  "customer-experience-management"
+                ],
+                "reason": "Activity directly accesses customer account data and retrieves purchase history, core to order fulfillment and customer experience management."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:CustomerOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Sales and Order Management\",\n    \"customer-experience-management\"\n  ],\n  \"reason\": \"Activity directly accesses customer account data and retrieves purchase history, core to order fulfillment and customer experience management.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                "sap.crm:agent:CampaignAudienceOptimizationAgent:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"sap.crm:agent:CampaignAudienceOptimizationAgent:v1\",\n  \"emarsys.cx:apiResource:CampaignContactEngagementAPI:v1\",\n  \"emarsys.cx:apiResource:JourneyContactStateAPI:v1\",\n  \"sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1\",\n  \"corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1\"\n]\n```\n\n**Reasoning:**\n\n1. **CampaignAudienceOptimizationAgent** (Agent) - Best match. The activity requires retrieving and accessing customer account information and purchase history. An agent that autonomously analyzes customer segments and account characteristics directly supports this retrieval and analysis task.\n\n2. **CampaignContactEngagementAPI** (API) - Strong match. Provides direct access to customer contact engagement states and can map customer accounts with campaign interactions, supporting the account information and purchase engagement retrieval need.\n\n3. **JourneyContactStateAPI** (API) - Good match. Offers real-time querying of customer engagement state within journeys, supporting account information retrieval, though less directly focused on purchase history.\n\n4. **VendorPerformanceAndSegmentationAnalytics** (Data Product) - Moderate match. While focused on vendor metrics, it segments customers by engagement and spend patterns, providing analytical insight into purchase behavior.\n\n5. **CustomerEngagementServiceMetrics** (Data Product) - Moderate match. Aggregates engagement patterns across customer accounts, offering analytical perspective on customer activities though not specifically purchase-focused.\n\nThe campaign access management API and segment-driven optimizer were excluded as they focus on provisioning/optimization rather than direct account information retrieval.",
+              "refused": false,
+              "previous_resolved": [
+                "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+                "emarsys.cx:apiResource:CustomerEngagementProfileAPI:v1",
+                "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+                "my.mes:apiResource:CustomerOrderAndAccountManagement:v1"
+              ],
+              "tokens": 3076,
+              "latency_s": 0.0,
+              "llm_calls": 2,
+              "n_new_from_graph": 2
+            },
+            "phase3_rerank": {
+              "tokens": 1968,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+              "confidence": 0.92
+            }
+          },
+          "decomp_trace": {
+            "tokens": 282,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Access a customer's account information",
+              "Retrieve their recent purchases"
+            ],
+            "original_prompt": "Access a customer's account information and retrieve their recent purchases"
+          },
+          "n_detected": 2
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Modify one of the customer's orders before it ships out",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 43515,
+          "latency_s": 5.46,
+          "llm_calls": 8,
+          "confidence": 0.92,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 20,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 716,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "sap.s4",
+                "entity_types": [
+                  "sap.odm:entityType:CustomerOrder:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "action_verb": "modify",
+                "resource_type_hint": "apiResource"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29275,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 8518,
+              "latency_s": 5.4599082469940186,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:CustomerOrder:v1"
+                  },
+                  "n_results": 15
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+                  },
+                  "n_results": 23
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 38
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "emarsys.cx": 3,
+                "my.mes": 3,
+                "corp.itsm": 2,
+                "sap.crm": 2,
+                "sap.s4": 2,
+                "siemens.plm": 2,
+                "sap.ehs": 1,
+                "sap.sf": 1,
+                "workday.hcm": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:CustomerAccount:v1": 16,
+                "sap.odm:entityType:CustomerOrder:v1": 15,
+                "sap.odm:entityType:PurchaseOrder:v1": 1,
+                "sap.odm:entityType:Vendor:v1": 1,
+                "sap.odm:entityType:Campaign:v1": 1
+              },
+              "resource_types": {
+                "apiResource": 17
+              },
+              "top_capabilities": {
+                "manage-customer-accounts": 2,
+                "validate-order": 2,
+                "enable-order-processing": 1,
+                "enrich-customer-order": 1,
+                "enhance-order-fulfillment-data": 1,
+                "enrich-customer-orders": 1,
+                "validate-customer-context": 1,
+                "populate-account-details": 1
+              },
+              "n_candidates": 17
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:CustomerOrder:v1",
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:ChangeRequest:v1"
+                ],
+                "business_groups": [
+                  "proc_order_compliance_fulfillment_v1",
+                  "proc_order_to_production_v1"
+                ],
+                "lines_of_business": [
+                  "Sales and Order Management",
+                  "Operations"
+                ],
+                "reason": "Modifying a customer order before shipment directly involves the CustomerOrder entity and impacts order fulfillment and production processes."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\",\n    \"proc_order_to_production_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Sales and Order Management\",\n    \"Operations\"\n  ],\n  \"reason\": \"Modifying a customer order before shipment directly involves the CustomerOrder entity and impacts order fulfillment and production processes.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                "sap.crm:agent:CampaignAudienceOptimizationAgent:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"sap.crm:agent:CampaignAudienceOptimizationAgent:v1\",\n  \"emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1\",\n  \"emarsys.cx:apiResource:JourneyContactStateAPI:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity \"Modify one of the customer's orders before it ships out\" requires **operational/transactional capabilities** to directly update order data. However, none of the candidates are order management APIs\u2014they're all marketing/campaign focused.\n\nGiven the constraint to pick the closest matches:\n\n1. **CampaignAudienceOptimizationAgent** - An agent type that can autonomously take action on customer-related data, making it the best fit for a modification task that requires decision-making and execution.\n\n2. **SegmentDrivenCampaignOptimizer** - Similarly an agent with autonomous capabilities to modify/optimize targeting, closest operational match to \"modify.\"\n\n3. **JourneyContactStateAPI** - The only API with explicit **update-contact-state** capability, providing CRUD operations on customer state that could relate to order fulfillment communications.\n\nThe dataProducts and access management APIs are less relevant\u2014this activity requires modification capability, not analytics or permission management.",
+              "refused": false,
+              "previous_resolved": [
+                "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+                "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+                "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+                "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+                "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1"
+              ],
+              "tokens": 2998,
+              "latency_s": 0.0,
+              "llm_calls": 2,
+              "n_new_from_graph": 3
+            },
+            "phase3_rerank": {
+              "tokens": 2008,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+              "confidence": 0.92
+            }
+          },
+          "decomp_trace": {
+            "tokens": 340,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 1,
+            "sub_queries": [
+              "Modify one of the customer's orders before it ships out"
+            ],
+            "original_prompt": "Modify one of the customer's orders before it ships out"
+          },
+          "n_detected": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user's request is a specific, ad-hoc task (access customer account and modify one order) rather than needing a complete end-to-end process; while order fulfillment skills exist, they don't cover customer account lookup and individual order modification as a workflow.\"\n}\n```",
+      "reason": "The user's request is a specific, ad-hoc task (access customer account and modify one order) rather than needing a complete end-to-end process; while order fulfillment skills exist, they don't cover customer account lookup and individual order modification as a workflow.",
+      "tokens": 1673,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 89035,
+    "latency_s": 10.539,
+    "llm_calls": 18
+  },
+  "wall_s": 17.319
+}

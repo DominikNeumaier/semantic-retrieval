@@ -1,0 +1,209 @@
+{
+  "case_id": "oos-06",
+  "user_prompt": "Our sales team is manually adjusting prices on large B2B orders based on competitor intel and customer volume history, but we need a way to automatically flag orders that fall outside our dynamic pricing bands\u2014especially when our reps are discounting beyond threshold for specific customer segments\u2014so we can audit whether deals are staying within our margin targets before they hit the accounting system.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "C",
+  "state": "enriched",
+  "condition": "C1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 1,
+    "falsely_picked": 0,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Set up dynamic pricing bands for B2B orders that account for competitor intelligence and customer volume history",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:CustomerOrder:v1",
+              "sap.odm:entityType:CustomerAccount:v1",
+              "sap.odm:entityType:CustomerSegment:v1",
+              "sap.odm:entityType:Contract:v1"
+            ],
+            "business_groups": [
+              "proc_order_compliance_fulfillment_v1",
+              "proc_procure_fulfill_v1"
+            ],
+            "lines_of_business": [
+              "Sales and Order Management",
+              "ERP"
+            ],
+            "reason": "Dynamic pricing for B2B orders requires tracking customer orders, account relationships, customer segments, and contracts while operating within order fulfillment and procurement processes."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:CustomerSegment:v1\",\n    \"sap.odm:entityType:Contract:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\",\n    \"proc_procure_fulfill_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Sales and Order Management\",\n    \"ERP\"\n  ],\n  \"reason\": \"Dynamic pricing for B2B orders requires tracking customer orders, account relationships, customer segments, and contracts while operating within order fulfillment and procurement processes.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+            "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+            "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+            "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+            "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+            "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+            "sap.crm:agent:CampaignAudienceOptimizationAgent:v1",
+            "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 2622,
+          "latency_s": 1.459,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Create an automated flagging system to detect orders that fall outside the established dynamic pricing bands",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:CustomerOrder:v1",
+              "sap.odm:entityType:ProductItem:v1",
+              "sap.odm:entityType:Contract:v1"
+            ],
+            "business_groups": [
+              "proc_order_compliance_fulfillment_v1",
+              "proc_order_to_production_v1"
+            ],
+            "lines_of_business": [
+              "Sales and Order Management",
+              "ERP"
+            ],
+            "reason": "The activity focuses on flagging customer orders that deviate from dynamic pricing rules, requiring order and product entity mapping within order-to-fulfillment and compliance processes."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:Contract:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\",\n    \"proc_order_to_production_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Sales and Order Management\",\n    \"ERP\"\n  ],\n  \"reason\": \"The activity focuses on flagging customer orders that deviate from dynamic pricing rules, requiring order and product entity mapping within order-to-fulfillment and compliance processes.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "siemens.plm:agent:BOMComplianceValidator:v1",
+            "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity requires creating an automated flagging system to detect orders that fall outside dynamic pricing bands. This is a pricing analytics and order monitoring capability that none of the candidates meaningfully address.\n\nThe candidates are focused on:\n- Engineering changes and bill-of-materials compliance\n- Production transition and workforce readiness\n- Material provisioning and engineering change orchestration\n- Asset provisioning\n\nNone of these resources have capabilities for order monitoring, pricing band detection, or pricing analytics. While some agents orchestrate production changes, they do not flag orders based on pricing criteria. This is a tangential match at best, not a direct fulfillment of the activity requirement.",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 3791,
+          "latency_s": 2.734,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Implement an audit mechanism to verify that sales representative discounts stay within defined thresholds for specific customer segments and maintain margin targets before orders reach accounting",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:CustomerOrder:v1",
+              "sap.odm:entityType:CustomerSegment:v1",
+              "sap.odm:entityType:Employee:v1",
+              "sap.odm:entityType:Invoice:v1"
+            ],
+            "business_groups": [
+              "proc_order_compliance_fulfillment_v1",
+              "proc_procure_fulfill_v1"
+            ],
+            "lines_of_business": [
+              "Sales",
+              "Finance"
+            ],
+            "reason": "The activity audits sales representative discounts against thresholds by customer segment before order accounting, involving customer orders, segments, sales employees, and financial compliance controls."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:CustomerSegment:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Invoice:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\",\n    \"proc_procure_fulfill_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Sales\",\n    \"Finance\"\n  ],\n  \"reason\": \"The activity audits sales representative discounts against thresholds by customer segment before order accounting, involving customer orders, segments, sales employees, and financial compliance controls.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "siemens.plm:agent:BOMComplianceValidator:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity requests an audit mechanism for sales representative discounts, customer segment thresholds, and margin targets before orders reach accounting. This is fundamentally a **sales order management and financial validation** capability.\n\nNone of the candidates address this requirement:\n- The candidates are all focused on **engineering changes, material provisioning, production orchestration, and BOM compliance**\n- They deal with manufacturing operations, product design, and supply chain\u2014not sales discount governance or margin verification\n- There is no sales order processing, discount authorization, customer segment rules, or accounting integration capability among these resources\n\nThis activity requires a sales order or pricing management resource that can enforce discount policies and validate margins\u2014capabilities that were not surfaced by the knowledge-graph walk.",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 3884,
+          "latency_s": 3.498,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is for a pricing audit and flagging system for B2B orders, which is a financial/sales operations control function not covered by any of the registered skills that focus on production, procurement, compliance, and fulfillment processes.\"\n}\n```",
+      "reason": "The request is for a pricing audit and flagging system for B2B orders, which is a financial/sales operations control function not covered by any of the registered skills that focus on production, procurement, compliance, and fulfillment processes.",
+      "tokens": 1704,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 12405,
+    "latency_s": 7.691,
+    "llm_calls": 8
+  },
+  "wall_s": 7.755
+}

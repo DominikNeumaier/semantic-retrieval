@@ -1,0 +1,281 @@
+{
+  "case_id": "proc_009_s02",
+  "process": "proc_009",
+  "label": "supplychain risk compliance process: Assess Vendor and Material Compliance Risk \u2014 Evaluate compliance and safety risks associated with requested materials and vendors before procurement.",
+  "method": "D",
+  "expected_ordIds": [
+    "emarsys.cx:apiResource:ComplianceRiskAssessmentAPI:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+      "score": null
+    },
+    {
+      "ordId": "siemens.plm:agent:BOMComplianceValidator:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_lines_of_business",
+        "args": {},
+        "result_preview": [
+          "ERP",
+          "Environment, Health & Safety",
+          "Environment, Health and Safety",
+          "... (44 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_capabilities",
+        "args": {},
+        "result_preview": [
+          "activate-campaigns",
+          "activate-contact-engagement",
+          "activate-customer-accounts",
+          "... (337 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_entity_types",
+        "args": {},
+        "result_preview": [
+          "sap.odm:entityType:Campaign:v1",
+          "sap.odm:entityType:ChangeRequest:v1",
+          "sap.odm:entityType:Compensation:v1",
+          "... (23 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_in_lob",
+        "args": {
+          "line_of_business": "Procurement"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "type": "apiResource",
+            "title": "Vendor Campaign Account Retrieval API",
+            "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "type": "apiResource",
+            "title": "Vendor Procurement Order API",
+            "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+            "type": "dataProduct",
+            "title": "Vendor Spend Intelligence",
+            "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+          },
+          "... (27 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "assess-material-compliance"
+        },
+        "result_preview": [
+          {
+            "ordId": "siemens.plm:agent:BOMComplianceValidator:v1",
+            "type": "agent",
+            "title": "BOM Compliance Validator Agent",
+            "shortDescription": "Autonomously validates bill of materials against regulatory and supplier qualification requirements."
+          }
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_with_capability",
+        "args": {
+          "capability": "audit-procurement-compliance"
+        },
+        "result_preview": [
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "type": "apiResource",
+            "title": "Vendor Material Invoice Management API",
+            "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+          }
+        ]
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+          "type": "agent",
+          "namespace": "sap.ehs",
+          "title": "Vendor Compliance Automation Orchestrator",
+          "shortDescription": "Automates vendor safety compliance verification across purchase orders and contracts.",
+          "description": "Coordinates automated validation of vendor safety certifications and compliance status during purchase order creation and contract execution. Monitors vendor contract adherence to EHS requirements and processes compliance exceptions through escalation workflows. Automates reconciliation between vendor safety profiles, contract terms, and procurement activities to ensure continuous compliance alignment.",
+          "entityTypes": [
+            "sap.odm:entityType:Contract:v1",
+            "sap.odm:entityType:PurchaseOrder:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "lineOfBusiness": [
+            "Procurement"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "invoice-management",
+            "three-way-matching",
+            "vendor-reconciliation",
+            "automation"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "sap.ehs:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+          "type": "agent",
+          "namespace": "sap.ariba",
+          "title": "Dangerous Goods Supply Chain Safety Agent",
+          "shortDescription": "Tracks hazardous material declarations from vendors and triggers response protocols for safety events.",
+          "description": "Automates oversight of hazardous material certifications within the supplier ecosystem and ingests real-time safety event notifications. Executes regulatory verification processes, identifies non-compliance signals, and routes urgent safety alerts to procurement teams for corrective intervention and risk mitigation across the supply chain.",
+          "entityTypes": [
+            "sap.odm:entityType:HazardousSubstance:v1",
+            "sap.odm:entityType:Incident:v1",
+            "sap.odm:entityType:SafetyIncident:v1"
+          ],
+          "lineOfBusiness": [
+            "Procurement"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "hazardous-materials",
+            "vendor-risk-management",
+            "safety-event-tracking"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "sap.ariba:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "siemens.plm:agent:BOMComplianceValidator:v1"
+        },
+        "result_preview": {
+          "ordId": "siemens.plm:agent:BOMComplianceValidator:v1",
+          "type": "agent",
+          "namespace": "siemens.plm",
+          "title": "BOM Compliance Validator Agent",
+          "shortDescription": "Autonomously validates bill of materials against regulatory and supplier qualification requirements.",
+          "description": "This agent automatically scans product bills of materials to verify compliance with regulatory standards, restricted substance directives, and active supplier qualifications. It flags non-compliant materials and components, recommends approved substitutes, and generates compliance documentation for product records. This reduces manual review cycles and ensures products meet market-specific requirements before engineering release.",
+          "entityTypes": [
+            "sap.odm:entityType:ProductItem:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:EngineeringChange:v1"
+          ],
+          "lineOfBusiness": [
+            "Product Lifecycle Management"
+          ],
+          "capabilities": [
+            "validate-bom-compliance",
+            "assess-material-compliance",
+            "verify-component-standards",
+            "validate-bom",
+            "check-engineering-standards"
+          ],
+          "useCases": [
+            "Verify all product components meet current regulatory and engineering standards",
+            "Confirm product specifications align with approved material lists before production",
+            "Engineering team confirms new product revision has compliant materials and components.",
+            "Quality assurance validates material changes against regulatory requirements before release."
+          ],
+          "tags": [
+            "compliance",
+            "bom-validation",
+            "supplier-qualification",
+            "automation"
+          ],
+          "partOfGroups": [
+            "proc_product_compliance_workforce_v1",
+            "proc_ProductComplianceWorkforceSafety_v1"
+          ],
+          "processNext": [
+            "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1"
+          ],
+          "partOfPackage": "siemens.plm:package:Core:v1"
+        }
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+          "reason": "This agent evaluates vendor compliance certifications and material safety risks by tracking hazardous substances and incidents, enabling risk assessment before procurement decisions."
+        },
+        "result": {
+          "committed": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+    "picked_reason": "This agent evaluates vendor compliance certifications and material safety risks by tracking hazardous substances and incidents, enabling risk assessment before procurement decisions.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 10,
+    "tokens": 26400,
+    "latency_s": 11.502,
+    "llm_calls": 10
+  },
+  "wall_s": 11.51
+}

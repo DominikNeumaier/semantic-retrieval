@@ -1,0 +1,1653 @@
+{
+  "case_id": "dy-32",
+  "user_prompt": "I need to pull together our current inventory specifications alongside the vendor details we have on file, and simultaneously check on the status of our pending maintenance requests and any open change orders we've submitted to understand our full operational picture.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull our current inventory specifications",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:EngineeringChangeAndProductItemManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 90671,
+          "latency_s": 26.481,
+          "llm_calls": 19,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 396,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Pull our current inventory specifications"
+            ],
+            "original_prompt": "Pull our current inventory specifications",
+            "sub_queries_redecomposed": [
+              "Retrieve current inventory item specifications including product codes, descriptions, and technical attributes",
+              "Fetch current inventory stock levels and quantity data across all warehouse locations"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve current inventory item specifications including product codes, descriptions, and technical attributes",
+              "trace": {
+                "tokens": 44737,
+                "latency_s": 13.27,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 26,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 717,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.s4",
+                      "entity_types": [
+                        "sap.odm:entityType:ProductItem:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29278,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8565,
+                    "latency_s": 5.778058767318726,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ProductItem:v1"
+                        },
+                        "n_results": 40
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:ChangeAutomationOrchestrator:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 67
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "my.mes": 5,
+                      "corp.itsm": 5,
+                      "sap.ariba": 3,
+                      "emarsys.cx": 3,
+                      "sap.s4": 2,
+                      "sap.sf": 1,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Material:v1": 15,
+                      "sap.odm:entityType:EngineeringChange:v1": 14,
+                      "sap.odm:entityType:ProductItem:v1": 14,
+                      "sap.odm:entityType:Vendor:v1": 6
+                    },
+                    "resource_types": {
+                      "apiResource": 11,
+                      "agent": 7,
+                      "dataProduct": 2
+                    },
+                    "top_capabilities": {
+                      "analyze-material-supply": 1,
+                      "validate-vendor-capacity": 1,
+                      "assess-inventory-impact": 1,
+                      "retrieve-material-vendor-master": 1,
+                      "retrieve-material-specifications": 1,
+                      "identify-alternate-suppliers": 1,
+                      "query-vendor-master": 1,
+                      "query-material-specifications": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:ProductItem:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "business_groups": [
+                        "proc_order_to_production_v1",
+                        "proc_supply_production_compliance_v1"
+                      ],
+                      "lines_of_business": [
+                        "Inventory Management",
+                        "Manufacturing"
+                      ],
+                      "reason": "Retrieving inventory specifications maps to product and material entities within inventory and manufacturing operations."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:Material:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_to_production_v1\",\n    \"proc_supply_production_compliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Inventory Management\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Retrieving inventory specifications maps to product and material entities within inventory and manufacturing operations.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requires **retrieving current inventory item specifications** \u2014 this is a direct CRUD/read operation on master data (product codes, descriptions, technical attributes).\n\n1. **BOMComplianceAutomationAgent** (top rank) \u2014 Best match. Directly validates material specifications, verifies product component specifications, and automates BOM compliance \u2014 exactly what's needed to retrieve and verify current inventory specifications.\n\n2. **EngineeringChangeAndMaterialProvisioning** \u2014 Strong match. Directly retrieves updated bills-of-material with real-time material availability and manages material provisioning with current specifications.\n\n3. **ProductionChangeOrchestrator** \u2014 Good match. Validates engineering specifications, manages material updates, and synchronizes material changes across systems.\n\n4. **AssetLifecycleChangeOrchestrator** \u2014 Relevant. Tracks engineering changes and coordinates change workflows that include material impact assessment.\n\n5. **ProductChangeImpactAndMaterialAnalytics** \u2014 Analytical dataProduct; provides assessment but less direct for raw specification retrieval.\n\n6. **AssetProvisioningOrchestrator** \u2014 Agent-based but focused on infrastructure provisioning rather than specification retrieval.\n\n7-8. **Workforce/Impact-focused resources** \u2014 Lower relevance as they focus on readiness and impact analysis rather than specification data retrieval.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+                      "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                      "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+                      "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                      "sap.ariba:apiResource:EngineeringChangeAndProductItemManagement:v1"
+                    ],
+                    "tokens": 4119,
+                    "latency_s": 7.492,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 6
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2058,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Fetch current inventory stock levels and quantity data across all warehouse locations",
+              "trace": {
+                "tokens": 44604,
+                "latency_s": 13.211,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 23,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 715,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.s4",
+                      "entity_types": [
+                        "sap.odm:entityType:Material:v1",
+                        "sap.odm:entityType:ProductItem:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29276,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8535,
+                    "latency_s": 5.127409934997559,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ProductItem:v1"
+                        },
+                        "n_results": 40
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:ChangeAutomationOrchestrator:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 67
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "emarsys.cx": 6,
+                      "corp.itsm": 4,
+                      "my.mes": 3,
+                      "sap.ehs": 3,
+                      "sap.s4": 2,
+                      "sap.crm": 1,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Material:v1": 14,
+                      "sap.odm:entityType:EngineeringChange:v1": 7,
+                      "sap.odm:entityType:ProductItem:v1": 7,
+                      "sap.odm:entityType:Vendor:v1": 5,
+                      "sap.odm:entityType:HazardousSubstance:v1": 5,
+                      "sap.odm:entityType:Invoice:v1": 2,
+                      "sap.odm:entityType:Machine:v1": 1,
+                      "sap.odm:entityType:ProductionOrder:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 10,
+                      "dataProduct": 4,
+                      "agent": 6
+                    },
+                    "top_capabilities": {
+                      "analyze-material-supply": 1,
+                      "validate-vendor-capacity": 1,
+                      "assess-inventory-impact": 1,
+                      "validate-material": 1,
+                      "validate-material-impact": 1,
+                      "receive-materials": 1,
+                      "verify-compliance": 1,
+                      "validate-shipment": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Material:v1",
+                        "sap.odm:entityType:ProductItem:v1",
+                        "sap.odm:entityType:PurchaseOrder:v1",
+                        "sap.odm:entityType:ProductionOrder:v1"
+                      ],
+                      "business_groups": [
+                        "proc_order_to_production_v1",
+                        "proc_supply_production_compliance_v1",
+                        "proc_procure_fulfill_v1"
+                      ],
+                      "lines_of_business": [
+                        "Inventory Management",
+                        "Manufacturing"
+                      ],
+                      "reason": "Inventory stock level queries directly access material and product data across warehouse locations, core to supply chain and inventory management operations."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_to_production_v1\",\n    \"proc_supply_production_compliance_v1\",\n    \"proc_procure_fulfill_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Inventory Management\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Inventory stock level queries directly access material and product data across warehouse locations, core to supply chain and inventory management operations.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity is about **fetching current inventory stock levels and quantity data across warehouse locations** \u2014 a pure analytical/data retrieval task on master inventory data.\n\n1. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** (Agent) - Best match. Explicitly handles `allocate-inventory`, `provision-materials`, and retrieves \"real-time material availability\" and \"dynamic picking lists.\" Directly addresses inventory quantity visibility across provisioning workflows.\n\n2. **corp.itsm:agent:AssetProvisioningOrchestrator:v1** (Agent) - Strong secondary. Includes `allocate-materials` and `orchestrate-provisioning` capabilities with explicit use case: \"Inventory managers track asset allocation across multiple transition waves,\" indicating inventory tracking across locations.\n\n3. **sap.s4:agent:AssetLifecycleChangeOrchestrator:v1** (Agent) - Tertiary. While broader in scope, it coordinates material updates and product lifecycle with cross-functional workflows that would include inventory coordination.\n\n4. **sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1** (DataProduct) - Included as analytical backup. Has `assess-material-availability` capability and explicitly validates \"material availability against updated bill-of-materials,\" though less direct than the agents for real-time stock fetching.\n\n**Not selected:** The dataProduct options focus on workforce/capability readiness rather than operational inventory reads. Agents focused on safety/compliance or change orchestration alone lack inventory-specific capabilities.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                      "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+                      "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                      "sap.crm:apiResource:ProductionOrderMachineInventoryService:v1",
+                      "sap.ehs:apiResource:ChemicalInventoryCompliance:v1"
+                    ],
+                    "tokens": 4156,
+                    "latency_s": 8.084,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 3
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1922,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 934,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+              "my.mes:apiResource:EngineeringChangeProductIntegration:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Retrieve vendor details we have on file",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:ProcurementVendorEngagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:VendorMaterialSupplyChainAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 91365,
+          "latency_s": 26.629,
+          "llm_calls": 19,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 408,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Retrieve vendor details we have on file"
+            ],
+            "original_prompt": "Retrieve vendor details we have on file",
+            "sub_queries_redecomposed": [
+              "Retrieve vendor master data including vendor ID, name, and contact information",
+              "Retrieve vendor financial and compliance details including payment terms, tax information, and registration status"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve vendor master data including vendor ID, name, and contact information",
+              "trace": {
+                "tokens": 44876,
+                "latency_s": 12.508,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 22,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 716,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ariba",
+                      "entity_types": [
+                        "sap.odm:entityType:Vendor:v1",
+                        "sap.odm:entityType:Contract:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29277,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8790,
+                    "latency_s": 6.463014125823975,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Vendor:v1"
+                        },
+                        "n_results": 42
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Contract:v1"
+                        },
+                        "n_results": 12
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:VendorSpendIntelligence:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 42
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "my.mes": 5,
+                      "sap.ariba": 5,
+                      "corp.itsm": 4,
+                      "emarsys.cx": 4,
+                      "sap.crm": 1,
+                      "sap.sf": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Vendor:v1": 19,
+                      "sap.odm:entityType:PurchaseOrder:v1": 12,
+                      "sap.odm:entityType:Material:v1": 7,
+                      "sap.odm:entityType:Contract:v1": 5,
+                      "sap.odm:entityType:Campaign:v1": 1,
+                      "sap.odm:entityType:CustomerAccount:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 14,
+                      "agent": 4,
+                      "dataProduct": 2
+                    },
+                    "top_capabilities": {
+                      "retrieve-material-vendor-master": 1,
+                      "retrieve-material-specifications": 1,
+                      "identify-alternate-suppliers": 1,
+                      "query-vendor-master": 1,
+                      "query-material-specifications": 1,
+                      "source-materials": 1,
+                      "query-procurement-database": 1,
+                      "identify-vendors-materials": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Vendor:v1",
+                        "sap.odm:entityType:Contract:v1",
+                        "sap.odm:entityType:PurchaseOrder:v1"
+                      ],
+                      "business_groups": [
+                        "proc_procure_fulfill_v1",
+                        "proc_ProcurementSafetyCompliance_v1"
+                      ],
+                      "lines_of_business": [
+                        "Procurement",
+                        "ERP"
+                      ],
+                      "reason": "Retrieving vendor master data is a core procurement activity that involves the Vendor entity and supports purchase order and contract management processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:Contract:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_ProcurementSafetyCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"ERP\"\n  ],\n  \"reason\": \"Retrieving vendor master data is a core procurement activity that involves the Vendor entity and supports purchase order and contract management processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1\",\n  \"sap.s4:apiResource:MaterialReceiptInboundAPI:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity explicitly requests **retrieval of vendor master data** (vendor ID, name, contact information) \u2014 a pure CRUD read operation on master data.\n\n1. **sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1** (Rank 1): This API resource is the best match. It's designed to retrieve and manage vendor information linked to materials and purchase orders. The title \"Vendor Material Invoice Management API\" and its capability to retrieve vendor-related data makes it most directly relevant to fetching vendor master data including contact information.\n\n2. **sap.s4:apiResource:MaterialReceiptInboundAPI:v1** (Rank 2): While primarily focused on goods receipt transactions, this API includes `register-vendor-delivery` and `verify-vendor-compliance` capabilities, indicating it surfaces vendor information. It's an API resource for structured data operations, making it secondary but still viable.\n\nThe remaining candidates are agents or dataProducts focused on orchestration, change management, and analytics rather than master data retrieval, making them poor fits for this activity.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+                      "emarsys.cx:apiResource:ProcurementVendorEngagementAPI:v1",
+                      "emarsys.cx:apiResource:VendorMaterialSupplyChainAPI:v1",
+                      "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+                      "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+                    ],
+                    "tokens": 4033,
+                    "latency_s": 6.045,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 2
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2060,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Retrieve vendor financial and compliance details including payment terms, tax information, and registration status",
+              "trace": {
+                "tokens": 45012,
+                "latency_s": 14.121,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 28,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 718,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ariba",
+                      "entity_types": [
+                        "sap.odm:entityType:Contract:v1",
+                        "sap.odm:entityType:Invoice:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29280,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8512,
+                    "latency_s": 5.84197998046875,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Contract:v1"
+                        },
+                        "n_results": 12
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Invoice:v1"
+                        },
+                        "n_results": 7
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 19
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.ariba": 4,
+                      "sap.ehs": 4,
+                      "my.mes": 3,
+                      "corp.itsm": 2,
+                      "siemens.plm": 2,
+                      "emarsys.cx": 2,
+                      "sap.crm": 1,
+                      "sap.s4": 1,
+                      "sap.sf": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Vendor:v1": 17,
+                      "sap.odm:entityType:PurchaseOrder:v1": 15,
+                      "sap.odm:entityType:Contract:v1": 12,
+                      "sap.odm:entityType:Material:v1": 4,
+                      "sap.odm:entityType:Invoice:v1": 2,
+                      "sap.odm:entityType:CustomerAccount:v1": 1,
+                      "sap.odm:entityType:CustomerOrder:v1": 1
+                    },
+                    "resource_types": {
+                      "agent": 7,
+                      "dataProduct": 7,
+                      "apiResource": 6
+                    },
+                    "top_capabilities": {
+                      "coordinate-delivery-schedules": 1,
+                      "manage-vendor-contracts": 1,
+                      "manage-purchase-orders": 1,
+                      "track-order-fulfillment": 1,
+                      "execute-purchase-orders": 1,
+                      "track-vendor-performance": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Vendor:v1",
+                        "sap.odm:entityType:Contract:v1",
+                        "sap.odm:entityType:Invoice:v1"
+                      ],
+                      "business_groups": [
+                        "proc_procure_fulfill_v1",
+                        "proc_supplychain_risk_compliance_v1",
+                        "proc_ProcurementSafetyCompliance_v1"
+                      ],
+                      "lines_of_business": [
+                        "Procurement",
+                        "Finance"
+                      ],
+                      "reason": "Activity retrieves vendor financial, tax, and compliance data which are core to procurement and supplier risk management processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:Contract:v1\",\n    \"sap.odm:entityType:Invoice:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_supplychain_risk_compliance_v1\",\n    \"proc_ProcurementSafetyCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Finance\"\n  ],\n  \"reason\": \"Activity retrieves vendor financial, tax, and compliance data which are core to procurement and supplier risk management processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.ariba:apiResource:MaterialAndVendorProcurementData:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:apiResource:MaterialReceiptInboundAPI:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\"\n]\n```\n\n**Rationale:**\n\n1. **sap.ariba:apiResource:MaterialAndVendorProcurementData:v1** (BEST) - Direct match. This API explicitly retrieves vendor information, material specifications, vendor qualifications, and procurement data\u2014exactly matching the activity's need for vendor financial and compliance details.\n\n2. **sap.s4:agent:BOMComplianceAutomationAgent:v1** - Strong match. Validates material compliance, verifies supplier certifications, and assesses compliance requirements\u2014directly supporting compliance detail retrieval.\n\n3. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** - Good match. Coordinates material provisioning and evaluates change impact, with vendor/sourcing considerations.\n\n4. **sap.s4:agent:AssetLifecycleChangeOrchestrator:v1** - Moderate match. Manages change approvals including cross-functional workflow touching supplier agreements and finance teams.\n\n5. **sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1** - Moderate match. Analytical capability for material requirements and operational readiness assessment.\n\n6. **sap.s4:apiResource:MaterialReceiptInboundAPI:v1** - Weak match. Focuses on goods receipt and inventory, not vendor master data retrieval.\n\n7. **my.mes:agent:ProductionChangeOrchestrator:v1** - Weak match. Orchestrates production changes but not vendor data retrieval.\n\n8. **sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1** - Weak match. Focuses on workforce readiness, not vendor financial/compliance details.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                      "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                      "sap.ariba:apiResource:MaterialSafetyAndVendorComplianceData:v1",
+                      "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+                      "sap.ehs:apiResource:PurchaseOrderVendorSafetyCompliance:v1"
+                    ],
+                    "tokens": 4410,
+                    "latency_s": 8.279,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 8
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2092,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 1069,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+              "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Check the status of our pending maintenance requests",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 90900,
+          "latency_s": 30.013,
+          "llm_calls": 19,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 403,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Check the status of our pending maintenance requests"
+            ],
+            "original_prompt": "Check the status of our pending maintenance requests",
+            "sub_queries_redecomposed": [
+              "Retrieve all maintenance requests with pending status",
+              "Get the current status details and timestamps for each pending maintenance request"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve all maintenance requests with pending status",
+              "trace": {
+                "tokens": 44734,
+                "latency_s": 15.11,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 23,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 712,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "corp.itsm",
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:ChangeRequest:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29271,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8562,
+                    "latency_s": 6.5355119705200195,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 48
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 6,
+                      "my.mes": 6,
+                      "emarsys.cx": 3,
+                      "sap.ehs": 2,
+                      "workday.hcm": 2,
+                      "sap.s4": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Incident:v1": 10,
+                      "sap.odm:entityType:SafetyIncident:v1": 10,
+                      "sap.odm:entityType:ChangeRequest:v1": 7,
+                      "sap.odm:entityType:ITEquipment:v1": 7,
+                      "sap.odm:entityType:ServiceTicket:v1": 7,
+                      "sap.odm:entityType:HazardousSubstance:v1": 4,
+                      "sap.odm:entityType:CustomerAccount:v1": 2,
+                      "sap.odm:entityType:CustomerOrder:v1": 2,
+                      "sap.odm:entityType:Employee:v1": 1,
+                      "sap.odm:entityType:TimeOff:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 7,
+                      "dataProduct": 9,
+                      "agent": 4
+                    },
+                    "top_capabilities": {
+                      "track-service-tickets": 2,
+                      "track-safety-metrics": 2,
+                      "receive-log-orders": 1,
+                      "manage-customer-accounts": 1,
+                      "track-implementation-tasks": 1,
+                      "track-equipment-issues": 1,
+                      "create-change-request-tickets": 1,
+                      "log-change-requests": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:ServiceTicket:v1",
+                        "sap.odm:entityType:Machine:v1",
+                        "sap.odm:entityType:ChangeRequest:v1"
+                      ],
+                      "business_groups": [
+                        "proc_integrated_service_change_mgmt_v1",
+                        "proc_ServiceToProduction_v1"
+                      ],
+                      "lines_of_business": [
+                        "IT Service Management",
+                        "Operations"
+                      ],
+                      "reason": "Maintenance requests are tracked as service tickets and typically involve machines/assets; pending status requires service management and operational oversight processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_integrated_service_change_mgmt_v1\",\n    \"proc_ServiceToProduction_v1\"\n  ],\n  \"lines_of_business\": [\n    \"IT Service Management\",\n    \"Operations\"\n  ],\n  \"reason\": \"Maintenance requests are tracked as service tickets and typically involve machines/assets; pending status requires service management and operational oversight processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                      "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"my.mes:apiResource:ServiceTicketChangeRequestManagement:v1\",\n  \"siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity is to \"Retrieve all maintenance requests with pending status\" \u2014 a pure read/query operation on master data about service tickets and maintenance records.\n\n1. **my.mes:apiResource:ServiceTicketChangeRequestManagement:v1** (BEST MATCH) \u2014 This is an API resource explicitly designed for managing and retrieving service tickets and equipment maintenance records. It has direct capabilities like `ingest-service-tickets`, `manage-approval-workflows`, and `track-equipment-issues`. This is a straightforward CRUD read operation.\n\n2. **siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1** \u2014 Also an API resource with capabilities to `manage-service-tickets` and `track-engineering-changes`. Provides service ticket management though slightly broader in scope.\n\n3. **my.mes:agent:ProductionChangeOrchestrator:v1** \u2014 An agent that orchestrates production changes and manages change impact. While it processes workflow logic, it can track and manage maintenance-related impacts on production.\n\n4. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** \u2014 An agent for managing engineering changes and tracking status. Less directly relevant but has `track-change-status` capability.\n\nThe dataProducts are deprioritized as they are analytical/aggregated views rather than operational record retrieval. The Asset Provisioning Orchestrator is also deprioritized as it focuses on asset lifecycle rather than maintenance request retrieval.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                      "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                      "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                      "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+                      "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1"
+                    ],
+                    "tokens": 3995,
+                    "latency_s": 8.574,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 3
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2194,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Get the current status details and timestamps for each pending maintenance request",
+              "trace": {
+                "tokens": 45057,
+                "latency_s": 14.903,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 27,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 716,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "corp.itsm",
+                      "entity_types": [
+                        "sap.odm:entityType:ChangeRequest:v1",
+                        "sap.odm:entityType:Incident:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29276,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8826,
+                    "latency_s": 7.590576171875,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:ServiceHealthMetrics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 48
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 6,
+                      "my.mes": 5,
+                      "sap.ehs": 3,
+                      "sap.ariba": 2,
+                      "sap.s4": 2,
+                      "workday.hcm": 1,
+                      "emarsys.cx": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:ChangeRequest:v1": 17,
+                      "sap.odm:entityType:ITEquipment:v1": 17,
+                      "sap.odm:entityType:ServiceTicket:v1": 17,
+                      "sap.odm:entityType:CustomerAccount:v1": 2,
+                      "sap.odm:entityType:CustomerOrder:v1": 2,
+                      "sap.odm:entityType:Machine:v1": 1,
+                      "sap.odm:entityType:ProductionOrder:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 12,
+                      "dataProduct": 7,
+                      "agent": 1
+                    },
+                    "top_capabilities": {
+                      "track-service-tickets": 2,
+                      "track-change-requests": 2,
+                      "receive-log-orders": 1,
+                      "manage-customer-accounts": 1,
+                      "track-implementation-tasks": 1,
+                      "track-equipment-issues": 1,
+                      "create-change-request-tickets": 1,
+                      "log-change-requests": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:ServiceTicket:v1",
+                        "sap.odm:entityType:Machine:v1",
+                        "sap.odm:entityType:ChangeRequest:v1"
+                      ],
+                      "business_groups": [
+                        "proc_integrated_service_change_mgmt_v1",
+                        "proc_ServiceToProduction_v1"
+                      ],
+                      "lines_of_business": [
+                        "IT Service Management",
+                        "Manufacturing"
+                      ],
+                      "reason": "Maintenance requests are tracked as service tickets with status and timestamps, typically involving machines and change management in manufacturing or IT operations contexts."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_integrated_service_change_mgmt_v1\",\n    \"proc_ServiceToProduction_v1\"\n  ],\n  \"lines_of_business\": [\n    \"IT Service Management\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Maintenance requests are tracked as service tickets with status and timestamps, typically involving machines and change management in manufacturing or IT operations contexts.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                      "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"my.mes:apiResource:ServiceTicketChangeRequestManagement:v1\",\n  \"siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity requests **retrieving current status details and timestamps for pending maintenance requests** \u2014 a pure CRUD read operation on operational data.\n\n1. **Top picks (APIs):** The two API resources are best-suited for this task:\n   - `ServiceTicketChangeRequestManagement:v1` has explicit capabilities for `track-implementation-tasks`, `track-equipment-issues`, and retrieval of service tickets/maintenance records\n   - `EngineeringChangeAndServiceManagement:v1` manages service tickets and change tracking\n\n2. **Secondary picks (Agents):** While agents can support status retrieval through orchestration workflows, they're less ideal for pure read operations:\n   - Production and Asset Lifecycle orchestrators can track change status\n   - Engineering Change Agent has `track-change-status`\n\n3. **Lowest priority (Data Products):** Analytics products focus on impact assessment and capability evaluation rather than operational status retrieval of individual maintenance requests.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                      "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                      "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                      "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+                      "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1"
+                    ],
+                    "tokens": 3979,
+                    "latency_s": 7.312,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 7
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2260,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 706,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+              "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Get information on any open change orders we've submitted",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 90772,
+          "latency_s": 27.752,
+          "llm_calls": 19,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 410,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Get information on any open change orders we've submitted"
+            ],
+            "original_prompt": "Get information on any open change orders we've submitted",
+            "sub_queries_redecomposed": [
+              "Retrieve all change orders submitted by our organization",
+              "Filter the retrieved change orders to show only those with open status"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve all change orders submitted by our organization",
+              "trace": {
+                "tokens": 44885,
+                "latency_s": 14.194,
+                "llm_calls": 8,
+                "confidence": 0.85,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 28,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 716,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ariba",
+                      "entity_types": [
+                        "sap.odm:entityType:ChangeRequest:v1",
+                        "sap.odm:entityType:EngineeringChange:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29272,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8532,
+                    "latency_s": 5.664055824279785,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:EngineeringChange:v1"
+                        },
+                        "n_results": 40
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:ServiceHealthMetrics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 64
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 6,
+                      "my.mes": 6,
+                      "sap.s4": 3,
+                      "sap.ariba": 2,
+                      "sap.ehs": 1,
+                      "siemens.plm": 1,
+                      "emarsys.cx": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:ChangeRequest:v1": 11,
+                      "sap.odm:entityType:ServiceTicket:v1": 11,
+                      "sap.odm:entityType:ITEquipment:v1": 11,
+                      "sap.odm:entityType:EngineeringChange:v1": 5,
+                      "sap.odm:entityType:ProductItem:v1": 5,
+                      "sap.odm:entityType:Material:v1": 2,
+                      "sap.odm:entityType:PurchaseOrder:v1": 2,
+                      "sap.odm:entityType:Vendor:v1": 2,
+                      "sap.odm:entityType:Machine:v1": 1,
+                      "sap.odm:entityType:ProductionOrder:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 13,
+                      "agent": 3,
+                      "dataProduct": 4
+                    },
+                    "top_capabilities": {
+                      "manage-supplier-orders": 1,
+                      "update-purchase-orders": 1,
+                      "coordinate-vendor-schedules": 1,
+                      "procure-safety-materials": 1,
+                      "qualify-vendors": 1,
+                      "verify-compliance-certifications": 1,
+                      "validate-order": 1,
+                      "retrieve-account-eligibility": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:ChangeRequest:v1",
+                        "sap.odm:entityType:EngineeringChange:v1",
+                        "sap.odm:entityType:Contract:v1"
+                      ],
+                      "business_groups": [
+                        "proc_EngChangeAndProcurement_v1",
+                        "proc_integrated_service_change_mgmt_v1"
+                      ],
+                      "lines_of_business": [
+                        "Operations",
+                        "Product Lifecycle Management"
+                      ],
+                      "reason": "Change orders are primarily tracked as ChangeRequest and EngineeringChange entities within engineering change and service change management processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ChangeRequest:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:Contract:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_EngChangeAndProcurement_v1\",\n    \"proc_integrated_service_change_mgmt_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Operations\",\n    \"Product Lifecycle Management\"\n  ],\n  \"reason\": \"Change orders are primarily tracked as ChangeRequest and EngineeringChange entities within engineering change and service change management processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                      "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity is to \"retrieve all change orders submitted by our organization\" \u2014 a read operation on change order master data with potential retrieval/tracking needs.\n\n1. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** \u2014 Best match. Explicitly handles \"track-change-status\" and \"initiate-engineering-change\" with use cases covering change order submission and tracking workflows.\n\n2. **my.mes:agent:ProductionChangeOrchestrator:v1** \u2014 Strong match. Orchestrates production changes and synchronizes engineering changes; use case mentions \"operations manager submits engineering change order.\"\n\n3. **sap.s4:agent:BOMComplianceAutomationAgent:v1** \u2014 Good match. Validates and tracks engineering changes through compliance workflows; use cases include change control administration and documentation.\n\n4. **corp.itsm:agent:AssetProvisioningOrchestrator:v1** \u2014 Relevant agent that coordinates change-related provisioning and asset tracking.\n\n5-6. **DataProducts** (workforce readiness, capability assessment) \u2014 Secondary because they analyze change *impact* rather than retrieve change orders themselves, but provide analytical context.\n\n7. **sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1** \u2014 Validates engineering changes but less directly focused on retrieval.\n\n8. **siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1** \u2014 Least relevant; focuses on cost analysis rather than change order retrieval.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                      "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                      "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+                      "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+                      "sap.ariba:apiResource:EngineeringChangeAndProductItemManagement:v1"
+                    ],
+                    "tokens": 4172,
+                    "latency_s": 8.53,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 8
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2193,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+                    "confidence": 0.85
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Filter the retrieved change orders to show only those with open status",
+              "trace": {
+                "tokens": 44708,
+                "latency_s": 13.558,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 23,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 719,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "corp.itsm",
+                      "entity_types": [
+                        "sap.odm:entityType:ChangeRequest:v1",
+                        "sap.odm:entityType:EngineeringChange:v1"
+                      ],
+                      "action_verb": "analyse",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29276,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8609,
+                    "latency_s": 5.978121995925903,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:EngineeringChange:v1"
+                        },
+                        "n_results": 40
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 64
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 6,
+                      "my.mes": 6,
+                      "sap.crm": 2,
+                      "siemens.plm": 2,
+                      "sap.ariba": 1,
+                      "sap.ehs": 1,
+                      "sap.s4": 1,
+                      "emarsys.cx": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:ChangeRequest:v1": 11,
+                      "sap.odm:entityType:ServiceTicket:v1": 11,
+                      "sap.odm:entityType:ITEquipment:v1": 11,
+                      "sap.odm:entityType:CustomerAccount:v1": 4,
+                      "sap.odm:entityType:CustomerOrder:v1": 4,
+                      "sap.odm:entityType:PurchaseOrder:v1": 2,
+                      "sap.odm:entityType:Vendor:v1": 2,
+                      "sap.odm:entityType:Machine:v1": 2,
+                      "sap.odm:entityType:ProductionOrder:v1": 2,
+                      "sap.odm:entityType:EngineeringChange:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 15,
+                      "agent": 1,
+                      "dataProduct": 4
+                    },
+                    "top_capabilities": {
+                      "track-service-tickets": 2,
+                      "validate-order": 2,
+                      "receive-log-orders": 1,
+                      "manage-customer-accounts": 1,
+                      "manage-supplier-orders": 1,
+                      "update-purchase-orders": 1,
+                      "coordinate-vendor-schedules": 1,
+                      "track-fulfillment": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:ChangeRequest:v1"
+                      ],
+                      "business_groups": [
+                        "proc_EngChangeAndProcurement_v1",
+                        "proc_integrated_service_change_mgmt_v1"
+                      ],
+                      "lines_of_business": [
+                        "Operations",
+                        "IT Service Management"
+                      ],
+                      "reason": "Filtering change orders by open status directly operates on ChangeRequest entities within change management and operational workflows."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_EngChangeAndProcurement_v1\",\n    \"proc_integrated_service_change_mgmt_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Operations\",\n    \"IT Service Management\"\n  ],\n  \"reason\": \"Filtering change orders by open status directly operates on ChangeRequest entities within change management and operational workflows.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "siemens.plm:apiResource:SupplierQualificationAndServiceManagement:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity is **\"Filter the retrieved change orders to show only those with open status\"** \u2014 this is a data retrieval and filtering operation on change order master data.\n\n1. **siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1** (API Resource) \u2014 **BEST MATCH**\n   - Explicitly designed for \"track-engineering-changes\" and \"manage-service-tickets\"\n   - API resources are ideal for CRUD operations on master data like querying and filtering change orders by status\n   - The capability \"track-engineering-changes\" directly supports retrieving and filtering change orders\n\n2. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** (Agent) \u2014 **SECONDARY**\n   - Has \"track-change-status\" capability, relevant for status-based filtering\n   - Agents can query and filter data, though less ideal than APIs for pure data retrieval\n   - Supports the change order domain context\n\n3. **my.mes:agent:ProductionChangeOrchestrator:v1** (Agent) \u2014 **TERTIARY**\n   - Includes \"manage-change-impact\" and \"synchronize-engineering-change\" capabilities\n   - Could retrieve filtered change orders but is more orchestration-focused than filtering-focused\n\nExcluded: dataProducts (analytical, not transactional filtering), BOM compliance agent (validation-focused), supplier qualification API (wrong domain), asset provisioning (infrastructure-focused), and workforce readiness (analytical, not operational filtering).",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                      "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                      "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+                      "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+                      "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1"
+                    ],
+                    "tokens": 3904,
+                    "latency_s": 7.58,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 3
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2200,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 769,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+              "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user's request is a multi-faceted, ad-hoc information gathering task requiring simultaneous access to four distinct operational data sources (inventory specs, vendor details, maintenance requests, change orders) rather than execution of a single end-to-end process workflow.\"\n}\n```",
+      "reason": "The user's request is a multi-faceted, ad-hoc information gathering task requiring simultaneous access to four distinct operational data sources (inventory specs, vendor details, maintenance requests, change orders) rather than execution of a single end-to-end process workflow.",
+      "tokens": 1680,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 365731,
+    "latency_s": 110.875,
+    "llm_calls": 78
+  },
+  "wall_s": 139.006
+}

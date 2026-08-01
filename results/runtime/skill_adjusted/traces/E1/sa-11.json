@@ -1,0 +1,548 @@
+{
+  "case_id": "sa-11",
+  "user_prompt": "We need to orchestrate a production transition that's been triggered by recent engineering changes to one of our product lines. This should coordinate assessments to ensure our workforce is ready for the transition, validate that all equipment meets the new specifications, provision the necessary assets, and communicate the changes to our affected customers. As part of this process, we'll also need to track how these product changes flow through our materials and components, including automated coordination across all related items. Can you help us manage this comprehensive transition while ensuring all service requests and equipment documentation are kept current throughout the changeover?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "E",
+  "state": "enriched",
+  "condition": "E1",
+  "skill_expected": "proc_023",
+  "skill_picked": "proc_023",
+  "expected_gaps": [
+    "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+    "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.5,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track product changes through materials and components",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:Opportunit \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.odm/ord_enriched.json"
+              },
+              "result_preview": {
+                "error": "file not found: benchmark/landscape/systems_enriched/sap.odm/ord_enriched.json"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/siemens.plm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/siemens.plm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"siemens.plm:package:Core:v1\",\n      \"title\": \"siemens.plm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1102
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:OpportunityToOrderAutomationEngine:v1 \u2014 converts qualified opportunities to orders\n2. sap.crm:agent:OpportunityQualificationAdvisor:v1 \u2014 evaluates opportunities against CustomerAccount characteristics\n\nPROCUREMENT AGENTS (sap.s4, sap.ariba):\n- sap.s4:agent:ProcurementMatchingAgent:v1 \u2014 matches purchase requisitions to vendors\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 \u2014 reconciles invoices to POs\n\nPRODUCT LIFECYCLE & MATERIALS TRACKING (siemens.plm, sap.s4):\n- siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1 \u2014 coordinates engineering changes across product items/materials, syncs config updates, tracks material lifecycle (BEST FOR: tracking product changes through materials & components)\n- siemens.plm:agent:BOMComplianceValidator:v1 \u2014 validates BOM against regulatory/supplier standards\n- sap.s4:agent:AssetLifecycleChangeOrchestrator:v1 \u2014 coordinates engineering changes across materials & product items with asset provisioning\n- sap.s4:agent:BOMComplianceAutomationAgent:v1 \u2014 validates material specs & automates BOM updates\n\nMISSING CAPABILITIES:\n1. Order fulfillment checkpoint tracking\n2. Customer grievance/complaint handling\n3. Customer billing dispute resolution\n4. Accounts receivable management\n5. Customer service management\n6. Claims and resolutions documentation"
+              },
+              "result_preview": {
+                "stored_bytes": 1503,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "reason": "This agent directly tracks product changes through materials and components by coordinating engineering changes, synchronizing configuration updates, and managing material lifecycle transitions across product items."
+              },
+              "result_preview": {
+                "committed": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+          "picked_reason": "This agent directly tracks product changes through materials and components by coordinating engineering changes, synchronizing configuration updates, and managing material lifecycle transitions across product items.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 6,
+          "tokens": 23216,
+          "latency_s": 14.579,
+          "llm_calls": 6
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Automate coordination across related items",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "reason": "Coordinates engineering changes across materials and product items with asset provisioning, extending material coordination to integrated asset lifecycle management."
+              },
+              "result_preview": {
+                "committed": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+          "picked_reason": "Coordinates engineering changes across materials and product items with asset provisioning, extending material coordination to integrated asset lifecycle management.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 1,
+          "tokens": 2836,
+          "latency_s": 4.72,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Update service requests documentation",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:Opportunit \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 10
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.crm:package:Core:v1\",\n      \"title\": \"sap.crm Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1080
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                "reason": "This agent processes service tickets, generates diagnostic reports, and maintains documentation of incidents and their resolutions, making it the best fit for updating service requests documentation."
+              },
+              "result_preview": {
+                "committed": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+          "picked_reason": "This agent processes service tickets, generates diagnostic reports, and maintains documentation of incidents and their resolutions, making it the best fit for updating service requests documentation.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 65895,
+          "latency_s": 22.813,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Update equipment documentation",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:Opportunit \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.odm/ord_enriched.json"
+              },
+              "result_preview": {
+                "error": "file not found: benchmark/landscape/systems_enriched/sap.odm/ord_enriched.json"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.odm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.odm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-independent\",\n  \"description\": \"SAP One Domain Model entity type taxonomy for the benchmark landscape. 40 canonical business objects servi \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 667
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/corp.itsm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/corp.itsm",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1021
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/siemens.plm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/siemens.plm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"siemens.plm:package:Core:v1\",\n      \"title\": \"siemens.plm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1102
+              }
+            },
+            {
+              "step": 8,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:OpportunityToOrderAutomationEngine:v1 \u2014 converts qualified opportunities to orders\n2. sap.crm:agent:OpportunityQualificationAdvisor:v1 \u2014 evaluates opportunities against CustomerAccount characteristics\n\nPROCUREMENT AGENTS (sap.s4, sap.ariba):\n- sap.s4:agent:ProcurementMatchingAgent:v1 \u2014 matches purchase requisitions to vendors\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 \u2014 reconciles invoices to POs\n\nPRODUCT LIFECYCLE & MATERIALS TRACKING (siemens.plm, sap.s4):\n- siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1 \u2014 coordinates engineering changes across product items/materials, syncs config updates, tracks material lifecycle\n- siemens.plm:agent:BOMComplianceValidator:v1 \u2014 validates BOM against regulatory/supplier standards\n- sap.s4:agent:AssetLifecycleChangeOrchestrator:v1 \u2014 coordinates engineering changes across materials & product items with asset provisioning\n- sap.s4:agent:BOMComplianceAutomationAgent:v1 \u2014 validates material specs & automates BOM updates\n\nINCIDENT MGMT & EQUIPMENT (corp.itsm):\n- corp.itsm:agent:IncidentRootCauseAnalyzer:v1 \u2014 analyzes incidents to identify root causes, references ITEquipment entity\n- corp.itsm:agent:AssetProvisioningOrchestrator:v1 \u2014 manages asset lifecycle provisioning, not documentation\n- corp.itsm:agent:ChangeAutomationOrchestrator:v1 \u2014 automates change coordination across materials/product items\n\nMISSING CAPABILITIES:\n1. Equipment documentation updates (no agent found that updates equipment metadata/docs post-incident)\n2. Order fulfillment checkpoint tracking\n3. Customer grievance/complaint handling\n4. Customer billing dispute resolution\n5. Accounts receivable management\n6. Customer service management\n7. Claims and resolutions documentation"
+              },
+              "result_preview": {
+                "stored_bytes": 1923,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 9,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "No agent in the landscape explicitly handles equipment documentation updates; while incident analysis and asset management agents exist, none fulfil the specific activity of updating equipment documentation."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "No agent in the landscape explicitly handles equipment documentation updates; while incident analysis and asset management agents exist, none fulfil the specific activity of updating equipment documentation."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "No agent in the landscape explicitly handles equipment documentation updates; while incident analysis and asset management agents exist, none fulfil the specific activity of updating equipment documentation.",
+          "tool_calls": 10,
+          "tokens": 87767,
+          "latency_s": 32.428,
+          "llm_calls": 10
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_023",
+      "skill_id_expected": "proc_023",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track product changes through materials and components\",\n    \"Automate coordination across related items\",\n    \"Update service requests documentation\",\n    \"Update equipment documentation\"\n  ],\n  \"reason\": \"The skill covers the core production transition orchestration (workforce assessments, equipment validation, asset provisioning, and customer communications), but the request explicitly requires tracking material/component impact flows, automated cross-item coordination, and maintaining current service requests and equipment documentation\u2014concrete activities not listed in the skill's steps.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers the core production transition orchestration (workforce assessments, equipment validation, asset provisioning, and customer communications), but the request explicitly requires tracking material/component impact flows, automated cross-item coordination, and maintaining current servi",
+      "tokens": 632,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 180346,
+    "latency_s": 74.54,
+    "llm_calls": 27
+  },
+  "wall_s": 74.588
+}

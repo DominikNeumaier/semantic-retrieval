@@ -1,0 +1,929 @@
+{
+  "case_id": "oos-08",
+  "user_prompt": "We need to automatically flag SKUs that are approaching slow-moving or obsolete status based on turnover velocity trends, so we can initiate clearance protocols or adjust safety stock levels before excess inventory ties up working capital for another quarter.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Analyze turnover velocity trends to identify SKUs approaching slow-moving or obsolete status",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Inventory Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "analyze-product-economics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Product Cost and Complexity Analytics",
+                  "shortDescription": "Aggregated metrics on product cost drivers, BOM complexity, and supplier impact analysis."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "assess-inventory-impact"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Inventory Management",
+                  "shortDescription": "Retrieves and manages material stock levels and vendor supply chain data."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "detect-anomalies"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Engagement Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Material and Vendor Inventory Management",
+                "shortDescription": "Retrieves and manages material stock levels and vendor supply chain data.",
+                "description": "Exposes real-time material inventory records and vendor information to support production scheduling and procurement workflows. Provides access to material availability, reorder points, and vendor performance metrics for optimized supply chain operations. Manages material-to-vendor relationships to ensure accurate sourcing and inventory replenishment across manufacturing facilities.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [
+                  "analyze-material-supply",
+                  "validate-vendor-capacity",
+                  "assess-inventory-impact"
+                ],
+                "useCases": [
+                  "Supply chain team confirms material availability and vendor readiness for transition.",
+                  "Procurement validates cost and timeline impact of material changes.",
+                  "Manufacturing ensures component inventory supports new production requirements."
+                ],
+                "tags": [
+                  "inventory-management",
+                  "supply-chain",
+                  "material-planning"
+                ],
+                "partOfGroups": [
+                  "proc_ProductionTransitionMarketReadiness_v1"
+                ],
+                "processNext": [
+                  "sap.crm:agent:OpportunityQualificationAdvisor:v1"
+                ],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Material:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                  "type": "agent",
+                  "title": "Change Release Coordinator",
+                  "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+                },
+                "... (55 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "emarsys.cx",
+                "title": "Product Change and Inventory Analytics",
+                "shortDescription": "Aggregates engineering changes, material updates, and product item metrics for campaign optimization.",
+                "description": "Summarizes and provides metrics on engineering changes, material specifications, and product item performance across marketing campaigns. Enables comprehensive analysis of product-related modifications and inventory impact on customer engagement strategies. Delivers actionable insights on product lifecycle changes influencing segmentation and journey orchestration decisions.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "marketing-and-cx"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "product-analytics",
+                  "inventory-intelligence",
+                  "campaign-optimization"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "emarsys.cx:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+                "type": "dataProduct",
+                "namespace": "sap.ariba",
+                "title": "Supply Chain Product Intelligence",
+                "shortDescription": "Aggregates engineering changes, materials, and product data for procurement insights.",
+                "description": "This data product summarizes engineering change patterns, material sourcing trends, and product item performance across the procurement lifecycle. It provides metrics on change velocity, material availability, and product adoption rates to support strategic sourcing and vendor optimization decisions.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "product-lifecycle",
+                  "sourcing-optimization",
+                  "material-management"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+                "reason": "This dataProduct aggregates material and product metrics including adoption rates and material availability trends, directly supporting analysis of turnover velocity and identification of slow-moving or obsolete SKUs in the supply chain."
+              },
+              "result": {
+                "committed": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+          "picked_reason": "This dataProduct aggregates material and product metrics including adoption rates and material availability trends, directly supporting analysis of turnover velocity and identification of slow-moving or obsolete SKUs in the supply chain.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 12,
+          "tokens": 49747,
+          "latency_s": 14.042,
+          "llm_calls": 12
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Automatically flag SKUs that meet slow-moving or obsolete criteria based on velocity analysis",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "detect-anomalies"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Engagement Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Inventory Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "assess-inventory-impact"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Inventory Management",
+                  "shortDescription": "Retrieves and manages material stock levels and vendor supply chain data."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-product-lifecycle"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Lifecycle Change Orchestrator",
+                  "shortDescription": "Coordinates engineering changes across materials and product items with automated asset provisioning."
+                }
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Material and Vendor Inventory Management",
+                "shortDescription": "Retrieves and manages material stock levels and vendor supply chain data.",
+                "description": "Exposes real-time material inventory records and vendor information to support production scheduling and procurement workflows. Provides access to material availability, reorder points, and vendor performance metrics for optimized supply chain operations. Manages material-to-vendor relationships to ensure accurate sourcing and inventory replenishment across manufacturing facilities.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [
+                  "analyze-material-supply",
+                  "validate-vendor-capacity",
+                  "assess-inventory-impact"
+                ],
+                "useCases": [
+                  "Supply chain team confirms material availability and vendor readiness for transition.",
+                  "Procurement validates cost and timeline impact of material changes.",
+                  "Manufacturing ensures component inventory supports new production requirements."
+                ],
+                "tags": [
+                  "inventory-management",
+                  "supply-chain",
+                  "material-planning"
+                ],
+                "partOfGroups": [
+                  "proc_ProductionTransitionMarketReadiness_v1"
+                ],
+                "processNext": [
+                  "sap.crm:agent:OpportunityQualificationAdvisor:v1"
+                ],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "identify-cost-optimization"
+              },
+              "result_preview": [
+                {
+                  "ordId": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Product Cost and Complexity Analytics",
+                  "shortDescription": "Aggregated metrics on product cost drivers, BOM complexity, and supplier impact analysis."
+                }
+              ]
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "siemens.plm",
+                "title": "Product Cost and Complexity Analytics",
+                "shortDescription": "Aggregated metrics on product cost drivers, BOM complexity, and supplier impact analysis.",
+                "description": "This analytical data product delivers aggregated cost and complexity metrics across product portfolios, integrating bill of materials depth, material sourcing patterns, and engineering change frequency. It enables procurement and engineering teams to identify high-cost drivers, optimize supplier qualification strategies, and track compliance documentation effectiveness across the product lifecycle.",
+                "entityTypes": [
+                  "sap.odm:entityType:ProductItem:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:EngineeringChange:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [
+                  "identify-cost-optimization",
+                  "evaluate-complexity",
+                  "analyze-product-costs",
+                  "compare-complexity-benchmarks",
+                  "analyze-product-economics"
+                ],
+                "useCases": [
+                  "Manufacturing optimizes production sequences based on identified complexity drivers.",
+                  "Finance teams benchmark actual product costs against target cost models.",
+                  "Finance and product teams understand cost implications and design complexity to inform pricing and production planning.",
+                  "Product managers evaluate cost implications of design decisions before procurement."
+                ],
+                "tags": [
+                  "cost-analysis",
+                  "bom-complexity",
+                  "supplier-impact",
+                  "compliance-metrics"
+                ],
+                "partOfGroups": [
+                  "proc_ProductLifecycleCompliance_v1",
+                  "proc_product_launch_workforce_v1"
+                ],
+                "processNext": [
+                  "sap.sf:apiResource:MaterialAndVendorProcurementIntegration:v1"
+                ],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                "reason": "Best resource for managing SKU inventory data and assessing inventory impact based on stock levels, reorder points, and vendor performance metrics to flag slow-moving or obsolete items."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+          "picked_reason": "Best resource for managing SKU inventory data and assessing inventory impact based on stock levels, reorder points, and vendor performance metrics to flag slow-moving or obsolete items.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 11,
+          "tokens": 44212,
+          "latency_s": 18.411,
+          "llm_calls": 11
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Initiate clearance protocols and adjust safety stock levels for flagged SKUs to optimize working capital",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:OpportunityQualificationAdvisor:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:apiResource:MachineProductionOrderIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:agent:OpportunityQualificationAdvisor:v1",
+                  "type": "agent",
+                  "title": "Opportunity Qualification Advisor",
+                  "shortDescription": "Autonomously evaluates sales opportunities against qualification criteria and recommends actions."
+                }
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "optimize-order-sequencing"
+              },
+              "result_preview": [
+                {
+                  "ordId": "siemens.plm:apiResource:MachineProductionOrderIntegration:v1",
+                  "type": "apiResource",
+                  "title": "Machine Production Order Integration API",
+                  "shortDescription": "Retrieves and manages machine-production order relationships for execution tracking."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Inventory Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "allocate-inventory"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+                  "type": "apiResource",
+                  "title": "Order Fulfillment Service API",
+                  "shortDescription": "Manages order lifecycle and customer account service interactions for ticket resolution."
+                },
+                {
+                  "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                  "type": "agent",
+                  "title": "Engineering Change and Material Provisioning Agent",
+                  "shortDescription": "Automates engineering change processing and material lifecycle coordination across product configurations."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "assess-inventory-impact"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Inventory Management",
+                  "shortDescription": "Retrieves and manages material stock levels and vendor supply chain data."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-material-provisioning"
+              },
+              "result_preview": [
+                {
+                  "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                  "type": "agent",
+                  "title": "Engineering Change and Material Provisioning Agent",
+                  "shortDescription": "Automates engineering change processing and material lifecycle coordination across product configurations."
+                }
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "type": "agent",
+                "namespace": "siemens.plm",
+                "title": "Engineering Change and Material Provisioning Agent",
+                "shortDescription": "Automates engineering change processing and material lifecycle coordination across product configurations.",
+                "description": "Coordinates engineering changes across product items and material specifications, automating approval workflows and synchronizing configuration updates. Monitors material lifecycle transitions and orchestrates provisioning tasks to ensure compliance documentation and cost estimation remain current throughout the product development cycle.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "it-service-management"
+                ],
+                "capabilities": [
+                  "coordinate-bom-updates",
+                  "allocate-inventory",
+                  "provision-materials",
+                  "synchronize-engineering-changes",
+                  "evaluate-change-impact",
+                  "track-change-status",
+                  "manage-material-provisioning",
+                  "assess-engineering-changes",
+                  "initiate-engineering-change"
+                ],
+                "useCases": [
+                  "Product redesign or material substitution triggered by quality, cost, or compliance needs",
+                  "Coordinate engineering changes across product lifecycle and supply chain",
+                  "Engineering teams release change orders and automatically trigger material provisioning workflows.",
+                  "Engineering changes to product designs are evaluated for material requirements and supply chain feasibility.",
+                  "Production planners retrieve updated bills-of-material with real-time material availability.",
+                  "Material handlers receive dynamic picking lists reflecting the latest design changes.",
+                  "The system determines that the equipment failure requires a component replacement and identifies available materials from inventory."
+                ],
+                "tags": [
+                  "asset-lifecycle",
+                  "change-automation",
+                  "provisioning-orchestration"
+                ],
+                "partOfGroups": [
+                  "proc_ServiceToProduction_v1",
+                  "proc_QualityDrivenMfgSupplyChain_v1",
+                  "proc_EngChangeAndProcurement_v1"
+                ],
+                "processNext": [
+                  "sap.s4:agent:OpportunityToOrderAutomationEngine:v1"
+                ],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Material and Vendor Inventory Management",
+                "shortDescription": "Retrieves and manages material stock levels and vendor supply chain data.",
+                "description": "Exposes real-time material inventory records and vendor information to support production scheduling and procurement workflows. Provides access to material availability, reorder points, and vendor performance metrics for optimized supply chain operations. Manages material-to-vendor relationships to ensure accurate sourcing and inventory replenishment across manufacturing facilities.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [
+                  "analyze-material-supply",
+                  "validate-vendor-capacity",
+                  "assess-inventory-impact"
+                ],
+                "useCases": [
+                  "Supply chain team confirms material availability and vendor readiness for transition.",
+                  "Procurement validates cost and timeline impact of material changes.",
+                  "Manufacturing ensures component inventory supports new production requirements."
+                ],
+                "tags": [
+                  "inventory-management",
+                  "supply-chain",
+                  "material-planning"
+                ],
+                "partOfGroups": [
+                  "proc_ProductionTransitionMarketReadiness_v1"
+                ],
+                "processNext": [
+                  "sap.crm:agent:OpportunityQualificationAdvisor:v1"
+                ],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "reason": "Orchestrates material provisioning and inventory allocation with automated coordination capabilities to adjust safety stock levels and optimize material workflow for flagged SKUs."
+              },
+              "result": {
+                "committed": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+          "picked_reason": "Orchestrates material provisioning and inventory allocation with automated coordination capabilities to adjust safety stock levels and optimize material workflow for flagged SKUs.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 11,
+          "tokens": 40620,
+          "latency_s": 19.593,
+          "llm_calls": 11
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is for an automated inventory monitoring and flagging system based on turnover trends, which is a specialized inventory management capability not fully covered by any registered skill\u2014most skills focus on procurement, production, compliance, or order fulfillment rather than inventory velocity analysis and clearance protocols.\"\n}\n```",
+      "reason": "The request is for an automated inventory monitoring and flagging system based on turnover trends, which is a specialized inventory management capability not fully covered by any registered skill\u2014most skills focus on procurement, production, compliance, or order fulfillment rather than inventory vel",
+      "tokens": 1687,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 136634,
+    "latency_s": 52.046,
+    "llm_calls": 36
+  },
+  "wall_s": 52.089
+}

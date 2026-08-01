@@ -1,0 +1,268 @@
+{
+  "case_id": "dy-01",
+  "user_prompt": "I need to pull up a recent issue that one of our customers reported last week so I can see what we promised to deliver and whether we're on track. Can you help me find that and check the current status?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to pull up a recent issue that one of our customers reported last week so I can see what we promised to deliver and whether we're on track. Can you help me find that and check the current status?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:dataProduct:IncidentResolutionMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 44295,
+          "latency_s": 11.884,
+          "llm_calls": 8,
+          "confidence": 0.85,
+          "verified": false,
+          "use_graph": true,
+          "pool_size": 24,
+          "phase_traces": {
+            "phase0_intent": {
+              "tokens": 747,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "hints": {
+                "likely_namespace": "corp.itsm",
+                "entity_types": [
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:CustomerAccount:v1"
+                ],
+                "action_verb": "retrieve",
+                "resource_type_hint": "dataProduct"
+              }
+            },
+            "phase1a_embedding": {
+              "n_candidates": 10,
+              "embedding_model": "text-embedding-3-large",
+              "resource_count": 273,
+              "tokens": 29308,
+              "latency_s": 0.0
+            },
+            "phase1b_guided_d": {
+              "tokens": 8851,
+              "latency_s": 6.932239770889282,
+              "llm_calls": 4,
+              "agent_steps": [
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:Incident:v1"
+                  },
+                  "n_results": 24
+                },
+                {
+                  "tool": "resources_exposing",
+                  "input": {
+                    "entity_type": "sap.odm:entityType:CustomerAccount:v1"
+                  },
+                  "n_results": 57
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:dataProduct:IncidentEngagementReliability:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "get_resource",
+                  "input": {
+                    "ord_id": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1"
+                  },
+                  "n_results": 1
+                },
+                {
+                  "tool": "done"
+                }
+              ],
+              "n_candidates": 81
+            },
+            "phase1_5_pool_profile": {
+              "namespaces": {
+                "corp.itsm": 6,
+                "emarsys.cx": 5,
+                "my.mes": 4,
+                "sap.ariba": 2,
+                "sap.crm": 2,
+                "sap.ehs": 1
+              },
+              "entity_types": {
+                "sap.odm:entityType:Incident:v1": 13,
+                "sap.odm:entityType:SafetyIncident:v1": 13,
+                "sap.odm:entityType:HazardousSubstance:v1": 6,
+                "sap.odm:entityType:CustomerAccount:v1": 5,
+                "sap.odm:entityType:CustomerOrder:v1": 2,
+                "sap.odm:entityType:SalesOpportunity:v1": 2,
+                "sap.odm:entityType:Campaign:v1": 1,
+                "sap.odm:entityType:CustomerSegment:v1": 1,
+                "sap.odm:entityType:ChangeRequest:v1": 1,
+                "sap.odm:entityType:ITEquipment:v1": 1
+              },
+              "resource_types": {
+                "dataProduct": 12,
+                "apiResource": 2,
+                "agent": 6
+              },
+              "top_capabilities": {
+                "track-safety-metrics": 2,
+                "monitor-vendor-incidents": 1,
+                "escalate-compliance-issues": 1,
+                "fulfill-customer-orders": 1,
+                "allocate-inventory": 1,
+                "manage-customer-accounts": 1,
+                "monitor-incidents": 1,
+                "track-engagement-metrics": 1
+              },
+              "n_candidates": 20
+            },
+            "phase2_graph": {
+              "anchors": {
+                "entity_types": [
+                  "sap.odm:entityType:ServiceTicket:v1",
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:Incident:v1"
+                ],
+                "business_groups": [
+                  "proc_integrated_service_change_mgmt_v1",
+                  "proc_order_compliance_fulfillment_v1"
+                ],
+                "lines_of_business": [
+                  "IT Service Management",
+                  "customer-service"
+                ],
+                "reason": "The activity involves retrieving and tracking a customer-reported issue (ServiceTicket/Incident), checking promised deliverables (Contract/commitment), and monitoring status within a service management context."
+              },
+              "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:Incident:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_integrated_service_change_mgmt_v1\",\n    \"proc_order_compliance_fulfillment_v1\"\n  ],\n  \"lines_of_business\": [\n    \"IT Service Management\",\n    \"customer-service\"\n  ],\n  \"reason\": \"The activity involves retrieving and tracking a customer-reported issue (ServiceTicket/Incident), checking promised deliverables (Contract/commitment), and monitoring status within a service management context.\"\n}\n```",
+              "max_hops": 2,
+              "hop_decay": 0.5,
+              "edge_weights": {
+                "co_exposes": 1.0,
+                "co_partOf": 2.0,
+                "calls": 3.0,
+                "processNext": 3.0
+              },
+              "scored_resources": 274,
+              "walk_top_ids": [
+                "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                "sap.crm:agent:CampaignAudienceOptimizationAgent:v1"
+              ],
+              "rerank_raw": "```json\n[\n  \"corp.itsm:apiResource:CampaignAccessManagementAPI:v1\",\n  \"emarsys.cx:apiResource:JourneyContactStateAPI:v1\",\n  \"corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1\",\n  \"emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1\",\n  \"emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity requires retrieving a recent customer-reported issue, understanding commitments, and checking status\u2014this is a **record lookup + status tracking** scenario.\n\n1. **corp.itsm:apiResource:CampaignAccessManagementAPI:v1** (Rank 1): Best match. It explicitly has `capture-service-request` and `manage-communication-channels` capabilities, plus use cases mention \"Log and track service requests\" and linking to IT service management\u2014directly applicable to finding and tracking a customer issue.\n\n2. **emarsys.cx:apiResource:JourneyContactStateAPI:v1** (Rank 2): Strong secondary option. Has `query-campaign-status` and `track-campaign-engagement` capabilities, enabling status tracking of customer interactions and engagement state.\n\n3. **corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1** (Rank 3): Useful for understanding service performance and engagement patterns\u2014supports the \"status check\" part of the activity.\n\n4. **emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1** (Rank 4): Provides campaign metrics and performance data useful for verifying delivery status against promises.\n\n5. **emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1** (Rank 5): Included as it could help analyze customer segment context, though less directly relevant than the APIs and data products.\n\nExcluded: Vendor analytics and campaign audience optimization agent are too peripheral to the core issue-tracking and status-checking need.",
+              "refused": false,
+              "previous_resolved": [
+                "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+                "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+                "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                "emarsys.cx:dataProduct:ServiceDeliveryOperationalInsights:v1"
+              ],
+              "tokens": 3270,
+              "latency_s": 4.952,
+              "llm_calls": 2,
+              "n_new_from_graph": 4
+            },
+            "phase3_rerank": {
+              "tokens": 2119,
+              "latency_s": 0.0,
+              "llm_calls": 1,
+              "picked": "sap.crm:dataProduct:IncidentResolutionMetrics:v1",
+              "confidence": 0.85
+            }
+          },
+          "decomp_trace": {
+            "tokens": 394,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 1,
+            "sub_queries": [
+              "Find a recent customer issue reported last week and retrieve the details including what was promised to deliver and the current status"
+            ],
+            "original_prompt": "I need to pull up a recent issue that one of our customers reported last week so I can see what we promised to deliver and whether we're on track. Can you help me find that and check the current status?"
+          },
+          "n_detected": 1
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user is asking for a one-off lookup of a specific customer issue and its current status, which is an ad-hoc query rather than a need to execute a full multi-step business process.\"\n}\n```",
+      "reason": "The user is asking for a one-off lookup of a specific customer issue and its current status, which is an ad-hoc query rather than a need to execute a full multi-step business process.",
+      "tokens": 1667,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 46356,
+    "latency_s": 11.884,
+    "llm_calls": 10
+  },
+  "wall_s": 13.73
+}

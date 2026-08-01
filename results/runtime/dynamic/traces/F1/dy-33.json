@@ -1,0 +1,1264 @@
+{
+  "case_id": "dy-33",
+  "user_prompt": "I need to simultaneously log incoming shipments from our suppliers while also tracking the modifications we're making to our product line and ensuring our field technicians can submit their equipment maintenance needs through a single integrated workflow.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Log incoming shipments from our suppliers",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 91045,
+          "latency_s": 31.068,
+          "llm_calls": 19,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 481,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Log incoming shipments from our suppliers"
+            ],
+            "original_prompt": "Log incoming shipments from our suppliers",
+            "sub_queries_redecomposed": [
+              "Retrieve list of incoming shipments from suppliers with status, timestamps, and supplier information",
+              "Create log entries for each incoming shipment with tracking details and warehouse receipt confirmation"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve list of incoming shipments from suppliers with status, timestamps, and supplier information",
+              "trace": {
+                "tokens": 44742,
+                "latency_s": 12.68,
+                "llm_calls": 8,
+                "confidence": 0.85,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 23,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 721,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ariba",
+                      "entity_types": [
+                        "sap.odm:entityType:PurchaseOrder:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29279,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8574,
+                    "latency_s": 5.538485050201416,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+                        },
+                        "n_results": 21
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 79
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.ariba": 7,
+                      "corp.itsm": 4,
+                      "my.mes": 3,
+                      "emarsys.cx": 2,
+                      "sap.crm": 1,
+                      "sap.s4": 1,
+                      "sap.sf": 1,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Vendor:v1": 16,
+                      "sap.odm:entityType:PurchaseOrder:v1": 12,
+                      "sap.odm:entityType:Contract:v1": 7,
+                      "sap.odm:entityType:Material:v1": 5,
+                      "sap.odm:entityType:ProductionOrder:v1": 2,
+                      "sap.odm:entityType:Machine:v1": 1,
+                      "sap.odm:entityType:QualityInspection:v1": 1,
+                      "sap.odm:entityType:Invoice:v1": 1,
+                      "sap.odm:entityType:CustomerAccount:v1": 1,
+                      "sap.odm:entityType:CustomerOrder:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 11,
+                      "dataProduct": 5,
+                      "agent": 4
+                    },
+                    "top_capabilities": {
+                      "verify-vendor-compliance": 2,
+                      "manage-supplier-orders": 1,
+                      "update-purchase-orders": 1,
+                      "coordinate-vendor-schedules": 1,
+                      "validate-vendor-material": 1,
+                      "process-invoice": 1,
+                      "verify-material-specification": 1,
+                      "audit-procurement-compliance": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:PurchaseOrder:v1",
+                        "sap.odm:entityType:Vendor:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "business_groups": [
+                        "proc_procure_fulfill_v1",
+                        "proc_QualityDrivenMfgSupplyChain_v1",
+                        "proc_supply_production_compliance_v1"
+                      ],
+                      "lines_of_business": [
+                        "Procurement",
+                        "Operations"
+                      ],
+                      "reason": "Activity tracks incoming shipments from suppliers, which involves purchase orders, vendor relationships, and inbound supply chain operations."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:Material:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_QualityDrivenMfgSupplyChain_v1\",\n    \"proc_supply_production_compliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Operations\"\n  ],\n  \"reason\": \"Activity tracks incoming shipments from suppliers, which involves purchase orders, vendor relationships, and inbound supply chain operations.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requires **retrieving a list of incoming shipments with status, timestamps, and supplier information** \u2014 this is a data retrieval operation on inbound logistics/supply chain master data.\n\n1. **sap.s4:agent:BOMComplianceAutomationAgent:v1** (Agent) - Best match. While labeled an agent, its capabilities include validating materials and supplier certifications, making it suitable for retrieving and verifying shipment data against compliance rules and supplier information.\n\n2. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** (Agent) - Strong secondary. Explicitly handles material provisioning workflows and tracks change status with timestamps; can retrieve provisioned material status from suppliers.\n\n3. **sap.s4:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1** (Data Product) - Relevant analytical read covering material availability and supplier data evaluation, though broader than pure shipment retrieval.\n\n4. **my.mes:agent:ProductionChangeOrchestrator:v1** (Agent) - Handles material flow coordination and can orchestrate retrieval of material updates with status information across supply chain.\n\nThe other candidates (workforce readiness, asset provisioning, safety compliance, asset lifecycle) are misaligned with shipment retrieval requirements.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+                      "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1",
+                      "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+                      "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                      "sap.ariba:dataProduct:ProductionQualityMetrics:v1"
+                    ],
+                    "tokens": 4088,
+                    "latency_s": 7.142,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 3
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2080,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                    "confidence": 0.85
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Create log entries for each incoming shipment with tracking details and warehouse receipt confirmation",
+              "trace": {
+                "tokens": 44826,
+                "latency_s": 18.388,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 28,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 719,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.s4",
+                      "entity_types": [
+                        "sap.odm:entityType:PurchaseOrder:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "action_verb": "validate",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29278,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8542,
+                    "latency_s": 9.830807209014893,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+                        },
+                        "n_results": 21
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 79
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.ariba": 5,
+                      "corp.itsm": 4,
+                      "my.mes": 3,
+                      "sap.ehs": 3,
+                      "sap.s4": 2,
+                      "emarsys.cx": 2,
+                      "sap.crm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Vendor:v1": 14,
+                      "sap.odm:entityType:PurchaseOrder:v1": 13,
+                      "sap.odm:entityType:Contract:v1": 8,
+                      "sap.odm:entityType:HazardousSubstance:v1": 3,
+                      "sap.odm:entityType:Material:v1": 3,
+                      "sap.odm:entityType:Invoice:v1": 2,
+                      "sap.odm:entityType:Incident:v1": 1,
+                      "sap.odm:entityType:SafetyIncident:v1": 1,
+                      "sap.odm:entityType:CustomerAccount:v1": 1,
+                      "sap.odm:entityType:CustomerOrder:v1": 1
+                    },
+                    "resource_types": {
+                      "agent": 6,
+                      "dataProduct": 5,
+                      "apiResource": 9
+                    },
+                    "top_capabilities": {
+                      "verify-vendor-compliance": 2,
+                      "validate-order": 1,
+                      "track-fulfillment": 1,
+                      "retrieve-customer-account": 1,
+                      "validate-material": 1,
+                      "validate-material-impact": 1,
+                      "receive-materials": 1,
+                      "verify-compliance": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:PurchaseOrder:v1",
+                        "sap.odm:entityType:Material:v1",
+                        "sap.odm:entityType:QualityInspection:v1"
+                      ],
+                      "business_groups": [
+                        "proc_procure_fulfill_v1",
+                        "proc_QualityDrivenMfgSupplyChain_v1"
+                      ],
+                      "lines_of_business": [
+                        "Procurement",
+                        "Inventory Management"
+                      ],
+                      "reason": "Incoming shipment logging with tracking and warehouse receipt relates to purchase orders, materials, inbound quality checks, and core procurement-to-fulfillment and supply chain processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:QualityInspection:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_QualityDrivenMfgSupplyChain_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Inventory Management\"\n  ],\n  \"reason\": \"Incoming shipment logging with tracking and warehouse receipt relates to purchase orders, materials, inbound quality checks, and core procurement-to-fulfillment and supply chain processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity requires **creating log entries for incoming shipments with tracking details and warehouse receipt confirmation** \u2014 this is fundamentally a **logging/recording operation** tied to warehouse inbound processes.\n\n1. **ProductionChangeOrchestrator** (Agent) - Best match. Coordinates material flow, manages material updates, and orchestrates production execution across systems, making it suitable for documenting and coordinating shipment receipt workflows.\n\n2. **AssetProvisioningOrchestrator** (Agent) - Strong match. Explicitly handles material allocation and coordinate-infrastructure capabilities, directly applicable to warehouse receipt and asset tracking.\n\n3. **EngineeringChangeAndMaterialProvisioning** (Agent) - Relevant for tracking material provisioning lifecycle, though more focused on engineering changes than pure inbound logistics.\n\n4. **BOMComplianceAutomationAgent** (Agent) - Validates material specifications and documentation, useful for compliance logging of incoming items.\n\n5. **SafetyComplianceAutomationCoordinator** (Agent) - Relevant for material safety validation at receipt, supporting compliance documentation.\n\n6. **AssetLifecycleChangeOrchestrator** (Agent) - Tracks lifecycle from inception through implementation, providing workflow orchestration for state changes.\n\n7-8. **DataProducts** ranked lower as this is an operational task (logging/recording) rather than analytical reads.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "my.mes:agent:SupplierQualityComplianceOrchestrator:v1",
+                      "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                      "sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1",
+                      "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+                      "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1"
+                    ],
+                    "tokens": 4201,
+                    "latency_s": 8.557,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 8
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2086,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 996,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+              "my.mes:apiResource:SupplierProcurementOrderManagement:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Track modifications we're making to our product line",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeProductDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 90968,
+          "latency_s": 28.038,
+          "llm_calls": 19,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 473,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Track modifications we're making to our product line"
+            ],
+            "original_prompt": "Track modifications we're making to our product line",
+            "sub_queries_redecomposed": [
+              "What modifications are being made to our product line?",
+              "Who is making these modifications and when are they being implemented?"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "What modifications are being made to our product line?",
+              "trace": {
+                "tokens": 44728,
+                "latency_s": 14.447,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 26,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 716,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.s4",
+                      "entity_types": [
+                        "sap.odm:entityType:ProductItem:v1",
+                        "sap.odm:entityType:EngineeringChange:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29274,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8535,
+                    "latency_s": 5.375523805618286,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ProductItem:v1"
+                        },
+                        "n_results": 40
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:EngineeringChange:v1"
+                        },
+                        "n_results": 40
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:ChangeAutomationOrchestrator:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 40
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 5,
+                      "my.mes": 4,
+                      "emarsys.cx": 3,
+                      "sap.ariba": 3,
+                      "sap.crm": 3,
+                      "sap.s4": 2
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:EngineeringChange:v1": 20,
+                      "sap.odm:entityType:ProductItem:v1": 20,
+                      "sap.odm:entityType:Material:v1": 15
+                    },
+                    "resource_types": {
+                      "agent": 9,
+                      "dataProduct": 6,
+                      "apiResource": 5
+                    },
+                    "top_capabilities": {
+                      "assess-workforce-readiness": 1,
+                      "forecast-workforce-impact": 1,
+                      "analyze-change-readiness": 1,
+                      "identify-training-needs": 1,
+                      "assess-engineering-change": 1,
+                      "evaluate-material-impact": 1,
+                      "allocate-materials": 1,
+                      "coordinate-infrastructure": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:ProductItem:v1",
+                        "sap.odm:entityType:EngineeringChange:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "business_groups": [
+                        "proc_ProductLifecycleCompliance_v1",
+                        "proc_EngChangeAndProcurement_v1",
+                        "proc_ManufacturingChangeCompliance_v1"
+                      ],
+                      "lines_of_business": [
+                        "Product Lifecycle Management",
+                        "Manufacturing"
+                      ],
+                      "reason": "Product line modifications involve engineering changes to product items and materials, governed by product lifecycle and manufacturing change compliance processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:Material:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_ProductLifecycleCompliance_v1\",\n    \"proc_EngChangeAndProcurement_v1\",\n    \"proc_ManufacturingChangeCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Product Lifecycle Management\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Product line modifications involve engineering changes to product items and materials, governed by product lifecycle and manufacturing change compliance processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "siemens.plm:agent:BOMComplianceValidator:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:BOMComplianceValidator:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\"\n]\n```\n\n**Rationale:**\n\n1. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** - Best match. Directly handles engineering changes, material provisioning, BOM updates, and product configuration modifications across the supply chain.\n\n2. **my.mes:agent:ProductionChangeOrchestrator:v1** - Highly relevant. Orchestrates engineering changes and material updates in production, managing the implementation of product line modifications.\n\n3. **sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1** - Strong analytical view of product modifications and operational impact assessment.\n\n4. **sap.s4:agent:BOMComplianceAutomationAgent:v1** - Essential for validating product line changes against compliance and engineering standards.\n\n5. **siemens.plm:agent:BOMComplianceValidator:v1** - Complements BOM compliance verification for product modifications.\n\n6. **sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1** - Provides impact analysis of product line changes on operations.\n\n7. **siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1** - Relevant for understanding cost implications of product modifications.\n\n8. **corp.itsm:agent:AssetProvisioningOrchestrator:v1** - Less directly relevant but handles coordination of assets needed for production transitions.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+                      "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+                      "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+                      "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+                      "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1"
+                    ],
+                    "tokens": 4103,
+                    "latency_s": 9.071,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 6
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2100,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.s4:apiResource:EngineeringChangeProductDataAPI:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Who is making these modifications and when are they being implemented?",
+              "trace": {
+                "tokens": 44779,
+                "latency_s": 13.591,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 28,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 714,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "corp.itsm",
+                      "entity_types": [
+                        "sap.odm:entityType:ChangeRequest:v1",
+                        "sap.odm:entityType:Employee:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "agent"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29276,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8522,
+                    "latency_s": 5.273397922515869,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Employee:v1"
+                        },
+                        "n_results": 44
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 68
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 7,
+                      "my.mes": 5,
+                      "sap.s4": 3,
+                      "sap.crm": 2,
+                      "sap.ariba": 1,
+                      "workday.hcm": 1,
+                      "emarsys.cx": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:EngineeringChange:v1": 10,
+                      "sap.odm:entityType:ProductItem:v1": 10,
+                      "sap.odm:entityType:ChangeRequest:v1": 10,
+                      "sap.odm:entityType:ServiceTicket:v1": 10,
+                      "sap.odm:entityType:ITEquipment:v1": 10,
+                      "sap.odm:entityType:Material:v1": 7
+                    },
+                    "resource_types": {
+                      "agent": 8,
+                      "apiResource": 9,
+                      "dataProduct": 3
+                    },
+                    "top_capabilities": {
+                      "track-implementation-tasks": 1,
+                      "track-equipment-issues": 1,
+                      "create-change-request-tickets": 1,
+                      "log-change-requests": 1,
+                      "ingest-service-tickets": 1,
+                      "manage-approval-workflows": 1,
+                      "schedule-maintenance": 1,
+                      "request-protective-upgrades": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:ChangeRequest:v1",
+                        "sap.odm:entityType:Employee:v1",
+                        "sap.odm:entityType:EngineeringChange:v1"
+                      ],
+                      "business_groups": [
+                        "proc_EngChangeAndProcurement_v1",
+                        "proc_integrated_service_change_mgmt_v1"
+                      ],
+                      "lines_of_business": [
+                        "Operations",
+                        "Product Lifecycle Management"
+                      ],
+                      "reason": "The activity queries who (Employee) is implementing modifications (ChangeRequest/EngineeringChange) and when (timeline/implementation date), core to change management and engineering processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ChangeRequest:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_EngChangeAndProcurement_v1\",\n    \"proc_integrated_service_change_mgmt_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Operations\",\n    \"Product Lifecycle Management\"\n  ],\n  \"reason\": \"The activity queries who (Employee) is implementing modifications (ChangeRequest/EngineeringChange) and when (timeline/implementation date), core to change management and engineering processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                      "siemens.plm:agent:BOMComplianceValidator:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"siemens.plm:agent:BOMComplianceValidator:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity asks \"Who is making modifications and when are they being implemented?\" \u2014 this requires tracking **who** (actors/agents executing changes) and **when** (implementation timing/scheduling).\n\n1. **EngineeringChangeAndMaterialProvisioning** (top) \u2014 Directly tracks change status, coordinates execution, and manages provisioning workflows with clear \"who\" (engineering teams) and \"when\" (change orders trigger workflows).\n\n2. **ProductionChangeOrchestrator** \u2014 Explicitly orchestrates implementation timing via scheduling and sequencing, tracks who (operations, production planners) executes changes.\n\n3. **EngineeringChangeImpactAndWorkforceReadiness** \u2014 Addresses the \"who\" dimension by identifying workforce responsible for implementation and validates readiness \"when\" changes deploy.\n\n4. **AssetProvisioningOrchestrator** \u2014 Orchestrates asset allocation tied to change schedules, clarifying implementation timing and responsible teams.\n\n5. **ProductChangeImpactAndMaterialAnalytics** \u2014 Analytical view of operational readiness and go/no-go decisions affecting implementation timing.\n\n6-8. Compliance and validation agents support but don't directly answer the \"who/when\" question.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                      "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                      "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+                      "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+                      "sap.crm:agent:SalesProductChangeCoordinator:v1"
+                    ],
+                    "tokens": 4088,
+                    "latency_s": 8.318,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 8
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2179,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 988,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.s4:apiResource:EngineeringChangeProductDataAPI:v1",
+              "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Enable field technicians to submit equipment maintenance needs through an integrated workflow",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 91863,
+          "latency_s": 27.538,
+          "llm_calls": 20,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 523,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Enable field technicians to submit equipment maintenance needs through an integrated workflow"
+            ],
+            "original_prompt": "Enable field technicians to submit equipment maintenance needs through an integrated workflow",
+            "sub_queries_redecomposed": [
+              "Create a digital submission form for field technicians to report equipment maintenance needs with fields for equipment ID, issue description, location, and urgency level",
+              "Build an automated workflow system that routes submitted maintenance requests to appropriate departments, tracks approval status, and sends notifications to field technicians"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Create a digital submission form for field technicians to report equipment maintenance needs with fields for equipment ID, issue description, location, and urgency level",
+              "trace": {
+                "tokens": 45142,
+                "latency_s": 14.116,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 27,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 735,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "corp.itsm",
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:ITEquipment:v1"
+                      ],
+                      "action_verb": "orchestrate",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29291,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8666,
+                    "latency_s": 6.3450164794921875,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ITEquipment:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 48
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "my.mes": 7,
+                      "corp.itsm": 5,
+                      "emarsys.cx": 3,
+                      "sap.ehs": 2,
+                      "sap.s4": 2,
+                      "sap.sf": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:ChangeRequest:v1": 10,
+                      "sap.odm:entityType:ITEquipment:v1": 10,
+                      "sap.odm:entityType:ServiceTicket:v1": 10,
+                      "sap.odm:entityType:Incident:v1": 10,
+                      "sap.odm:entityType:SafetyIncident:v1": 10,
+                      "sap.odm:entityType:HazardousSubstance:v1": 4
+                    },
+                    "resource_types": {
+                      "apiResource": 6,
+                      "dataProduct": 10,
+                      "agent": 4
+                    },
+                    "top_capabilities": {
+                      "track-safety-metrics": 2,
+                      "track-implementation-tasks": 1,
+                      "track-equipment-issues": 1,
+                      "create-change-request-tickets": 1,
+                      "log-change-requests": 1,
+                      "ingest-service-tickets": 1,
+                      "manage-approval-workflows": 1,
+                      "schedule-maintenance": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Machine:v1",
+                        "sap.odm:entityType:ServiceTicket:v1",
+                        "sap.odm:entityType:Employee:v1",
+                        "sap.odm:entityType:ChangeRequest:v1"
+                      ],
+                      "business_groups": [
+                        "proc_integrated_service_change_mgmt_v1",
+                        "proc_ServiceToProduction_v1",
+                        "proc_ManufacturingChangeCompliance_v1"
+                      ],
+                      "lines_of_business": [
+                        "Manufacturing",
+                        "IT Service Management"
+                      ],
+                      "reason": "Equipment maintenance submission by field technicians creates service tickets for machines, tracked through change management and service processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_integrated_service_change_mgmt_v1\",\n    \"proc_ServiceToProduction_v1\",\n    \"proc_ManufacturingChangeCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"IT Service Management\"\n  ],\n  \"reason\": \"Equipment maintenance submission by field technicians creates service tickets for machines, tracked through change management and service processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"my.mes:apiResource:ServiceTicketChangeRequestManagement:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\"\n]\n```\n\n**Rationale:**\n\n1. **ServiceTicketChangeRequestManagement API (ranked 1st)** - Perfect match. This is explicitly designed for creating and managing service tickets for equipment issues with tracking capabilities. The activity requires a form to report maintenance needs, which maps directly to service ticket creation and ingest capabilities.\n\n2. **AssetProvisioningOrchestrator Agent (ranked 2nd)** - Strong match. Handles equipment allocation and asset management, directly relevant to technicians reporting equipment maintenance needs and provisioning workflows.\n\n3. **AssetLifecycleChangeOrchestrator Agent (ranked 3rd)** - Good match. Manages asset lifecycle and change workflows with cross-functional coordination, applicable to maintenance request tracking and coordination.\n\n4. **ProductionChangeOrchestrator Agent (ranked 4th)** - Relevant for orchestrating equipment-related changes and material/work order synchronization on the production floor.\n\n5. **EngineeringChangeAndMaterialProvisioning Agent (ranked 5th)** - Addresses component replacements and material provisioning triggered by equipment failures.\n\nThe dataProducts are ranked lower as this activity is primarily about form creation and ticket ingestion (operational CRUD), not analytical insights.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                      "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                      "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+                      "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+                      "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1"
+                    ],
+                    "tokens": 4194,
+                    "latency_s": 7.771,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 7
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2256,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Build an automated workflow system that routes submitted maintenance requests to appropriate departments, tracks approval status, and sends notifications to field technicians",
+              "trace": {
+                "tokens": 45202,
+                "latency_s": 13.422,
+                "llm_calls": 9,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 28,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 730,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "corp.itsm",
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:ChangeRequest:v1"
+                      ],
+                      "action_verb": "orchestrate",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29288,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8767,
+                    "latency_s": 5.647261142730713,
+                    "llm_calls": 5,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "integration_dependencies",
+                        "input": {
+                          "namespace": "corp.itsm"
+                        },
+                        "n_results": 0
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:IncidentSafetyCoordinator:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 48
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 8,
+                      "my.mes": 6,
+                      "emarsys.cx": 4,
+                      "sap.sf": 1,
+                      "workday.hcm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Incident:v1": 11,
+                      "sap.odm:entityType:SafetyIncident:v1": 11,
+                      "sap.odm:entityType:ChangeRequest:v1": 6,
+                      "sap.odm:entityType:ServiceTicket:v1": 6,
+                      "sap.odm:entityType:ITEquipment:v1": 6,
+                      "sap.odm:entityType:HazardousSubstance:v1": 5,
+                      "sap.odm:entityType:Material:v1": 3,
+                      "sap.odm:entityType:EngineeringChange:v1": 2,
+                      "sap.odm:entityType:ProductItem:v1": 2,
+                      "sap.odm:entityType:Vendor:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 5,
+                      "agent": 8,
+                      "dataProduct": 7
+                    },
+                    "top_capabilities": {
+                      "track-safety-metrics": 2,
+                      "track-implementation-tasks": 1,
+                      "track-equipment-issues": 1,
+                      "create-change-request-tickets": 1,
+                      "log-change-requests": 1,
+                      "ingest-service-tickets": 1,
+                      "manage-approval-workflows": 1,
+                      "schedule-maintenance": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:ServiceTicket:v1",
+                        "sap.odm:entityType:ChangeRequest:v1",
+                        "sap.odm:entityType:Employee:v1",
+                        "sap.odm:entityType:Machine:v1"
+                      ],
+                      "business_groups": [
+                        "proc_integrated_service_change_mgmt_v1",
+                        "proc_ServiceToProduction_v1"
+                      ],
+                      "lines_of_business": [
+                        "IT Service Management",
+                        "Manufacturing"
+                      ],
+                      "reason": "Maintenance request routing, approval tracking, and technician notifications map to service ticket and change request management across IT and manufacturing operations."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Machine:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_integrated_service_change_mgmt_v1\",\n    \"proc_ServiceToProduction_v1\"\n  ],\n  \"lines_of_business\": [\n    \"IT Service Management\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Maintenance request routing, approval tracking, and technician notifications map to service ticket and change request management across IT and manufacturing operations.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\"\n]\n```\n\n**Rationale:**\n\n1. **AssetLifecycleChangeOrchestrator** (primary) - Best match: explicitly handles \"coordinate-change-workflow\", \"manage-change-approvals\", and \"track-change-lifecycle\" - the core workflow routing, approval tracking, and orchestration the activity requires.\n\n2. **ProductionChangeOrchestrator** - Strong agent for orchestrating cross-functional changes with material and work order sequencing capabilities.\n\n3. **AssetProvisioningOrchestrator** - Handles provisioning and coordination workflows, relevant for routing requests to appropriate departments and tracking resource allocation.\n\n4. **BOMComplianceAutomationAgent** - Automates validation workflows that support approval routing and compliance checks.\n\n5. **SafetyComplianceAutomationCoordinator** - Coordinates compliance workflows across departments, relevant to multi-step approval routing.\n\n6. **EngineeringChangeAndMaterialProvisioning** - Provides change tracking and provisioning coordination but less focused on general maintenance routing.\n\n7-8. **Data Products** - Lower priority since the activity requires workflow execution (agents) rather than analytical reads, but included as they support impact assessment for approval decisions.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                      "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                      "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+                      "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                      "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+                    ],
+                    "tokens": 4178,
+                    "latency_s": 7.775,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 8
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2239,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 996,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+              "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request requires three distinct, simultaneous workflows (incoming shipment logging, product line modifications, and field technician maintenance requests) that no single skill covers end-to-end as an integrated process.\"\n}\n```",
+      "reason": "The request requires three distinct, simultaneous workflows (incoming shipment logging, product line modifications, and field technician maintenance requests) that no single skill covers end-to-end as an integrated process.",
+      "tokens": 1663,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 275873,
+    "latency_s": 86.644,
+    "llm_calls": 60
+  },
+  "wall_s": 107.297
+}

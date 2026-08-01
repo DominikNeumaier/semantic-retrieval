@@ -1,0 +1,285 @@
+{
+  "case_id": "dy-05",
+  "user_prompt": "We need to track some updates we're making to meet regulatory requirements, including the equipment changes and related service work orders. Can you help us log this through the right system?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "C",
+  "state": "enriched",
+  "condition": "C1",
+  "skill_expected": null,
+  "skill_picked": "proc_007",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Log equipment changes in asset management system",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "score": 42.75
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": 41.75
+          },
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": 48.0
+          },
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": 46.5
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Machine:v1",
+              "sap.odm:entityType:ITEquipment:v1",
+              "sap.odm:entityType:ChangeRequest:v1"
+            ],
+            "business_groups": [
+              "proc_EngChangeAndProcurement_v1",
+              "proc_ManufacturingChangeCompliance_v1"
+            ],
+            "lines_of_business": [
+              "operations-and-asset-management",
+              "Manufacturing"
+            ],
+            "reason": "Logging equipment changes involves tracking Machine and IT Equipment entities through change management and asset lifecycle processes."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:ITEquipment:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_EngChangeAndProcurement_v1\",\n    \"proc_ManufacturingChangeCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"operations-and-asset-management\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Logging equipment changes involves tracking Machine and IT Equipment entities through change management and asset lifecycle processes.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "siemens.plm:apiResource:SupplierQualificationAndServiceManagement:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 3770,
+          "latency_s": 4.971,
+          "llm_calls": 2
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.ehs:apiResource:ComplianceChangeServiceIntegration:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Document regulatory requirement details and compliance mapping",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": 77.5
+          },
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": 76.0
+          },
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": 75.75
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Contract:v1",
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:ProductItem:v1",
+              "sap.odm:entityType:HazardousSubstance:v1"
+            ],
+            "business_groups": [
+              "proc_ProductComplianceManufacturing_v1",
+              "proc_SafetyComplianceOrchestration_v1",
+              "proc_ProcurementSafetyCompliance_v1"
+            ],
+            "lines_of_business": [
+              "Environment, Health & Safety",
+              "Manufacturing"
+            ],
+            "reason": "Regulatory compliance documentation maps to contracts, materials, products, and hazardous substances across compliance and safety-focused business processes."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Contract:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:HazardousSubstance:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_ProductComplianceManufacturing_v1\",\n    \"proc_SafetyComplianceOrchestration_v1\",\n    \"proc_ProcurementSafetyCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Environment, Health & Safety\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Regulatory compliance documentation maps to contracts, materials, products, and hazardous substances across compliance and safety-focused business processes.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+          ],
+          "tokens": 3680,
+          "latency_s": 5.729,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Link service work orders to specific regulatory requirements",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "score": 43.75
+          },
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": 43.75
+          },
+          {
+            "ordId": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "score": 41.5
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:ServiceTicket:v1",
+              "sap.odm:entityType:Contract:v1",
+              "sap.odm:entityType:ChangeRequest:v1"
+            ],
+            "business_groups": [
+              "proc_SafetyComplianceOrchestration_v1",
+              "proc_integrated_service_change_mgmt_v1",
+              "proc_ProcurementSafetyCompliance_v1"
+            ],
+            "lines_of_business": [
+              "IT Service Management",
+              "Health, Safety & Environment"
+            ],
+            "reason": "Service work orders are tracked as service tickets and must be linked to regulatory requirements through contracts and change management compliance processes."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:Contract:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_SafetyComplianceOrchestration_v1\",\n    \"proc_integrated_service_change_mgmt_v1\",\n    \"proc_ProcurementSafetyCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"IT Service Management\",\n    \"Health, Safety & Environment\"\n  ],\n  \"reason\": \"Service work orders are tracked as service tickets and must be linked to regulatory requirements through contracts and change management compliance processes.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+          ],
+          "tokens": 3744,
+          "latency_s": 4.404,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_007",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_007\",\n  \"reason\": \"This skill manages the end-to-end lifecycle of service and change requests from capture through implementation, which directly covers logging regulatory compliance updates including equipment changes and service work orders.\"\n}\n```",
+      "reason": "This skill manages the end-to-end lifecycle of service and change requests from capture through implementation, which directly covers logging regulatory compliance updates including equipment changes and service work orders.",
+      "tokens": 1654,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Log equipment changes in asset management system\",\n    \"Document regulatory requirement details and compliance mapping\",\n    \"Link service work orders to specific regulatory requirements\"\n  ],\n  \"reason\": \"The skill covers service and change request lifecycle management, approval workflows, and stakeholder communication, but lacks specific steps for regulatory compliance documentation, asset/equipment tracking integration, and explicit linkage between work orders and regulatory requirements needed for audit trails.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers service and change request lifecycle management, approval workflows, and stakeholder communication, but lacks specific steps for regulatory compliance documentation, asset/equipment tracking integration, and explicit linkage between work orders and regulatory requirements needed for",
+      "tokens": 437,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "We need to track some updates we're making to meet regulatory requirements, including the equipment changes and related service work orders. Can you help us log this through the right system?"
+      ],
+      "original_prompt": "We need to track some updates we're making to meet regulatory requirements, including the equipment changes and related service work orders. Can you help us log this through the right system?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 2,
+      "sub_queries": [
+        "Log equipment changes made to meet regulatory requirements in the appropriate tracking system",
+        "Log related service work orders for regulatory compliance tracking in the appropriate system"
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 13285,
+    "latency_s": 15.104,
+    "llm_calls": 8
+  },
+  "wall_s": 15.148
+}

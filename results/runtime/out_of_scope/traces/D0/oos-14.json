@@ -1,0 +1,516 @@
+{
+  "case_id": "oos-14",
+  "user_prompt": "Our procurement team needs a way to automatically extract and compare key commercial terms\u2014like payment terms, liability caps, and renewal dates\u2014across our existing vendor contracts so we can identify inconsistencies before we renew or consolidate suppliers, but our current contract management system only stores PDFs and doesn't surface this data.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "We need a solution to automatically extract key commercial terms (payment terms, liability caps, renewal dates) from PDF-based vendor contracts in our current contract management system",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:VendorContractJourneyCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Contract:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Contract Compliance Orchestrator",
+                  "shortDescription": "Automates vendor contract and purchase order compliance monitoring across procurement lifecycle."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                {
+                  "ordId": "emarsys.cx:agent:VendorContractJourneyCoordinator:v1",
+                  "type": "agent",
+                  "title": "Vendor Contract Journey Coordinator",
+                  "shortDescription": "Orchestrates vendor engagement journeys tied to contract and purchase order lifecycles."
+                },
+                "... (9 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1"
+              },
+              "result_preview": {
+                "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                "type": "agent",
+                "namespace": "corp.itsm",
+                "title": "Vendor Contract Compliance Orchestrator",
+                "shortDescription": "Automates vendor contract and purchase order compliance monitoring across procurement lifecycle.",
+                "description": "Monitors active vendor contracts and purchase orders to enforce compliance requirements, automates renewal notifications and expiration alerts, and coordinates cross-functional approvals for contract modifications. Processes contract performance metrics against vendor SLAs and escalates non-compliance issues to procurement teams for remediation.",
+                "entityTypes": [
+                  "sap.odm:entityType:Contract:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "vendor-management",
+                  "contract-compliance",
+                  "automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "corp.itsm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:VendorContractLifecycleOrchestrator:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:agent:VendorContractLifecycleOrchestrator:v1",
+                "type": "agent",
+                "namespace": "siemens.plm",
+                "title": "Vendor Contract Lifecycle Orchestrator",
+                "shortDescription": "Automates vendor engagement, contract negotiations, and purchase order workflows.",
+                "description": "Monitors vendor performance metrics and contract milestones to coordinate seamless procurement journeys. Automates contract lifecycle transitions, renewal triggers, and purchase order coordination across supplier networks. Processes vendor qualification events and manages compliance documentation workflows to optimize contract-to-order orchestration.",
+                "entityTypes": [
+                  "sap.odm:entityType:Contract:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "marketing-and-cx"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "vendor-management",
+                  "journey-orchestration",
+                  "contract-lifecycle"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.ariba",
+                "title": "Contract and Procurement Compliance Analytics",
+                "shortDescription": "Aggregates contract terms, purchase order execution, and vendor compliance metrics.",
+                "description": "Aggregates contract lifecycle data, purchase order fulfillment patterns, and vendor adherence to compliance standards to provide comprehensive procurement governance insights. Summarizes contract performance indicators, PO-to-contract alignment metrics, and vendor regulatory compliance status. Provides metrics on procurement risk exposure, contract utilization rates, and vendor compliance trends across sourcing initiatives.",
+                "entityTypes": [
+                  "sap.odm:entityType:Contract:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "contract-management",
+                  "compliance-monitoring",
+                  "vendor-governance"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                "reason": "Agent designed to automate vendor contract monitoring and enforce compliance requirements, capable of processing contract terms and automating key data extraction for procurement lifecycle management."
+              },
+              "result": {
+                "committed": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+          "picked_reason": "Agent designed to automate vendor contract monitoring and enforce compliance requirements, capable of processing contract terms and automating key data extraction for procurement lifecycle management.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 21435,
+          "latency_s": 14.129,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "We need a capability to compare extracted commercial terms across vendor contracts to identify inconsistencies for renewal and supplier consolidation decisions",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:VendorContractJourneyCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Contract:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Contract Compliance Orchestrator",
+                  "shortDescription": "Automates vendor contract and purchase order compliance monitoring across procurement lifecycle."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                {
+                  "ordId": "emarsys.cx:agent:VendorContractJourneyCoordinator:v1",
+                  "type": "agent",
+                  "title": "Vendor Contract Journey Coordinator",
+                  "shortDescription": "Orchestrates vendor engagement journeys tied to contract and purchase order lifecycles."
+                },
+                "... (9 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.ariba",
+                "title": "Contract and Procurement Compliance Analytics",
+                "shortDescription": "Aggregates contract terms, purchase order execution, and vendor compliance metrics.",
+                "description": "Aggregates contract lifecycle data, purchase order fulfillment patterns, and vendor adherence to compliance standards to provide comprehensive procurement governance insights. Summarizes contract performance indicators, PO-to-contract alignment metrics, and vendor regulatory compliance status. Provides metrics on procurement risk exposure, contract utilization rates, and vendor compliance trends across sourcing initiatives.",
+                "entityTypes": [
+                  "sap.odm:entityType:Contract:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "contract-management",
+                  "compliance-monitoring",
+                  "vendor-governance"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.ariba",
+                "title": "Vendor Performance and Segmentation Analytics",
+                "shortDescription": "Aggregates vendor metrics and segments customers by engagement and spend patterns.",
+                "description": "This data product aggregates vendor performance indicators, campaign effectiveness, and customer account metrics to provide comprehensive segmentation analytics. It summarizes key procurement campaign outcomes, customer account profitability, and segment-level performance trends. The product delivers actionable insights on vendor relationships, customer segmentation quality, and strategic sourcing opportunities aligned with procurement objectives.",
+                "entityTypes": [
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerSegment:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "vendor-analytics",
+                  "customer-segmentation",
+                  "sourcing-intelligence"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+                "reason": "Aggregates contract terms and compliance data across vendors, enabling comparison of commercial terms and identification of inconsistencies for renewal and consolidation decisions."
+              },
+              "result": {
+                "committed": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+          "picked_reason": "Aggregates contract terms and compliance data across vendors, enabling comparison of commercial terms and identification of inconsistencies for renewal and consolidation decisions.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 24515,
+          "latency_s": 13.333,
+          "llm_calls": 9
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request requires a specialized contract analysis and comparison capability (extracting and comparing commercial terms from PDFs) that is not covered by any of the registered skills, which focus on procurement workflows, product launches, engineering changes, and compliance\u2014not contract term extraction and comparison.\"\n}\n```",
+      "reason": "The request requires a specialized contract analysis and comparison capability (extracting and comparing commercial terms from PDFs) that is not covered by any of the registered skills, which focus on procurement workflows, product launches, engineering changes, and compliance\u2014not contract term extr",
+      "tokens": 1699,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 48029,
+    "latency_s": 27.462,
+    "llm_calls": 20
+  },
+  "wall_s": 27.481
+}

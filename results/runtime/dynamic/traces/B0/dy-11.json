@@ -1,0 +1,144 @@
+{
+  "case_id": "dy-11",
+  "user_prompt": "I need to submit a maintenance request for our server infrastructure and track its progress through approval. Can you help me get this logged in the system and see what the current status is?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": null,
+  "skill_picked": "proc_007",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Log maintenance request in the system",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\"],\n  \"reason\": \"Maintenance requests are IT Service Management operations, and corp.itsm is the dedicated ITSM namespace with ChangeRequest entity for tracking maintenance work.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Logging a maintenance request creates and stores a work record in the system, which is a transactional action requiring an agent or API write operation.\"\n}\n```",
+          "stage2_pool_size": 22,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ServiceTicket:v1",
+            "sap.odm:entityType:ChangeRequest:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:ServiceTicket:v1\", \"sap.odm:entityType:ChangeRequest:v1\"],\n  \"reason\": \"Logging a maintenance request primarily creates or updates a service ticket or change request record in the system.\"\n}\n```",
+          "stage3_pool_size": 3,
+          "stage4_raw": "```json\n[]\n```\n\nNone of the candidate resources are suitable matches for logging a maintenance request. The available resources focus on change request approvals, asset provisioning, and incident root cause analysis\u2014none of which directly support creating or logging maintenance requests. A proper maintenance request management capability (typically a maintenance work order or maintenance ticket system) is not present in the landscape.",
+          "stage4_valid_count": 0,
+          "refused": true,
+          "tokens": 2042,
+          "latency_s": 6.394,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Check current status of submitted request",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm",
+            "sap.ariba"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\", \"sap.ariba\"],\n  \"reason\": \"Checking request status typically involves IT service management (tickets/change requests) or procurement workflows (purchase orders), both of which are primary functions in these namespaces.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Checking request status is a read-only lookup that retrieves current state without driving execution or modifying data.\"\n}\n```",
+          "stage2_pool_size": 14,
+          "stage3_entity_types": [
+            "sap.odm:entityType:PurchaseOrder:v1",
+            "sap.odm:entityType:ServiceTicket:v1",
+            "sap.odm:entityType:ChangeRequest:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"reason\": \"Checking status of a submitted request typically applies to trackable business objects like purchase orders, service tickets, or change requests that have a defined lifecycle and status field.\"\n}\n```",
+          "stage3_pool_size": 5,
+          "stage4_raw": "```json\n[]\n```\n\nThe activity \"Check current status of submitted request\" requires a capability to retrieve the current status of a specific request (likely a service request, procurement request, or similar). All candidate resources are analytics/reporting data products that provide aggregated metrics and historical analysis, not transactional request status tracking or lookup capabilities. None of these resources directly support checking the status of an individual submitted request.",
+          "stage4_valid_count": 0,
+          "refused": true,
+          "tokens": 2249,
+          "latency_s": 9.221,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_007",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_007\",\n  \"reason\": \"proc_007 manages the complete lifecycle of service and change requests from initial capture through implementation coordination with approval workflows, which directly matches the user's need to submit a maintenance request and track its approval status.\"\n}\n```",
+      "reason": "proc_007 manages the complete lifecycle of service and change requests from initial capture through implementation coordination with approval workflows, which directly matches the user's need to submit a maintenance request and track its approval status.",
+      "tokens": 1661,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Log maintenance request in the system\",\n    \"Check current status of submitted request\"\n  ],\n  \"reason\": \"The skill covers the end-to-end lifecycle including approval workflows and stakeholder communication, but the step list is empty and does not include the specific operational actions needed: submitting/logging the maintenance request entry and retrieving its current status from the system.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers the end-to-end lifecycle including approval workflows and stakeholder communication, but the step list is empty and does not include the specific operational actions needed: submitting/logging the maintenance request entry and retrieving its current status from the system.",
+      "tokens": 428,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "I need to submit a maintenance request for our server infrastructure and track its progress through approval. Can you help me get this logged in the system and see what the current status is?"
+      ],
+      "original_prompt": "I need to submit a maintenance request for our server infrastructure and track its progress through approval. Can you help me get this logged in the system and see what the current status is?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 1,
+      "sub_queries": [
+        "I need to submit a maintenance request for our server infrastructure and track its progress through approval, including getting it logged in the system and checking the current status."
+      ],
+      "routed_ok": true,
+      "count_ok": true,
+      "verdict": "green"
+    }
+  },
+  "trace": {
+    "tokens": 6380,
+    "latency_s": 15.615,
+    "llm_calls": 10
+  },
+  "wall_s": 15.632
+}

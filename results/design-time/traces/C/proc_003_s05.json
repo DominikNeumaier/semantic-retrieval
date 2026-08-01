@@ -1,0 +1,86 @@
+{
+  "case_id": "proc_003_s05",
+  "process": "proc_003",
+  "label": "order to production process: Release production order to manufacturing \u2014 Translate customer order into production order and allocate machines and resources to begin manufacturing.",
+  "method": "C",
+  "expected_ordIds": [
+    "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+      "score": 72.25
+    },
+    {
+      "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+      "score": 71.5
+    },
+    {
+      "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+      "score": 71.5
+    },
+    {
+      "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+      "score": 75.25
+    },
+    {
+      "ordId": "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+      "score": 73.0
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "anchors": {
+      "entity_types": [
+        "sap.odm:entityType:CustomerOrder:v1",
+        "sap.odm:entityType:ProductionOrder:v1",
+        "sap.odm:entityType:Machine:v1",
+        "sap.odm:entityType:Material:v1"
+      ],
+      "business_groups": [
+        "proc_order_to_production_v1",
+        "proc_QualityDrivenMfgSupplyChain_v1",
+        "proc_order_compliance_fulfillment_v1"
+      ],
+      "lines_of_business": [
+        "Manufacturing",
+        "Manufacturing Execution"
+      ],
+      "reason": "This activity directly translates customer orders into production orders and allocates manufacturing resources, making it core to the order-to-production process and manufacturing execution."
+    },
+    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:Material:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_to_production_v1\",\n    \"proc_QualityDrivenMfgSupplyChain_v1\",\n    \"proc_order_compliance_fulfillment_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Manufacturing Execution\"\n  ],\n  \"reason\": \"This activity directly translates customer orders into production orders and allocates manufacturing resources, making it core to the order-to-production process and manufacturing execution.\"\n}\n```",
+    "max_hops": 2,
+    "hop_decay": 0.5,
+    "edge_weights": {
+      "co_exposes": 1.0,
+      "co_partOf": 2.0,
+      "calls": 3.0,
+      "processNext": 3.0
+    },
+    "scored_resources": 274,
+    "walk_top_ids": [
+      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+      "my.mes:agent:ProductionChangeOrchestrator:v1",
+      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+      "siemens.plm:agent:BOMComplianceValidator:v1",
+      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+    ],
+    "rerank_raw": "```json\n[\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\"\n]\n```\n\n**Rationale:**\n\n1. **ProductionChangeOrchestrator** (1st) - Best match. Directly addresses \"release production order to manufacturing\" with capabilities to sequence-work-orders, schedule-machines, coordinate-material-flow, and orchestrate-production-execution. Explicitly mentioned in use cases: \"Manufacturing execution system automates handoff between engineering changes and shop-floor implementation.\"\n\n2. **AssetProvisioningOrchestrator** (2nd) - Strong match for \"allocate machines and resources.\" Has allocate-equipment, orchestrate-asset-provisioning, and coordinate-equipment-assignment. Use case directly states: \"Operations manager confirms machines and production orders are allocated and ready for the new product run.\"\n\n3. **BOMComplianceAutomationAgent** (3rd) - Essential for translating customer order into production order. Validates materials and bill-of-materials compliance before manufacturing starts, ensuring specifications are correct for production release.\n\n4. **EngineeringChangeAndMaterialProvisioning** (4th) - Supports material allocation and provisioning workflows, though more focused on engineering changes than direct production order release.\n\n5. **ProductChangeImpactAndMaterialAnalytics** (5th) - Analytical capability to assess operational readiness and material availability before production transition, providing decision-support for the release process.",
+    "refused": false,
+    "previous_resolved": [],
+    "tokens": 4099,
+    "latency_s": 7.061,
+    "llm_calls": 2
+  },
+  "wall_s": 7.076
+}

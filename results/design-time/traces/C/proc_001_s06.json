@@ -1,0 +1,86 @@
+{
+  "case_id": "proc_001_s06",
+  "process": "proc_001",
+  "label": "ManufacturingChangeCompliance process: Coordinate Procurement and Supplier Adjustments \u2014 Update purchase orders and vendor commitments to align supplier delivery schedules and material specifications with the modified production plan.",
+  "method": "C",
+  "expected_ordIds": [
+    "my.mes:apiResource:SupplierProcurementOrderManagement:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+      "score": 75.75
+    },
+    {
+      "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+      "score": 76.0
+    },
+    {
+      "ordId": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+      "score": 71.0
+    },
+    {
+      "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+      "score": 72.0
+    },
+    {
+      "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+      "score": 71.0
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "anchors": {
+      "entity_types": [
+        "sap.odm:entityType:PurchaseOrder:v1",
+        "sap.odm:entityType:Vendor:v1",
+        "sap.odm:entityType:Material:v1",
+        "sap.odm:entityType:ProductionOrder:v1"
+      ],
+      "business_groups": [
+        "proc_ManufacturingChangeCompliance_v1",
+        "proc_EngChangeAndProcurement_v1",
+        "proc_supply_production_compliance_v1"
+      ],
+      "lines_of_business": [
+        "Manufacturing",
+        "Procurement"
+      ],
+      "reason": "Activity involves updating purchase orders and vendor commitments to align with production plan changes, directly touching procurement and manufacturing entities."
+    },
+    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_ManufacturingChangeCompliance_v1\",\n    \"proc_EngChangeAndProcurement_v1\",\n    \"proc_supply_production_compliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Procurement\"\n  ],\n  \"reason\": \"Activity involves updating purchase orders and vendor commitments to align with production plan changes, directly touching procurement and manufacturing entities.\"\n}\n```",
+    "max_hops": 2,
+    "hop_decay": 0.5,
+    "edge_weights": {
+      "co_exposes": 1.0,
+      "co_partOf": 2.0,
+      "calls": 3.0,
+      "processNext": 3.0
+    },
+    "scored_resources": 274,
+    "walk_top_ids": [
+      "my.mes:agent:ProductionChangeOrchestrator:v1",
+      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+      "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+    ],
+    "rerank_raw": "```json\n[\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\"\n]\n```\n\n**Rationale:**\n\n1. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** (Rank 1): Best match. Directly addresses procurement coordination through `coordinate-bom-updates`, `manage-material-provisioning`, and `synchronize-engineering-changes`. Use cases explicitly mention material requirements, supply chain feasibility evaluation, and dynamic provisioning workflows\u2014core to updating purchase orders and vendor commitments.\n\n2. **my.mes:agent:ProductionChangeOrchestrator:v1** (Rank 2): Strong match for the orchestration aspect. Provides `coordinate-material-flow`, `manage-material-updates`, and `orchestrate-production-change` capabilities. Aligns production plan with material updates, though slightly more production-focused than procurement-focused.\n\n3. **sap.s4:agent:AssetLifecycleChangeOrchestrator:v1** (Rank 3): Coordinates change workflows across bill-of-materials and supplier agreements. Manages change approvals and tracks lifecycle, supporting the compliance and coordination requirements.\n\n4. **corp.itsm:agent:AssetProvisioningOrchestrator:v1** (Rank 4): Relevant for material allocation and infrastructure coordination, though more asset-centric than supplier-contract focused.\n\n5. **sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1** (Rank 5): Validates compliance aspects of material changes, supporting the \"ManufacturingChangeCompliance\" context, though not directly procurement-focused.\n\nExcluded dataProducts: While analytical (not actionable for procurement updates), they provide insights rather than direct procurement coordination.",
+    "refused": false,
+    "previous_resolved": [],
+    "tokens": 4187,
+    "latency_s": 8.449,
+    "llm_calls": 2
+  },
+  "wall_s": 8.465
+}

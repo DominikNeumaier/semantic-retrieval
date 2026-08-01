@@ -1,0 +1,178 @@
+{
+  "case_id": "dy-37",
+  "user_prompt": "I need to pull current production schedules and equipment status to finalize our procurement forecast for next quarter, and simultaneously submit a maintenance request for our assembly line since we're seeing performance degradation that needs urgent attention from our service team.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull current production schedules and equipment status to help finalize our procurement forecast for next quarter",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "my.mes",
+            "sap.ariba"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"my.mes\", \"sap.ariba\"],\n  \"reason\": \"Production schedules and equipment status come from MES, while procurement forecasting and material planning require procurement and inventory management capabilities.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Pulling production schedules and equipment status for forecast analysis is a read-only data retrieval task that informs planning decisions without executing operational work.\"\n}\n```",
+          "stage2_pool_size": 16,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ProductionOrder:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:PurchaseOrder:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:ProductionOrder:v1\", \"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:PurchaseOrder:v1\"],\n  \"reason\": \"The activity reads production schedules and equipment status to inform procurement forecasting, which directly involves production orders, materials needed, and purchase order planning.\"\n}\n```",
+          "stage3_pool_size": 9,
+          "stage4_raw": "```json\n[\n  \"my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1\",\n  \"sap.ariba:dataProduct:ProcurementSpendAnalytics:v1\",\n  \"my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1\",\n  \"sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1\",\n  \"my.mes:dataProduct:ProductionOrderQualityMetrics:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2631,
+          "latency_s": 6.078,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+            "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Submit a maintenance request for our assembly line due to performance degradation that requires urgent attention from the service team",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "my.mes",
+            "corp.itsm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"my.mes\", \"corp.itsm\"],\n  \"reason\": \"Assembly line maintenance requests require manufacturing execution capabilities (my.mes) and IT service management/ticketing for the service team coordination (corp.itsm).\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Submitting a maintenance request is a direct action that creates a work order and notifies the service team, requiring operational execution rather than analytical inspection.\"\n}\n```",
+          "stage2_pool_size": 42,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ServiceTicket:v1",
+            "sap.odm:entityType:Machine:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:ServiceTicket:v1\", \"sap.odm:entityType:Machine:v1\"],\n  \"reason\": \"Submitting a maintenance request creates a service ticket for the assembly line machine experiencing performance issues.\"\n}\n```",
+          "stage3_pool_size": 9,
+          "stage4_raw": "```json\n[\n  \"my.mes:apiResource:EquipmentServiceAndChangeManagement:v1\",\n  \"my.mes:apiResource:EquipmentChangeAndServiceManagement:v1\",\n  \"my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1\",\n  \"my.mes:apiResource:EquipmentOEEAnalytics:v1\",\n  \"my.mes:agent:ProductionQualityMonitor:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2603,
+          "latency_s": 6.259,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request involves two distinct processes (procurement forecasting + maintenance request submission) that don't align with any single skill's end-to-end workflow; the maintenance component specifically requires proc_010, but that doesn't cover the procurement forecasting aspect, and no skill orchestrates both together.\"\n}\n```",
+      "reason": "The request involves two distinct processes (procurement forecasting + maintenance request submission) that don't align with any single skill's end-to-end workflow; the maintenance component specifically requires proc_010, but that doesn't cover the procurement forecasting aspect, and no skill orche",
+      "tokens": 1687,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 2,
+      "sub_queries": [
+        "Pull current production schedules and equipment status to finalize our procurement forecast for next quarter",
+        "Submit a maintenance request for our assembly line due to performance degradation that needs urgent attention from our service team"
+      ],
+      "routed_ok": true,
+      "count_ok": true,
+      "verdict": "green"
+    }
+  },
+  "trace": {
+    "tokens": 7190,
+    "latency_s": 12.337,
+    "llm_calls": 10
+  },
+  "wall_s": 12.357
+}

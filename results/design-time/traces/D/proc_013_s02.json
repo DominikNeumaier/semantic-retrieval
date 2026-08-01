@@ -1,0 +1,315 @@
+{
+  "case_id": "proc_013_s02",
+  "process": "proc_013",
+  "label": "ProductTransitionSafetyCoordination process: Evaluate Operational Capability for Transition \u2014 Analyze production capacity, material availability, and resource readiness to support the proposed product and material changes.",
+  "method": "D",
+  "expected_ordIds": [
+    "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+      "score": null
+    },
+    {
+      "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+      "score": null
+    },
+    {
+      "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+      "score": null
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "agent_steps": [
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_entity_types",
+        "args": {},
+        "result_preview": [
+          "sap.odm:entityType:Campaign:v1",
+          "sap.odm:entityType:ChangeRequest:v1",
+          "sap.odm:entityType:Compensation:v1",
+          "... (23 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_lines_of_business",
+        "args": {},
+        "result_preview": [
+          "ERP",
+          "Environment, Health & Safety",
+          "Environment, Health and Safety",
+          "... (44 more)"
+        ]
+      },
+      {
+        "step": 0,
+        "kind": "tool_call",
+        "name": "list_capabilities",
+        "args": {},
+        "result_preview": []
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_in_lob",
+        "args": {
+          "line_of_business": "Manufacturing"
+        },
+        "result_preview": [
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "type": "apiResource",
+            "title": "Material and Vendor Master Data API",
+            "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "type": "apiResource",
+            "title": "Vendor Material Invoice Management API",
+            "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "type": "apiResource",
+            "title": "Material and Vendor Procurement API",
+            "shortDescription": "Exposes material master data and vendor information for procurement operations."
+          },
+          "... (7 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "type": "apiResource",
+            "title": "Equipment OEE Analytics API",
+            "shortDescription": "REST API for real-time machine performance metrics and OEE calculations."
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "type": "agent",
+            "title": "Production Quality Monitor Agent",
+            "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+          },
+          {
+            "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+            "type": "dataProduct",
+            "title": "Production Order Quality Metrics",
+            "shortDescription": "Aggregated quality performance and defect rates per production order."
+          },
+          "... (20 more)"
+        ]
+      },
+      {
+        "step": 1,
+        "kind": "tool_call",
+        "name": "resources_exposing",
+        "args": {
+          "entity_type": "sap.odm:entityType:Material:v1"
+        },
+        "result_preview": [
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "type": "agent",
+            "title": "Asset Provisioning Orchestrator",
+            "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "type": "agent",
+            "title": "Change Automation Orchestrator",
+            "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "type": "agent",
+            "title": "Change Release Coordinator",
+            "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+          },
+          "... (55 more)"
+        ]
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+          "type": "apiResource",
+          "namespace": "sap.s4",
+          "title": "Production Order and Machine Scheduling API",
+          "shortDescription": "Retrieves and manages production orders and machine assignments for real-time scheduling.",
+          "description": "Exposes production order details and machine capacity information to enable dynamic scheduling and order execution. Provides access to machine availability, production order status, and scheduling constraints. Manages updates to order sequencing and machine allocations across manufacturing facilities.",
+          "entityTypes": [
+            "sap.odm:entityType:Machine:v1",
+            "sap.odm:entityType:ProductionOrder:v1"
+          ],
+          "lineOfBusiness": [
+            "Manufacturing"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "production-planning",
+            "machine-scheduling",
+            "order-execution"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "sap.s4:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.sf:apiResource:EmployeeProductivityAndCapacityPlanning:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.sf:apiResource:EmployeeProductivityAndCapacityPlanning:v1",
+          "type": "apiResource",
+          "namespace": "sap.sf",
+          "title": "Employee Productivity and Capacity Planning API",
+          "shortDescription": "Retrieves workforce capacity metrics and production scheduling data for resource optimization.",
+          "description": "Exposes employee productivity metrics and production order capacity data to enable workforce planning and resource allocation. Manages access to machine utilization rates correlated with employee shift assignments and production order requirements. Provides real-time capacity visibility across manufacturing and service operations through integrated workforce and production data.",
+          "entityTypes": [
+            "sap.odm:entityType:Machine:v1",
+            "sap.odm:entityType:ProductionOrder:v1"
+          ],
+          "lineOfBusiness": [
+            "Human Capital Management"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "workforce-planning",
+            "capacity-optimization",
+            "production-integration"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "sap.sf:package:Core:v1"
+        }
+      },
+      {
+        "step": 2,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "my.mes:agent:ProductionChangeOrchestrator:v1"
+        },
+        "result_preview": {
+          "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+          "type": "agent",
+          "namespace": "my.mes",
+          "title": "Production Change Orchestrator",
+          "shortDescription": "Automates and coordinates engineering changes across production materials and items.",
+          "description": "Orchestrates the propagation of engineering changes throughout the production environment by monitoring change requests, automating impact assessments on materials and product items, and coordinating synchronized updates across dependent production workflows. Processes change notifications to ensure manufacturing execution systems remain synchronized with engineering modifications while maintaining asset lifecycle integrity.",
+          "entityTypes": [
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductItem:v1"
+          ],
+          "lineOfBusiness": [
+            "it-service-management"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "asset-lifecycle",
+            "change-automation",
+            "provisioning-orchestration"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "my.mes:package:Core:v1"
+        }
+      },
+      {
+        "step": 3,
+        "kind": "tool_call",
+        "name": "get_resource",
+        "args": {
+          "ord_id": "sap.sf:apiResource:WorkforceProductionCapabilityManagement:v1"
+        },
+        "result_preview": {
+          "ordId": "sap.sf:apiResource:WorkforceProductionCapabilityManagement:v1",
+          "type": "apiResource",
+          "namespace": "sap.sf",
+          "title": "Workforce Production Capability Management API",
+          "shortDescription": "Exposes employee skill mapping and production order allocation capabilities.",
+          "description": "Retrieves and manages employee competency profiles aligned with production order requirements. Provides access to workforce capacity planning data by matching machine operation certifications and production scheduling needs. Manages employee-to-production-order assignments for optimized resource utilization.",
+          "entityTypes": [
+            "sap.odm:entityType:Machine:v1",
+            "sap.odm:entityType:ProductionOrder:v1"
+          ],
+          "lineOfBusiness": [
+            "Human Capital Management"
+          ],
+          "capabilities": [],
+          "useCases": [],
+          "tags": [
+            "workforce-planning",
+            "production-operations",
+            "skill-management"
+          ],
+          "partOfGroups": [],
+          "processNext": [],
+          "partOfPackage": "sap.sf:package:Core:v1"
+        }
+      },
+      {
+        "step": 4,
+        "kind": "tool_call",
+        "name": "pick_resource",
+        "args": {
+          "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+          "reason": "This API provides access to production orders and machine capacity information needed to evaluate production capacity and resource readiness for product transition safety coordination."
+        },
+        "result": {
+          "committed": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+        }
+      }
+    ],
+    "picked_ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+    "picked_reason": "This API provides access to production orders and machine capacity information needed to evaluate production capacity and resource readiness for product transition safety coordination.",
+    "refused": false,
+    "refuse_reason": "",
+    "tool_calls": 11,
+    "tokens": 33757,
+    "latency_s": 12.992,
+    "llm_calls": 11
+  },
+  "wall_s": 13.001
+}

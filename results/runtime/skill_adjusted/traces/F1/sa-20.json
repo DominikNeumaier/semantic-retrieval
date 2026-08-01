@@ -1,0 +1,608 @@
+{
+  "case_id": "sa-20",
+  "user_prompt": "We need to set up a comprehensive process to manage hazardous substance compliance and employee safety across our manufacturing operations. This should identify all hazardous materials in our facilities, assess which departments and teams face exposure risks, and procure necessary safety equipment and protective gear. We also need to ensure that safety protocols and equipment are distributed based on our organizational structure so that each manager can track compliance for their direct reports. Additionally, the system should coordinate with our procurement team to track where safety supplies are sourced from and maintain records of all purchase orders for audit purposes. Can you help us establish a workflow that brings all these elements together?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": "proc_004",
+  "skill_picked": "proc_004",
+  "expected_gaps": [
+    "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+    "sap.s4:apiResource:WorkforceOrgStructureAPI:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Distribute safety equipment and protocols based on organizational structure and manager hierarchy",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:OccupationalSafetyIncidentMonitoring:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:WorkforceOrgStructureAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:SafetyComplianceCampaignAndCustomerEngagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 16786,
+          "latency_s": 13.735,
+          "llm_calls": 11,
+          "use_graph": true,
+          "picked_ord_id": "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1",
+          "picked_reason": "This API directly exposes employee organizational structure and hierarchical relationships, with specific capabilities to map organizational units, validate hierarchies, manage workforce hierarchies, and assign employee safety training. It enables safety equipment and protocols distribution through the manager hierarchy by providing the organizational structure foundation required for distributing to employees based on their reporting relationships and manager hierarchy.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "distribute safety equipment protocols organizational structure manager hierarchy",
+                "top_k": 8
+              },
+              "result_summary": "8 items",
+              "result_ord_ids": [
+                "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1",
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "workday.hcm:agent:OccupationalSafetyIncidentMonitoring:v1",
+                "sap.s4:apiResource:WorkforceOrgStructureAPI:v1",
+                "sap.sf:apiResource:SafetyComplianceCampaignAndCustomerEngagement:v1",
+                "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+                "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "distribute-safety-equipment"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-safety-protocols"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "distribute-equipment"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-safety-distribution"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "graph_walk",
+              "args": {
+                "anchor_ord_ids": [
+                  "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1"
+                ],
+                "top_k": 8
+              },
+              "result_summary": "8 items",
+              "result_ord_ids": [
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "siemens.plm:agent:BOMComplianceValidator:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "safety equipment distribution",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "sap.ehs:apiResource:VendorSafetyComplianceOrders:v1",
+                "sap.ehs:apiResource:MaterialVendorHazardousSubstanceCompliance:v1",
+                "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "sap.ariba:apiResource:MaterialSafetyAndVendorComplianceData:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "allocate-equipment"
+              },
+              "result_summary": "1 items",
+              "result_ord_ids": [
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1",
+                "reason": "This API directly exposes employee organizational structure and hierarchical relationships, with specific capabilities to map organizational units, validate hierarchies, manage workforce hierarchies, and assign employee safety training. It enables safety equipment and protocols distribution through the manager hierarchy by providing the organizational structure foundation required for distributing to employees based on their reporting relationships and manager hierarchy."
+              },
+              "result": {
+                "committed": "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Track supplier sourcing and maintain procurement records for audit purposes",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ProductionQualityMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:VendorMaterialSafetyComplianceExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:MaterialAndVendorProcurementIntegration:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 17215,
+          "latency_s": 11.527,
+          "llm_calls": 12,
+          "use_graph": true,
+          "picked_ord_id": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+          "picked_reason": "This API directly supports tracking supplier sourcing and maintaining procurement records for audit purposes. It has the explicit capability 'audit-procurement-compliance', manages vendor invoices linked to materials and purchase orders, provides invoice-to-PO matching for audit trails, and integrates goods receipt workflows for tracking supplier deliveries. It exposes real-time access to vendor invoice records and material receipt confirmations essential for audit documentation.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "track supplier sourcing maintain procurement records audit",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+                "sap.ariba:dataProduct:ProductionQualityMetrics:v1",
+                "workday.hcm:apiResource:VendorMaterialSafetyComplianceExposure:v1",
+                "sap.sf:apiResource:MaterialAndVendorProcurementIntegration:v1",
+                "sap.s4:dataProduct:ProcurementMetricsHub:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-supplier-sourcing"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-procurement"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "track-procurement"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "maintain-records"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:ProductionQualityMetrics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "procurement audit records supplier sourcing documentation",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+                "workday.hcm:apiResource:VendorMaterialSafetyComplianceExposure:v1",
+                "sap.sf:apiResource:MaterialAndVendorProcurementIntegration:v1",
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "sap.ariba:dataProduct:ProductionQualityMetrics:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "track supplier sourcing maintain procurement records audit purposes",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+                "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+                "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+                "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                "reason": "This API directly supports tracking supplier sourcing and maintaining procurement records for audit purposes. It has the explicit capability 'audit-procurement-compliance', manages vendor invoices linked to materials and purchase orders, provides invoice-to-PO matching for audit trails, and integrates goods receipt workflows for tracking supplier deliveries. It exposes real-time access to vendor invoice records and material receipt confirmations essential for audit documentation."
+              },
+              "result": {
+                "committed": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Enable manager-level compliance tracking for direct reports",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:agent:OccupationalSafetyComplianceMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:EquipmentComplianceAndMaintenanceInsights:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 20990,
+          "latency_s": 13.586,
+          "llm_calls": 14,
+          "use_graph": true,
+          "picked_ord_id": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+          "picked_reason": "Directly manages and tracks employee compliance status (training records, certifications, compliance requirements) which enables manager-level monitoring of direct reports' compliance position. Exposes employee compliance data needed for manager oversight.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "manager-level compliance tracking direct reports",
+                "top_k": 8
+              },
+              "result_summary": "8 items",
+              "result_ord_ids": [
+                "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+                "sap.sf:agent:OccupationalSafetyComplianceMonitor:v1",
+                "sap.s4:dataProduct:EquipmentComplianceAndMaintenanceInsights:v1",
+                "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                "sap.ehs:agent:ComplianceCampaignOrchestrator:v1",
+                "emarsys.cx:dataProduct:SafetyIncidentComplianceAnalytics:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-compliance"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "track-compliance"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "manager oversight employee performance direct reports supervision",
+                "top_k": 8
+              },
+              "result_summary": "8 items",
+              "result_ord_ids": [
+                "workday.hcm:agent:PerformanceReviewCoordination:v1",
+                "sap.sf:dataProduct:WorkforceQualityAndProductionMetrics:v1",
+                "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                "workday.hcm:agent:PerformanceReviewOrchestrator:v1",
+                "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                "sap.sf:agent:PerformanceReviewCycleCoordinator:v1",
+                "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1",
+                "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-employee-performance"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "monitor-employee"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "compliance monitoring dashboard manager reporting employee tracking",
+                "top_k": 8
+              },
+              "result_summary": "8 items",
+              "result_ord_ids": [
+                "sap.sf:dataProduct:IncidentResolutionAndComplianceAnalytics:v1",
+                "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+                "sap.sf:agent:OccupationalSafetyComplianceMonitor:v1",
+                "sap.s4:dataProduct:EquipmentComplianceAndMaintenanceInsights:v1",
+                "sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1",
+                "sap.ariba:dataProduct:ProductionQualityMetrics:v1",
+                "sap.ehs:agent:ComplianceCampaignOrchestrator:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "monitor-compliance-status"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "track-employee-compliance"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "supervise-team-performance"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:PerformanceReviewCoordination:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:dataProduct:IncidentResolutionAndComplianceAnalytics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                "reason": "Directly manages and tracks employee compliance status (training records, certifications, compliance requirements) which enables manager-level monitoring of direct reports' compliance position. Exposes employee compliance data needed for manager oversight."
+              },
+              "result": {
+                "committed": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_004",
+      "skill_id_expected": "proc_004",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "gap steps injected from reference run"
+    }
+  },
+  "trace": {
+    "tokens": 54991,
+    "latency_s": 38.848,
+    "llm_calls": 37
+  },
+  "wall_s": 61.253
+}

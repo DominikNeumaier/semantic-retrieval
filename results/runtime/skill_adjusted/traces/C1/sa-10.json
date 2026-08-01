@@ -1,0 +1,360 @@
+{
+  "case_id": "sa-10",
+  "user_prompt": "We need to streamline our complete purchasing workflow to examine incoming client requests, evaluate buyer participation levels and regulatory standards, vet potential vendors, and give the green light for transaction completion with appropriate authorizations. As orders move through each phase, we also need to track their progression through various completion checkpoints and monitor delivery timelines. Additionally, include functionality to handle any customer grievances or billing disagreements that may arise during the transaction lifecycle, ensuring we can document claims and work through resolutions efficiently within our existing business platform.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "C",
+  "state": "enriched",
+  "condition": "C1",
+  "skill_expected": "proc_008",
+  "skill_picked": "proc_008",
+  "expected_gaps": [
+    "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+    "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track order progression through completion checkpoints",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": 44.25
+          },
+          {
+            "ordId": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "score": 43.5
+          },
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": 45.25
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:CustomerOrder:v1",
+              "sap.odm:entityType:ProductionOrder:v1",
+              "sap.odm:entityType:Invoice:v1"
+            ],
+            "business_groups": [
+              "proc_order_to_production_v1",
+              "proc_order_compliance_fulfillment_v1",
+              "proc_procure_fulfill_v1"
+            ],
+            "lines_of_business": [
+              "Sales and Order Management",
+              "Manufacturing"
+            ],
+            "reason": "Tracking order progression through completion checkpoints involves monitoring CustomerOrder status transitions from placement to fulfillment across sales, production, and invoicing stages."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:Invoice:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_to_production_v1\",\n    \"proc_order_compliance_fulfillment_v1\",\n    \"proc_procure_fulfill_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Sales and Order Management\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Tracking order progression through completion checkpoints involves monitoring CustomerOrder status transitions from placement to fulfillment across sales, production, and invoicing stages.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "siemens.plm:agent:BOMComplianceValidator:v1",
+            "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 3716,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Monitor delivery timelines",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": 54.25
+          },
+          {
+            "ordId": "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "score": 47.75
+          },
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": 49.25
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:CustomerOrder:v1",
+              "sap.odm:entityType:PurchaseOrder:v1",
+              "sap.odm:entityType:ProductionOrder:v1",
+              "sap.odm:entityType:Vendor:v1"
+            ],
+            "business_groups": [
+              "proc_order_to_production_v1",
+              "proc_procure_fulfill_v1",
+              "proc_order_compliance_fulfillment_v1"
+            ],
+            "lines_of_business": [
+              "Operations",
+              "Procurement"
+            ],
+            "reason": "Monitoring delivery timelines requires tracking orders, production schedules, and vendor performance across order fulfillment and procurement operations."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:Vendor:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_to_production_v1\",\n    \"proc_procure_fulfill_v1\",\n    \"proc_order_compliance_fulfillment_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Operations\",\n    \"Procurement\"\n  ],\n  \"reason\": \"Monitoring delivery timelines requires tracking orders, production schedules, and vendor performance across order fulfillment and procurement operations.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.s4:apiResource:MaterialReceiptInboundAPI:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1"
+          ],
+          "tokens": 3933,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Handle customer grievances or complaints",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:CustomerAccount:v1",
+              "sap.odm:entityType:ServiceTicket:v1",
+              "sap.odm:entityType:Incident:v1",
+              "sap.odm:entityType:Employee:v1"
+            ],
+            "business_groups": [
+              "proc_integrated_service_change_mgmt_v1",
+              "proc_order_compliance_fulfillment_v1"
+            ],
+            "lines_of_business": [
+              "customer-service",
+              "customer-experience-management"
+            ],
+            "reason": "Handling customer grievances involves tracking issues through service tickets or incidents linked to customer accounts, typically managed by service agents and support staff."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:Incident:v1\",\n    \"sap.odm:entityType:Employee:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_integrated_service_change_mgmt_v1\",\n    \"proc_order_compliance_fulfillment_v1\"\n  ],\n  \"lines_of_business\": [\n    \"customer-service\",\n    \"customer-experience-management\"\n  ],\n  \"reason\": \"Handling customer grievances involves tracking issues through service tickets or incidents linked to customer accounts, typically managed by service agents and support staff.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+            "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+            "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+            "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+            "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+            "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+            "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+            "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity \"Handle customer grievances or complaints\" requires a customer service/complaint management capability. None of the candidates directly address complaint handling, grievance resolution, or customer support operations. The candidates are focused on campaign management, compliance tracking, engagement optimization, and analytics\u2014none of which are designed to handle or resolve customer complaints.",
+          "refused": true,
+          "previous_resolved": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+          ],
+          "tokens": 2968,
+          "latency_s": 231.952,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Manage billing disagreements",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Invoice:v1",
+              "sap.odm:entityType:CustomerAccount:v1",
+              "sap.odm:entityType:ServiceTicket:v1"
+            ],
+            "business_groups": [
+              "proc_order_compliance_fulfillment_v1"
+            ],
+            "lines_of_business": [
+              "Finance",
+              "customer-service"
+            ],
+            "reason": "Billing disagreements involve invoices, customer accounts, and service resolution activities within order fulfillment and financial/customer service domains."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:ServiceTicket:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Finance\",\n    \"customer-service\"\n  ],\n  \"reason\": \"Billing disagreements involve invoices, customer accounts, and service resolution activities within order fulfillment and financial/customer service domains.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+            "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+            "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+            "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+            "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+            "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+            "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+            "sap.crm:agent:CampaignAudienceOptimizationAgent:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity \"Manage billing disagreements\" requires capabilities for handling disputes, resolving conflicts, processing refunds/credits, or managing financial reconciliation. None of the candidates\u2014which focus on campaign management, contact engagement, audience segmentation, and campaign access control\u2014provide the core billing dispute resolution functionality needed for this activity. This is a case of topical overlap (all are in the marketing/customer engagement domain) without meaningful functional match.",
+          "refused": true,
+          "previous_resolved": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+          ],
+          "tokens": 2830,
+          "latency_s": 4.381,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Document claims and resolutions",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+            "score": 42.0
+          },
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": 43.75
+          },
+          {
+            "ordId": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "score": 41.75
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Incident:v1",
+              "sap.odm:entityType:ServiceTicket:v1",
+              "sap.odm:entityType:Contract:v1"
+            ],
+            "business_groups": [
+              "proc_integrated_service_change_mgmt_v1",
+              "proc_order_compliance_fulfillment_v1"
+            ],
+            "lines_of_business": [
+              "IT Service Management",
+              "Operations"
+            ],
+            "reason": "Documenting claims and resolutions typically involves tracking incidents/service tickets through resolution workflows with compliance documentation."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Incident:v1\",\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:Contract:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_integrated_service_change_mgmt_v1\",\n    \"proc_order_compliance_fulfillment_v1\"\n  ],\n  \"lines_of_business\": [\n    \"IT Service Management\",\n    \"Operations\"\n  ],\n  \"reason\": \"Documenting claims and resolutions typically involves tracking incidents/service tickets through resolution workflows with compliance documentation.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "siemens.plm:apiResource:SupplierQualificationAndServiceManagement:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+          ],
+          "tokens": 3617,
+          "latency_s": 4.519,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_008",
+      "skill_id_expected": "proc_008",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track order progression through completion checkpoints\",\n    \"Monitor delivery timelines\",\n    \"Handle customer grievances or complaints\",\n    \"Manage billing disagreements\",\n    \"Document claims and resolutions\"\n  ],\n  \"reason\": \"The skill covers the core purchasing workflow (order validation, compliance assessment, vendor qualification, authorization) but explicitly lacks order tracking/monitoring capabilities and customer dispute/complaint resolution functionality that the request concretely names as required components.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers the core purchasing workflow (order validation, compliance assessment, vendor qualification, authorization) but explicitly lacks order tracking/monitoring capabilities and customer dispute/complaint resolution functionality that the request concretely names as required components.",
+      "tokens": 621,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 17685,
+    "latency_s": 240.852,
+    "llm_calls": 11
+  },
+  "wall_s": 240.99
+}

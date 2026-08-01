@@ -1,0 +1,1253 @@
+{
+  "case_id": "dy-30",
+  "user_prompt": "Can you pull up the current status of ticket #12847 and check who our top-performing sales representative is in the Northeast region so I can route this escalation appropriately, then also retrieve what products that employee is certified to sell?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull up the current status of ticket #12847",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:ProcurementOperationalMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 90557,
+          "latency_s": 21.99,
+          "llm_calls": 19,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 406,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Pull up the current status of ticket #12847"
+            ],
+            "original_prompt": "Pull up the current status of ticket #12847",
+            "sub_queries_redecomposed": [
+              "Retrieve ticket #12847 from the ticketing system",
+              "Get the current status field value for ticket #12847"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve ticket #12847 from the ticketing system",
+              "trace": {
+                "tokens": 44620,
+                "latency_s": 10.574,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 24,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 716,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "corp.itsm",
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:ChangeRequest:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29274,
+                    "latency_s": 0.486
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8595,
+                    "latency_s": 5.035420179367065,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 48
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 9,
+                      "my.mes": 4,
+                      "emarsys.cx": 3,
+                      "sap.ehs": 2,
+                      "sap.ariba": 1,
+                      "sap.sf": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Incident:v1": 10,
+                      "sap.odm:entityType:SafetyIncident:v1": 10,
+                      "sap.odm:entityType:ChangeRequest:v1": 9,
+                      "sap.odm:entityType:ITEquipment:v1": 9,
+                      "sap.odm:entityType:ServiceTicket:v1": 9,
+                      "sap.odm:entityType:HazardousSubstance:v1": 4,
+                      "sap.odm:entityType:CustomerAccount:v1": 1,
+                      "sap.odm:entityType:CustomerOrder:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 8,
+                      "agent": 5,
+                      "dataProduct": 7
+                    },
+                    "top_capabilities": {
+                      "track-service-tickets": 2,
+                      "track-safety-metrics": 2,
+                      "receive-log-orders": 1,
+                      "manage-customer-accounts": 1,
+                      "track-implementation-tasks": 1,
+                      "track-equipment-issues": 1,
+                      "create-change-request-tickets": 1,
+                      "log-change-requests": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:ServiceTicket:v1"
+                      ],
+                      "business_groups": [
+                        "proc_integrated_service_change_mgmt_v1"
+                      ],
+                      "lines_of_business": [
+                        "IT Service Management"
+                      ],
+                      "reason": "Retrieving a ticket from a ticketing system directly maps to the ServiceTicket entity type and IT Service Management business domain."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ServiceTicket:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_integrated_service_change_mgmt_v1\"\n  ],\n  \"lines_of_business\": [\n    \"IT Service Management\"\n  ],\n  \"reason\": \"Retrieving a ticket from a ticketing system directly maps to the ServiceTicket entity type and IT Service Management business domain.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1\",\n  \"my.mes:apiResource:EquipmentChangeAndServiceManagement:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity is \"Retrieve ticket #12847 from the ticketing system\" \u2014 a pure CRUD read operation on master data (a specific ticket).\n\n**Top match:** `siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1` \u2014 This API explicitly includes the `manage-service-tickets` capability and is designed for service request workflows, making it the most direct fit for ticket retrieval.\n\n**Secondary match:** `my.mes:apiResource:EquipmentChangeAndServiceManagement:v1` \u2014 Also an API resource with `monitor-service-tickets` capability, suitable for service ticket operations.\n\n**Tertiary matches:** The two agents are included as fallbacks because they have change/service coordination capabilities, though they're optimized for orchestration/automation rather than simple data retrieval.\n\nThe data products and other agents are deprioritized as they focus on analysis, compliance, workforce assessment, or material provisioning rather than ticket retrieval.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                      "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+                      "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                      "corp.itsm:dataProduct:ProcurementOperationalMetrics:v1",
+                      "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+                    ],
+                    "tokens": 3800,
+                    "latency_s": 5.539,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 4
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2235,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Get the current status field value for ticket #12847",
+              "trace": {
+                "tokens": 44611,
+                "latency_s": 11.416,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 28,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 715,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "corp.itsm",
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:ChangeRequest:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29275,
+                    "latency_s": 0.542
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8515,
+                    "latency_s": 5.51030969619751,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:IncidentEngagementReliability:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:ServiceHealthMetrics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 48
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 9,
+                      "my.mes": 4,
+                      "emarsys.cx": 3,
+                      "sap.ehs": 2,
+                      "sap.ariba": 1,
+                      "sap.sf": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Incident:v1": 10,
+                      "sap.odm:entityType:SafetyIncident:v1": 10,
+                      "sap.odm:entityType:ChangeRequest:v1": 9,
+                      "sap.odm:entityType:ServiceTicket:v1": 9,
+                      "sap.odm:entityType:ITEquipment:v1": 9,
+                      "sap.odm:entityType:HazardousSubstance:v1": 4,
+                      "sap.odm:entityType:CustomerAccount:v1": 1,
+                      "sap.odm:entityType:CustomerOrder:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 6,
+                      "dataProduct": 10,
+                      "agent": 4
+                    },
+                    "top_capabilities": {
+                      "track-safety-metrics": 2,
+                      "receive-log-orders": 1,
+                      "track-service-tickets": 1,
+                      "manage-customer-accounts": 1,
+                      "track-implementation-tasks": 1,
+                      "track-equipment-issues": 1,
+                      "create-change-request-tickets": 1,
+                      "log-change-requests": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:ServiceTicket:v1",
+                        "sap.odm:entityType:Incident:v1"
+                      ],
+                      "business_groups": [
+                        "proc_integrated_service_change_mgmt_v1"
+                      ],
+                      "lines_of_business": [
+                        "IT Service Management",
+                        "it-service-management"
+                      ],
+                      "reason": "Retrieving ticket status is a core service ticket/incident management activity."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:Incident:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_integrated_service_change_mgmt_v1\"\n  ],\n  \"lines_of_business\": [\n    \"IT Service Management\",\n    \"it-service-management\"\n  ],\n  \"reason\": \"Retrieving ticket status is a core service ticket/incident management activity.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "siemens.plm:agent:BOMComplianceValidator:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:BOMComplianceValidator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\"\n]\n```\n\n**Rationale:** The activity \"Get the current status field value for ticket #12847\" is a transactional read operation on a ticket/issue tracking system. The top-ranked Agent resources all have `track-change-status` or equivalent change-tracking capabilities and are designed to manage ticket/change workflows. The Asset Lifecycle Change Orchestrator is ranked first as it explicitly tracks change lifecycle status; Production Change Orchestrator follows with orchestration and tracking capabilities. Dataproducts are ranked lower as they are analytical/reporting tools rather than operational CRUD systems for ticket status retrieval.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                      "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                      "corp.itsm:dataProduct:ServiceHealthMetrics:v1",
+                      "corp.itsm:dataProduct:ProcurementOperationalMetrics:v1",
+                      "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+                    ],
+                    "tokens": 3890,
+                    "latency_s": 5.906,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 8
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2216,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 920,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+              "corp.itsm:agent:IncidentRootCauseAnalyzer:v1"
+            ],
+            "confidence": 0.85
+          }
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Identify the top-performing sales representative in the Northeast region",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:SalesTeamAvailabilityAndCapacityService:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:SalesProductChangeCoordinator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 90505,
+          "latency_s": 26.863,
+          "llm_calls": 19,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 477,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Identify the top-performing sales representative in the Northeast region"
+            ],
+            "original_prompt": "Identify the top-performing sales representative in the Northeast region",
+            "sub_queries_redecomposed": [
+              "Retrieve all sales representatives assigned to the Northeast region",
+              "Calculate total sales performance metrics for each sales representative"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve all sales representatives assigned to the Northeast region",
+              "trace": {
+                "tokens": 44637,
+                "latency_s": 14.13,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 713,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.crm",
+                      "entity_types": [
+                        "sap.odm:entityType:Employee:v1",
+                        "sap.odm:entityType:CustomerSegment:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29273,
+                    "latency_s": 0.57
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8745,
+                    "latency_s": 6.909795045852661,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Employee:v1"
+                        },
+                        "n_results": 44
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:CustomerSegment:v1"
+                        },
+                        "n_results": 11
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 55
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.crm": 7,
+                      "my.mes": 4,
+                      "sap.ehs": 3,
+                      "sap.sf": 2,
+                      "emarsys.cx": 1,
+                      "workday.hcm": 1,
+                      "corp.itsm": 1,
+                      "sap.ariba": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Employee:v1": 17,
+                      "sap.odm:entityType:TimeOff:v1": 6,
+                      "sap.odm:entityType:Compensation:v1": 6,
+                      "sap.odm:entityType:WorkforcePerson:v1": 4,
+                      "sap.odm:entityType:Material:v1": 2,
+                      "sap.odm:entityType:EngineeringChange:v1": 1,
+                      "sap.odm:entityType:ProductItem:v1": 1,
+                      "sap.odm:entityType:Vendor:v1": 1,
+                      "sap.odm:entityType:CustomerAccount:v1": 1,
+                      "sap.odm:entityType:CustomerOrder:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 11,
+                      "agent": 3,
+                      "dataProduct": 6
+                    },
+                    "top_capabilities": {
+                      "plan-sales-capacity": 1,
+                      "manage-time-off": 1,
+                      "block-availability": 1,
+                      "coordinate-employee-availability": 1,
+                      "schedule-capacity": 1,
+                      "manage-time-off-allocation": 1,
+                      "align-sales-capability": 1,
+                      "map-employee-hierarchy": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Employee:v1",
+                        "sap.odm:entityType:SalesOpportunity:v1"
+                      ],
+                      "business_groups": [
+                        "proc_order_compliance_fulfillment_v1"
+                      ],
+                      "lines_of_business": [
+                        "Sales",
+                        "Human Resources"
+                      ],
+                      "reason": "Activity retrieves sales representatives (Employee entity) assigned to a geographic region (Northeast), which relates to sales workforce management and organizational structure."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:SalesOpportunity:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Sales\",\n    \"Human Resources\"\n  ],\n  \"reason\": \"Activity retrieves sales representatives (Employee entity) assigned to a geographic region (Northeast), which relates to sales workforce management and organizational structure.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+                    ],
+                    "rerank_raw": "```json\n[]\n```\n\n**Analysis:**\n\nThe activity \"Retrieve all sales representatives assigned to the Northeast region\" requires a resource that can query or retrieve sales organization data (employees/representatives by region). \n\nReviewing the 8 candidates:\n- All are focused on **engineering changes, material provisioning, production orchestration, and compliance** \u2014 none handle sales organization or HR roster queries\n- The closest candidates are the dataProducts (which support analytical reads), but both focus on workforce **readiness for production transitions** rather than sales organization structure\n- No candidate has capabilities like \"retrieve-sales-representatives,\" \"query-organizational-hierarchy,\" \"filter-by-region,\" or similar HR/organizational lookup functions\n\n**However, per the instruction \"You MUST pick at least one \u2014 never return an empty array. If none is perfect, pick the closest match\":**\n\nThe best match is **sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1** because:\n1. It's a dataProduct (appropriate for analytical reads of structured data)\n2. It includes workforce/personnel data capabilities\n3. It would be the most likely to have access to organizational hierarchy and employee assignment data in an SAP S/4HANA system\n\n```json\n[\"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\"]\n```\n\n**Note:** This activity would ideally require an HR or CRM API/dataProduct specifically designed for organizational structure and sales team queries, which is absent from this candidate set.",
+                    "refused": true,
+                    "previous_resolved": [
+                      "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                      "sap.crm:apiResource:SalesTeamAvailabilityAndCapacityService:v1",
+                      "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                      "sap.crm:agent:SalesProductChangeCoordinator:v1",
+                      "sap.crm:agent:VendorMaterialProcurementCoordinator:v1"
+                    ],
+                    "tokens": 3967,
+                    "latency_s": 7.22,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 0
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1939,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Calculate total sales performance metrics for each sales representative",
+              "trace": {
+                "tokens": 44315,
+                "latency_s": 12.733,
+                "llm_calls": 8,
+                "confidence": 0.95,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 22,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 711,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.crm",
+                      "entity_types": [
+                        "sap.odm:entityType:Employee:v1",
+                        "sap.odm:entityType:CustomerOrder:v1"
+                      ],
+                      "action_verb": "analyse",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29273,
+                    "latency_s": 0.473
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8485,
+                    "latency_s": 5.364943981170654,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Employee:v1"
+                        },
+                        "n_results": 44
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:CustomerOrder:v1"
+                        },
+                        "n_results": 15
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 59
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.crm": 7,
+                      "my.mes": 4,
+                      "emarsys.cx": 3,
+                      "sap.ariba": 2,
+                      "sap.sf": 2,
+                      "workday.hcm": 1,
+                      "corp.itsm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Employee:v1": 15,
+                      "sap.odm:entityType:Compensation:v1": 5,
+                      "sap.odm:entityType:TimeOff:v1": 5,
+                      "sap.odm:entityType:CustomerAccount:v1": 3,
+                      "sap.odm:entityType:SalesOpportunity:v1": 3,
+                      "sap.odm:entityType:PerformanceReview:v1": 3,
+                      "sap.odm:entityType:Material:v1": 2,
+                      "sap.odm:entityType:WorkforcePerson:v1": 2,
+                      "sap.odm:entityType:EngineeringChange:v1": 1,
+                      "sap.odm:entityType:ProductItem:v1": 1
+                    },
+                    "resource_types": {
+                      "dataProduct": 12,
+                      "apiResource": 7,
+                      "agent": 1
+                    },
+                    "top_capabilities": {
+                      "plan-sales-capacity": 1,
+                      "manage-time-off": 1,
+                      "block-availability": 1,
+                      "coordinate-employee-availability": 1,
+                      "schedule-capacity": 1,
+                      "manage-time-off-allocation": 1,
+                      "analyze-workforce-spend": 1,
+                      "align-vendor-compensation": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Employee:v1",
+                        "sap.odm:entityType:CustomerOrder:v1",
+                        "sap.odm:entityType:Invoice:v1",
+                        "sap.odm:entityType:SalesOpportunity:v1"
+                      ],
+                      "business_groups": [
+                        "proc_order_compliance_fulfillment_v1"
+                      ],
+                      "lines_of_business": [
+                        "Sales",
+                        "Sales and Customer Management"
+                      ],
+                      "reason": "Sales performance metrics calculation requires tracking employee (sales rep) performance against orders, invoices, and opportunities."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:CustomerOrder:v1\",\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:SalesOpportunity:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Sales\",\n    \"Sales and Customer Management\"\n  ],\n  \"reason\": \"Sales performance metrics calculation requires tracking employee (sales rep) performance against orders, invoices, and opportunities.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "siemens.plm:agent:BOMComplianceValidator:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity \"Calculate total sales performance metrics for each sales representative\" requires **analytical reads of aggregated data** to compute performance metrics by sales rep. This is clearly a **dataProduct use case**, not an agent orchestration or operational change management task.\n\nThe two dataProducts selected are the best matches:\n\n1. **EngineeringChangeImpactAndWorkforceReadiness** - While nominally about engineering changes, it explicitly includes analytical capabilities for evaluating organizational impact, readiness assessment, and cross-functional metrics that align with performance analysis needs.\n\n2. **ProductChangeImpactAndMaterialAnalytics** - Similarly positioned as an analytical platform combining multiple data sources to assess operational capability and readiness, which mirrors the aggregation and metric calculation required.\n\nThe six agent and operational orchestration candidates are **not relevant** because they focus on:\n- Managing engineering changes and material provisioning (operational workflows, not analytics)\n- Coordinating production activities (task execution, not reporting)\n- Validating compliance (validation logic, not performance metrics)\n\nNone of the candidates are ideal for sales performance analytics, but the two dataProducts are closest by virtue of being analytical resources designed to aggregate and evaluate cross-functional data for decision-making.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+                      "emarsys.cx:dataProduct:OpportunitySalesForecasting:v1",
+                      "sap.ariba:dataProduct:CustomerAndOpportunityInsights:v1",
+                      "sap.crm:dataProduct:SalesOpportunityPipelineAnalytics:v1",
+                      "sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1"
+                    ],
+                    "tokens": 3924,
+                    "latency_s": 7.368,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 2
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1922,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1",
+                    "confidence": 0.95
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 1076,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1",
+              "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Retrieve what products that top-performing Northeast sales representative is certified to sell",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:OpportunityEngagementOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:OpportunityEnrichmentOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:OpportunityQualificationAdvisor:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 89589,
+          "latency_s": 26.159,
+          "llm_calls": 18,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 301,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Identify the top-performing sales representative in the Northeast region",
+              "Retrieve the list of products that this sales representative is certified to sell"
+            ],
+            "original_prompt": "Retrieve what products that top-performing Northeast sales representative is certified to sell"
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Identify the top-performing sales representative in the Northeast region",
+              "trace": {
+                "tokens": 44211,
+                "latency_s": 13.438,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 714,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.crm",
+                      "entity_types": [
+                        "sap.odm:entityType:Employee:v1",
+                        "sap.odm:entityType:CustomerOrder:v1"
+                      ],
+                      "action_verb": "analyse",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29276,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8494,
+                    "latency_s": 6.940829038619995,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Employee:v1"
+                        },
+                        "n_results": 44
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:CustomerOrder:v1"
+                        },
+                        "n_results": 15
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 59
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.crm": 8,
+                      "my.mes": 4,
+                      "emarsys.cx": 3,
+                      "sap.ehs": 2,
+                      "sap.sf": 1,
+                      "corp.itsm": 1,
+                      "sap.ariba": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Employee:v1": 15,
+                      "sap.odm:entityType:Compensation:v1": 5,
+                      "sap.odm:entityType:TimeOff:v1": 5,
+                      "sap.odm:entityType:WorkforcePerson:v1": 4,
+                      "sap.odm:entityType:CustomerAccount:v1": 3,
+                      "sap.odm:entityType:SalesOpportunity:v1": 3,
+                      "sap.odm:entityType:Material:v1": 2,
+                      "sap.odm:entityType:EngineeringChange:v1": 1,
+                      "sap.odm:entityType:ProductItem:v1": 1,
+                      "sap.odm:entityType:Vendor:v1": 1
+                    },
+                    "resource_types": {
+                      "agent": 6,
+                      "apiResource": 9,
+                      "dataProduct": 5
+                    },
+                    "top_capabilities": {
+                      "align-sales-capability": 1,
+                      "map-employee-hierarchy": 1,
+                      "assess-workforce-readiness": 1,
+                      "plan-sales-capacity": 1,
+                      "manage-time-off": 1,
+                      "block-availability": 1,
+                      "coordinate-employee-availability": 1,
+                      "schedule-capacity": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Employee:v1",
+                        "sap.odm:entityType:SalesOpportunity:v1",
+                        "sap.odm:entityType:PerformanceReview:v1",
+                        "sap.odm:entityType:CustomerOrder:v1"
+                      ],
+                      "business_groups": [
+                        "proc_order_compliance_fulfillment_v1"
+                      ],
+                      "lines_of_business": [
+                        "Sales",
+                        "Human Resources"
+                      ],
+                      "reason": "Activity evaluates employee sales performance in a geographic region, requiring employee and sales opportunity data along with performance metrics."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:SalesOpportunity:v1\",\n    \"sap.odm:entityType:PerformanceReview:v1\",\n    \"sap.odm:entityType:CustomerOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Sales\",\n    \"Human Resources\"\n  ],\n  \"reason\": \"Activity evaluates employee sales performance in a geographic region, requiring employee and sales opportunity data along with performance metrics.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "siemens.plm:agent:BOMComplianceValidator:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+                    ],
+                    "rerank_raw": "```json\n[]\n```\n\n**Explanation:** None of these candidates are relevant for identifying the top-performing sales representative in the Northeast region.\n\nThe activity requires **sales performance analytics** or **sales management capabilities** \u2014 specifically metrics on representative performance, regional sales data, and ranking/comparison functionality.\n\nAll 8 candidates are focused on:\n- Production/manufacturing operations (agents orchestrating production changes, work orders, material provisioning)\n- Engineering change management (BOM compliance, material specifications, engineering workflows)\n- Asset/infrastructure provisioning and lifecycle management\n- Operations capability and workforce readiness for manufacturing transitions\n\n**None** have sales performance, sales analytics, regional sales metrics, or sales representative management capabilities. There are no agents for sales operations, no APIs for sales data, and no data products for sales analytics in this candidate set.\n\nThis appears to be a knowledge-graph walk that surfaced manufacturing/operations resources, which is fundamentally misaligned with a sales performance use case.",
+                    "refused": true,
+                    "previous_resolved": [
+                      "emarsys.cx:agent:OpportunityEngagementOrchestrator:v1",
+                      "emarsys.cx:agent:OpportunityEnrichmentOrchestrator:v1",
+                      "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                      "sap.crm:agent:OpportunityQualificationAdvisor:v1",
+                      "sap.crm:agent:SalesProductChangeCoordinator:v1"
+                    ],
+                    "tokens": 3809,
+                    "latency_s": 6.497,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 0
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1918,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Retrieve the list of products that this sales representative is certified to sell",
+              "trace": {
+                "tokens": 44062,
+                "latency_s": 12.721,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 23,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 708,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.crm",
+                      "entity_types": [
+                        "sap.odm:entityType:Employee:v1",
+                        "sap.odm:entityType:ProductItem:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29277,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8168,
+                    "latency_s": 5.795938968658447,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Employee:v1"
+                        },
+                        "n_results": 44
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ProductItem:v1"
+                        },
+                        "n_results": 40
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.crm:dataProduct:SalesRepCertifiedProducts:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.crm:apiResource:SalesRepProductCertificationAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 84
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.crm": 6,
+                      "siemens.plm": 4,
+                      "my.mes": 4,
+                      "sap.ehs": 1,
+                      "sap.s4": 1,
+                      "sap.sf": 1,
+                      "corp.itsm": 1,
+                      "emarsys.cx": 1,
+                      "sap.ariba": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Employee:v1": 13,
+                      "sap.odm:entityType:TimeOff:v1": 5,
+                      "sap.odm:entityType:Compensation:v1": 5,
+                      "sap.odm:entityType:CustomerAccount:v1": 3,
+                      "sap.odm:entityType:WorkforcePerson:v1": 2,
+                      "sap.odm:entityType:Material:v1": 2,
+                      "sap.odm:entityType:Vendor:v1": 2,
+                      "sap.odm:entityType:Campaign:v1": 2,
+                      "sap.odm:entityType:EngineeringChange:v1": 1,
+                      "sap.odm:entityType:ProductItem:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 12,
+                      "agent": 2,
+                      "dataProduct": 6
+                    },
+                    "top_capabilities": {
+                      "align-sales-capability": 1,
+                      "map-employee-hierarchy": 1,
+                      "assess-workforce-readiness": 1,
+                      "procure-safety-materials": 1,
+                      "qualify-vendors": 1,
+                      "verify-compliance-certifications": 1,
+                      "plan-sales-capacity": 1,
+                      "manage-time-off": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Employee:v1",
+                        "sap.odm:entityType:ProductItem:v1"
+                      ],
+                      "business_groups": [
+                        "proc_order_compliance_fulfillment_v1"
+                      ],
+                      "lines_of_business": [
+                        "Sales"
+                      ],
+                      "reason": "Activity retrieves product certifications for a sales representative, requiring Employee and ProductItem entities within sales order fulfillment context."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:ProductItem:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_compliance_fulfillment_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Sales\"\n  ],\n  \"reason\": \"Activity retrieves product certifications for a sales representative, requiring Employee and ProductItem entities within sales order fulfillment context.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity asks to \"retrieve the list of products that this sales representative is certified to sell\" \u2014 this is fundamentally about **matching a person (sales rep) to their authorized product catalog** based on certifications.\n\n1. **sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1** (BEST) - This dataProduct directly addresses workforce readiness and training needs. While focused on material changes, it assesses which employees are qualified/trained for specific product areas \u2014 the closest semantic match to \"sales rep certifications for products.\"\n\n2. **sap.s4:agent:BOMComplianceAutomationAgent:v1** - Provides access to validated bill-of-materials and product specifications, which would be needed to determine what products exist and their compliance status \u2014 useful for surfacing the product catalog.\n\n3. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** - Tracks product configurations, BOMs, and material provisioning. Can retrieve product designs and their current authorized status, supporting the lookup of available products.\n\nThe other candidates focus on operational transitions, production scheduling, asset provisioning, or safety compliance\u2014less relevant to the sales certification/product authorization lookup.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "sap.crm:apiResource:SalesTeamAvailabilityAndCapacityService:v1",
+                      "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                      "sap.crm:agent:SalesProductChangeCoordinator:v1",
+                      "sap.ehs:apiResource:VendorSafetyComplianceOrders:v1",
+                      "sap.s4:apiResource:SafetyComplianceCustomerEngagementAPI:v1"
+                    ],
+                    "tokens": 3955,
+                    "latency_s": 6.925,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 3
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1954,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 1015,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.crm:dataProduct:SalesCompensationPerformanceAnalytics:v1",
+              "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1"
+            ],
+            "confidence": 0.85
+          }
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request combines three ad-hoc lookups (ticket status, top sales rep identification, employee certifications) that don't align with any registered process\u2014none of the skills cover sales performance analytics, employee certification management, or general ticket triage workflows.\"\n}\n```",
+      "reason": "The request combines three ad-hoc lookups (ticket status, top sales rep identification, employee certifications) that don't align with any registered process\u2014none of the skills cover sales performance analytics, employee certification management, or general ticket triage workflows.",
+      "tokens": 1682,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 272683,
+    "latency_s": 75.012,
+    "llm_calls": 58
+  },
+  "wall_s": 110.555
+}

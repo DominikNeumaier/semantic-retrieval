@@ -1,0 +1,229 @@
+{
+  "case_id": "dy-23",
+  "user_prompt": "I need to pull together our incident tracking data for the quarterly board review while simultaneously updating several customer cases that are stuck in our resolution queue\u2014can you help me access both of those systems in one go so I don't have to toggle between platforms?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "clean",
+  "condition": "F0f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull together incident tracking data for the quarterly board review",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:IncidentResolutionMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:SafetyIncidentComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 7608,
+          "latency_s": 6.008,
+          "llm_calls": 5,
+          "use_graph": false,
+          "picked_ord_id": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+          "picked_reason": "Aggregates incident data for compliance reporting and trend analysis with dashboards and enterprise-wide metrics \u2014 ideal for quarterly board review preparation",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "incident tracking data quarterly board review",
+                "top_k": 10
+              },
+              "result_summary": "10 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:IncidentResolutionMetrics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+                "reason": "Aggregates incident data for compliance reporting and trend analysis with dashboards and enterprise-wide metrics \u2014 ideal for quarterly board review preparation"
+              },
+              "result": {
+                "committed": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1"
+              }
+            }
+          ]
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+            "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Update several customer cases that are stuck in the resolution queue",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 7723,
+          "latency_s": 6.542,
+          "llm_calls": 6,
+          "use_graph": false,
+          "picked_ord_id": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+          "picked_reason": "Explicitly supports resolution workflows, dispute lifecycle management, and resolution documentation. Best fit for updating customer cases stuck in the resolution queue.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "Update customer cases stuck in resolution queue",
+                "top_k": 10
+              },
+              "result_summary": "10 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "Case"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+                "reason": "Explicitly supports resolution workflows, dispute lifecycle management, and resolution documentation. Best fit for updating customer cases stuck in the resolution queue."
+              },
+              "result": {
+                "committed": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 15662,
+    "latency_s": 12.55,
+    "llm_calls": 12
+  },
+  "wall_s": 13.428
+}

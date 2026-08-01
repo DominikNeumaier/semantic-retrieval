@@ -1,0 +1,81 @@
+{
+  "case_id": "proc_020_s07",
+  "process": "proc_020",
+  "label": "talent compliance ops process: Reconcile workforce compensation structures across entities \u2014 Finance and compensation teams require consolidated visibility into employee compensation data across multiple business entities to ensure equity, governance, and budget accuracy.",
+  "method": "C",
+  "expected_ordIds": [
+    "workday.hcm:apiResource:CompensationStructureDataExposure:v1"
+  ],
+  "candidates": [
+    {
+      "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+      "score": 33.0
+    },
+    {
+      "ordId": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+      "score": 33.0
+    },
+    {
+      "ordId": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+      "score": 33.0
+    },
+    {
+      "ordId": "workday.hcm:agent:PerformanceReviewOrchestrator:v1",
+      "score": 36.0
+    },
+    {
+      "ordId": "workday.hcm:agent:PerformanceReviewCoordination:v1",
+      "score": 36.0
+    }
+  ],
+  "metrics": {
+    "p_at_1": 0,
+    "r_at_5": 0,
+    "mrr": 0.0,
+    "first_hit_rank": null,
+    "correctly_refused": null,
+    "falsely_picked": null
+  },
+  "trace": {
+    "anchors": {
+      "entity_types": [
+        "sap.odm:entityType:Compensation:v1",
+        "sap.odm:entityType:Employee:v1",
+        "sap.odm:entityType:WorkforcePerson:v1"
+      ],
+      "business_groups": [],
+      "lines_of_business": [
+        "Finance",
+        "Human Resources"
+      ],
+      "reason": "The activity directly involves reconciling compensation data across entities for Finance and HR teams to ensure equity and budget accuracy."
+    },
+    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Compensation:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:WorkforcePerson:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Finance\",\n    \"Human Resources\"\n  ],\n  \"reason\": \"The activity directly involves reconciling compensation data across entities for Finance and HR teams to ensure equity and budget accuracy.\"\n}\n```",
+    "max_hops": 2,
+    "hop_decay": 0.5,
+    "edge_weights": {
+      "co_exposes": 1.0,
+      "co_partOf": 2.0,
+      "calls": 3.0,
+      "processNext": 3.0
+    },
+    "scored_resources": 189,
+    "walk_top_ids": [
+      "sap.sf:agent:PerformanceReviewCycleCoordinator:v1",
+      "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1",
+      "workday.hcm:agent:PerformanceReviewCoordination:v1",
+      "workday.hcm:agent:PerformanceReviewOrchestrator:v1",
+      "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+      "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+      "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+      "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+    ],
+    "rerank_raw": "```json\n[\n  \"sap.sf:apiResource:CompensationAndSalaryManagement:v1\",\n  \"sap.s4:apiResource:EmployeePayrollDataAPI:v1\",\n  \"sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1\",\n  \"workday.hcm:agent:PerformanceReviewOrchestrator:v1\",\n  \"workday.hcm:agent:PerformanceReviewCoordination:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity is fundamentally a **data consolidation and reconciliation task** requiring access to compensation structures across entities for compliance and governance. This is CRUD/reporting work on master compensation data, not process orchestration.\n\n1. **sap.sf:apiResource:CompensationAndSalaryManagement:v1** (1st) \u2013 Directly manages compensation structures and salary data; perfect match for reconciling workforce compensation across entities.\n\n2. **sap.s4:apiResource:EmployeePayrollDataAPI:v1** (2nd) \u2013 Exposes payroll information across workforce for financial processing and reporting; essential for consolidated visibility into compensation data.\n\n3. **sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1** (3rd) \u2013 Manages employee compensation specifically; supports multi-entity reconciliation needs.\n\n4-5. **Workday agents** \u2013 Secondary choices as agents; they coordinate workflows but don't directly provide the consolidated compensation visibility the finance and compliance teams need. Included as they could support the orchestration of compensation data collection workflows.\n\n**Excluded:** Performance review agents and safety training API are tangential to compensation reconciliation; design/compliance coordinator is unrelated to compensation ops.",
+    "refused": false,
+    "previous_resolved": [],
+    "tokens": 2215,
+    "latency_s": 5.594,
+    "llm_calls": 2
+  },
+  "wall_s": 5.607
+}

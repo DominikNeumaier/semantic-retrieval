@@ -1,0 +1,610 @@
+{
+  "case_id": "dy-37",
+  "user_prompt": "I need to pull current production schedules and equipment status to finalize our procurement forecast for next quarter, and simultaneously submit a maintenance request for our assembly line since we're seeing performance degradation that needs urgent attention from our service team.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "clean",
+  "condition": "F0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull current production schedules and equipment status to finalize our procurement forecast for next quarter",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:WorkforceScheduleAndAbsenceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:WorkforceAvailabilityAndCapacity:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 67944,
+          "latency_s": 12.208,
+          "llm_calls": 14,
+          "n_intents": 2,
+          "use_graph": false,
+          "decomp_trace": {
+            "tokens": 373,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Pull current production schedules",
+              "Pull equipment status"
+            ],
+            "original_prompt": "Pull current production schedules and equipment status to finalize our procurement forecast for next quarter"
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Pull current production schedules",
+              "trace": {
+                "tokens": 34671,
+                "latency_s": 6.726,
+                "llm_calls": 6,
+                "confidence": 0.95,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 706,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "my.mes",
+                      "entity_types": [
+                        "sap.odm:entityType:ProductionOrder:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20591,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 11549,
+                    "latency_s": 6.725953817367554,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+                        },
+                        "n_results": 23
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 81
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "my.mes": 6,
+                      "sap.s4": 5,
+                      "sap.ariba": 3,
+                      "sap.crm": 3,
+                      "sap.sf": 2,
+                      "sap.ehs": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:ProductionOrder:v1": 17,
+                      "sap.odm:entityType:Machine:v1": 12,
+                      "sap.odm:entityType:QualityInspection:v1": 6,
+                      "sap.odm:entityType:Employee:v1": 2,
+                      "sap.odm:entityType:TimeOff:v1": 2,
+                      "sap.odm:entityType:EngineeringChange:v1": 1,
+                      "sap.odm:entityType:ProductItem:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 14,
+                      "agent": 1,
+                      "dataProduct": 5
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 20
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1825,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+                    "confidence": 0.95
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Pull equipment status",
+              "trace": {
+                "tokens": 31857,
+                "latency_s": 5.482,
+                "llm_calls": 6,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 707,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "corp.itsm",
+                      "entity_types": [
+                        "sap.odm:entityType:ITEquipment:v1",
+                        "sap.odm:entityType:Machine:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20590,
+                    "latency_s": 0.449
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8475,
+                    "latency_s": 5.482048749923706,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ITEquipment:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Machine:v1"
+                        },
+                        "n_results": 17
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:ServiceHealthMetrics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 41
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "my.mes": 6,
+                      "corp.itsm": 5,
+                      "sap.ehs": 3,
+                      "sap.s4": 3,
+                      "sap.ariba": 2,
+                      "emarsys.cx": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:ChangeRequest:v1": 16,
+                      "sap.odm:entityType:ITEquipment:v1": 16,
+                      "sap.odm:entityType:ServiceTicket:v1": 16,
+                      "sap.odm:entityType:Machine:v1": 4,
+                      "sap.odm:entityType:ProductionOrder:v1": 4
+                    },
+                    "resource_types": {
+                      "apiResource": 13,
+                      "dataProduct": 6,
+                      "agent": 1
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 20
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2085,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.s4:apiResource:ProductionExecutionAPI:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 1043,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+              "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+            "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Submit a maintenance request for our assembly line due to performance degradation that needs urgent attention from our service team",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 65823,
+          "latency_s": 14.995,
+          "llm_calls": 15,
+          "n_intents": 2,
+          "use_graph": false,
+          "decomp_trace": {
+            "tokens": 572,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Submit a maintenance request for our assembly line due to performance degradation that needs urgent attention from our service team"
+            ],
+            "original_prompt": "Submit a maintenance request for our assembly line due to performance degradation that needs urgent attention from our service team",
+            "sub_queries_redecomposed": [
+              "Create a maintenance request ticket for the assembly line with urgency level set to high/critical",
+              "Notify the service team about the performance degradation issue on the assembly line requiring immediate attention"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Create a maintenance request ticket for the assembly line with urgency level set to high/critical",
+              "trace": {
+                "tokens": 32280,
+                "latency_s": 7.466,
+                "llm_calls": 6,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 721,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "corp.itsm",
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:Machine:v1"
+                      ],
+                      "action_verb": "orchestrate",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20604,
+                    "latency_s": 0.565
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8837,
+                    "latency_s": 7.465880870819092,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Machine:v1"
+                        },
+                        "n_results": 17
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:IncidentSafetyCoordinator:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 41
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "my.mes": 7,
+                      "corp.itsm": 6,
+                      "emarsys.cx": 3,
+                      "sap.ehs": 2,
+                      "sap.s4": 1,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:ChangeRequest:v1": 10,
+                      "sap.odm:entityType:ServiceTicket:v1": 10,
+                      "sap.odm:entityType:ITEquipment:v1": 10,
+                      "sap.odm:entityType:Incident:v1": 10,
+                      "sap.odm:entityType:SafetyIncident:v1": 10,
+                      "sap.odm:entityType:HazardousSubstance:v1": 4
+                    },
+                    "resource_types": {
+                      "apiResource": 7,
+                      "dataProduct": 9,
+                      "agent": 4
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 20
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2118,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Notify the service team about the performance degradation issue on the assembly line requiring immediate attention",
+              "trace": {
+                "tokens": 31954,
+                "latency_s": 7.529,
+                "llm_calls": 6,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 719,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "my.mes",
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:Machine:v1"
+                      ],
+                      "action_verb": "orchestrate",
+                      "resource_type_hint": "apiResource"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20603,
+                    "latency_s": 0.461
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8599,
+                    "latency_s": 7.529179334640503,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Machine:v1"
+                        },
+                        "n_results": 17
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:IncidentSafetyCoordinator:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 41
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "my.mes": 7,
+                      "corp.itsm": 5,
+                      "emarsys.cx": 3,
+                      "sap.s4": 2,
+                      "sap.ehs": 1,
+                      "sap.sf": 1,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Incident:v1": 10,
+                      "sap.odm:entityType:SafetyIncident:v1": 10,
+                      "sap.odm:entityType:ProductionOrder:v1": 7,
+                      "sap.odm:entityType:QualityInspection:v1": 6,
+                      "sap.odm:entityType:HazardousSubstance:v1": 4,
+                      "sap.odm:entityType:Machine:v1": 3,
+                      "sap.odm:entityType:ChangeRequest:v1": 2,
+                      "sap.odm:entityType:ITEquipment:v1": 2,
+                      "sap.odm:entityType:ServiceTicket:v1": 2,
+                      "sap.odm:entityType:CustomerAccount:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 2,
+                      "agent": 6,
+                      "dataProduct": 12
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 20
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2033,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 1017,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+              "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request involves two distinct processes (procurement forecasting + maintenance request submission) that don't align with any single skill's end-to-end workflow; the maintenance component specifically requires proc_010, but that doesn't cover the procurement forecasting aspect, and no skill orchestrates both together.\"\n}\n```",
+      "reason": "The request involves two distinct processes (procurement forecasting + maintenance request submission) that don't align with any single skill's end-to-end workflow; the maintenance component specifically requires proc_010, but that doesn't cover the procurement forecasting aspect, and no skill orche",
+      "tokens": 1687,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 135799,
+    "latency_s": 27.203,
+    "llm_calls": 31
+  },
+  "wall_s": 55.495
+}

@@ -1,0 +1,437 @@
+{
+  "case_id": "sa-13",
+  "user_prompt": "We need to process an engineering change request for one of our key products that involves design modifications and supply chain validation. The change impacts multiple departments, so we'll need to coordinate the assessment across product design, manufacturing, and procurement to evaluate resource requirements and timeline implications. As part of this, we also need to identify which customer accounts are affected by this change so we can incorporate them into our communication strategy and any related marketing outreach. Can you help us orchestrate this entire workflow from initial change submission through cross-functional impact analysis and stakeholder notification?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "F",
+  "state": "clean",
+  "condition": "F0",
+  "skill_expected": "proc_032",
+  "skill_picked": "proc_032",
+  "expected_gaps": [
+    "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+    "emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Identify affected customer accounts",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.crm:apiResource:CampaignCustomerAccountSegmentationService:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:CampaignCustomerAccountEngagementBridge:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 15705,
+          "latency_s": 10.056,
+          "llm_calls": 7,
+          "use_graph": false,
+          "picked_ord_id": "sap.crm:apiResource:CampaignCustomerAccountSegmentationService:v1",
+          "picked_reason": "Best match for identifying affected customer accounts. This apiResource exposes CustomerAccount entities and provides segmentation and retrieval capabilities that enable identification of targeted customer accounts. While scoped to campaigns, it directly supports customer account identification and management operations.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "identify affected customer accounts",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.crm:apiResource:CampaignCustomerAccountSegmentationService:v1",
+                "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1",
+                "emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1",
+                "sap.crm:apiResource:CampaignCustomerAccountEngagementBridge:v1",
+                "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+                "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+                "sap.ariba:dataProduct:CustomerAndOpportunityInsights:v1",
+                "siemens.plm:dataProduct:CustomerOpportunityCostAndQualificationAnalytics:v1",
+                "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "customer"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "identify affected accounts incident impact",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+                "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+                "sap.ehs:agent:IncidentResponseCoordinator:v1",
+                "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1",
+                "sap.s4:agent:IncidentRootCauseAutomationEngine:v1",
+                "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+                "emarsys.cx:dataProduct:SafetyIncidentComplianceAnalytics:v1",
+                "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+                "sap.ehs:dataProduct:EmployeeCompensationSafetyRiskAnalytics:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CampaignCustomerAccountSegmentationService:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "affected customer accounts detection analysis",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.crm:apiResource:CampaignCustomerAccountSegmentationService:v1",
+                "sap.ariba:dataProduct:CustomerAndOpportunityInsights:v1",
+                "sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1",
+                "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                "siemens.plm:dataProduct:CustomerOpportunityCostAndQualificationAnalytics:v1",
+                "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+                "sap.crm:dataProduct:ProductChangeImpactAnalytics:v1",
+                "emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1",
+                "emarsys.cx:dataProduct:OpportunitySalesForecasting:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "identify customer accounts impact analysis",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.crm:dataProduct:ProductChangeImpactAnalytics:v1",
+                "sap.crm:apiResource:CampaignCustomerAccountSegmentationService:v1",
+                "sap.ariba:dataProduct:CustomerAndOpportunityInsights:v1",
+                "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+                "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+                "siemens.plm:dataProduct:CustomerOpportunityCostAndQualificationAnalytics:v1",
+                "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1",
+                "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+                "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+                "sap.crm:apiResource:CampaignCustomerAccountEngagementBridge:v1"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CampaignCustomerAccountSegmentationService:v1",
+                "reason": "Best match for identifying affected customer accounts. This apiResource exposes CustomerAccount entities and provides segmentation and retrieval capabilities that enable identification of targeted customer accounts. While scoped to campaigns, it directly supports customer account identification and management operations."
+              },
+              "result": {
+                "committed": "sap.crm:apiResource:CampaignCustomerAccountSegmentationService:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Develop communication strategy for stakeholders",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:agent:ComplianceCampaignOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:VendorContractJourneyCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:PerformanceReviewOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 8522,
+          "latency_s": 7.863,
+          "llm_calls": 6,
+          "use_graph": false,
+          "picked_ord_id": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1",
+          "picked_reason": "Specialized agent for orchestrating and optimizing campaign strategies across customer segments. Directly supports stakeholder targeting, audience segmentation, performance monitoring, and dynamic strategy adjustment \u2014 core components of developing an effective communication strategy for stakeholders.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "develop communication strategy for stakeholders",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                "sap.ehs:agent:ComplianceCampaignOrchestrator:v1",
+                "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1",
+                "emarsys.cx:agent:VendorContractJourneyCoordinator:v1",
+                "workday.hcm:agent:PerformanceReviewOrchestrator:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "sap.crm:apiResource:CampaignCustomerAccountEngagementBridge:v1",
+                "sap.sf:agent:TalentAcquisitionCampaignOrchestrator:v1",
+                "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+                "sap.crm:agent:SalesProductChangeCoordinator:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "communication strategy stakeholders",
+                "top_k": 5
+              },
+              "result_summary": "2 items",
+              "result_ord_ids": [
+                "sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1",
+                "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1",
+                "reason": "Specialized agent for orchestrating and optimizing campaign strategies across customer segments. Directly supports stakeholder targeting, audience segmentation, performance monitoring, and dynamic strategy adjustment \u2014 core components of developing an effective communication strategy for stakeholders."
+              },
+              "result": {
+                "committed": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Coordinate marketing outreach for affected customers",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:CampaignCustomerAccountSegmentationService:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:agent:ComplianceCampaignOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:CampaignCustomerAccountEngagementBridge:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 7934,
+          "latency_s": 7.534,
+          "llm_calls": 6,
+          "use_graph": false,
+          "picked_ord_id": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1",
+          "picked_reason": "This agent automatically coordinates campaign execution across customer segments and accounts, monitors engagement patterns, and dynamically adjusts campaign strategies\u2014directly fulfilling the requirement to coordinate marketing outreach for affected customers.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "coordinate marketing outreach affected customers",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1",
+                "sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1",
+                "sap.crm:apiResource:CampaignCustomerAccountSegmentationService:v1",
+                "sap.ehs:agent:ComplianceCampaignOrchestrator:v1",
+                "sap.crm:apiResource:CampaignCustomerAccountEngagementBridge:v1",
+                "siemens.plm:apiResource:ProductConfigurationAndCustomerCampaignManagement:v1",
+                "sap.crm:dataProduct:ProductChangeImpactAnalytics:v1",
+                "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+                "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                "sap.crm:agent:CampaignAudienceOptimizationAgent:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "Customer"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CampaignCustomerAccountSegmentationService:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:ComplianceCampaignOrchestrator:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1",
+                "reason": "This agent automatically coordinates campaign execution across customer segments and accounts, monitors engagement patterns, and dynamically adjusts campaign strategies\u2014directly fulfilling the requirement to coordinate marketing outreach for affected customers."
+              },
+              "result": {
+                "committed": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_032",
+      "skill_id_expected": "proc_032",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "gap steps injected from reference run"
+    }
+  },
+  "trace": {
+    "tokens": 32161,
+    "latency_s": 25.453,
+    "llm_calls": 19
+  },
+  "wall_s": 35.958
+}

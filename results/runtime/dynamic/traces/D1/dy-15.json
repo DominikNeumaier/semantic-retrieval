@@ -1,0 +1,989 @@
+{
+  "case_id": "dy-15",
+  "user_prompt": "Our finance team is struggling to reconcile payroll data across multiple departments because we can't easily track how individual pay rates align with our established pay bands and job levels. We need to ensure our payment structures remain competitive and compliant with market rates, but right now we're manually cross-referencing spreadsheets which is error-prone and time-consuming. Can you help us integrate our payroll processes so we have a single source of truth for all employee earnings and payment configurations?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": null,
+  "skill_picked": "proc_018",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Map individual pay rates to established pay bands and job levels",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Compensation:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Production Labor Productivity Metrics",
+                  "shortDescription": "Aggregates employee compensation and performance data to analyze production labor efficiency."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Compensation and Safety Risk Correlation Analytics",
+                  "shortDescription": "Aggregates compensation patterns and safety incident data to identify risk correlations."
+                },
+                {
+                  "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Sales Compensation Orchestrator",
+                  "shortDescription": "Automates compensation calculations and dispute resolution for sales teams."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "align-workforce-compensation"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+                  "type": "apiResource",
+                  "title": "Compensation Structure Data Exposure",
+                  "shortDescription": "Retrieves and manages compensation grade levels, salary bands, and pay structures."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:CompensationStructureDataExposure:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+                "type": "apiResource",
+                "namespace": "workday.hcm",
+                "title": "Compensation Structure Data Exposure",
+                "shortDescription": "Retrieves and manages compensation grade levels, salary bands, and pay structures.",
+                "description": "Exposes compensation structure definitions including grade levels, salary bands, and pay grade hierarchies for Employee and WorkforcePerson entities. Provides access to compensation planning data and enables retrieval of compensation frameworks used across the organization for payroll and HR planning purposes.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Finance"
+                ],
+                "capabilities": [
+                  "optimize-incentive-structures",
+                  "model-labor-costs",
+                  "aggregate-employee-compensation",
+                  "forecast-staffing-needs",
+                  "align-workforce-compensation",
+                  "validate-compensation-alignment",
+                  "forecast-workforce-expenses",
+                  "surface-workforce-pay-data",
+                  "review-labor-costs",
+                  "expose-compensation-hierarchy"
+                ],
+                "useCases": [
+                  "Finance governance requires transparent view of employee compensation structures across all workforce persons to validate equity and compliance",
+                  "Labor cost impact analysis for procurement order execution.",
+                  "HR business partners design incentive structures for peak seasonal order volumes.",
+                  "Operations leaders validate workforce capacity against customer demand signals.",
+                  "Audit teams access compensation data to verify policy adherence and identify compensation anomalies",
+                  "Finance team validates that employee compensation projections fit within procurement project budgets.",
+                  "Finance teams ensure compensation budgets align with forecasted fulfillment headcount.",
+                  "Workforce compensation verification to ensure financial compliance with budget constraints."
+                ],
+                "tags": [
+                  "payroll",
+                  "workforce",
+                  "compensation"
+                ],
+                "partOfGroups": [
+                  "proc_supplychain_risk_compliance_v1",
+                  "proc_talent_compliance_ops_v1",
+                  "proc_procure_fulfill_v1"
+                ],
+                "processNext": [
+                  ""
+                ],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.sf",
+                "title": "Compensation and Salary Management API",
+                "shortDescription": "Manages employee compensation structures, salary data, and payroll integration.",
+                "description": "Exposes comprehensive compensation and salary information for employees and workforce persons. Retrieves salary bands, variable compensation, bonuses, and payroll-relevant attributes. Manages compensation planning data and provides access to salary history and payroll integration touchpoints.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [
+                  "recalculate-compensation",
+                  "manage-employee-incentives",
+                  "adjust-salary-bands"
+                ],
+                "useCases": [
+                  "Payroll and HR systems update employee earnings to reflect overtime, new role classifications, or performance adjustments tied to production change success.",
+                  "Workforce planners align compensation structures with modified labor requirements in manufacturing operations."
+                ],
+                "tags": [
+                  "compensation",
+                  "salary-management",
+                  "payroll-integration",
+                  "employee-lifecycle"
+                ],
+                "partOfGroups": [
+                  "proc_ManufacturingChangeCompliance_v1"
+                ],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+                "type": "agent",
+                "namespace": "workday.hcm",
+                "title": "Workforce Compensation Framework Processor",
+                "shortDescription": "Executes systematic wage determination and compensation adjustments according to enterprise guidelines and regulatory requirements.",
+                "description": "Orchestrates compensation data flows and validates salary structures against organizational frameworks and compliance mandates. Processes compensation modifications triggered by career progressions, evaluation cycles, and business-driven policy changes while maintaining audit trails and identifying policy exceptions. Synchronizes workforce compensation records with established pay structures and reconciles adjustments across employee populations.",
+                "entityTypes": [
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:Employee:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "salary management",
+                  "compliance orchestration",
+                  "workforce administration",
+                  "automated adjustment"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+                "reason": "Directly retrieves compensation grade levels, salary bands, and pay structures to align individual pay rates with established organizational compensation frameworks."
+              },
+              "result": {
+                "committed": "workday.hcm:apiResource:CompensationStructureDataExposure:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+          "picked_reason": "Directly retrieves compensation grade levels, salary bands, and pay structures to align individual pay rates with established organizational compensation frameworks.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 25741,
+          "latency_s": 10.637,
+          "llm_calls": 10
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Validate pay rate alignment with market rates and competitive benchmarking",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:CompensationStructureDataExposure:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "",
+                  "missing": true
+                }
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "analyze-workforce-spend"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Workforce Compensation API",
+                  "shortDescription": "Manages employee compensation and payroll data for procurement personnel."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "assess-compensation-impact"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+                  "type": "apiResource",
+                  "title": "Workforce Compensation Data Management",
+                  "shortDescription": "Retrieves and manages employee compensation structures, salary components, and pay adjustments."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "compare-complexity-benchmarks"
+              },
+              "result_preview": [
+                {
+                  "ordId": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Product Cost and Complexity Analytics",
+                  "shortDescription": "Aggregated metrics on product cost drivers, BOM complexity, and supplier impact analysis."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "align-workforce-compensation"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+                  "type": "apiResource",
+                  "title": "Compensation Structure Data Exposure",
+                  "shortDescription": "Retrieves and manages compensation grade levels, salary bands, and pay structures."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+                "type": "apiResource",
+                "namespace": "workday.hcm",
+                "title": "Workforce Compensation Data Management",
+                "shortDescription": "Retrieves and manages employee compensation structures, salary components, and pay adjustments.",
+                "description": "Exposes comprehensive compensation data for employees and workforce personnel, enabling retrieval of salary bands, bonus structures, and pay adjustments. Manages compensation plan assignments and provides access to historical compensation records for compliance and payroll processing.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Capital Management"
+                ],
+                "capabilities": [
+                  "evaluate-skill-requirements",
+                  "calculate-incentive-adjustments",
+                  "assess-compensation-adjustments",
+                  "assess-compensation-impact",
+                  "verify-competency-alignment",
+                  "align-role-classification",
+                  "calculate-hazard-pay",
+                  "update-workforce-compensation",
+                  "project-workforce-costs",
+                  "evaluate-exposure-risk"
+                ],
+                "useCases": [
+                  "Workforce planning aligns pay structures with capability assessments to support retention during organizational changes.",
+                  "HR organizations must align compensation for employees facing elevated hazard exposure from chemical or environmental substances",
+                  "Compensation systems validate that role classifications match competencies needed for engineering change implementation.",
+                  "HR determines if product engineering changes require compensation adjustments for affected workforce",
+                  "Finance calculates incremental labor costs for new manufacturing processes introduced by engineering change",
+                  "Talent planning identifies skill gaps created by product change and budgets for new hire compensation",
+                  "HR and Finance teams adjust employee compensation to reflect new skill requirements and responsibilities required by product transitions."
+                ],
+                "tags": [
+                  "workforce-management",
+                  "organizational-structure",
+                  "employee-hierarchy"
+                ],
+                "partOfGroups": [
+                  "proc_SafetyComplianceWorkforce_v1",
+                  "proc_product_transition_compliance_v1",
+                  "proc_ChangeTalentIntegration_v1"
+                ],
+                "processNext": [
+                  "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+                ],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "People Analytics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Compliance and Risk Profile Analytics",
+                  "shortDescription": "Consolidates occupational safety data and incident patterns to assess employee risk exposure and safety culture maturity."
+                },
+                {
+                  "ordId": "sap.sf:dataProduct:EmployeePerformanceTrendAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trend Analytics",
+                  "shortDescription": "Aggregated performance metrics and trend analysis across employee populations and review cycles."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+                "reason": "Provides comprehensive compensation data management with assess-compensation-impact and project-workforce-costs capabilities to validate pay rate alignment and competitive benchmarking analysis."
+              },
+              "result": {
+                "committed": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+          "picked_reason": "Provides comprehensive compensation data management with assess-compensation-impact and project-workforce-costs capabilities to validate pay rate alignment and competitive benchmarking analysis.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 33239,
+          "latency_s": 13.211,
+          "llm_calls": 10
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Create consolidated single source of truth for employee earnings and payment configurations",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Equipment Change and Service Management API",
+                  "shortDescription": "Manages equipment changes, service requests, and maintenance governance."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "aggregate-employee-compensation"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+                  "type": "apiResource",
+                  "title": "Compensation Structure Data Exposure",
+                  "shortDescription": "Retrieves and manages compensation grade levels, salary bands, and pay structures."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "expose-compensation-hierarchy"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+                  "type": "apiResource",
+                  "title": "Compensation Structure Data Exposure",
+                  "shortDescription": "Retrieves and manages compensation grade levels, salary bands, and pay structures."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "surface-workforce-pay-data"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+                  "type": "apiResource",
+                  "title": "Compensation Structure Data Exposure",
+                  "shortDescription": "Retrieves and manages compensation grade levels, salary bands, and pay structures."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:CompensationStructureDataExposure:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+                "type": "apiResource",
+                "namespace": "workday.hcm",
+                "title": "Compensation Structure Data Exposure",
+                "shortDescription": "Retrieves and manages compensation grade levels, salary bands, and pay structures.",
+                "description": "Exposes compensation structure definitions including grade levels, salary bands, and pay grade hierarchies for Employee and WorkforcePerson entities. Provides access to compensation planning data and enables retrieval of compensation frameworks used across the organization for payroll and HR planning purposes.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Finance"
+                ],
+                "capabilities": [
+                  "optimize-incentive-structures",
+                  "model-labor-costs",
+                  "aggregate-employee-compensation",
+                  "forecast-staffing-needs",
+                  "align-workforce-compensation",
+                  "validate-compensation-alignment",
+                  "forecast-workforce-expenses",
+                  "surface-workforce-pay-data",
+                  "review-labor-costs",
+                  "expose-compensation-hierarchy"
+                ],
+                "useCases": [
+                  "Finance governance requires transparent view of employee compensation structures across all workforce persons to validate equity and compliance",
+                  "Labor cost impact analysis for procurement order execution.",
+                  "HR business partners design incentive structures for peak seasonal order volumes.",
+                  "Operations leaders validate workforce capacity against customer demand signals.",
+                  "Audit teams access compensation data to verify policy adherence and identify compensation anomalies",
+                  "Finance team validates that employee compensation projections fit within procurement project budgets.",
+                  "Finance teams ensure compensation budgets align with forecasted fulfillment headcount.",
+                  "Workforce compensation verification to ensure financial compliance with budget constraints."
+                ],
+                "tags": [
+                  "payroll",
+                  "workforce",
+                  "compensation"
+                ],
+                "partOfGroups": [
+                  "proc_supplychain_risk_compliance_v1",
+                  "proc_talent_compliance_ops_v1",
+                  "proc_procure_fulfill_v1"
+                ],
+                "processNext": [
+                  ""
+                ],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+                "reason": "This API exposes consolidated compensation structures, salary bands, and pay hierarchies that serve as the single source of truth for employee earnings and payment configurations across the organization."
+              },
+              "result": {
+                "committed": "workday.hcm:apiResource:CompensationStructureDataExposure:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+          "picked_reason": "This API exposes consolidated compensation structures, salary bands, and pay hierarchies that serve as the single source of truth for employee earnings and payment configurations across the organization.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 23618,
+          "latency_s": 10.957,
+          "llm_calls": 8
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Reconcile payroll data across multiple departments",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:BenefitsEnrollmentDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:CompensationStructureDataExposure:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "",
+                  "missing": true
+                }
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "reconcile-enrollment"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:BenefitsEnrollmentDataManagement:v1",
+                  "type": "apiResource",
+                  "title": "Benefits Enrollment Data Management API",
+                  "shortDescription": "Manages and retrieves employee benefits enrollment records and eligibility data."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "process-payroll"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                  "type": "apiResource",
+                  "title": "Payroll Processing Data Management",
+                  "shortDescription": "Manages and exposes payroll calculations, earnings, and deductions data."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "aggregate-employee-compensation"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+                  "type": "apiResource",
+                  "title": "Compensation Structure Data Exposure",
+                  "shortDescription": "Retrieves and manages compensation grade levels, salary bands, and pay structures."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "type": "apiResource",
+                "namespace": "workday.hcm",
+                "title": "Payroll Processing Data Management",
+                "shortDescription": "Manages and exposes payroll calculations, earnings, and deductions data.",
+                "description": "This API resource provides access to payroll processing data including employee earnings, tax withholdings, deductions, and gross-to-net calculations. It retrieves and manages payroll records for Employee and WorkforcePerson entities, enabling integration with downstream payroll systems and financial consolidation platforms. The resource exposes real-time payroll snapshots and historical payroll records for compliance and audit purposes.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [
+                  "validate-employee-payments",
+                  "process-payroll",
+                  "manage-workforce-compensation-execution",
+                  "resource-allocation-scheduling",
+                  "identify-available-workforce",
+                  "integrate-payroll-with-scheduling"
+                ],
+                "useCases": [
+                  "Workforce scheduling integrates with payroll to ensure accurate compensation tracking for assigned service activities.",
+                  "Payroll and workforce data identifies two available technicians; their availability is checked and the nearest one is assigned to the job.",
+                  "HR payroll administrator executes end-to-end payroll processing with full control over employee and workforce person payment records",
+                  "Payroll system ensures accurate, timely compensation delivery while maintaining audit trail for regulatory compliance"
+                ],
+                "tags": [
+                  "compensation",
+                  "salary-management",
+                  "payroll-integration",
+                  "employee-lifecycle"
+                ],
+                "partOfGroups": [
+                  "proc_ServiceToProduction_v1",
+                  "proc_talent_compliance_ops_v1"
+                ],
+                "processNext": [
+                  "workday.hcm:agent:CompensationAdjustmentAutomation:v1"
+                ],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "reason": "This API resource manages and exposes payroll calculations, earnings, and deductions data for Employee and WorkforcePerson entities, enabling payroll reconciliation across departments with process-payroll and manage-workforce-compensation-execution capabilities."
+              },
+              "result": {
+                "committed": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+          "picked_reason": "This API resource manages and exposes payroll calculations, earnings, and deductions data for Employee and WorkforcePerson entities, enabling payroll reconciliation across departments with process-payroll and manage-workforce-compensation-execution capabilities.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 20319,
+          "latency_s": 9.206,
+          "llm_calls": 8
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_018",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_018\",\n  \"reason\": \"This skill orchestrates comprehensive compensation review and workforce cost analysis by integrating payroll data, organizational structure validation, and procurement services\u2014directly addressing the need to reconcile payroll data, align pay rates with pay bands, and ensure competitive/compliant payment structures.\"\n}\n```",
+      "reason": "This skill orchestrates comprehensive compensation review and workforce cost analysis by integrating payroll data, organizational structure validation, and procurement services\u2014directly addressing the need to reconcile payroll data, align pay rates with pay bands, and ensure competitive/compliant pa",
+      "tokens": 1735,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Map individual pay rates to established pay bands and job levels\",\n    \"Validate pay rate alignment with market rates and competitive benchmarking\",\n    \"Create consolidated single source of truth for employee earnings and payment configurations\",\n    \"Reconcile payroll data across multiple departments\"\n  ],\n  \"reason\": \"The skill focuses on compensation review and workforce cost analysis at a high organizational level, but does not explicitly address the concrete operational activities the finance team needs: reconciling payroll across departments, mapping individual rates to pay bands/levels, validating market competitiveness, or establishing an integrated payroll system as a single source of truth.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill focuses on compensation review and workforce cost analysis at a high organizational level, but does not explicitly address the concrete operational activities the finance team needs: reconciling payroll across departments, mapping individual rates to pay bands/levels, validating market com",
+      "tokens": 641,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "Our finance team is struggling to reconcile payroll data across multiple departments because we can't easily track how individual pay rates align with our established pay bands and job levels. We need to ensure our payment structures remain competitive and compliant with market rates, but right now we're manually cross-referencing spreadsheets which is error-prone and time-consuming. Can you help us integrate our payroll processes so we have a single source of truth for all employee earnings and payment configurations?"
+      ],
+      "original_prompt": "Our finance team is struggling to reconcile payroll data across multiple departments because we can't easily track how individual pay rates align with our established pay bands and job levels. We need to ensure our payment structures remain competitive and compliant with market rates, but right now we're manually cross-referencing spreadsheets which is error-prone and time-consuming. Can you help us integrate our payroll processes so we have a single source of truth for all employee earnings and payment configurations?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 3,
+      "sub_queries": [
+        "We need to reconcile payroll data across multiple departments and track how individual pay rates align with our established pay bands and job levels.",
+        "We need to ensure our payment structures remain competitive and compliant with market rates.",
+        "We need to integrate our payroll processes to create a single source of truth for all employee earnings and payment configurations."
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 105293,
+    "latency_s": 44.011,
+    "llm_calls": 38
+  },
+  "wall_s": 44.04
+}

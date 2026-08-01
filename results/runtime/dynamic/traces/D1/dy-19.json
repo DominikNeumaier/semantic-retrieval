@@ -1,0 +1,724 @@
+{
+  "case_id": "dy-19",
+  "user_prompt": "We need to check our current compliance status for the hazardous materials we're storing across all our facilities and understand what regulatory requirements we need to meet. Can you pull a report showing our inventory levels and which items require updated certifications or documentation?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": null,
+  "skill_picked": "proc_004",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Pull inventory report across all facilities",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Inventory Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Material:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                  "type": "agent",
+                  "title": "Change Release Coordinator",
+                  "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+                },
+                "... (55 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "log-inventory"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material Receipt Inbound API",
+                  "shortDescription": "REST API for creating and managing goods receipt transactions against purchase orders."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Material and Vendor Inventory Management",
+                "shortDescription": "Retrieves and manages material stock levels and vendor supply chain data.",
+                "description": "Exposes real-time material inventory records and vendor information to support production scheduling and procurement workflows. Provides access to material availability, reorder points, and vendor performance metrics for optimized supply chain operations. Manages material-to-vendor relationships to ensure accurate sourcing and inventory replenishment across manufacturing facilities.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [
+                  "analyze-material-supply",
+                  "validate-vendor-capacity",
+                  "assess-inventory-impact"
+                ],
+                "useCases": [
+                  "Supply chain team confirms material availability and vendor readiness for transition.",
+                  "Procurement validates cost and timeline impact of material changes.",
+                  "Manufacturing ensures component inventory supports new production requirements."
+                ],
+                "tags": [
+                  "inventory-management",
+                  "supply-chain",
+                  "material-planning"
+                ],
+                "partOfGroups": [
+                  "proc_ProductionTransitionMarketReadiness_v1"
+                ],
+                "processNext": [
+                  "sap.crm:agent:OpportunityQualificationAdvisor:v1"
+                ],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Material Receipt Inbound API",
+                "shortDescription": "REST API for creating and managing goods receipt transactions against purchase orders.",
+                "description": "Enables integration systems and warehouse management applications to post goods receipts in real-time against procured materials. Supports batch material receipt posting, quality inspection workflows, and stock reservation updates. Critical for supply chain visibility and inventory accuracy in manufacturing operations.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement",
+                  "Inventory Management",
+                  "Manufacturing"
+                ],
+                "capabilities": [
+                  "validate-material",
+                  "validate-material-impact",
+                  "receive-materials",
+                  "verify-compliance",
+                  "validate-shipment",
+                  "verify-vendor-capacity",
+                  "validate-material-master",
+                  "confirm-delivery-timelines",
+                  "validate-shipments",
+                  "receive-material",
+                  "log-inventory",
+                  "update-inventory-levels",
+                  "track-inventory-receipt",
+                  "register-vendor-delivery",
+                  "assess-inventory-requirements",
+                  "verify-vendor-compliance",
+                  "update-inventory"
+                ],
+                "useCases": [
+                  "Manufacturing planner ensures raw materials are available for production scheduling.",
+                  "Procurement tracks receipt confirmations against purchase orders.",
+                  "Supply chain team confirms availability of new materials required by engineering change and validates vendor lead times",
+                  "Inventory manager validates inbound quantities against packing slips and purchase orders.",
+                  "Production planners verify material arrivals match purchase orders before launch.",
+                  "Procurement verifies that current inventory levels support transition period between old and new product specifications",
+                  "Warehouse teams confirm inbound material completeness and quality upon arrival.",
+                  "Manufacturing plants update stock locations for just-in-time production.",
+                  "Inbound logistics validates warehouse receipt processes can accommodate changed packaging or material dimensions",
+                  "Procurement audits material receipt traces for vendor performance assessment.",
+                  "Procurement team confirms material receipts match purchase orders and specifications.",
+                  "Inventory managers track inbound vendor shipments in real-time to prevent stockouts.",
+                  "Inventory teams record material receipt upon delivery with vendor validation.",
+                  "Inventory planners trigger production scheduling only after material receipt validation."
+                ],
+                "tags": [
+                  "goods-receipt",
+                  "inbound-logistics",
+                  "material-management",
+                  "procurement-integration"
+                ],
+                "partOfGroups": [
+                  "proc_product_launch_qa_v1",
+                  "proc_QualityDrivenMfgSupplyChain_v1",
+                  "proc_product_launch_transition_v1",
+                  "proc_ChangeTalentIntegration_v1",
+                  "proc_procure_fulfill_v1"
+                ],
+                "processNext": [
+                  "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+                ],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                "reason": "This API retrieves real-time material inventory records and vendor supply chain data across manufacturing facilities, directly supporting inventory reporting needs."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+          "picked_reason": "This API retrieves real-time material inventory records and vendor supply chain data across manufacturing facilities, directly supporting inventory reporting needs.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 26647,
+          "latency_s": 10.232,
+          "llm_calls": 9
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Identify items requiring updated certifications or documentation",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:agent:BOMComplianceValidator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:OpportunityQualificationAdvisor:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:agent:OpportunityQualificationAdvisor:v1",
+                  "type": "agent",
+                  "title": "Opportunity Qualification Advisor",
+                  "shortDescription": "Autonomously evaluates sales opportunities against qualification criteria and recommends actions."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "fetch-certification-data"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement Data API",
+                  "shortDescription": "Retrieves material specifications and vendor information for procurement workflows."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "assess-material-compliance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "siemens.plm:agent:BOMComplianceValidator:v1",
+                  "type": "agent",
+                  "title": "BOM Compliance Validator Agent",
+                  "shortDescription": "Autonomously validates bill of materials against regulatory and supplier qualification requirements."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+                "type": "apiResource",
+                "namespace": "sap.ariba",
+                "title": "Material and Vendor Procurement Data API",
+                "shortDescription": "Retrieves material specifications and vendor information for procurement workflows.",
+                "description": "Manages and provides access to material master data and vendor profiles across procurement operations. Exposes detailed material attributes and vendor capabilities to enable sourcing decisions and purchase order creation. Retrieves vendor performance indicators and material availability status for inventory planning.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [
+                  "query-procurement-database",
+                  "identify-vendors-materials",
+                  "match-demand-inventory",
+                  "lookup-material-sourcing",
+                  "fetch-certification-data",
+                  "retrieve-vendor-specs"
+                ],
+                "useCases": [
+                  "Procurement specialist queries approved vendors and materials inventory to match customer demand.",
+                  "Real-time material and vendor master data for procurement planning.",
+                  "Supply chain team identifies alternative vendors for materials flagged in compliance review.",
+                  "Access to material specifications and vendor qualifications for sourcing decisions.",
+                  "Procurement specialist accesses approved material suppliers and pricing for validated BOM items."
+                ],
+                "tags": [
+                  "inventory-management",
+                  "supply-chain",
+                  "material-planning"
+                ],
+                "partOfGroups": [
+                  "proc_supplychain_risk_compliance_v1",
+                  "proc_ProductComplianceWorkforceSafety_v1"
+                ],
+                "processNext": [
+                  "emarsys.cx:apiResource:VendorMaterialSupplyChainAPI:v1"
+                ],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:BOMComplianceValidator:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:agent:BOMComplianceValidator:v1",
+                "type": "agent",
+                "namespace": "siemens.plm",
+                "title": "BOM Compliance Validator Agent",
+                "shortDescription": "Autonomously validates bill of materials against regulatory and supplier qualification requirements.",
+                "description": "This agent automatically scans product bills of materials to verify compliance with regulatory standards, restricted substance directives, and active supplier qualifications. It flags non-compliant materials and components, recommends approved substitutes, and generates compliance documentation for product records. This reduces manual review cycles and ensures products meet market-specific requirements before engineering release.",
+                "entityTypes": [
+                  "sap.odm:entityType:ProductItem:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:EngineeringChange:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [
+                  "validate-bom-compliance",
+                  "assess-material-compliance",
+                  "verify-component-standards",
+                  "validate-bom",
+                  "check-engineering-standards"
+                ],
+                "useCases": [
+                  "Verify all product components meet current regulatory and engineering standards",
+                  "Confirm product specifications align with approved material lists before production",
+                  "Engineering team confirms new product revision has compliant materials and components.",
+                  "Quality assurance validates material changes against regulatory requirements before release."
+                ],
+                "tags": [
+                  "compliance",
+                  "bom-validation",
+                  "supplier-qualification",
+                  "automation"
+                ],
+                "partOfGroups": [
+                  "proc_product_compliance_workforce_v1",
+                  "proc_ProductComplianceWorkforceSafety_v1"
+                ],
+                "processNext": [
+                  "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1"
+                ],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:BOMComplianceValidator:v1",
+                "reason": "BOM Compliance Validator autonomously identifies materials and components requiring certification updates by validating against regulatory standards and supplier qualifications, then flags non-compliant items and generates compliance documentation."
+              },
+              "result": {
+                "committed": "siemens.plm:agent:BOMComplianceValidator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "siemens.plm:agent:BOMComplianceValidator:v1",
+          "picked_reason": "BOM Compliance Validator autonomously identifies materials and components requiring certification updates by validating against regulatory standards and supplier qualifications, then flags non-compliant items and generates compliance documentation.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 24324,
+          "latency_s": 11.09,
+          "llm_calls": 8
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Generate compliance status report",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "siemens.plm:agent:BOMComplianceValidator:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Compliance API",
+                  "shortDescription": "Retrieves and manages hazardous substance data for regulatory compliance."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Hazardous Substance Compliance API",
+                "shortDescription": "Retrieves and manages hazardous substance data for regulatory compliance.",
+                "description": "Exposes hazardous substance inventory, classification, and safety attributes across the enterprise. Provides access to material hazard profiles, regulatory mappings, and compliance documentation to support marketing compliance and product safety validation. Manages hazardous substance declarations and exposure limits for procurement and manufacturing workflows.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1"
+                ],
+                "lineOfBusiness": [
+                  "marketing-compliance"
+                ],
+                "capabilities": [
+                  "assess-hazardous-compliance",
+                  "validate-substance-restrictions"
+                ],
+                "useCases": [
+                  "Assure no restricted or regulated substances are present in customer orders",
+                  "Confirm product materials comply with hazardous substance regulations and customer restrictions"
+                ],
+                "tags": [
+                  "compliance",
+                  "hazard-management",
+                  "regulatory-validation"
+                ],
+                "partOfGroups": [
+                  "proc_product_compliance_workforce_v1"
+                ],
+                "processNext": [
+                  "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1"
+                ],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Change Readiness and Workforce Impact Analytics",
+                  "shortDescription": "Aggregates engineering changes, materials, and product items to assess workforce readiness impact."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.crm",
+                "title": "Material Change Readiness and Workforce Impact Analytics",
+                "shortDescription": "Aggregates engineering changes, materials, and product items to assess workforce readiness impact.",
+                "description": "This data product aggregates engineering changes, material specifications, and product item configurations to provide comprehensive metrics on workforce readiness and change adoption across the organization. It summarizes the correlation between product lifecycle modifications and employee competency requirements, enabling proactive workforce planning and training interventions. The analytics deliver actionable insights on change velocity, skill gap identification, and organizational readiness to support product transitions.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "human-resources"
+                ],
+                "capabilities": [
+                  "assess-workforce-readiness",
+                  "forecast-workforce-impact",
+                  "analyze-change-readiness",
+                  "identify-training-needs"
+                ],
+                "useCases": [
+                  "Human Resources determines which employees require training and when skill gaps must be addressed before production ramp-up.",
+                  "Manufacturing operations identifies workforce redeployment strategies to support material transition.",
+                  "Provide HR leadership with staffing and training impact projections for material changes",
+                  "Evaluate organizational readiness and required workforce adjustments for engineering changes"
+                ],
+                "tags": [
+                  "product-lifecycle-management",
+                  "workforce-readiness",
+                  "change-analytics"
+                ],
+                "partOfGroups": [
+                  "proc_product_compliance_workforce_v1",
+                  "proc_product_launch_workforce_v1"
+                ],
+                "processNext": [],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+                "reason": "Directly follows BOMComplianceValidator with compliance assessment capabilities and provides regulatory compliance data needed for status reporting."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+          "picked_reason": "Directly follows BOMComplianceValidator with compliance assessment capabilities and provides regulatory compliance data needed for status reporting.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 5,
+          "tokens": 16778,
+          "latency_s": 9.084,
+          "llm_calls": 5
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_004",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_004\",\n  \"reason\": \"This skill directly manages hazardous substance compliance, identification of hazardous materials, and assessment across manufacturing operations, which comprehensively covers the user's request for compliance status, inventory levels, and certification requirements for stored hazardous materials.\"\n}\n```",
+      "reason": "This skill directly manages hazardous substance compliance, identification of hazardous materials, and assessment across manufacturing operations, which comprehensively covers the user's request for compliance status, inventory levels, and certification requirements for stored hazardous materials.",
+      "tokens": 1683,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Pull inventory report across all facilities\",\n    \"Identify items requiring updated certifications or documentation\",\n    \"Generate compliance status report\"\n  ],\n  \"reason\": \"The skill addresses hazardous material identification and regulatory compliance programs but does not explicitly include reporting, inventory tracking, or documentation gap analysis activities that the request specifically requires.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill addresses hazardous material identification and regulatory compliance programs but does not explicitly include reporting, inventory tracking, or documentation gap analysis activities that the request specifically requires.",
+      "tokens": 531,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 69963,
+    "latency_s": 30.406,
+    "llm_calls": 24
+  },
+  "wall_s": 30.433
+}

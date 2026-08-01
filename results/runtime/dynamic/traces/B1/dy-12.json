@@ -1,0 +1,286 @@
+{
+  "case_id": "dy-12",
+  "user_prompt": "We need to pull together our material spend across all engine suppliers and see which components are driving costs up, plus make sure everything meets our compliance requirements. Can you help us get a comprehensive view of our BOM spending and any risk areas we should know about?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "enriched",
+  "condition": "B1",
+  "skill_expected": null,
+  "skill_picked": "proc_021",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Aggregate material spend across all engine suppliers",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ariba",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ariba\", \"sap.s4\"],\n  \"reason\": \"Aggregating supplier spend requires procurement/vendor data (sap.ariba for PurchaseOrder and Vendor) and material/inventory tracking (sap.s4 for Material and Inventory Management).\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Aggregating material spend is a read-only analytical task that summarizes financial data for reporting and insights, not an operational action that creates or updates master data.\"\n}\n```",
+          "stage2_pool_size": 15,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1",
+            "sap.odm:entityType:PurchaseOrder:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:Vendor:v1\", \"sap.odm:entityType:PurchaseOrder:v1\"],\n  \"reason\": \"Aggregating material spend requires reading Material costs, Vendor supplier information, and PurchaseOrder transaction data to calculate spending across engine suppliers.\"\n}\n```",
+          "stage3_pool_size": 7,
+          "stage4_raw": "```json\n[\n  \"sap.ariba:dataProduct:ProcurementSpendAnalytics:v1\",\n  \"sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1\",\n  \"sap.s4:dataProduct:ProcurementMetricsHub:v1\",\n  \"sap.ariba:dataProduct:SupplyChainProductIntelligence:v1\"\n]\n```",
+          "stage4_valid_count": 4,
+          "refused": false,
+          "tokens": 2532,
+          "latency_s": 1.698,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Analyze cost drivers by component",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.s4",
+            "sap.ariba"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.s4\", \"sap.ariba\"],\n  \"reason\": \"Cost driver analysis by component requires procurement/inventory data (sap.ariba) and manufacturing/materials data (sap.s4) to track costs across supply chain and production.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Cost driver analysis is a read-only, exploratory examination of data without operational actions or state changes.\"\n}\n```",
+          "stage2_pool_size": 15,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductionOrder:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:Vendor:v1\"\n  ],\n  \"reason\": \"Cost driver analysis by component typically examines material costs, production processes, and supplier/vendor pricing impacts.\"\n}\n```",
+          "stage3_pool_size": 10,
+          "stage4_raw": "```json\n[\n  \"sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1\",\n  \"sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1\",\n  \"sap.ariba:dataProduct:ProcurementSpendAnalytics:v1\",\n  \"sap.s4:dataProduct:ProcurementMetricsHub:v1\",\n  \"sap.ariba:dataProduct:SupplyChainProductIntelligence:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2729,
+          "latency_s": 2.107,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Identify compliance risk areas",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:SafetyIncidentComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ehs",
+            "emarsys.cx"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ehs\", \"emarsys.cx\"],\n  \"reason\": \"EHS handles safety, environment, and health compliance risks; CX addresses marketing compliance and customer data protection risks.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Identifying compliance risk areas is a read-only assessment activity that analyzes existing data and patterns to surface insights, not an action that executes work or modifies master data.\"\n}\n```",
+          "stage2_pool_size": 17,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Incident:v1",
+            "sap.odm:entityType:SafetyIncident:v1",
+            "sap.odm:entityType:ChangeRequest:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Incident:v1\",\n    \"sap.odm:entityType:SafetyIncident:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"reason\": \"Compliance risk identification primarily concerns incidents, safety incidents, and change requests as these are the most critical entities for compliance and regulatory oversight.\"\n}\n```",
+          "stage3_pool_size": 7,
+          "stage4_raw": "```json\n[\n  \"sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1\",\n  \"sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1\",\n  \"emarsys.cx:dataProduct:SafetyIncidentComplianceAnalytics:v1\",\n  \"sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1\",\n  \"sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2612,
+          "latency_s": 1.904,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Generate comprehensive BOM spending report",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ariba",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ariba\", \"sap.s4\"],\n  \"reason\": \"BOM (Bill of Materials) spending reports require procurement data from Ariba and material/inventory master data from S/4HANA for comprehensive cost analysis.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Generating a comprehensive BOM spending report is a read-only analytical activity that aggregates and presents KPI data without driving live execution or master data changes.\"\n}\n```",
+          "stage2_pool_size": 15,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductItem:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:Vendor:v1\"\n  ],\n  \"reason\": \"A BOM spending report analyzes bill of materials components (materials and product items) and their costs from vendors.\"\n}\n```",
+          "stage3_pool_size": 7,
+          "stage4_raw": "```json\n[\n  \"sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1\",\n  \"sap.ariba:dataProduct:ProcurementSpendAnalytics:v1\",\n  \"sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1\",\n  \"sap.s4:dataProduct:ProcurementMetricsHub:v1\"\n]\n```",
+          "stage4_valid_count": 4,
+          "refused": false,
+          "tokens": 2515,
+          "latency_s": 1.576,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_021",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_021\",\n  \"reason\": \"This skill orchestrates end-to-end manufacturing operations including supplier management, material procurement, and cost analysis across production, which directly covers the comprehensive BOM spending and compliance risk assessment request.\"\n}\n```",
+      "reason": "This skill orchestrates end-to-end manufacturing operations including supplier management, material procurement, and cost analysis across production, which directly covers the comprehensive BOM spending and compliance risk assessment request.",
+      "tokens": 1674,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Aggregate material spend across all engine suppliers\",\n    \"Analyze cost drivers by component\",\n    \"Identify compliance risk areas\",\n    \"Generate comprehensive BOM spending report\"\n  ],\n  \"reason\": \"The skill covers supplier management, material procurement, quality validation, and compliance reporting in general terms, but lacks specific steps for consolidating multi-supplier spend data, performing component-level cost analysis, identifying compliance risks, and delivering a comprehensive BOM spending view with risk insights as the request requires.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers supplier management, material procurement, quality validation, and compliance reporting in general terms, but lacks specific steps for consolidating multi-supplier spend data, performing component-level cost analysis, identifying compliance risks, and delivering a comprehensive BOM ",
+      "tokens": 470,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "We need to pull together our material spend across all engine suppliers and see which components are driving costs up, plus make sure everything meets our compliance requirements. Can you help us get a comprehensive view of our BOM spending and any risk areas we should know about?"
+      ],
+      "original_prompt": "We need to pull together our material spend across all engine suppliers and see which components are driving costs up, plus make sure everything meets our compliance requirements. Can you help us get a comprehensive view of our BOM spending and any risk areas we should know about?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 3,
+      "sub_queries": [
+        "Pull together material spend data across all engine suppliers and analyze which components are driving costs up",
+        "Verify that all components and materials meet our compliance requirements",
+        "Identify risk areas in our BOM spending"
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 12532,
+    "latency_s": 7.285,
+    "llm_calls": 18
+  },
+  "wall_s": 7.331
+}

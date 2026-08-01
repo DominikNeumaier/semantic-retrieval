@@ -1,0 +1,401 @@
+{
+  "case_id": "dy-31",
+  "user_prompt": "I need to pull together our current safety performance metrics across all reported events while simultaneously ensuring our chemical inventory documentation stays current with regulatory standards\u2014can I get both of those data sets integrated into one dashboard view?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull together our current safety performance metrics across all reported events and display them in a dashboard view.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY AGENTS BY CAPABILITY:\n\nPayroll & Compensation (Workday  \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.ehs/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.ehs/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1075
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.odm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 11
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1",
+                "reason": "This agent automatically analyzes all reported SafetyIncidents across the enterprise, generating structured reports with historical patterns and metrics that can power a safety performance dashboard."
+              },
+              "result_preview": {
+                "committed": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1",
+          "picked_reason": "This agent automatically analyzes all reported SafetyIncidents across the enterprise, generating structured reports with historical patterns and metrics that can power a safety performance dashboard.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 7,
+          "tokens": 51688,
+          "latency_s": 17.237,
+          "llm_calls": 7
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "corp.itsm:dataProduct:IncidentEngagementReliability:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Ensure our chemical inventory documentation stays current with regulatory standards and integrate it into a dashboard view.",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.ehs"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.ehs",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.odm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.odm",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.odm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.odm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-independent\",\n  \"description\": \"SAP One Domain Model entity type taxonomy for the benchmark landscape. 40 canonical business objects servi \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 667
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.odm/ord_enriched.json"
+              },
+              "result_preview": {
+                "error": "file not found: benchmark/landscape/systems_enriched/sap.odm/ord_enriched.json"
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.ehs/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.ehs/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1075
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\nSystems: corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY AGENTS BY CAPABILITY:\n\nPayroll & Compensation (Workday HCM):\n- workday.hcm:agent:CompensationAdjustmentAutomation - processes merit increases, compensation adjustments\n- workday.hcm:agent:CompensationChangeProcessor - automates compensation adjustments tied to org changes\n- workday.hcm:agent:CompensationStructureAutomationEngine - monitors org structure changes, updates compensation plans\n\nAsset & Equipment Lifecycle (corp.itsm & sap.s4):\n- corp.itsm:agent:AssetProvisioningOrchestrator - tracks asset lifecycle, material requisitions, asset assignments\n- sap.s4:agent:AssetLifecycleChangeOrchestrator - orchestrates engineering changes, automated asset provisioning\n\nIncident/Case Lifecycle Management:\n- corp.itsm:agent:IncidentSafetyCoordinator - tracks incident lifecycle, escalation\n- corp.itsm:agent:IncidentRootCauseAnalyzer - analyzes incidents, diagnostic reports\n\nIncident tracking & reporting (Safety/EHS):\n- sap.ehs:agent:IncidentRootCauseAnalyzer - analyzes safety incidents\n- sap.ehs:agent:IncidentResponseCoordinator - coordinates safety incident workflows\n\nProcurement/Supplier expenses:\n- sap.s4:agent:ProcurementMatchingAgent - matches requisitions to vendors by cost/quality\n- sap.ariba:apiResource:PurchaseOrderNetworkAPI - REST API for PO lifecycle\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation - matches vendor invoices to POs/contracts, validates terms, flags discrepancies\n\nSUPPLIER PAYMENT TERMS & COMMITMENTS:\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation - BEST for retrieving supplier payment terms and commitments\n  * Validates payment terms against POs/contracts, routes approved invoices for payment\n\nCAMPAIGN OUTREACH & ENGAGEMENT TRACKING (emarsys.cx - CX/Marketing):\n- emarsys.cx:agent:SegmentDrivenCampaignOptimizer - BEST for checking active campaign outreach and contact engagement\n  * Continuously analyzes CustomerSegment performance data and engagement metrics\n  * Automatically identifies high-value customer segments and monitors campaign performance\n  * Tracks which contacts/accounts are engaging with campaigns\n  * Relates CustomerSegment, Campaign, and CustomerAccount entities\n  * Real-time engagement monitoring across customer base\n\nEHS COMPLIANCE (sap.ehs):\n- sap.ehs:agent:IncidentRootCauseAnalyzer:v1 - analyzes safety incidents, references HazardousSubstance entity but does NOT provide chemical inventory documentation/dashboard\n- sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1 - validates safety across materials, engineering changes, product items\n- sap.ehs:agent:ComplianceCampaignOrchestrator:v1 - automates compliance campaigns\n- No dedicated chemical inventory management or dashboard resource found"
+              },
+              "result_preview": {
+                "stored_bytes": 2836,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 8,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a dedicated resource for maintaining chemical inventory documentation with regulatory standards compliance and dashboard integration; sap.ehs agents focus on incident analysis and compliance campaigns rather than chemical inventory tracking."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape lacks a dedicated resource for maintaining chemical inventory documentation with regulatory standards compliance and dashboard integration; sap.ehs agents focus on incident analysis and compliance campaigns rather than chemical inventory tracking."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a dedicated resource for maintaining chemical inventory documentation with regulatory standards compliance and dashboard integration; sap.ehs agents focus on incident analysis and compliance campaigns rather than chemical inventory tracking.",
+          "tool_calls": 10,
+          "tokens": 102284,
+          "latency_s": 32.102,
+          "llm_calls": 10
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user is requesting a dashboard integration combining safety metrics and chemical inventory data\u2014an ad-hoc analytics/reporting request that doesn't match any complete multi-step operational process.\"\n}\n```",
+      "reason": "The user is requesting a dashboard integration combining safety metrics and chemical inventory data\u2014an ad-hoc analytics/reporting request that doesn't match any complete multi-step operational process.",
+      "tokens": 1658,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 2,
+      "sub_queries": [
+        "Pull together our current safety performance metrics across all reported events",
+        "Ensure our chemical inventory documentation stays current with regulatory standards"
+      ],
+      "routed_ok": true,
+      "count_ok": true,
+      "verdict": "green"
+    }
+  },
+  "trace": {
+    "tokens": 155890,
+    "latency_s": 49.339,
+    "llm_calls": 19
+  },
+  "wall_s": 49.355
+}

@@ -1,0 +1,607 @@
+{
+  "case_id": "dy-31",
+  "user_prompt": "I need to pull together our current safety performance metrics across all reported events while simultaneously ensuring our chemical inventory documentation stays current with regulatory standards\u2014can I get both of those data sets integrated into one dashboard view?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "clean",
+  "condition": "F0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull together our current safety performance metrics across all reported events",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:apiResource:EmployeeSafetyIncidentReporting:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:SafetyIncidentComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:IncidentSafetyAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 65185,
+          "latency_s": 11.57,
+          "llm_calls": 15,
+          "n_intents": 2,
+          "use_graph": false,
+          "decomp_trace": {
+            "tokens": 484,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Pull together our current safety performance metrics across all reported events"
+            ],
+            "original_prompt": "Pull together our current safety performance metrics across all reported events",
+            "sub_queries_redecomposed": [
+              "Retrieve all reported safety events from the database",
+              "Calculate and aggregate current safety performance metrics across the retrieved events"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve all reported safety events from the database",
+              "trace": {
+                "tokens": 31923,
+                "latency_s": 5.305,
+                "llm_calls": 6,
+                "confidence": 0.85,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 717,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ehs",
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:HazardousSubstance:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20595,
+                    "latency_s": 0.516
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8566,
+                    "latency_s": 5.304821968078613,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:HazardousSubstance:v1"
+                        },
+                        "n_results": 23
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 37
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 5,
+                      "sap.ehs": 5,
+                      "emarsys.cx": 3,
+                      "my.mes": 2,
+                      "sap.s4": 1,
+                      "siemens.plm": 1,
+                      "workday.hcm": 1,
+                      "sap.ariba": 1,
+                      "sap.crm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Incident:v1": 18,
+                      "sap.odm:entityType:SafetyIncident:v1": 18,
+                      "sap.odm:entityType:HazardousSubstance:v1": 6,
+                      "sap.odm:entityType:Employee:v1": 1,
+                      "sap.odm:entityType:WorkforcePerson:v1": 1,
+                      "sap.odm:entityType:ChangeRequest:v1": 1,
+                      "sap.odm:entityType:ITEquipment:v1": 1,
+                      "sap.odm:entityType:ServiceTicket:v1": 1
+                    },
+                    "resource_types": {
+                      "dataProduct": 13,
+                      "apiResource": 1,
+                      "agent": 6
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 20
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2045,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ehs:apiResource:EmployeeSafetyIncidentReporting:v1",
+                    "confidence": 0.85
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Calculate and aggregate current safety performance metrics across the retrieved events",
+              "trace": {
+                "tokens": 31906,
+                "latency_s": 6.265,
+                "llm_calls": 6,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 19,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 718,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ehs",
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:QualityInspection:v1"
+                      ],
+                      "action_verb": "analyse",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20598,
+                    "latency_s": 0.555
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8617,
+                    "latency_s": 6.265450954437256,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:QualityInspection:v1"
+                        },
+                        "n_results": 8
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 32
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 5,
+                      "sap.ehs": 5,
+                      "emarsys.cx": 3,
+                      "my.mes": 2,
+                      "sap.s4": 1,
+                      "workday.hcm": 1,
+                      "sap.ariba": 1,
+                      "sap.crm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Incident:v1": 18,
+                      "sap.odm:entityType:SafetyIncident:v1": 18,
+                      "sap.odm:entityType:HazardousSubstance:v1": 6,
+                      "sap.odm:entityType:ChangeRequest:v1": 1,
+                      "sap.odm:entityType:ITEquipment:v1": 1,
+                      "sap.odm:entityType:ServiceTicket:v1": 1
+                    },
+                    "resource_types": {
+                      "dataProduct": 13,
+                      "agent": 6
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 19
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1973,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 872,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.ehs:apiResource:EmployeeSafetyIncidentReporting:v1",
+              "sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "corp.itsm:dataProduct:IncidentEngagementReliability:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Ensure our chemical inventory documentation stays current with regulatory standards",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 64234,
+          "latency_s": 11.834,
+          "llm_calls": 14,
+          "n_intents": 2,
+          "use_graph": false,
+          "decomp_trace": {
+            "tokens": 291,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Monitor and track current regulatory standards for chemical inventory documentation",
+              "Update chemical inventory documentation to ensure compliance with regulatory standards"
+            ],
+            "original_prompt": "Ensure our chemical inventory documentation stays current with regulatory standards"
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Monitor and track current regulatory standards for chemical inventory documentation",
+              "trace": {
+                "tokens": 31543,
+                "latency_s": 6.204,
+                "llm_calls": 6,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 18,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 717,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ehs",
+                      "entity_types": [
+                        "sap.odm:entityType:HazardousSubstance:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "action_verb": "validate",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20597,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8558,
+                    "latency_s": 6.203881502151489,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:HazardousSubstance:v1"
+                        },
+                        "n_results": 23
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 81
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.ehs": 5,
+                      "emarsys.cx": 4,
+                      "corp.itsm": 3,
+                      "my.mes": 3,
+                      "sap.s4": 2,
+                      "sap.ariba": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:HazardousSubstance:v1": 17,
+                      "sap.odm:entityType:Incident:v1": 5,
+                      "sap.odm:entityType:SafetyIncident:v1": 5,
+                      "sap.odm:entityType:Material:v1": 1,
+                      "sap.odm:entityType:Vendor:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 13,
+                      "agent": 5
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 18
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1671,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Update chemical inventory documentation to ensure compliance with regulatory standards",
+              "trace": {
+                "tokens": 31607,
+                "latency_s": 5.63,
+                "llm_calls": 6,
+                "confidence": 0.95,
+                "verified": false,
+                "use_graph": false,
+                "pool_size": 19,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 717,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ehs",
+                      "entity_types": [
+                        "sap.odm:entityType:HazardousSubstance:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "action_verb": "validate",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 20597,
+                    "latency_s": 0.733
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8558,
+                    "latency_s": 5.6301751136779785,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:HazardousSubstance:v1"
+                        },
+                        "n_results": 23
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 81
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.ehs": 6,
+                      "emarsys.cx": 4,
+                      "corp.itsm": 3,
+                      "my.mes": 3,
+                      "sap.s4": 2,
+                      "sap.ariba": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:HazardousSubstance:v1": 17,
+                      "sap.odm:entityType:Incident:v1": 5,
+                      "sap.odm:entityType:SafetyIncident:v1": 5,
+                      "sap.odm:entityType:Material:v1": 2,
+                      "sap.odm:entityType:Vendor:v1": 2
+                    },
+                    "resource_types": {
+                      "apiResource": 14,
+                      "agent": 5
+                    },
+                    "top_capabilities": {},
+                    "n_candidates": 19
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1735,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+                    "confidence": 0.95
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 793,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+              "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user is requesting a dashboard integration combining safety metrics and chemical inventory data\u2014an ad-hoc analytics/reporting request that doesn't match any complete multi-step operational process.\"\n}\n```",
+      "reason": "The user is requesting a dashboard integration combining safety metrics and chemical inventory data\u2014an ad-hoc analytics/reporting request that doesn't match any complete multi-step operational process.",
+      "tokens": 1658,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 131400,
+    "latency_s": 23.404,
+    "llm_calls": 31
+  },
+  "wall_s": 45.946
+}

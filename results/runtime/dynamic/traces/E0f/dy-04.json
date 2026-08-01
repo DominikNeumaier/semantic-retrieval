@@ -1,0 +1,152 @@
+{
+  "case_id": "dy-04",
+  "user_prompt": "Our engineering team keeps pushing through design changes that require updates to our IT infrastructure, but we're struggling to keep pace with manual coordination across multiple systems. Right now, when a new component specification comes through, we have to manually track which servers need reconfiguration, which licenses need reallocation, and which hardware needs to be deployed\u2014and it's creating delays and tracking errors. We need a way to automate this entire workflow so that when engineering changes are approved, all the downstream IT infrastructure changes happen consistently and in the right sequence.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1,
+    "acceptable": 1,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Our engineering team keeps pushing through design changes that require updates to our IT infrastructure, but we're struggling to keep pace with manual coordination across multiple systems. Right now, when a new component specification comes through, we have to manually track which servers need reconfiguration, which licenses need reallocation, and which hardware needs to be deployed\u2014and it's creating delays and tracking errors. We need a way to automate this entire workflow so that when engineering changes are approved, all the downstream IT infrastructure changes happen consistently and in the right sequence.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE INVENTORY:\n- corp.itsm: Internal IT service management (incident analysis, asset provisioning, safety incidents)\n- sap.crm: Sales/marketing (opportunities, campaigns, compensation)\n- sap.odm \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/siemens.plm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/siemens.plm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"siemens.plm:package:Core:v1\",\n      \"title\": \"siemens.plm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1102
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\n- corp.itsm: Internal IT service management (incident analysis, asset provisioning, safety incidents)\n  - AssetProvisioningOrchestrator: Automates IT asset lifecycle from engineering changes (servers, licenses, hardware)\n  - ChangeAutomationOrchestrator: General orchestrator for engineering changes & material provisioning\n- sap.crm: Sales/marketing (opportunities, campaigns, compensation)\n- sap.odm: Entity type taxonomy (40 canonical business objects)\n- emarsys.cx: Customer experience/engagement\n- workday.hcm: HR/HCM system\n- sap.ehs: Safety/EHS with SafetyComplianceAutomationCoordinator\n- siemens.plm: PLM with EngineeringChangeAndMaterialProvisioning agent, BOM validation\n- my.mes: Manufacturing execution\n\nKEY PATTERN:\n- IT infrastructure automation from engineering changes \u2192 corp.itsm:AssetProvisioningOrchestrator (primary)\n- PLM engineering change coordination \u2192 siemens.plm:EngineeringChangeAndMaterialProvisioning (materials focus)"
+              },
+              "result_preview": {
+                "stored_bytes": 969,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "reason": "Automates IT asset lifecycle provisioning (servers, equipment, materials) triggered by engineering change approvals, ensuring consistent multi-step infrastructure updates without manual coordination."
+              },
+              "result_preview": {
+                "committed": "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+          "picked_reason": "Automates IT asset lifecycle provisioning (servers, equipment, materials) triggered by engineering change approvals, ensuring consistent multi-step infrastructure updates without manual coordination.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 5,
+          "tokens": 21954,
+          "latency_s": 12.721,
+          "llm_calls": 5
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 21954,
+    "latency_s": 12.721,
+    "llm_calls": 5
+  },
+  "wall_s": 12.726
+}

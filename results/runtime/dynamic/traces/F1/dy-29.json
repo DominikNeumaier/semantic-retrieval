@@ -1,0 +1,1232 @@
+{
+  "case_id": "dy-29",
+  "user_prompt": "We need to pull our current production queue status and see which items are scheduled for the next shift, while simultaneously checking our active campaign outreach to identify which contacts have engaged with our latest messaging so we can coordinate our manufacturing timeline with customer communication touchpoints.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull our current production queue status and identify which items are scheduled for the next shift",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:ProductionExecutionAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 90435,
+          "latency_s": 26.844,
+          "llm_calls": 18,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 292,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Pull our current production queue status",
+              "Identify which items are scheduled for the next shift"
+            ],
+            "original_prompt": "Pull our current production queue status and identify which items are scheduled for the next shift"
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Pull our current production queue status",
+              "trace": {
+                "tokens": 44522,
+                "latency_s": 13.36,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 707,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "my.mes",
+                      "entity_types": [
+                        "sap.odm:entityType:ProductionOrder:v1",
+                        "sap.odm:entityType:Machine:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29270,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8472,
+                    "latency_s": 5.796821117401123,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+                        },
+                        "n_results": 23
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Machine:v1"
+                        },
+                        "n_results": 17
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 23
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.s4": 5,
+                      "my.mes": 3,
+                      "sap.ariba": 3,
+                      "sap.crm": 3,
+                      "siemens.plm": 1,
+                      "sap.ehs": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:ProductionOrder:v1": 16,
+                      "sap.odm:entityType:Machine:v1": 11,
+                      "sap.odm:entityType:QualityInspection:v1": 6
+                    },
+                    "resource_types": {
+                      "agent": 1,
+                      "dataProduct": 5,
+                      "apiResource": 10
+                    },
+                    "top_capabilities": {
+                      "plan-production": 1,
+                      "schedule-machines": 1,
+                      "create-work-orders": 1,
+                      "analyze-production-impact": 1,
+                      "monitor-machine-status": 1,
+                      "prioritize-production-orders": 1,
+                      "monitor-work-orders": 1,
+                      "integrate-production-orders": 1
+                    },
+                    "n_candidates": 16
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:ProductionOrder:v1",
+                        "sap.odm:entityType:Machine:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "business_groups": [
+                        "proc_order_to_production_v1",
+                        "proc_QualityDrivenMfgSupplyChain_v1"
+                      ],
+                      "lines_of_business": [
+                        "Manufacturing",
+                        "Manufacturing Execution"
+                      ],
+                      "reason": "Pulling production queue status involves monitoring active production orders, machine availability, and material status in manufacturing operations."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:Material:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_to_production_v1\",\n    \"proc_QualityDrivenMfgSupplyChain_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Manufacturing Execution\"\n  ],\n  \"reason\": \"Pulling production queue status involves monitoring active production orders, machine availability, and material status in manufacturing operations.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity \"Pull our current production queue status\" requires a real-time operational view of what's currently running/queued in production.\n\n1. **my.mes:agent:ProductionChangeOrchestrator** (rank 1) - Best fit. MES (Manufacturing Execution System) agents are purpose-built for production floor operations. This agent has `orchestrate-production-execution` and real-time scheduling capabilities, directly aligned with monitoring queue status.\n\n2. **sap.s4:agent:AssetLifecycleChangeOrchestrator** (rank 2) - Good secondary option. It `track-change-lifecycle` and `coordinate-change-workflow`, providing visibility into what's in motion through production.\n\n3. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning** (rank 3) - Relevant for understanding material/design-driven production state, though less focused on queue status specifically.\n\n4. **sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics** (rank 4) - Analytical capability to assess production capacity and operational state, useful for understanding queue constraints.\n\nExcluded: The other agents focus on asset provisioning, compliance, and workforce readiness rather than current queue monitoring. The workforce analytics dataProduct doesn't address queue status.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "my.mes:agent:ProductionQualityMonitor:v1",
+                      "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+                      "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+                      "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+                      "sap.crm:apiResource:ProductionOrderAndMachineAllocationService:v1"
+                    ],
+                    "tokens": 4019,
+                    "latency_s": 7.563,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 4
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2054,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.s4:apiResource:ProductionExecutionAPI:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Identify which items are scheduled for the next shift",
+              "trace": {
+                "tokens": 44579,
+                "latency_s": 13.484,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 25,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 711,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "my.mes",
+                      "entity_types": [
+                        "sap.odm:entityType:ProductionOrder:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29274,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8524,
+                    "latency_s": 5.817111015319824,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+                        },
+                        "n_results": 23
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 81
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "my.mes": 6,
+                      "sap.s4": 4,
+                      "sap.crm": 3,
+                      "sap.ariba": 3,
+                      "sap.sf": 2,
+                      "corp.itsm": 1,
+                      "sap.ehs": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:ProductionOrder:v1": 14,
+                      "sap.odm:entityType:Machine:v1": 11,
+                      "sap.odm:entityType:EngineeringChange:v1": 4,
+                      "sap.odm:entityType:ProductItem:v1": 4,
+                      "sap.odm:entityType:QualityInspection:v1": 4,
+                      "sap.odm:entityType:Material:v1": 3,
+                      "sap.odm:entityType:Employee:v1": 2,
+                      "sap.odm:entityType:TimeOff:v1": 2
+                    },
+                    "resource_types": {
+                      "agent": 3,
+                      "apiResource": 13,
+                      "dataProduct": 4
+                    },
+                    "top_capabilities": {
+                      "schedule-machines": 2,
+                      "analyze-production-impact": 2,
+                      "assess-engineering-change": 1,
+                      "evaluate-material-impact": 1,
+                      "allocate-materials": 1,
+                      "coordinate-infrastructure": 1,
+                      "allocate-equipment": 1,
+                      "orchestrate-provisioning": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:ProductionOrder:v1",
+                        "sap.odm:entityType:Machine:v1",
+                        "sap.odm:entityType:Employee:v1"
+                      ],
+                      "business_groups": [
+                        "proc_order_to_production_v1",
+                        "proc_ProductionTransitionWorkforce_v1"
+                      ],
+                      "lines_of_business": [
+                        "Manufacturing",
+                        "Manufacturing Execution"
+                      ],
+                      "reason": "Identifying scheduled items for the next shift primarily involves production orders, machines, and workforce scheduling in manufacturing operations."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:Employee:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_to_production_v1\",\n    \"proc_ProductionTransitionWorkforce_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Manufacturing Execution\"\n  ],\n  \"reason\": \"Identifying scheduled items for the next shift primarily involves production orders, machines, and workforce scheduling in manufacturing operations.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity \"Identify which items are scheduled for the next shift\" is fundamentally about **shift scheduling and work order sequencing** \u2014 a tactical production execution task.\n\n**Top Pick - my.mes:agent:ProductionChangeOrchestrator:v1:** This agent has `sequence-work-orders` and `schedule-machines` capabilities, directly matching shift scheduling needs. Its title and orchestration focus align with coordinating items for upcoming shifts.\n\n**Strong Matches - siemens.plm and sap.s4 agents:** These agents coordinate material provisioning and production scheduling, which are prerequisite operations before items reach a shift.\n\n**Supporting Resources:** The remaining agents handle compliance, safety, and asset provisioning \u2014 important context but less direct to the core scheduling task.\n\n**Excluded reasoning:** The dataProducts are analytical/assessment-focused rather than operational scheduling, making them lower priority for this execution-oriented activity.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+                      "my.mes:apiResource:WorkforceScheduleAndAbsenceManagement:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.crm:apiResource:ProductionOrderMachineInventoryService:v1"
+                    ],
+                    "tokens": 4060,
+                    "latency_s": 7.667,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 5
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2010,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 1042,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.s4:apiResource:ProductionExecutionAPI:v1",
+              "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "siemens.plm:apiResource:MachineProductionOrderIntegration:v1",
+            "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Check our active campaign outreach to identify which contacts have engaged with our latest messaging",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CampaignCustomerProvisioningAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CampaignSegmentationDataAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 88887,
+          "latency_s": 25.029,
+          "llm_calls": 19,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 516,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Check our active campaign outreach to identify which contacts have engaged with our latest messaging"
+            ],
+            "original_prompt": "Check our active campaign outreach to identify which contacts have engaged with our latest messaging",
+            "sub_queries_redecomposed": [
+              "Retrieve all active campaign outreach records with their contact identifiers and messaging details",
+              "Identify which contacts have engagement metrics (opens, clicks, responses) recorded against the latest messaging communications"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve all active campaign outreach records with their contact identifiers and messaging details",
+              "trace": {
+                "tokens": 43594,
+                "latency_s": 12.464,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 718,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "emarsys.cx",
+                      "entity_types": [
+                        "sap.odm:entityType:Campaign:v1",
+                        "sap.odm:entityType:CustomerAccount:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29277,
+                    "latency_s": 0.463
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8541,
+                    "latency_s": 5.179162263870239,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Campaign:v1"
+                        },
+                        "n_results": 32
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:CustomerAccount:v1"
+                        },
+                        "n_results": 57
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 57
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 6,
+                      "emarsys.cx": 6,
+                      "sap.ariba": 2,
+                      "sap.crm": 2,
+                      "sap.ehs": 1,
+                      "siemens.plm": 1,
+                      "my.mes": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Campaign:v1": 19,
+                      "sap.odm:entityType:CustomerAccount:v1": 19,
+                      "sap.odm:entityType:CustomerSegment:v1": 3
+                    },
+                    "resource_types": {
+                      "apiResource": 16,
+                      "dataProduct": 2,
+                      "agent": 1
+                    },
+                    "top_capabilities": {
+                      "activate-campaigns": 1,
+                      "activate-customer-accounts": 1,
+                      "provision-campaign-customers": 1,
+                      "manage-campaign-lifecycle": 1,
+                      "provision-customers": 1,
+                      "map-customer-account-to-campaign": 1,
+                      "engage-campaign-contacts": 1,
+                      "deploy-targeted-communications": 1
+                    },
+                    "n_candidates": 19
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Campaign:v1",
+                        "sap.odm:entityType:CustomerAccount:v1"
+                      ],
+                      "business_groups": [],
+                      "lines_of_business": [
+                        "Marketing and CX",
+                        "Sales"
+                      ],
+                      "reason": "Campaign outreach records with contact identifiers and messaging details are core marketing and sales execution artifacts."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Campaign:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Marketing and CX\",\n    \"Sales\"\n  ],\n  \"reason\": \"Campaign outreach records with contact identifiers and messaging details are core marketing and sales execution artifacts.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                      "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                      "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                      "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                      "sap.crm:agent:CampaignAudienceOptimizationAgent:v1",
+                      "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1",
+                      "sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1",
+                      "corp.itsm:apiResource:CampaignAccessManagementAPI:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"emarsys.cx:apiResource:CampaignContactEngagementAPI:v1\",\n  \"emarsys.cx:apiResource:JourneyContactStateAPI:v1\",\n  \"emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1\",\n  \"sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1\",\n  \"corp.itsm:apiResource:CampaignAccessManagementAPI:v1\"\n]\n```\n\n**Reasoning:**\n\n1. **CampaignContactEngagementAPI (top)** - Exact match for the activity. It directly manages contact engagement states, campaign interactions, and explicitly supports retrieving campaign contact details with messaging capabilities (engage-campaign-contacts, manage-marketing-campaigns, track campaign performance).\n\n2. **JourneyContactStateAPI (second)** - Highly relevant for querying active contact engagement state and tracking campaign engagement. Provides the query capability needed to retrieve \"active campaign outreach records\" with contact state information.\n\n3. **CampaignPerformanceAnalytics (dataProduct)** - Supports analytical retrieval of campaign metrics and segment performance, useful for the analytical dimension of \"retrieving\" campaign records.\n\n4. **CampaignSegmentationAndROIAnalytics (dataProduct)** - Provides aggregated campaign and customer segmentation data relevant to identifying campaign outreach records.\n\n5. **CampaignAccessManagementAPI** - Included as it touches campaign access and audience segmentation, though less directly relevant than the top choices.\n\nThe agents are deprioritized because the activity is primarily a data retrieval task (CRUD read operation), not a worker-driven autonomous action.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                      "corp.itsm:apiResource:CampaignCustomerProvisioningAPI:v1",
+                      "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                      "emarsys.cx:apiResource:CampaignSegmentationDataAPI:v1",
+                      "emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1"
+                    ],
+                    "tokens": 3057,
+                    "latency_s": 7.285,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 1
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2001,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Identify which contacts have engagement metrics (opens, clicks, responses) recorded against the latest messaging communications",
+              "trace": {
+                "tokens": 43795,
+                "latency_s": 12.565,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 20,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 722,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "emarsys.cx",
+                      "entity_types": [
+                        "sap.odm:entityType:Campaign:v1",
+                        "sap.odm:entityType:CustomerAccount:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29284,
+                    "latency_s": 0.49
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8556,
+                    "latency_s": 4.8371148109436035,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Campaign:v1"
+                        },
+                        "n_results": 32
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:CustomerAccount:v1"
+                        },
+                        "n_results": 57
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 57
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "emarsys.cx": 10,
+                      "corp.itsm": 6,
+                      "sap.crm": 2,
+                      "my.mes": 1,
+                      "sap.ariba": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:CustomerAccount:v1": 17,
+                      "sap.odm:entityType:Campaign:v1": 16,
+                      "sap.odm:entityType:CustomerSegment:v1": 3,
+                      "sap.odm:entityType:PurchaseOrder:v1": 1,
+                      "sap.odm:entityType:Vendor:v1": 1,
+                      "sap.odm:entityType:CustomerOrder:v1": 1,
+                      "sap.odm:entityType:Incident:v1": 1,
+                      "sap.odm:entityType:SafetyIncident:v1": 1,
+                      "sap.odm:entityType:Invoice:v1": 1,
+                      "sap.odm:entityType:Material:v1": 1
+                    },
+                    "resource_types": {
+                      "dataProduct": 4,
+                      "apiResource": 15,
+                      "agent": 1
+                    },
+                    "top_capabilities": {
+                      "assess-engagement": 1,
+                      "update-contact-state": 1,
+                      "manage-compliance-communications": 1,
+                      "determine-communication-path": 1,
+                      "track-campaign-engagement": 1,
+                      "query-campaign-status": 1,
+                      "map-customer-account-to-campaign": 1,
+                      "engage-campaign-contacts": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Campaign:v1",
+                        "sap.odm:entityType:CustomerAccount:v1",
+                        "sap.odm:entityType:WorkforcePerson:v1"
+                      ],
+                      "business_groups": [],
+                      "lines_of_business": [
+                        "Marketing and Customer Experience",
+                        "customer-experience-management"
+                      ],
+                      "reason": "Activity tracks engagement metrics on messaging communications for contacts, which is core to marketing campaign and customer experience management."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Campaign:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:WorkforcePerson:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Marketing and Customer Experience\",\n    \"customer-experience-management\"\n  ],\n  \"reason\": \"Activity tracks engagement metrics on messaging communications for contacts, which is core to marketing campaign and customer experience management.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                      "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                      "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                      "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                      "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                      "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                      "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                      "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"emarsys.cx:apiResource:CampaignContactEngagementAPI:v1\",\n  \"emarsys.cx:apiResource:JourneyContactStateAPI:v1\",\n  \"emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1\",\n  \"corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1\"\n]\n```\n\n**Rationale:**\n\n1. **CampaignContactEngagementAPI (1st)** - Direct match. Explicitly manages contact engagement states and campaign interactions. Capabilities include \"activate-contact-engagement\" and \"segment-by-impact,\" and the description directly addresses \"real-time contact engagement states and campaign interactions.\"\n\n2. **JourneyContactStateAPI (2nd)** - Strong match. Has capabilities \"track-campaign-engagement\" and \"query-campaign-status,\" enabling identification of contacts with recorded engagement metrics (opens, clicks, responses) within journeys.\n\n3. **CampaignPerformanceAnalytics (3rd)** - Relevant data product. Provides \"aggregated campaign metrics across channels\" which would include engagement metrics, though less direct than APIs for identifying specific contacts.\n\n4. **CustomerEngagementServiceMetrics (4th)** - Supplementary data product. Aggregates engagement patterns across customer accounts and segments, useful for analytical perspective on engagement.\n\nExcluded:\n- **CampaignAccessManagementAPI** - Focuses on permissions/access control, not engagement metrics\n- **SafetyComplianceCustomerAPI** - Focuses on compliance validation, not engagement tracking\n- **SegmentDrivenCampaignOptimizer** - AI agent for optimization, not for identifying/querying engagement metrics\n- **VendorPerformanceAnalytics** - Vendor-focused, not customer engagement communications",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                      "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                      "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                      "emarsys.cx:apiResource:ProcurementVendorEngagementAPI:v1",
+                      "emarsys.cx:apiResource:CustomerEngagementProfileAPI:v1"
+                    ],
+                    "tokens": 3224,
+                    "latency_s": 7.728,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 0
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2009,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 982,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+              "emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Coordinate our manufacturing timeline with customer communication touchpoints based on production queue and campaign engagement data",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:CustomerOrderFulfillmentAndOEECorrelation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:ProductionOrderMachineInventoryService:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 90580,
+          "latency_s": 29.257,
+          "llm_calls": 18,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 309,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Retrieve and analyze production queue data to establish manufacturing timeline",
+              "Retrieve and analyze campaign engagement data to identify customer communication touchpoints and coordinate them with the manufacturing timeline"
+            ],
+            "original_prompt": "Coordinate our manufacturing timeline with customer communication touchpoints based on production queue and campaign engagement data"
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve and analyze production queue data to establish manufacturing timeline",
+              "trace": {
+                "tokens": 44767,
+                "latency_s": 13.766,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 25,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 704,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "my.mes",
+                      "entity_types": [
+                        "sap.odm:entityType:ProductionOrder:v1",
+                        "sap.odm:entityType:Machine:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29274,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8519,
+                    "latency_s": 5.353184700012207,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+                        },
+                        "n_results": 23
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Machine:v1"
+                        },
+                        "n_results": 17
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 23
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.s4": 5,
+                      "my.mes": 4,
+                      "sap.ariba": 3,
+                      "sap.crm": 3,
+                      "sap.ehs": 1,
+                      "siemens.plm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:ProductionOrder:v1": 16,
+                      "sap.odm:entityType:Machine:v1": 11,
+                      "sap.odm:entityType:QualityInspection:v1": 6,
+                      "sap.odm:entityType:CustomerAccount:v1": 1,
+                      "sap.odm:entityType:SalesOpportunity:v1": 1
+                    },
+                    "resource_types": {
+                      "dataProduct": 6,
+                      "apiResource": 10,
+                      "agent": 1
+                    },
+                    "top_capabilities": {
+                      "plan-production": 1,
+                      "schedule-machines": 1,
+                      "create-work-orders": 1,
+                      "analyze-production-impact": 1,
+                      "monitor-machine-status": 1,
+                      "prioritize-production-orders": 1,
+                      "manage-production-orders": 1,
+                      "allocate-machines": 1
+                    },
+                    "n_candidates": 17
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:ProductionOrder:v1",
+                        "sap.odm:entityType:Machine:v1",
+                        "sap.odm:entityType:Material:v1",
+                        "sap.odm:entityType:CustomerOrder:v1"
+                      ],
+                      "business_groups": [
+                        "proc_order_to_production_v1",
+                        "proc_QualityDrivenMfgSupplyChain_v1",
+                        "proc_ProductionTransitionMarketReadiness_v1"
+                      ],
+                      "lines_of_business": [
+                        "Manufacturing",
+                        "Manufacturing Execution"
+                      ],
+                      "reason": "Activity involves analyzing production queues and manufacturing timelines, which directly relates to production orders, machines, materials, and order-to-production workflows."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:CustomerOrder:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_to_production_v1\",\n    \"proc_QualityDrivenMfgSupplyChain_v1\",\n    \"proc_ProductionTransitionMarketReadiness_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Manufacturing Execution\"\n  ],\n  \"reason\": \"Activity involves analyzing production queues and manufacturing timelines, which directly relates to production orders, machines, materials, and order-to-production workflows.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "siemens.plm:agent:BOMComplianceValidator:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:BOMComplianceValidator:v1\"\n]\n```\n\n**Reasoning:**\n\nThe activity requires **retrieving and analyzing production queue data to establish manufacturing timeline** \u2014 this is primarily an analytical read task.\n\n1. **sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1** (dataProduct) \u2014 Best match. Directly evaluates production capacity, identifies process bottlenecks, and assesses operational readiness for timelines. Explicitly covers \"Operations teams identify material and workforce constraints that could delay product transition timelines.\"\n\n2. **my.mes:agent:ProductionChangeOrchestrator:v1** (agent) \u2014 Strong secondary. Orchestrates production execution and sequences work orders, directly supporting timeline establishment through real-time scheduling.\n\n3. **siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1** (agent) \u2014 Material availability drives production queues; this agent coordinates provisioning workflows that impact timeline feasibility.\n\n4. **sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1** (dataProduct) \u2014 Analyzes production impact and transition timelines from workforce readiness perspective.\n\n5. **sap.s4:agent:AssetLifecycleChangeOrchestrator:v1** (agent) \u2014 Tracks change lifecycle and coordinates workflow affecting production schedule.\n\n6. **corp.itsm:agent:AssetProvisioningOrchestrator:v1** (agent) \u2014 Equipment allocation impacts queue sequencing and timeline.\n\n7. **sap.s4:agent:BOMComplianceAutomationAgent:v1** (agent) \u2014 Material compliance validation is prerequisite for queue execution.\n\n8. **siemens.plm:agent:BOMComplianceValidator:v1** (agent) \u2014 Validation gate for production readiness.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "my.mes:dataProduct:CustomerOrderFulfillmentAndOEECorrelation:v1",
+                      "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+                      "sap.crm:apiResource:ProductionOrderMachineInventoryService:v1",
+                      "sap.ehs:dataProduct:ProductionQualityWorkforcePerformanceAnalytics:v1",
+                      "sap.s4:apiResource:ProductionPerformanceAPI:v1"
+                    ],
+                    "tokens": 4258,
+                    "latency_s": 8.413,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 8
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2012,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Retrieve and analyze campaign engagement data to identify customer communication touchpoints and coordinate them with the manufacturing timeline",
+              "trace": {
+                "tokens": 44442,
+                "latency_s": 15.491,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 21,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 723,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "emarsys.cx",
+                      "entity_types": [
+                        "sap.odm:entityType:Campaign:v1",
+                        "sap.odm:entityType:ProductionOrder:v1"
+                      ],
+                      "action_verb": "analyse",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29283,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8772,
+                    "latency_s": 7.426141023635864,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Campaign:v1"
+                        },
+                        "n_results": 32
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+                        },
+                        "n_results": 23
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:CampaignCustomerProvisioningAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 55
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "emarsys.cx": 9,
+                      "corp.itsm": 6,
+                      "sap.crm": 4,
+                      "my.mes": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Campaign:v1": 17,
+                      "sap.odm:entityType:CustomerAccount:v1": 17,
+                      "sap.odm:entityType:CustomerSegment:v1": 5,
+                      "sap.odm:entityType:Material:v1": 2,
+                      "sap.odm:entityType:Incident:v1": 1,
+                      "sap.odm:entityType:SafetyIncident:v1": 1,
+                      "sap.odm:entityType:Invoice:v1": 1,
+                      "sap.odm:entityType:EngineeringChange:v1": 1,
+                      "sap.odm:entityType:ProductItem:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 12,
+                      "dataProduct": 6,
+                      "agent": 2
+                    },
+                    "top_capabilities": {
+                      "map-customer-account-to-campaign": 1,
+                      "engage-campaign-contacts": 1,
+                      "deploy-targeted-communications": 1,
+                      "segment-customers-for-campaigns": 1,
+                      "activate-contact-engagement": 1,
+                      "segment-by-impact": 1,
+                      "manage-marketing-campaigns": 1,
+                      "activate-customer-communications": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Campaign:v1",
+                        "sap.odm:entityType:CustomerAccount:v1",
+                        "sap.odm:entityType:ProductionOrder:v1",
+                        "sap.odm:entityType:CustomerSegment:v1"
+                      ],
+                      "business_groups": [
+                        "proc_ProductionTransitionMarketReadiness_v1",
+                        "proc_order_to_production_v1",
+                        "proc_product_launch_transition_v1"
+                      ],
+                      "lines_of_business": [
+                        "Marketing and Customer Experience",
+                        "Manufacturing"
+                      ],
+                      "reason": "Activity analyzes campaign engagement data to coordinate customer touchpoints with manufacturing timelines, bridging marketing communications and production operations."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Campaign:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:CustomerSegment:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_ProductionTransitionMarketReadiness_v1\",\n    \"proc_order_to_production_v1\",\n    \"proc_product_launch_transition_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Marketing and Customer Experience\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Activity analyzes campaign engagement data to coordinate customer touchpoints with manufacturing timelines, bridging marketing communications and production operations.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                      "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                      "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                      "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                      "corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1",
+                      "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1\",\n  \"emarsys.cx:apiResource:CampaignContactEngagementAPI:v1\",\n  \"emarsys.cx:apiResource:JourneyContactStateAPI:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"corp.itsm:dataProduct:CustomerEngagementServiceMetrics:v1\",\n  \"emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1\",\n  \"corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1\",\n  \"corp.itsm:apiResource:CampaignAccessManagementAPI:v1\"\n]\n```\n\n**Rationale:**\n\n1. **CampaignPerformanceAnalytics** (dataProduct) - Primary choice for analytical reads of campaign engagement data with segment performance breakdown, directly supporting the \"analyze\" requirement.\n\n2. **CampaignContactEngagementAPI** (apiResource) - Provides real-time contact engagement states and campaign interactions; essential for identifying communication touchpoints at scale.\n\n3. **JourneyContactStateAPI** (apiResource) - Tracks campaign engagement and contact state within journeys; complements engagement analysis with touchpoint tracking.\n\n4. **EngineeringChangeImpactAndWorkforceReadiness** (dataProduct) - Critical for coordinating campaign communications with manufacturing timeline by assessing production transition impact and readiness.\n\n5. **CustomerEngagementServiceMetrics** (dataProduct) - Aggregates engagement patterns across segments, supporting analytical coordination of touchpoints.\n\n6. **SegmentDrivenCampaignOptimizer** (agent) - AI agent that identifies high-value segments and optimizes targeting, automating campaign coordination.\n\n7. **SafetyComplianceCustomerAPI** (apiResource) - Validates campaign-to-production alignment and ensures compliance with manufacturing change requirements.\n\n8. **CampaignAccessManagementAPI** (apiResource) - Enables proper provisioning for campaign execution across relevant stakeholders.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                      "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+                      "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                      "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                      "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1"
+                    ],
+                    "tokens": 3600,
+                    "latency_s": 8.065,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 1
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2064,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 1062,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+              "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request combines two distinct ad-hoc lookups (production queue status and campaign engagement metrics) that don't align with any single end-to-end process skill; it requires real-time operational dashboards rather than a multi-step workflow.\"\n}\n```",
+      "reason": "The request combines two distinct ad-hoc lookups (production queue status and campaign engagement metrics) that don't align with any single end-to-end process skill; it requires real-time operational dashboards rather than a multi-step workflow.",
+      "tokens": 1683,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 271950,
+    "latency_s": 81.13,
+    "llm_calls": 57
+  },
+  "wall_s": 113.745
+}

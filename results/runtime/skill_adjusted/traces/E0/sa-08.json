@@ -1,0 +1,439 @@
+{
+  "case_id": "sa-08",
+  "user_prompt": "We're launching a new product line next quarter and need to orchestrate our entire organization's preparedness across departments. Can you help us establish a workflow that identifies promising market opportunities, categorizes our customer base for targeted outreach, and confirms our manufacturing and logistics infrastructure can handle the volume? We'll also need to validate that all component specifications and vendor partnerships meet our compliance standards throughout the supply chain. Additionally, as we scale up staffing to support this launch, we need to ensure our financial records\u2014including compensation structures, benefit deductions, and withholding obligations\u2014are properly documented and accessible to our HR and finance teams.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0",
+  "skill_expected": "proc_020",
+  "skill_picked": "proc_020",
+  "expected_gaps": [
+    "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+    "workday.hcm:apiResource:PayrollDataExposure:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Set up payroll and compensation documentation",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1099
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (11 systems):\n- corp.itsm: IT Service Management (incident analysis, asset provisioning, change automation, safety)\n- emarsys.cx: Customer Experience/Marketing (campaign optimization, opportunity engagement)\n- my.mes: Manufacturing Execution (quality monitoring, production coordination)\n- sap.ariba: Procurement (vendor invoicing, compliance, material coordination)\n- sap.crm: Sales/CRM (opportunity qualification, campaign targeting, sales compensation)\n- sap.ehs: Environment, Health, Safety (incident analysis, vendor compliance, response coordination, campaign orchestration, product safety validation)\n- sap.odm: ODM entity type taxonomy (40 canonical entity types)\n- sap.s4: ERP (procurement matching, BOM compliance, order automation)\n- sap.sf: SuccessFactors HR (performance reviews, compensation, talent acquisition)\n- siemens.plm: Product Lifecycle Management (BOM validation, engineering changes)\n- workday.hcm: Human Capital Management (compensation, performance reviews, safety)\n\nKEY COMPENSATION RESOURCES (workday.hcm):\n- workday.hcm:agent:CompensationAdjustmentAutomation:v1 \u2014 Processes merit increases, generates compensation proposals, maintains audit trails, integrates with payroll cycles\n- workday.hcm:agent:CompensationStructureAutomationEngine:v1 \u2014 Monitors organizational changes, updates compensation plans, recalibrates benefit structures\n- workday.hcm:agent:CompensationChangeProcessor:v1 \u2014 Coordinates compensation adjustments tied to organizational changes\n\nKEY SAFETY RESOURCES:\n- workday.hcm:agent:OccupationalSafetyIncidentMonitoring:v1 (aka \"Workplace Hazard Event Orchestrator\") \u2014 Tracks employee exposure events, triggers safety alerts, coordinates response protocols, maintains audit documentation for regulatory compliance.\n\nRESOLVED ACTIVITIES:\n1. Handle customer grievances \u2192 REFUSED\n2. Reconcile disagreements during fulfillment \u2192 sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n3. Verify material specifications against master records \u2192 sap.s4:agent:BOMComplianceAutomationAgent:v1\n4. Review and align compensation structures with labor requirements \u2192 workday.hcm:agent:CompensationStructureAutomationEngine:v1\n5. Validate financial structures against production budget needs \u2192 REFUSED\n6. Identify priority customer segments from marketing campaigns \u2192 emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1\n7. Pull customer account details and engagement history \u2192 emarsys.cx:agent:OpportunityEngagementOrchestrator:v1\n8. Track workplace safety events during fulfillment \u2192 workday.hcm:agent:OccupationalSafetyIncidentMonitoring:v1\n9. Maintain compliance records for safety incidents \u2192 workday.hcm:agent:OccupationalSafetyIncidentMonitoring:v1\n10. Set up payroll and compensation documentation \u2192 workday.hcm:agent:CompensationAdjustmentAutomation:v1\n"
+              },
+              "result_preview": {
+                "stored_bytes": 2815,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+                "reason": "This agent autonomously processes compensation adjustments, maintains audit trails, and integrates with payroll cycles to establish and document compensation structures."
+              },
+              "result_preview": {
+                "committed": "workday.hcm:agent:CompensationAdjustmentAutomation:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+          "picked_reason": "This agent autonomously processes compensation adjustments, maintains audit trails, and integrates with payroll cycles to establish and document compensation structures.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 3,
+          "tokens": 15235,
+          "latency_s": 15.302,
+          "llm_calls": 3
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Configure benefit deduction structures",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1099
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 10
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.sf:package:Core:v1\",\n      \"title\": \"sap.sf Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1072
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+                "reason": "This agent automates benefit structure recalibration and compensation plan updates, making it the best fit for configuring benefit deduction structures in the compensation workflow."
+              },
+              "result_preview": {
+                "committed": "workday.hcm:agent:CompensationStructureAutomationEngine:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+          "picked_reason": "This agent automates benefit structure recalibration and compensation plan updates, making it the best fit for configuring benefit deduction structures in the compensation workflow.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 4,
+          "tokens": 23729,
+          "latency_s": 18.078,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Establish tax withholding compliance tracking",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1099
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a dedicated tax withholding compliance or payroll tax administration resource; workday.hcm focuses on compensation management and performance, not tax compliance tracking."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape lacks a dedicated tax withholding compliance or payroll tax administration resource; workday.hcm focuses on compensation management and performance, not tax compliance tracking."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a dedicated tax withholding compliance or payroll tax administration resource; workday.hcm focuses on compensation management and performance, not tax compliance tracking.",
+          "tool_calls": 3,
+          "tokens": 14842,
+          "latency_s": 13.261,
+          "llm_calls": 3
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Document HR-finance team access and reporting",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1099
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 10
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.sf:package:Core:v1\",\n      \"title\": \"sap.sf Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1072
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a resource for documenting team access governance and reporting; no agent or data product handles HR-finance access control or departmental access documentation."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape lacks a resource for documenting team access governance and reporting; no agent or data product handles HR-finance access control or departmental access documentation."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a resource for documenting team access governance and reporting; no agent or data product handles HR-finance access control or departmental access documentation.",
+          "tool_calls": 5,
+          "tokens": 34431,
+          "latency_s": 16.286,
+          "llm_calls": 5
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_020",
+      "skill_id_expected": "proc_020",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Set up payroll and compensation documentation\",\n    \"Configure benefit deduction structures\",\n    \"Establish tax withholding compliance tracking\",\n    \"Document HR-finance team access and reporting\"\n  ],\n  \"reason\": \"The skill covers market opportunity identification, customer segmentation, supply chain validation, compliance reviews, and vendor evaluation for product launch readiness. However, it does not address the explicit payroll, benefits administration, withholding obligations, and HR-finance record management requirements mentioned in the request.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers market opportunity identification, customer segmentation, supply chain validation, compliance reviews, and vendor evaluation for product launch readiness. However, it does not address the explicit payroll, benefits administration, withholding obligations, and HR-finance record manag",
+      "tokens": 649,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 88886,
+    "latency_s": 62.927,
+    "llm_calls": 16
+  },
+  "wall_s": 62.955
+}

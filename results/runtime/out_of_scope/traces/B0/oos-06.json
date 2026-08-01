@@ -1,0 +1,207 @@
+{
+  "case_id": "oos-06",
+  "user_prompt": "Our sales team is manually adjusting prices on large B2B orders based on competitor intel and customer volume history, but we need a way to automatically flag orders that fall outside our dynamic pricing bands\u2014especially when our reps are discounting beyond threshold for specific customer segments\u2014so we can audit whether deals are staying within our margin targets before they hit the accounting system.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "sap.s4:agent:ProcurementMatchingAgent:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Set up dynamic pricing bands for B2B orders that account for competitor intelligence and customer volume history",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:agent:ProcurementMatchingAgent:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.crm",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.crm\", \"sap.s4\"],\n  \"reason\": \"B2B pricing strategy requires customer account management and order history (sap.crm) combined with inventory, material, and procurement data for volume-based pricing (sap.s4).\"\n}\n```",
+          "stage2_modalities": [
+            "operational",
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\", \"analytical\"],\n  \"reason\": \"Setting up pricing bands requires operational execution (creating/updating pricing rules in master data), while competitor intelligence and volume history analysis require analytical lookups to inform the configuration.\"\n}\n```",
+          "stage2_pool_size": 55,
+          "stage3_entity_types": [
+            "sap.odm:entityType:CustomerAccount:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:CustomerOrder:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:CustomerOrder:v1\"\n  ],\n  \"reason\": \"Dynamic pricing bands for B2B orders require reading customer volume history and account data, material/product pricing, and order information.\"\n}\n```",
+          "stage3_pool_size": 29,
+          "stage4_raw": "```json\n[\n  \"sap.s4:agent:ProcurementMatchingAgent:v1\",\n  \"sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1\",\n  \"sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1\",\n  \"sap.s4:apiResource:CustomerOrderManagementAPI:v1\",\n  \"sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 4063,
+          "latency_s": 7.291,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Create an automated flagging system to detect orders that fall outside the established dynamic pricing bands",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:ProcurementMatchingAgent:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.s4",
+            "sap.ariba"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.s4\", \"sap.ariba\"],\n  \"reason\": \"Dynamic pricing bands and order monitoring are core to inventory/procurement management and supply chain operations, both residing in these namespaces.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical",
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\", \"operational\"],\n  \"reason\": \"Detection logic requires analytical examination of pricing data against dynamic bands, but flagging orders for intervention is operational work that drives downstream action.\"\n}\n```",
+          "stage2_pool_size": 51,
+          "stage3_entity_types": [
+            "sap.odm:entityType:CustomerOrder:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:CustomerAccount:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:CustomerOrder:v1\", \"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:CustomerAccount:v1\"],\n  \"reason\": \"The flagging system monitors orders against dynamic pricing bands, which directly involves customer orders, the materials being priced, and the customer accounts associated with those orders.\"\n}\n```",
+          "stage3_pool_size": 24,
+          "stage4_raw": "```json\n[\n  \"sap.s4:apiResource:CustomerOrderManagementAPI:v1\",\n  \"sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1\",\n  \"sap.s4:dataProduct:ProcurementMetricsHub:v1\",\n  \"sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1\",\n  \"sap.s4:agent:ProcurementMatchingAgent:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 3634,
+          "latency_s": 6.829,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Implement an audit mechanism to verify that sales representative discounts stay within defined thresholds for specific customer segments and maintain margin targets before orders reach accounting",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.crm",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.crm\", \"sap.s4\"],\n  \"reason\": \"Sales representative discount management and margin verification require CRM customer/sales data (sap.crm) and financial/inventory controls (sap.s4) before accounting handoff.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"The activity enforces real-time discount validation and blocks non-compliant orders before accounting, which is an operational control gate requiring immediate execution and order modification.\"\n}\n```",
+          "stage2_pool_size": 38,
+          "stage3_entity_types": [
+            "sap.odm:entityType:CustomerOrder:v1",
+            "sap.odm:entityType:CustomerSegment:v1",
+            "sap.odm:entityType:Material:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:CustomerOrder:v1\", \"sap.odm:entityType:CustomerSegment:v1\", \"sap.odm:entityType:Material:v1\"],\n  \"reason\": \"The audit mechanism validates discounts and margins on orders for specific customer segments before accounting processing, requiring CustomerOrder, CustomerSegment, and Material (for margin targets) entities.\"\n}\n```",
+          "stage3_pool_size": 14,
+          "stage4_raw": "```json\n[\n  \"sap.s4:apiResource:CustomerOrderManagementAPI:v1\",\n  \"sap.s4:apiResource:CustomerAccountFinancialAPI:v1\",\n  \"sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2880,
+          "latency_s": 7.158,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request is for a pricing audit and flagging system for B2B orders, which is a financial/sales operations control function not covered by any of the registered skills that focus on production, procurement, compliance, and fulfillment processes.\"\n}\n```",
+      "reason": "The request is for a pricing audit and flagging system for B2B orders, which is a financial/sales operations control function not covered by any of the registered skills that focus on production, procurement, compliance, and fulfillment processes.",
+      "tokens": 1704,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 12685,
+    "latency_s": 21.278,
+    "llm_calls": 14
+  },
+  "wall_s": 21.318
+}

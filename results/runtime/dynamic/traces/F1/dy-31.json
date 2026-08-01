@@ -1,0 +1,856 @@
+{
+  "case_id": "dy-31",
+  "user_prompt": "I need to pull together our current safety performance metrics across all reported events while simultaneously ensuring our chemical inventory documentation stays current with regulatory standards\u2014can I get both of those data sets integrated into one dashboard view?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull together our current safety performance metrics across all reported events",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:EmployeeSafetyIncidentReporting:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:SafetyIncidentComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:IncidentSafetyAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 91120,
+          "latency_s": 27.638,
+          "llm_calls": 19,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 484,
+            "latency_s": 0.0,
+            "llm_calls": 2,
+            "n_detected": 1,
+            "sub_queries": [
+              "Pull together our current safety performance metrics across all reported events"
+            ],
+            "original_prompt": "Pull together our current safety performance metrics across all reported events",
+            "sub_queries_redecomposed": [
+              "Retrieve all reported safety events from the database",
+              "Calculate and aggregate current safety performance metrics across the retrieved events"
+            ]
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Retrieve all reported safety events from the database",
+              "trace": {
+                "tokens": 44959,
+                "latency_s": 14.726,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 28,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 717,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ehs",
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:HazardousSubstance:v1"
+                      ],
+                      "action_verb": "retrieve",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29272,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8619,
+                    "latency_s": 6.057476043701172,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:HazardousSubstance:v1"
+                        },
+                        "n_results": 23
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 37
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 5,
+                      "sap.ehs": 4,
+                      "emarsys.cx": 3,
+                      "my.mes": 2,
+                      "sap.s4": 2,
+                      "siemens.plm": 1,
+                      "workday.hcm": 1,
+                      "sap.ariba": 1,
+                      "sap.crm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Incident:v1": 17,
+                      "sap.odm:entityType:SafetyIncident:v1": 17,
+                      "sap.odm:entityType:HazardousSubstance:v1": 5,
+                      "sap.odm:entityType:Employee:v1": 1,
+                      "sap.odm:entityType:WorkforcePerson:v1": 1,
+                      "sap.odm:entityType:ChangeRequest:v1": 1,
+                      "sap.odm:entityType:ITEquipment:v1": 1,
+                      "sap.odm:entityType:ServiceTicket:v1": 1,
+                      "sap.odm:entityType:Campaign:v1": 1,
+                      "sap.odm:entityType:CustomerAccount:v1": 1
+                    },
+                    "resource_types": {
+                      "dataProduct": 13,
+                      "apiResource": 2,
+                      "agent": 5
+                    },
+                    "top_capabilities": {
+                      "track-safety-metrics": 2,
+                      "analyze-incidents-safety": 1,
+                      "review-safety-metrics": 1,
+                      "identify-operational-risks": 1,
+                      "monitor-vendor-incidents": 1,
+                      "escalate-compliance-issues": 1,
+                      "collect-safety-metrics": 1,
+                      "aggregate-incident-data": 1
+                    },
+                    "n_candidates": 20
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:SafetyIncident:v1",
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:Employee:v1",
+                        "sap.odm:entityType:Machine:v1"
+                      ],
+                      "business_groups": [
+                        "proc_SafetyComplianceOrchestration_v1",
+                        "proc_SafetyComplianceWorkforce_v1",
+                        "proc_ProcurementSafetyCompliance_v1"
+                      ],
+                      "lines_of_business": [
+                        "Environment, Health & Safety",
+                        "Safety and Environment"
+                      ],
+                      "reason": "Retrieving safety events directly maps to SafetyIncident and Incident entities within safety compliance and workplace safety processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:SafetyIncident:v1\",\n    \"sap.odm:entityType:Incident:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Machine:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_SafetyComplianceOrchestration_v1\",\n    \"proc_SafetyComplianceWorkforce_v1\",\n    \"proc_ProcurementSafetyCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Environment, Health & Safety\",\n    \"Safety and Environment\"\n  ],\n  \"reason\": \"Retrieving safety events directly maps to SafetyIncident and Incident entities within safety compliance and workplace safety processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1\",\n  \"workday.hcm:apiResource:WorkforceCompensationDataManagement:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity \"Retrieve all reported safety events from the database\" is a **pure data retrieval operation** on master/operational data. While none of the candidates directly expose a \"safety events\" database, the best matches are:\n\n1. **Employee Hierarchy and Organization Management API** - CRUD API resource with explicit safety-related capabilities (`identify-role-based-hazards`, `assign-employee-safety-training`) and use cases mentioning safety managers and compliance tracking.\n\n2. **Workforce Compensation Data Management API** - CRUD API resource with hazard-related capabilities (`calculate-hazard-pay`, `evaluate-exposure-risk`) relevant to safety event impacts.\n\n3. **Engineering Change Impact and Workforce Readiness** - Data product that analyzes safety-relevant workforce and capability readiness.\n\n4. **Product Change Impact and Material Analytics** - Data product providing analytical reads on operational safety implications.\n\n5-8. **Remaining agents** - Less ideal for simple retrieval but included as they have tangential safety/compliance concerns (BOM compliance, provisioning orchestration).\n\nThe ranking prioritizes **APIs** (resources 1-2) since this is pure CRUD retrieval, then **data products** (resources 3-4) for analytical capability, then agents which are better suited for orchestration than simple retrieval.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "emarsys.cx:dataProduct:SafetyIncidentComplianceAnalytics:v1",
+                      "my.mes:dataProduct:IncidentSafetyAnalytics:v1",
+                      "sap.ehs:apiResource:EmployeeSafetyIncidentReporting:v1",
+                      "sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1",
+                      "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1"
+                    ],
+                    "tokens": 4225,
+                    "latency_s": 8.669,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 8
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2126,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Calculate and aggregate current safety performance metrics across the retrieved events",
+              "trace": {
+                "tokens": 44725,
+                "latency_s": 12.912,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 27,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 718,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ehs",
+                      "entity_types": [
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:QualityInspection:v1"
+                      ],
+                      "action_verb": "analyse",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29275,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8343,
+                    "latency_s": 5.380611181259155,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Incident:v1"
+                        },
+                        "n_results": 24
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:QualityInspection:v1"
+                        },
+                        "n_results": 8
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "sap.ehs:dataProduct:ProductionQualityWorkfo:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 32
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "corp.itsm": 5,
+                      "sap.ehs": 5,
+                      "emarsys.cx": 3,
+                      "my.mes": 2,
+                      "sap.s4": 1,
+                      "workday.hcm": 1,
+                      "sap.ariba": 1,
+                      "sap.crm": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:Incident:v1": 18,
+                      "sap.odm:entityType:SafetyIncident:v1": 18,
+                      "sap.odm:entityType:HazardousSubstance:v1": 6,
+                      "sap.odm:entityType:ChangeRequest:v1": 1,
+                      "sap.odm:entityType:ITEquipment:v1": 1,
+                      "sap.odm:entityType:ServiceTicket:v1": 1
+                    },
+                    "resource_types": {
+                      "dataProduct": 13,
+                      "agent": 6
+                    },
+                    "top_capabilities": {
+                      "track-safety-metrics": 2,
+                      "collect-safety-metrics": 1,
+                      "aggregate-incident-data": 1,
+                      "establish-safety-baseline": 1,
+                      "monitor-incidents": 1,
+                      "track-engagement-metrics": 1,
+                      "detect-anomalies": 1,
+                      "identify-safety-issues": 1
+                    },
+                    "n_candidates": 19
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:SafetyIncident:v1",
+                        "sap.odm:entityType:Incident:v1",
+                        "sap.odm:entityType:Employee:v1",
+                        "sap.odm:entityType:Machine:v1"
+                      ],
+                      "business_groups": [
+                        "proc_SafetyComplianceOrchestration_v1",
+                        "proc_SafetyComplianceWorkforce_v1",
+                        "proc_ManufacturingChangeCompliance_v1"
+                      ],
+                      "lines_of_business": [
+                        "Environment, Health & Safety",
+                        "Manufacturing"
+                      ],
+                      "reason": "Safety performance metrics aggregation directly involves safety incidents, employees, and manufacturing assets within compliance and safety orchestration processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:SafetyIncident:v1\",\n    \"sap.odm:entityType:Incident:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Machine:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_SafetyComplianceOrchestration_v1\",\n    \"proc_SafetyComplianceWorkforce_v1\",\n    \"proc_ManufacturingChangeCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Environment, Health & Safety\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Safety performance metrics aggregation directly involves safety incidents, employees, and manufacturing assets within compliance and safety orchestration processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\"\n]\n```\n\n**Rationale:**\n\n1. **SafetyComplianceAutomationCoordinator** (Primary) - Direct match for \"safety performance metrics.\" Has capabilities like `assess-material-safety`, `automate-safety-assessments`, and `orchestrate-compliance-checks` specifically designed to validate and aggregate safety across engineering changes and materials.\n\n2. **EngineeringChangeImpactAndWorkforceReadiness** (DataProduct) - Strong secondary choice. Provides analytical aggregation of performance metrics across multiple dimensions (workforce, capability, transition readiness), which aligns with calculating and aggregating performance indicators.\n\n3. **ProductChangeImpactAndMaterialAnalytics** (DataProduct) - Similar analytical aggregation capability with cross-functional impact analysis and operational readiness assessment.\n\n4. **BOMComplianceAutomationAgent** - Supports compliance validation and assessment activities that contribute to safety metrics tracking.\n\n5. **EngineeringChangeAndMaterialProvisioning** - Coordinates change workflows and impact evaluation relevant to safety performance tracking.\n\n6. **AssetLifecycleChangeOrchestrator** - Tracks change lifecycle and impact assessment across multiple functional areas.\n\n7. **ProductionChangeOrchestrator** - General orchestration of production changes with impact management capabilities.\n\n8. **AssetProvisioningOrchestrator** - Lower relevance but provides infrastructure coordination that may factor into safety metrics.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+                      "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+                      "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                      "emarsys.cx:dataProduct:SafetyIncidentComplianceAnalytics:v1",
+                      "my.mes:dataProduct:IncidentSafetyAnalytics:v1"
+                    ],
+                    "tokens": 4220,
+                    "latency_s": 7.531,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 8
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2169,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 952,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1",
+              "sap.ehs:apiResource:EmployeeSafetyIncidentReporting:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "corp.itsm:dataProduct:IncidentEngagementReliability:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Ensure our chemical inventory documentation stays current with regulatory standards",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 90434,
+          "latency_s": 28.676,
+          "llm_calls": 18,
+          "n_intents": 2,
+          "use_graph": true,
+          "decomp_trace": {
+            "tokens": 291,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "n_detected": 2,
+            "sub_queries": [
+              "Monitor and track current regulatory standards for chemical inventory documentation",
+              "Update chemical inventory documentation to ensure compliance with regulatory standards"
+            ],
+            "original_prompt": "Ensure our chemical inventory documentation stays current with regulatory standards"
+          },
+          "sub_traces": [
+            {
+              "sub_query": "Monitor and track current regulatory standards for chemical inventory documentation",
+              "trace": {
+                "tokens": 44866,
+                "latency_s": 16.06,
+                "llm_calls": 8,
+                "confidence": 0.92,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 25,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 717,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ehs",
+                      "entity_types": [
+                        "sap.odm:entityType:HazardousSubstance:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "action_verb": "validate",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29274,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8792,
+                    "latency_s": 7.23279333114624,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:HazardousSubstance:v1"
+                        },
+                        "n_results": 23
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 81
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.ehs": 5,
+                      "emarsys.cx": 4,
+                      "corp.itsm": 3,
+                      "my.mes": 3,
+                      "sap.s4": 1,
+                      "sap.ariba": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:HazardousSubstance:v1": 16,
+                      "sap.odm:entityType:Incident:v1": 5,
+                      "sap.odm:entityType:SafetyIncident:v1": 5,
+                      "sap.odm:entityType:Material:v1": 1,
+                      "sap.odm:entityType:Vendor:v1": 1
+                    },
+                    "resource_types": {
+                      "apiResource": 12,
+                      "agent": 5
+                    },
+                    "top_capabilities": {
+                      "assess-material-safety": 1,
+                      "verify-substance-regulations": 1,
+                      "evaluate-hazardous-materials": 1,
+                      "validate-material-safety": 1,
+                      "evaluate-compliance": 1,
+                      "assess-regulatory-alignment": 1,
+                      "identify-hazardous-substances": 1,
+                      "catalog-substances": 1
+                    },
+                    "n_candidates": 17
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:HazardousSubstance:v1",
+                        "sap.odm:entityType:Material:v1",
+                        "sap.odm:entityType:ChangeRequest:v1",
+                        "sap.odm:entityType:QualityInspection:v1"
+                      ],
+                      "business_groups": [
+                        "proc_ProcurementSafetyCompliance_v1",
+                        "proc_SafetyComplianceOrchestration_v1",
+                        "proc_ProductComplianceManufacturing_v1"
+                      ],
+                      "lines_of_business": [
+                        "Environment, Health & Safety",
+                        "Inventory Management"
+                      ],
+                      "reason": "Activity monitors regulatory standards for chemical inventory, directly involving hazardous substances, materials, and safety compliance processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:HazardousSubstance:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\",\n    \"sap.odm:entityType:QualityInspection:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_ProcurementSafetyCompliance_v1\",\n    \"proc_SafetyComplianceOrchestration_v1\",\n    \"proc_ProductComplianceManufacturing_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Environment, Health & Safety\",\n    \"Inventory Management\"\n  ],\n  \"reason\": \"Activity monitors regulatory standards for chemical inventory, directly involving hazardous substances, materials, and safety compliance processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+                      "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity focuses on **monitoring and tracking current regulatory standards for chemical inventory documentation** \u2014 this is primarily a compliance and validation concern.\n\n1. **Safety Compliance Automation Coordinator** (Agent) \u2014 Best match. Directly addresses regulatory compliance, material safety validation, and automated compliance checks for engineering changes and materials.\n\n2. **Bill of Materials Compliance Validator** (Agent) \u2014 Strong match. Specifically validates BOM compliance, enforces engineering standards, and ensures materials meet requirements before production.\n\n3. **Engineering Change and Material Provisioning** (Agent) \u2014 Coordinates material updates and evaluates change impact; supports tracking material changes against standards.\n\n4. **Production Change Orchestrator** (Agent) \u2014 Orchestrates production changes with validated materials and engineering specifications; relevant for coordinating compliant material implementations.\n\n5. **Product Change Impact and Material Analytics** (DataProduct) \u2014 Analyzes material requirements and operational readiness; provides analytical perspective on material assessments.\n\n6. **Asset Provisioning Orchestrator** (Agent) \u2014 Supports material allocation and supply chain validation aligned with standards.\n\n7-8. **Workforce readiness dataProducts** \u2014 Secondary; less directly relevant to regulatory standards tracking, though they provide broader change context.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+                      "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+                      "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+                      "my.mes:agent:HazmatIncidentComplianceMonitor:v1",
+                      "sap.ehs:apiResource:ChemicalInventoryCompliance:v1"
+                    ],
+                    "tokens": 4022,
+                    "latency_s": 8.827,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 8
+                  },
+                  "phase3_rerank": {
+                    "tokens": 2061,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1",
+                    "confidence": 0.92
+                  }
+                }
+              }
+            },
+            {
+              "sub_query": "Update chemical inventory documentation to ensure compliance with regulatory standards",
+              "trace": {
+                "tokens": 44484,
+                "latency_s": 12.616,
+                "llm_calls": 8,
+                "confidence": 0.95,
+                "verified": false,
+                "use_graph": true,
+                "pool_size": 27,
+                "phase_traces": {
+                  "phase0_intent": {
+                    "tokens": 717,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "hints": {
+                      "likely_namespace": "sap.ehs",
+                      "entity_types": [
+                        "sap.odm:entityType:HazardousSubstance:v1",
+                        "sap.odm:entityType:Material:v1"
+                      ],
+                      "action_verb": "validate",
+                      "resource_type_hint": "dataProduct"
+                    }
+                  },
+                  "phase1a_embedding": {
+                    "n_candidates": 10,
+                    "embedding_model": "text-embedding-3-large",
+                    "resource_count": 273,
+                    "tokens": 29274,
+                    "latency_s": 0.0
+                  },
+                  "phase1b_guided_d": {
+                    "tokens": 8571,
+                    "latency_s": 5.309104681015015,
+                    "llm_calls": 4,
+                    "agent_steps": [
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:HazardousSubstance:v1"
+                        },
+                        "n_results": 23
+                      },
+                      {
+                        "tool": "resources_exposing",
+                        "input": {
+                          "entity_type": "sap.odm:entityType:Material:v1"
+                        },
+                        "n_results": 58
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "get_resource",
+                        "input": {
+                          "ord_id": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1"
+                        },
+                        "n_results": 1
+                      },
+                      {
+                        "tool": "done"
+                      }
+                    ],
+                    "n_candidates": 81
+                  },
+                  "phase1_5_pool_profile": {
+                    "namespaces": {
+                      "sap.ehs": 6,
+                      "emarsys.cx": 4,
+                      "corp.itsm": 3,
+                      "my.mes": 3,
+                      "sap.s4": 2,
+                      "sap.ariba": 1
+                    },
+                    "entity_types": {
+                      "sap.odm:entityType:HazardousSubstance:v1": 17,
+                      "sap.odm:entityType:Incident:v1": 5,
+                      "sap.odm:entityType:SafetyIncident:v1": 5,
+                      "sap.odm:entityType:Material:v1": 2,
+                      "sap.odm:entityType:Vendor:v1": 2
+                    },
+                    "resource_types": {
+                      "apiResource": 14,
+                      "agent": 5
+                    },
+                    "top_capabilities": {
+                      "assess-material-safety": 1,
+                      "verify-substance-regulations": 1,
+                      "evaluate-hazardous-materials": 1,
+                      "validate-material-safety": 1,
+                      "evaluate-compliance": 1,
+                      "assess-regulatory-alignment": 1,
+                      "identify-hazardous-substances": 1,
+                      "catalog-substances": 1
+                    },
+                    "n_candidates": 19
+                  },
+                  "phase2_graph": {
+                    "anchors": {
+                      "entity_types": [
+                        "sap.odm:entityType:Material:v1",
+                        "sap.odm:entityType:HazardousSubstance:v1",
+                        "sap.odm:entityType:QualityInspection:v1"
+                      ],
+                      "business_groups": [
+                        "proc_ProcurementSafetyCompliance_v1",
+                        "proc_SafetyComplianceOrchestration_v1",
+                        "proc_supply_production_compliance_v1"
+                      ],
+                      "lines_of_business": [
+                        "Environment, Health & Safety",
+                        "Inventory Management"
+                      ],
+                      "reason": "Chemical inventory documentation updates directly involve hazardous materials compliance, safety regulations, and inventory tracking across procurement and manufacturing safety processes."
+                    },
+                    "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:HazardousSubstance:v1\",\n    \"sap.odm:entityType:QualityInspection:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_ProcurementSafetyCompliance_v1\",\n    \"proc_SafetyComplianceOrchestration_v1\",\n    \"proc_supply_production_compliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Environment, Health & Safety\",\n    \"Inventory Management\"\n  ],\n  \"reason\": \"Chemical inventory documentation updates directly involve hazardous materials compliance, safety regulations, and inventory tracking across procurement and manufacturing safety processes.\"\n}\n```",
+                    "max_hops": 2,
+                    "hop_decay": 0.5,
+                    "edge_weights": {
+                      "co_exposes": 1.0,
+                      "co_partOf": 2.0,
+                      "calls": 3.0,
+                      "processNext": 3.0
+                    },
+                    "scored_resources": 274,
+                    "walk_top_ids": [
+                      "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                      "my.mes:agent:ProductionChangeOrchestrator:v1",
+                      "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                      "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+                      "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                      "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                      "siemens.plm:agent:BOMComplianceValidator:v1",
+                      "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+                    ],
+                    "rerank_raw": "```json\n[\n  \"siemens.plm:agent:BOMComplianceValidator:v1\",\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\"\n]\n```\n\n**Rationale:**\n\nThe activity focuses on **updating chemical inventory documentation for regulatory compliance** \u2014 this is primarily a validation and compliance documentation task.\n\n1. **BOM Compliance Validator** (top choice): Directly validates bills of materials against regulatory and engineering standards \u2014 core to compliance documentation.\n\n2. **Safety Compliance Automation Coordinator**: Automates compliance checks and validates engineering changes against safety/regulatory requirements \u2014 essential for chemical inventory compliance.\n\n3. **Engineering Change and Material Provisioning Agent**: Coordinates BOM updates and tracks change status; handles material provisioning with compliance considerations.\n\n4. **Production Change Orchestrator**: Manages material updates and validates engineering specifications; coordinates changes across systems.\n\n5-8. **Remaining candidates**: The dataProducts provide analytical insights useful for compliance planning, and the Asset Provisioning Orchestrator handles coordinated workflows, but are less directly aligned with the core documentation and validation requirement.",
+                    "refused": false,
+                    "previous_resolved": [
+                      "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+                      "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+                      "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+                      "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+                      "sap.ehs:apiResource:MaterialHazardDataExchange:v1"
+                    ],
+                    "tokens": 3949,
+                    "latency_s": 7.307,
+                    "llm_calls": 2,
+                    "n_new_from_graph": 8
+                  },
+                  "phase3_rerank": {
+                    "tokens": 1973,
+                    "latency_s": 0.0,
+                    "llm_calls": 1,
+                    "picked": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+                    "confidence": 0.95
+                  }
+                }
+              }
+            }
+          ],
+          "unified_rerank": {
+            "tokens": 793,
+            "latency_s": 0.0,
+            "llm_calls": 1,
+            "picks": [
+              "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+              "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1"
+            ],
+            "confidence": 0.92
+          }
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The user is requesting a dashboard integration combining safety metrics and chemical inventory data\u2014an ad-hoc analytics/reporting request that doesn't match any complete multi-step operational process.\"\n}\n```",
+      "reason": "The user is requesting a dashboard integration combining safety metrics and chemical inventory data\u2014an ad-hoc analytics/reporting request that doesn't match any complete multi-step operational process.",
+      "tokens": 1658,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 183535,
+    "latency_s": 56.314,
+    "llm_calls": 39
+  },
+  "wall_s": 66.651
+}

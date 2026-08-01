@@ -1,0 +1,269 @@
+{
+  "case_id": "dy-19",
+  "user_prompt": "We need to check our current compliance status for the hazardous materials we're storing across all our facilities and understand what regulatory requirements we need to meet. Can you pull a report showing our inventory levels and which items require updated certifications or documentation?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "enriched",
+  "condition": "B1",
+  "skill_expected": null,
+  "skill_picked": "proc_004",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Pull compliance status report across all facilities",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:IncidentSafetyAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ehs",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ehs\", \"my.mes\"],\n  \"reason\": \"Compliance status reports require Safety, Environment, and Health data (sap.ehs) combined with Manufacturing Execution and facility operations data (my.mes) to cover all facilities comprehensively.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Pulling a compliance status report is a read-only, informational activity that aggregates data for review and monitoring, not for live transactional execution.\"\n}\n```",
+          "stage2_pool_size": 18,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Incident:v1",
+            "sap.odm:entityType:SafetyIncident:v1",
+            "sap.odm:entityType:Employee:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Incident:v1\",\n    \"sap.odm:entityType:SafetyIncident:v1\",\n    \"sap.odm:entityType:Employee:v1\"\n  ],\n  \"reason\": \"Compliance status reports typically aggregate incident records, safety compliance data, and employee-related compliance metrics across facilities.\"\n}\n```",
+          "stage3_pool_size": 8,
+          "stage4_raw": "```json\n[\n  \"sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1\",\n  \"sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1\",\n  \"my.mes:dataProduct:IncidentSafetyAnalytics:v1\",\n  \"sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1\",\n  \"sap.ehs:dataProduct:EmployeeSafetyPerformanceTrendingAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2541,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Generate inventory levels report for hazardous materials",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:dataProduct:MaterialInvoiceComplianceCostAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ehs",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ehs\", \"sap.s4\"],\n  \"reason\": \"SAP EHS specializes in hazardous substances and safety/environment compliance, while SAP S4 manages inventory and materials for reporting.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Generating an inventory levels report is a read-only, analytical activity that reads master data for dashboards and compliance visibility without driving live execution.\"\n}\n```",
+          "stage2_pool_size": 17,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:SafetyIncident:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:SafetyIncident:v1\"],\n  \"reason\": \"The activity generates an inventory report for hazardous materials, which primarily reads Material entity data and relates to safety concerns tracked in SafetyIncident entities.\"\n}\n```",
+          "stage3_pool_size": 8,
+          "stage4_raw": "```json\n[\n  \"sap.ehs:dataProduct:MaterialInvoiceComplianceCostAnalytics:v1\",\n  \"sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1\",\n  \"sap.s4:dataProduct:ProcurementMetricsHub:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2594,
+          "latency_s": 1.879,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Identify items requiring updated certifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:dataProduct:MaterialInvoiceComplianceCostAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ehs",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ehs\", \"my.mes\"],\n  \"reason\": \"Certifications typically relate to safety, environment, health compliance (EHS) and manufacturing/product lifecycle management where regulatory certifications are critical.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Identifying items requiring updated certifications is a read-only discovery and monitoring task that scans for compliance gaps without taking direct action.\"\n}\n```",
+          "stage2_pool_size": 18,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Employee:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Employee:v1\", \"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:Vendor:v1\"],\n  \"reason\": \"Certification requirements typically apply to employees (training/credentials), materials/products (compliance certifications), and vendors (vendor qualification certifications).\"\n}\n```",
+          "stage3_pool_size": 9,
+          "stage4_raw": "```json\n[\n  \"sap.ehs:dataProduct:MaterialInvoiceComplianceCostAnalytics:v1\",\n  \"sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1\",\n  \"my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2526,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Identify items requiring updated documentation",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "my.mes",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"my.mes\", \"sap.s4\"],\n  \"reason\": \"Documentation updates typically span Product Lifecycle Management (design/engineering changes) and Manufacturing Execution (operational procedures), which are core to these namespaces.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Identifying items requiring documentation updates is a read-only discovery task that analyzes current state without triggering live execution or master data changes.\"\n}\n```",
+          "stage2_pool_size": 17,
+          "stage3_entity_types": [
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:ProductItem:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:ProductItem:v1\"\n  ],\n  \"reason\": \"Documentation updates typically concern engineering changes, materials, and product items that require revised specifications or technical documentation.\"\n}\n```",
+          "stage3_pool_size": 5,
+          "stage4_raw": "```json\n[\n  \"sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1\",\n  \"my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2360,
+          "latency_s": 1.745,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_004",
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_004\",\n  \"reason\": \"This skill directly manages hazardous substance compliance, identification of hazardous materials, and assessment across manufacturing operations, which comprehensively covers the user's request for compliance status, inventory levels, and certification requirements for stored hazardous materials.\"\n}\n```",
+      "reason": "This skill directly manages hazardous substance compliance, identification of hazardous materials, and assessment across manufacturing operations, which comprehensively covers the user's request for compliance status, inventory levels, and certification requirements for stored hazardous materials.",
+      "tokens": 1683,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Pull compliance status report across all facilities\",\n    \"Generate inventory levels report for hazardous materials\",\n    \"Identify items requiring updated certifications\",\n    \"Identify items requiring updated documentation\"\n  ],\n  \"reason\": \"The skill covers identification of hazardous materials and execution of regulatory compliance programs, but lacks specific steps for generating reports on current inventory levels, compliance status across facilities, and identifying which items need certification or documentation updates.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers identification of hazardous materials and execution of regulatory compliance programs, but lacks specific steps for generating reports on current inventory levels, compliance status across facilities, and identifying which items need certification or documentation updates.",
+      "tokens": 457,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "decomp_trace": {
+      "sub_queries": [
+        "We need to check our current compliance status for the hazardous materials we're storing across all our facilities and understand what regulatory requirements we need to meet. Can you pull a report showing our inventory levels and which items require updated certifications or documentation?"
+      ],
+      "original_prompt": "We need to check our current compliance status for the hazardous materials we're storing across all our facilities and understand what regulatory requirements we need to meet. Can you pull a report showing our inventory levels and which items require updated certifications or documentation?",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "single_intent \u2014 no decomposition needed"
+    },
+    "decomposer_routing": {
+      "gt_n": 1,
+      "n_detected": 3,
+      "sub_queries": [
+        "Check our current compliance status for hazardous materials storage across all facilities against applicable regulatory requirements",
+        "Pull a report showing our hazardous materials inventory levels across all facilities",
+        "Identify which hazardous materials items require updated certifications or documentation"
+      ],
+      "routed_ok": false,
+      "count_ok": false,
+      "verdict": "red"
+    }
+  },
+  "trace": {
+    "tokens": 12161,
+    "latency_s": 3.624,
+    "llm_calls": 18
+  },
+  "wall_s": 3.727
+}

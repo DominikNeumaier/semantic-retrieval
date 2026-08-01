@@ -1,0 +1,211 @@
+{
+  "case_id": "dy-37",
+  "user_prompt": "I need to pull current production schedules and equipment status to finalize our procurement forecast for next quarter, and simultaneously submit a maintenance request for our assembly line since we're seeing performance degradation that needs urgent attention from our service team.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "C",
+  "state": "enriched",
+  "condition": "C1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull current production schedules and equipment status to help finalize our procurement forecast for next quarter",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": 74.0
+          },
+          {
+            "ordId": "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "score": 73.5
+          },
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": 73.25
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": 72.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:ProductionOrder:v1",
+              "sap.odm:entityType:Machine:v1",
+              "sap.odm:entityType:PurchaseOrder:v1",
+              "sap.odm:entityType:Material:v1"
+            ],
+            "business_groups": [
+              "proc_order_to_production_v1",
+              "proc_procure_fulfill_v1",
+              "proc_supply_production_compliance_v1"
+            ],
+            "lines_of_business": [
+              "Manufacturing",
+              "Procurement"
+            ],
+            "reason": "Activity involves reviewing production schedules and equipment status to inform procurement planning, directly linking production operations with supply chain procurement."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Material:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_order_to_production_v1\",\n    \"proc_procure_fulfill_v1\",\n    \"proc_supply_production_compliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Procurement\"\n  ],\n  \"reason\": \"Activity involves reviewing production schedules and equipment status to inform procurement planning, directly linking production operations with supply chain procurement.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 3869,
+          "latency_s": 4.262,
+          "llm_calls": 2
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+            "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Submit a maintenance request for our assembly line due to performance degradation that requires urgent attention from the service team",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "score": 42.0
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": 42.75
+          },
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": 46.5
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Machine:v1",
+              "sap.odm:entityType:ServiceTicket:v1",
+              "sap.odm:entityType:ProductionOrder:v1",
+              "sap.odm:entityType:Incident:v1"
+            ],
+            "business_groups": [
+              "proc_ServiceToProduction_v1",
+              "proc_order_to_production_v1",
+              "proc_ManufacturingChangeCompliance_v1"
+            ],
+            "lines_of_business": [
+              "Manufacturing",
+              "Operations"
+            ],
+            "reason": "Maintenance request for assembly line involves machine asset management, service ticket creation, production impact, and operational continuity in manufacturing."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:Incident:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_ServiceToProduction_v1\",\n    \"proc_order_to_production_v1\",\n    \"proc_ManufacturingChangeCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Operations\"\n  ],\n  \"reason\": \"Maintenance request for assembly line involves machine asset management, service ticket creation, production impact, and operational continuity in manufacturing.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"my.mes:apiResource:ServiceTicketChangeRequestManagement:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1"
+          ],
+          "tokens": 3846,
+          "latency_s": 3.703,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"The request involves two distinct processes (procurement forecasting + maintenance request submission) that don't align with any single skill's end-to-end workflow; the maintenance component specifically requires proc_010, but that doesn't cover the procurement forecasting aspect, and no skill orchestrates both together.\"\n}\n```",
+      "reason": "The request involves two distinct processes (procurement forecasting + maintenance request submission) that don't align with any single skill's end-to-end workflow; the maintenance component specifically requires proc_010, but that doesn't cover the procurement forecasting aspect, and no skill orche",
+      "tokens": 1687,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    },
+    "decomposer_routing": {
+      "gt_n": 2,
+      "n_detected": 2,
+      "sub_queries": [
+        "Pull current production schedules and equipment status to finalize our procurement forecast for next quarter",
+        "Submit a maintenance request for our assembly line due to performance degradation that needs urgent attention from our service team"
+      ],
+      "routed_ok": true,
+      "count_ok": true,
+      "verdict": "green"
+    }
+  },
+  "trace": {
+    "tokens": 9671,
+    "latency_s": 7.965,
+    "llm_calls": 6
+  },
+  "wall_s": 7.987
+}
