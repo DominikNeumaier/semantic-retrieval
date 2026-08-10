@@ -19,7 +19,7 @@ WHY A SEPARATE SCRIPT
   Embedding R@1=28.7 / R@5=70.0 and Agentic Hybrid R@1=45.0.
 
 USAGE
-  python3 experiments/paper2/statistics.py
+  python3 analysis/statistics.py
   (run from the repo root; deterministic, seed=42)
 """
 from __future__ import annotations
@@ -32,7 +32,7 @@ import random
 
 random.seed(42)  # fixed seed -> identical bootstrap CIs on every run
 
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 RT = os.path.join(ROOT, "results", "runtime", "dynamic", "traces")
 BOOT = 10_000
 

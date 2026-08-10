@@ -33,7 +33,7 @@ SCORING CONVENTIONS (must match the paper — see appendix "Condition labels")
   C=Graph, D=Agentic Tools, E=Agentic Raw, F=Agentic Hybrid.
 
 USAGE
-  python3 experiments/paper2/numbers.py
+  python3 analysis/numbers.py
   (run from the repo root; no arguments; deterministic, seed=42)
 """
 from __future__ import annotations
@@ -46,8 +46,8 @@ import random
 
 random.seed(42)  # fixed seed -> identical bootstrap CIs on every run
 
-# Repo root is two levels up from this file (experiments/paper2/).
-ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
+# Repo root is one level up from this file (analysis/).
+ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 RT = os.path.join(ROOT, "results", "runtime")
 DT = os.path.join(ROOT, "results", "design-time")
 
