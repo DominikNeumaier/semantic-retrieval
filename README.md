@@ -20,7 +20,7 @@ src/
   runtime/    Orchestration pipeline (Intent Resolver, Planner, Mode Selection)
   eval/       Evaluation harnesses (design-time, runtime)
 results/      Runtime and design-time evaluation traces and summaries
-experiments/  Reproduction scripts (numbers.py, statistics.py)
+analysis/     Reproduction scripts (numbers.py, statistics.py)
 paper/        Conference paper LaTeX source and PDF
 docs/         Design documentation
 web/          Interactive results browser (traces, R@1/R@5, enrichment delta, cost)
@@ -29,8 +29,8 @@ web/          Interactive results browser (traces, R@1/R@5, enrichment delta, co
 ## Reproducing the numbers
 
 ```bash
-python experiments/numbers.py     # all paper tables and figures
-python experiments/statistics.py  # bootstrap CIs and McNemar p-values
+python analysis/numbers.py     # all paper tables and figures
+python analysis/statistics.py  # bootstrap CIs and McNemar p-values
 ```
 
 ## Dependencies
