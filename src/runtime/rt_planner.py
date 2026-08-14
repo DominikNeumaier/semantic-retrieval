@@ -28,19 +28,19 @@ Three Orchestration-Layer stages in sequence (Sec. 4.3):
 
 from __future__ import annotations
 
-from src.core import config
+from src import config
 from src.runtime import intent_resolver, planner, intent_decomposer
-from src.methods import method_a, method_b, method_c, method_d, method_e, method_s, method_f
+from src.methods import method_embedding, method_progressive, method_graph, method_tools, method_raw, method_baseline, method_hybrid
 
 
 METHODS = {
-    "A": method_a.retrieve,
-    "B": method_b.retrieve,
-    "C": method_c.retrieve,
-    "D": method_d.retrieve,
-    "E": method_e.retrieve,
-    "S": method_s.retrieve,
-    "F": method_f.retrieve,  # agentic meta-retrieval over A/B/C/D tools
+    "A": method_embedding.retrieve,
+    "B": method_progressive.retrieve,
+    "C": method_graph.retrieve,
+    "D": method_tools.retrieve,
+    "E": method_raw.retrieve,
+    "S": method_baseline.retrieve,
+    "F": method_hybrid.retrieve,  # agentic meta-retrieval over A/B/C/D tools
 }
 
 
@@ -239,7 +239,7 @@ def plan_and_resolve(user_request: str,
 
 
 if __name__ == "__main__":
-    from src.core import ord_loader
+    from src import loader as ord_loader
     from src.runtime import skill_registry
     resources = ord_loader.load_landscape()
     skills = skill_registry.load_skills()

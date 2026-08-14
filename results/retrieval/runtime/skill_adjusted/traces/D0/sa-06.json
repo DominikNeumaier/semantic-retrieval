@@ -1,0 +1,569 @@
+{
+  "case_id": "sa-06",
+  "user_prompt": "We need to establish a complete acquisition and delivery system that starts with gathering customer orders, then assesses both supplier and product safety standards, identifies appropriate sourcing partners, and ensures our logistics network remains uninterrupted. The workflow should also track how this impacts our team's compensation structures given the increased procurement workload, and we'd like visibility into any workplace safety events that occur during the fulfillment process so we can maintain our compliance records. Can you design this entire sourcing-to-delivery journey with all these considerations built in?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": "proc_009",
+  "skill_picked": "proc_009",
+  "expected_gaps": [
+    "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+    "corp.itsm:dataProduct:SafetyIncidentMetrics:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track workplace safety events during fulfillment",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:agent:HazmatIncidentComplianceMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:SafetyIncident:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+                  "type": "agent",
+                  "title": "Incident Safety Coordinator",
+                  "shortDescription": "Automates safety incident detection and coordinates response workflows across ITSM."
+                },
+                {
+                  "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+                  "type": "agent",
+                  "title": "Occupational Safety Incident Coordinator",
+                  "shortDescription": "Monitors and coordinates safety incidents with hazardous substance involvement for compliance."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Incident Compliance Analytics",
+                  "shortDescription": "Aggregates incident and safety incident data for compliance reporting and trend analysis."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Environment, Health & Safety"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                  "type": "apiResource",
+                  "title": "Safety Compliance Customer Management API",
+                  "shortDescription": "Manages customer accounts and safety campaigns with compliance tracking integration."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+                  "type": "apiResource",
+                  "title": "Safety Inspection Campaign Management API",
+                  "shortDescription": "Manages and retrieves safety inspection campaigns linked to customer accounts."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Storage Tracking API",
+                  "shortDescription": "Manages and retrieves hazardous substance storage locations and inventory status."
+                },
+                "... (2 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:agent:HazmatIncidentComplianceMonitor:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:agent:HazmatIncidentComplianceMonitor:v1",
+                "type": "agent",
+                "namespace": "my.mes",
+                "title": "Hazmat Incident Compliance Monitor",
+                "shortDescription": "Monitors hazardous substance incidents and coordinates supplier compliance responses.",
+                "description": "Continuously monitors hazardous substance handling and safety incidents across the production environment, automatically detecting compliance deviations and incident patterns. Coordinates incident notifications with suppliers, processes corrective actions, and automates hazmat-related compliance workflows to ensure regulatory adherence and safe material management throughout the procurement and production lifecycle.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1",
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "supplier-compliance",
+                  "hazmat-tracking",
+                  "incident-management"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:agent:IncidentRootCauseAutomationEngine:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:agent:IncidentRootCauseAutomationEngine:v1",
+                "type": "agent",
+                "namespace": "sap.s4",
+                "title": "Incident Root Cause Automation Engine",
+                "shortDescription": "Automates incident analysis, root cause identification, and corrective action workflows.",
+                "description": "This agent monitors safety incidents and hazardous substance events across production environments, automatically correlating incident data to identify root causes and trigger corrective action processes. It processes incident reports in real-time, coordinates with compliance systems, and escalates high-risk safety events to designated stakeholders for immediate remediation.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1",
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "Safety and Environment"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "incident-analysis",
+                  "root-cause",
+                  "automation",
+                  "corrective-action"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:IncidentSafetyCoordinator:v1"
+              },
+              "result_preview": {
+                "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+                "type": "agent",
+                "namespace": "corp.itsm",
+                "title": "Incident Safety Coordinator",
+                "shortDescription": "Automates safety incident detection and coordinates response workflows across ITSM.",
+                "description": "Monitors incoming service tickets and hazardous substance reports to identify and escalate safety-related incidents. Coordinates automated workflows that route critical safety incidents to appropriate teams, tracks incident lifecycle through resolution, and processes compliance notifications. Ensures timely response and proper documentation of all safety-related events within the IT service management infrastructure.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1",
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "IT_Operations"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "incident-management",
+                  "safety-automation",
+                  "compliance-coordination"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "corp.itsm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:agent:HazmatIncidentComplianceMonitor:v1",
+                "reason": "Continuously monitors hazardous substance and safety incidents in production environments during fulfillment operations with automated incident detection and compliance coordination."
+              },
+              "result": {
+                "committed": "my.mes:agent:HazmatIncidentComplianceMonitor:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:agent:HazmatIncidentComplianceMonitor:v1",
+          "picked_reason": "Continuously monitors hazardous substance and safety incidents in production environments during fulfillment operations with automated incident detection and compliance coordination.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 19703,
+          "latency_s": 11.565,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Maintain compliance records for safety incidents",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "my.mes:agent:HazmatIncidentComplianceMonitor:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Environment, Health & Safety"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                  "type": "apiResource",
+                  "title": "Safety Compliance Customer Management API",
+                  "shortDescription": "Manages customer accounts and safety campaigns with compliance tracking integration."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+                  "type": "apiResource",
+                  "title": "Safety Inspection Campaign Management API",
+                  "shortDescription": "Manages and retrieves safety inspection campaigns linked to customer accounts."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Storage Tracking API",
+                  "shortDescription": "Manages and retrieves hazardous substance storage locations and inventory status."
+                },
+                "... (2 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Safety and Environment"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Compliance Management API",
+                  "shortDescription": "Manages and exposes hazardous substance inventory, compliance status, and regulatory documentation."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:IncidentSafetyAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Incident and Safety Analytics",
+                  "shortDescription": "Aggregates incident and safety event data with compliance metrics and trend analysis."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+                  "type": "apiResource",
+                  "title": "Chemical Inventory and Compliance API",
+                  "shortDescription": "REST API for managing hazardous substance inventory and regulatory compliance tracking"
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Health, Safety & Environment"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Compensation and Safety Risk Correlation Analytics",
+                  "shortDescription": "Aggregates compensation patterns and safety incident data to identify risk correlations."
+                },
+                {
+                  "ordId": "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Maintenance Impact Safety Analytics",
+                  "shortDescription": "Aggregates maintenance changes, equipment status, and service interventions to assess safety risk exposure."
+                },
+                {
+                  "ordId": "sap.ehs:dataProduct:EmployeeCompensationSafetyRiskAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Occupational Hazard Financial Impact Assessment",
+                  "shortDescription": "Links workplace incident frequency to compensation expenditures and identifies financial risk drivers across roles."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Hazardous Substance Compliance Management API",
+                "shortDescription": "Manages and exposes hazardous substance inventory, compliance status, and regulatory documentation.",
+                "description": "This API retrieves and manages hazardous substance data across production facilities, providing real-time access to substance inventories, safety data sheets, compliance certifications, and regulatory reporting requirements. It enables downstream systems to obtain current hazmat information for quality inspections, equipment diagnostics, and audit trail maintenance.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1"
+                ],
+                "lineOfBusiness": [
+                  "Safety and Environment"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "chemical-compliance",
+                  "hazmat-management",
+                  "regulatory-reporting",
+                  "substance-inventory"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:IncidentResponseCoordinator:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:agent:IncidentResponseCoordinator:v1",
+                "type": "agent",
+                "namespace": "sap.ehs",
+                "title": "Incident Response Coordinator",
+                "shortDescription": "Coordinates safety incident workflows and automates emergency response actions.",
+                "description": "Monitors incoming safety incidents and environmental events, automatically initiating coordinated response procedures across change management and IT infrastructure. Processes incident severity assessments, routes service tickets to appropriate response teams, and tracks equipment status during emergency situations to ensure compliance with regulatory reporting timelines.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "Safety and Environment"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "incident-management",
+                  "emergency-response",
+                  "workflow-automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+                "type": "apiResource",
+                "namespace": "sap.ehs",
+                "title": "Chemical Inventory and Compliance API",
+                "shortDescription": "REST API for managing hazardous substance inventory and regulatory compliance tracking",
+                "description": "Exposes chemical inventory data, safety data sheet (SDS) linkages, and regulatory compliance status for hazardous substances across facilities. Enables real-time queries of substance quantities, storage locations, exposure limits, and compliance violations to support chemical management workflows and regulatory reporting requirements.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1"
+                ],
+                "lineOfBusiness": [
+                  "Safety and Environment"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "chemical-compliance",
+                  "hazmat-management",
+                  "regulatory-reporting",
+                  "substance-inventory"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+                "reason": "This API manages regulatory compliance tracking and maintains compliance records for hazardous substances, making it ideal for persisting and maintaining safety incident compliance documentation."
+              },
+              "result": {
+                "committed": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+          "picked_reason": "This API manages regulatory compliance tracking and maintains compliance records for hazardous substances, making it ideal for persisting and maintaining safety incident compliance documentation.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 25565,
+          "latency_s": 12.373,
+          "llm_calls": 10
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_009",
+      "skill_id_expected": "proc_009",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track workplace safety events during fulfillment\",\n    \"Maintain compliance records for safety incidents\"\n  ],\n  \"reason\": \"The skill covers the core procurement and fulfillment workflow including customer orders, compliance evaluation, supplier sourcing, supply chain continuity, and workforce capacity/labor cost management. However, it does not explicitly address tracking workplace safety events or maintaining safety compliance records, which the user request specifically names as required visibility for fulfillment operations.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers the core procurement and fulfillment workflow including customer orders, compliance evaluation, supplier sourcing, supply chain continuity, and workforce capacity/labor cost management. However, it does not explicitly address tracking workplace safety events or maintaining safety co",
+      "tokens": 621,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 45889,
+    "latency_s": 23.938,
+    "llm_calls": 20
+  },
+  "wall_s": 23.972
+}

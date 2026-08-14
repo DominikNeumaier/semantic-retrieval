@@ -38,8 +38,8 @@ import json
 import time
 from pathlib import Path
 
-from src.core import config
-from src.core import ord_loader
+from src import config
+from src import loader as ord_loader
 from src.runtime import rt_planner
 from src.runtime import skill_registry
 
@@ -225,16 +225,23 @@ def _score(plan: dict, case: dict) -> dict:
     falsely_picked: int | None = None
     falsely_picked_ord_id: str | None = None
     if expected_mode == "out_of_scope":
-        # "Refused" = no candidate was committed to.
-        # For D/E this means refuse() was called (no candidate emitted).
-        # For A/B/C this would only happen if their result is empty, which
-        # by current design never is — they always return top-k. That is
-        # part of the H5 finding: algorithmic methods cannot refuse.
-        any_pick = bool(plan["steps"] and plan["steps"][0]["candidates"])
+        # "Refused" = no candidate was committed to across ANY sub-step.
+        # For D/E/F this means refuse() was called on every decomposed
+        # activity (no candidate emitted). For A/B/C this only happens if
+        # every step's result is empty, which by design is rare — they
+        # return top-k. That is part of the H5 finding: algorithmic methods
+        # cannot refuse. A single sub-step that surfaces a resource counts
+        # as a false pick for the whole out-of-scope request.
+        picked_steps = [s for s in plan["steps"] if s.get("candidates")]
+        any_pick = bool(picked_steps)
         correctly_refused = int(not any_pick)
         falsely_picked = int(any_pick)
         if any_pick:
-            falsely_picked_ord_id = plan["steps"][0]["candidates"][0]["ordId"]
+            first = picked_steps[0]
+            falsely_picked_ord_id = (
+                first["method_trace"].get("picked_ord_id")
+                or first["candidates"][0]["ordId"]
+            )
         # Top-1 / Acceptable / Cand-Recall are not meaningful here; zero
         # them out for consistency in the records.
         top1_acc = 0
@@ -540,8 +547,8 @@ def run_mode(mode: str, methods: list[str], states: list[str],
     out.mkdir(parents=True, exist_ok=True)
 
     if "E" in methods:
-        from src.methods import method_e
-        method_e.reset_notes()
+        from src.methods import method_raw
+        method_raw.reset_notes()
         print("  reset E's persistent notes")
 
     records: list[dict] = []

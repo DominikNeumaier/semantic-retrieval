@@ -15,7 +15,7 @@ from typing import Any
 
 from openai import OpenAI
 
-from src.core import config
+from src import config
 
 
 _llm_client = OpenAI(base_url=config.LLM_BASE_URL, api_key=config.LLM_API_KEY)
@@ -59,7 +59,7 @@ def _call_with_retry(fn, what: str):
 
 
 def get_clients():
-    """Public accessor so method_d / method_e can use the current
+    """Public accessor so method_tools / method_raw can use the current
     refreshable client instead of importing OpenAI directly."""
     return _llm_client, _emb_client
 

@@ -1,0 +1,495 @@
+{
+  "case_id": "sa-09",
+  "user_prompt": "We need to orchestrate the launch of our new product line, ensuring that procurement sources quality raw materials that meet our standards, engineering designs and validates the components, operations sets up manufacturing processes, and sales prepares go-to-market strategies. As we ramp up production, we'll also need to seamlessly integrate with our systems to retrieve and manage incoming customer orders and account information for processing. Additionally, the process should include coordinating any engineering modifications and material lifecycle changes across departments to keep everything synchronized. Can you help us design a workflow that handles all of these moving parts together?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "F",
+  "state": "clean",
+  "condition": "F0",
+  "skill_expected": "proc_012",
+  "skill_picked": "proc_012",
+  "expected_gaps": [
+    "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+    "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.5,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Integrate with systems to retrieve customer orders",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:apiResource:CustomerOrderAndAccountLifecycleManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:CustomerOrderAndAccountManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 7550,
+          "latency_s": 6.33,
+          "llm_calls": 6,
+          "use_graph": false,
+          "picked_ord_id": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+          "picked_reason": "Directly enables retrieval of customer orders and account details for order processing; provides real-time order access, modification, and full lifecycle data (account hierarchies, order histories, line-item details) necessary for system integration.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "retrieve customer orders integration",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+                "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+                "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+                "siemens.plm:apiResource:CustomerOrderAndAccountLifecycleManagement:v1",
+                "my.mes:apiResource:CustomerOrderAndAccountManagement:v1",
+                "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+                "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+                "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1",
+                "emarsys.cx:apiResource:CustomerEngagementProfileAPI:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "Order"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+                "reason": "Directly enables retrieval of customer orders and account details for order processing; provides real-time order access, modification, and full lifecycle data (account hierarchies, order histories, line-item details) necessary for system integration."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Manage account information for order processing",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:CustomerOrderAndAccountManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:apiResource:CustomerOrderAndAccountLifecycleManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:apiResource:CustomerOrderAndAccountProvisioningManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 7540,
+          "latency_s": 5.951,
+          "llm_calls": 6,
+          "use_graph": false,
+          "picked_ord_id": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+          "picked_reason": "Directly exposes customer account information and order data for order processing. Explicitly manages account details, order histories, and lifecycle tracking in the Sales and Customer domain. Best semantic and functional match for the activity.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "manage account information for order processing",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+                "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+                "my.mes:apiResource:CustomerOrderAndAccountManagement:v1",
+                "siemens.plm:apiResource:CustomerOrderAndAccountLifecycleManagement:v1",
+                "siemens.plm:apiResource:CustomerOrderAndAccountProvisioningManagement:v1",
+                "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+                "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+                "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1",
+                "emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1",
+                "emarsys.cx:apiResource:CustomerEngagementProfileAPI:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "Account"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:CustomerOrderAndAccountManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+                "reason": "Directly exposes customer account information and order data for order processing. Explicitly manages account details, order histories, and lifecycle tracking in the Sales and Customer domain. Best semantic and functional match for the activity."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:CustomerOrderManagementAPI:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Prepare go-to-market strategies",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:apiResource:CampaignAndCustomerSegmentationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:SalesProductChangeCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 7738,
+          "latency_s": 6.75,
+          "llm_calls": 6,
+          "use_graph": false,
+          "picked_ord_id": "siemens.plm:apiResource:CampaignAndCustomerSegmentationManagement:v1",
+          "picked_reason": "Best supports go-to-market strategy preparation through campaign coordination, account segmentation, and targeted market initiatives. Enables strategic alignment between product lifecycle and market positioning through audience classification and account-based product configurations.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "prepare go-to-market strategies",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+                "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+                "sap.crm:agent:SalesProductChangeCoordinator:v1",
+                "siemens.plm:apiResource:CampaignAndCustomerSegmentationManagement:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "siemens.plm:apiResource:ProductConfigurationAndCustomerCampaignManagement:v1",
+                "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+                "workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1",
+                "sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1",
+                "sap.crm:agent:CampaignAudienceOptimizationCoordinator:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "go-to-market strategy",
+                "top_k": 5
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:CampaignAndCustomerSegmentationManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:agent:ProductLifecycleOrchestrator:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:CampaignAndCustomerSegmentationManagement:v1",
+                "reason": "Best supports go-to-market strategy preparation through campaign coordination, account segmentation, and targeted market initiatives. Enables strategic alignment between product lifecycle and market positioning through audience classification and account-based product configurations."
+              },
+              "result": {
+                "committed": "siemens.plm:apiResource:CampaignAndCustomerSegmentationManagement:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Design and validate product components",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:agent:BOMComplianceValidator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 7626,
+          "latency_s": 6.419,
+          "llm_calls": 6,
+          "use_graph": false,
+          "picked_ord_id": "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1",
+          "picked_reason": "This agent directly orchestrates design reviews and monitors compliance documentation workflows across the product lifecycle, comprehensively supporting both the design and validation aspects of product component development.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "Design and validate product components",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+                "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+                "siemens.plm:agent:BOMComplianceValidator:v1",
+                "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1",
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+                "siemens.plm:agent:EngineeringChangeAndComplianceOrchestrator:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "siemens.plm:apiResource:HazardousSubstanceComplianceAndTrackingManagement:v1",
+                "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "Design and validate product components",
+                "top_k": 5
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1",
+                "reason": "This agent directly orchestrates design reviews and monitors compliance documentation workflows across the product lifecycle, comprehensively supporting both the design and validation aspects of product component development."
+              },
+              "result": {
+                "committed": "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_012",
+      "skill_id_expected": "proc_012",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "gap steps injected from reference run"
+    }
+  },
+  "trace": {
+    "tokens": 30454,
+    "latency_s": 25.45,
+    "llm_calls": 24
+  },
+  "wall_s": 117.895
+}

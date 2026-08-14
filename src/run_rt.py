@@ -32,7 +32,7 @@ Usage:
     .venv/bin/python run_rt.py --no-wipe                    # resume after interruption
 """
 
-from src.runtime.rt_benchmark import main
+from src.eval.runtime import main
 
 if __name__ == "__main__":
     main()

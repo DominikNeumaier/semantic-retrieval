@@ -1,0 +1,203 @@
+{
+  "case_id": "sa-14",
+  "user_prompt": "I need to launch a new product campaign that coordinates with our vendors, validates compliance requirements, and ensures production is ready to fulfill orders. We're provisioning new customers across multiple regions, so we'll need to qualify vendors and manage the entire supply chain orchestration. As part of this rollout, we also need to track any product modifications we're making and manage the associated equipment and service requests that come with the deployment. Can you help us coordinate all of these moving parts together so nothing falls through the cracks?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": "proc_015",
+  "skill_picked": "proc_015",
+  "expected_gaps": [
+    "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+    "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track product modifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.s4",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.s4\", \"my.mes\"],\n  \"reason\": \"Product modifications involve Engineering Changes and Material management (sap.s4) coordinated with Manufacturing Execution and Product Lifecycle Management (my.mes).\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Tracking product modifications is a read-only, event-driven activity that monitors changes without executing live operations.\"\n}\n```",
+          "stage2_pool_size": 17,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:ProductItem:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:ProductItem:v1\"\n  ],\n  \"reason\": \"Tracking product modifications involves changes to materials and product items, which are captured and managed through engineering change requests.\"\n}\n```",
+          "stage3_pool_size": 5,
+          "stage4_raw": "```json\n[\n  \"my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1\",\n  \"sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2239,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Manage equipment requests",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm",
+            "sap.ariba"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\", \"sap.ariba\"],\n  \"reason\": \"Equipment requests are IT service management operations (itsm) handled through change/asset requests, with procurement and vendor coordination for acquisition.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Managing equipment requests requires creating, updating, approving, and actioning requests, which are core operational activities.\"\n}\n```",
+          "stage2_pool_size": 38,
+          "stage3_entity_types": [
+            "sap.odm:entityType:PurchaseOrder:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:Vendor:v1\"\n  ],\n  \"reason\": \"Equipment requests typically involve procuring materials/equipment from vendors through purchase orders.\"\n}\n```",
+          "stage3_pool_size": 15,
+          "stage4_raw": "```json\n[\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"corp.itsm:apiResource:ProcurementVendorManagementAPI:v1\",\n  \"sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1\",\n  \"corp.itsm:agent:AccessProvisioningOrchestrator:v1\",\n  \"sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2900,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Manage service requests",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\"],\n  \"reason\": \"Service request management is the core function of IT Service Management, which is explicitly the primary LoB for corp.itsm with dedicated ITSM operations resources.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Managing service requests requires agents and APIs to create, update, and route requests through their lifecycle, making it fundamentally operational work.\"\n}\n```",
+          "stage2_pool_size": 22,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ServiceTicket:v1",
+            "sap.odm:entityType:CustomerAccount:v1",
+            "sap.odm:entityType:Incident:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:ServiceTicket:v1\", \"sap.odm:entityType:CustomerAccount:v1\", \"sap.odm:entityType:Incident:v1\"],\n  \"reason\": \"Managing service requests primarily involves creating, tracking, and resolving service tickets for customers, often linked to customer accounts and incidents.\"\n}\n```",
+          "stage3_pool_size": 12,
+          "stage4_raw": "```json\n[\n  \"corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1\",\n  \"corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1\",\n  \"corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1\",\n  \"corp.itsm:agent:IncidentRootCauseAnalyzer:v1\"\n]\n```",
+          "stage4_valid_count": 4,
+          "refused": false,
+          "tokens": 2627,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_015",
+      "skill_id_expected": "proc_015",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track product modifications\",\n    \"Manage equipment requests\",\n    \"Manage service requests\"\n  ],\n  \"reason\": \"The skill covers vendor management, compliance validation, customer provisioning, vendor qualification, and production fulfillment, but the request explicitly requires tracking product modifications and managing associated equipment and service requests\u2014concrete activities not represented in the step list.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers vendor management, compliance validation, customer provisioning, vendor qualification, and production fulfillment, but the request explicitly requires tracking product modifications and managing associated equipment and service requests\u2014concrete activities not represented in the ste",
+      "tokens": 594,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 8360,
+    "latency_s": 0.0,
+    "llm_calls": 13
+  },
+  "wall_s": 0.047
+}

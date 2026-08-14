@@ -1,0 +1,775 @@
+{
+  "case_id": "sa-13",
+  "user_prompt": "We need to process an engineering change request for one of our key products that involves design modifications and supply chain validation. The change impacts multiple departments, so we'll need to coordinate the assessment across product design, manufacturing, and procurement to evaluate resource requirements and timeline implications. As part of this, we also need to identify which customer accounts are affected by this change so we can incorporate them into our communication strategy and any related marketing outreach. Can you help us orchestrate this entire workflow from initial change submission through cross-functional impact analysis and stakeholder notification?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": "proc_032",
+  "skill_picked": "proc_032",
+  "expected_gaps": [
+    "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+    "emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Identify affected customer accounts",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:CustomerAccount:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Access Management API",
+                  "shortDescription": "Manages provisioning and access control for campaign-related customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Service Ticket and Order Management API",
+                  "shortDescription": "Retrieves and manages customer service tickets and orders with status tracking."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Provisioning Order API",
+                  "shortDescription": "Exposes and manages customer account orders for ITSM provisioning workflows."
+                },
+                "... (54 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "segment-by-impact"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Contact Engagement API",
+                  "shortDescription": "Manages real-time contact engagement states and campaign interactions across channels."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1"
+              },
+              "result_preview": {
+                "ordId": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                "type": "agent",
+                "namespace": "emarsys.cx",
+                "title": "Segment-Driven Campaign Optimizer Agent",
+                "shortDescription": "AI agent that autonomously identifies high-value customer segments and optimizes campaign targeting and messaging.",
+                "description": "This agent continuously analyzes CustomerSegment performance data and engagement metrics to recommend real-time campaign optimizations. It evaluates segment characteristics against Campaign performance indicators, automatically adjusts audience targeting parameters, and generates personalized messaging recommendations. The agent reduces manual campaign tuning effort while improving conversion rates through data-driven segment-to-campaign alignment.",
+                "entityTypes": [
+                  "sap.odm:entityType:CustomerSegment:v1",
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerAccount:v1"
+                ],
+                "lineOfBusiness": [
+                  "Marketing and CX"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "campaign-optimization",
+                  "audience-targeting",
+                  "ai-driven",
+                  "segmentation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "emarsys.cx:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.crm",
+                "title": "Customer Account Dispute Management API",
+                "shortDescription": "REST API for managing customer disputes, claims, and resolution workflows in CRM.",
+                "description": "This API enables creation, tracking, and resolution of customer disputes linked to accounts and orders. It supports dispute lifecycle management including escalation rules, SLA tracking, and resolution documentation. Essential for customer service teams to maintain account health and resolve disputes efficiently.",
+                "entityTypes": [
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Sales and Customer"
+                ],
+                "capabilities": [
+                  "retrieve-customer-orders",
+                  "load-account-context"
+                ],
+                "useCases": [
+                  "Identify customers and orders subject to material change impact assessment",
+                  "Establish baseline customer scope for compliance workflows"
+                ],
+                "tags": [
+                  "dispute-resolution",
+                  "customer-service",
+                  "account-management",
+                  "crm"
+                ],
+                "partOfGroups": [
+                  "proc_product_compliance_workforce_v1"
+                ],
+                "processNext": [
+                  "siemens.plm:agent:BOMComplianceValidator:v1"
+                ],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Sales and Customer"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Account Order Enrichment API",
+                  "shortDescription": "Retrieves and manages integrated customer account and order data for engagement targeting."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:OpportunitySalesForecasting:v1",
+                  "type": "dataProduct",
+                  "title": "Opportunity Sales Forecasting Analytics",
+                  "shortDescription": "Aggregates customer account and sales opportunity data to provide predictive pipeline metrics"
+                },
+                {
+                  "ordId": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+                  "type": "apiResource",
+                  "title": "Customer Account Dispute Management API",
+                  "shortDescription": "REST API for managing customer disputes, claims, and resolution workflows in CRM."
+                },
+                "... (3 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+                "reason": "This API specifically supports identifying customers and orders subject to material change impact assessment and can load account context to determine which customer accounts are affected."
+              },
+              "result": {
+                "committed": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+          "picked_reason": "This API specifically supports identifying customers and orders subject to material change impact assessment and can load account context to determine which customer accounts are affected.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 34802,
+          "latency_s": 11.375,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Develop communication strategy for stakeholders",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:agent:BOMComplianceValidator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "siemens.plm:agent:BOMComplianceValidator:v1",
+                  "type": "agent",
+                  "title": "BOM Compliance Validator Agent",
+                  "shortDescription": "Autonomously validates bill of materials against regulatory and supplier qualification requirements."
+                }
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-communication-channels"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Access Management API",
+                  "shortDescription": "Manages provisioning and access control for campaign-related customer accounts."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "coordinate-customer-communication"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1",
+                  "type": "apiResource",
+                  "title": "Campaign and Customer Order Management API",
+                  "shortDescription": "Manages production campaigns and customer account orders within manufacturing execution workflows."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "determine-communication-path"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                  "type": "apiResource",
+                  "title": "Journey Contact State API",
+                  "shortDescription": "REST API for querying and updating real-time contact engagement state within active customer journeys."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "personalize-campaign-strategy"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Account Campaign Management API",
+                  "shortDescription": "Manages and retrieves customer accounts linked to marketing campaigns"
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "deploy-targeted-communications"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Contact Engagement API",
+                  "shortDescription": "Manages real-time contact engagement states and campaign interactions across channels."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                "type": "apiResource",
+                "namespace": "emarsys.cx",
+                "title": "Campaign Contact Engagement API",
+                "shortDescription": "Manages real-time contact engagement states and campaign interactions across channels.",
+                "description": "Provides programmatic access to campaign contact engagement data, enabling retrieval and management of customer interaction states throughout omnichannel journey orchestration. Exposes contact engagement records linked to campaigns and customer accounts to support real-time personalization and journey state tracking across marketing touchpoints.",
+                "entityTypes": [
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerAccount:v1"
+                ],
+                "lineOfBusiness": [
+                  "Marketing and Customer Experience"
+                ],
+                "capabilities": [
+                  "map-customer-account-to-campaign",
+                  "engage-campaign-contacts",
+                  "deploy-targeted-communications",
+                  "segment-customers-for-campaigns",
+                  "activate-contact-engagement",
+                  "segment-by-impact",
+                  "manage-marketing-campaigns",
+                  "activate-customer-communications",
+                  "engage-customer-contacts"
+                ],
+                "useCases": [
+                  "Campaign orchestration system delivers personalized messaging to qualified customer contacts at scale",
+                  "Customer success managers proactively engage high-value accounts on transition impacts.",
+                  "Marketing teams launch customer engagement campaigns to drive awareness and adoption among target account segments.",
+                  "Customer experience managers coordinate promotional messaging and track campaign performance across sales channels.",
+                  "Marketing team launches targeted multi-channel campaigns to segmented customer accounts based on engagement history and behavioral attributes",
+                  "Marketing teams notify affected customers about production changes and timelines.",
+                  "Operations teams communicate service availability changes to customer segments."
+                ],
+                "tags": [
+                  "journey-orchestration",
+                  "contact-state",
+                  "real-time-engagement",
+                  "omnichannel"
+                ],
+                "partOfGroups": [
+                  "proc_ProductLaunchVendorCompliance_v1",
+                  "proc_talent_compliance_ops_v1",
+                  "proc_ProductionTransitionWorkforce_v1"
+                ],
+                "processNext": [],
+                "partOfPackage": "emarsys.cx:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                "reason": "This API manages real-time contact engagement and campaign interactions across channels, directly supporting the development and deployment of targeted communication strategies for stakeholders following dispute resolution."
+              },
+              "result": {
+                "committed": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+          "picked_reason": "This API manages real-time contact engagement and campaign interactions across channels, directly supporting the development and deployment of targeted communication strategies for stakeholders following dispute resolution.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 25862,
+          "latency_s": 11.154,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Coordinate marketing outreach for affected customers",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:CampaignContactStateOrchestration:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                "type": "apiResource",
+                "namespace": "emarsys.cx",
+                "title": "Campaign Contact Engagement API",
+                "shortDescription": "Manages real-time contact engagement states and campaign interactions across channels.",
+                "description": "Provides programmatic access to campaign contact engagement data, enabling retrieval and management of customer interaction states throughout omnichannel journey orchestration. Exposes contact engagement records linked to campaigns and customer accounts to support real-time personalization and journey state tracking across marketing touchpoints.",
+                "entityTypes": [
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerAccount:v1"
+                ],
+                "lineOfBusiness": [
+                  "Marketing and Customer Experience"
+                ],
+                "capabilities": [
+                  "map-customer-account-to-campaign",
+                  "engage-campaign-contacts",
+                  "deploy-targeted-communications",
+                  "segment-customers-for-campaigns",
+                  "activate-contact-engagement",
+                  "segment-by-impact",
+                  "manage-marketing-campaigns",
+                  "activate-customer-communications",
+                  "engage-customer-contacts"
+                ],
+                "useCases": [
+                  "Campaign orchestration system delivers personalized messaging to qualified customer contacts at scale",
+                  "Customer success managers proactively engage high-value accounts on transition impacts.",
+                  "Marketing teams launch customer engagement campaigns to drive awareness and adoption among target account segments.",
+                  "Customer experience managers coordinate promotional messaging and track campaign performance across sales channels.",
+                  "Marketing team launches targeted multi-channel campaigns to segmented customer accounts based on engagement history and behavioral attributes",
+                  "Marketing teams notify affected customers about production changes and timelines.",
+                  "Operations teams communicate service availability changes to customer segments."
+                ],
+                "tags": [
+                  "journey-orchestration",
+                  "contact-state",
+                  "real-time-engagement",
+                  "omnichannel"
+                ],
+                "partOfGroups": [
+                  "proc_ProductLaunchVendorCompliance_v1",
+                  "proc_talent_compliance_ops_v1",
+                  "proc_ProductionTransitionWorkforce_v1"
+                ],
+                "processNext": [],
+                "partOfPackage": "emarsys.cx:package:Core:v1"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Marketing and Customer Experience"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:JourneyContactStateAPI:v1",
+                  "type": "apiResource",
+                  "title": "Journey Contact State API",
+                  "shortDescription": "REST API for querying and updating real-time contact engagement state within active customer journeys."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:CampaignContactEngagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Contact Engagement API",
+                  "shortDescription": "Manages real-time contact engagement states and campaign interactions across channels."
+                },
+                {
+                  "ordId": "sap.crm:apiResource:CampaignContactStateOrchestration:v1",
+                  "type": "apiResource",
+                  "title": "Customer Interaction Journey API",
+                  "shortDescription": "Retrieves and synchronizes customer touchpoint data across marketing campaigns and multi-channel communications."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "coordinate-customer-communication"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1",
+                  "type": "apiResource",
+                  "title": "Campaign and Customer Order Management API",
+                  "shortDescription": "Manages production campaigns and customer account orders within manufacturing execution workflows."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Campaign and Customer Order Management API",
+                "shortDescription": "Manages production campaigns and customer account orders within manufacturing execution workflows.",
+                "description": "Exposes campaign scheduling and customer account order data to coordinate production planning with customer demand. Provides access to campaign configurations, customer segmentation details, and order fulfillment tracking across the MES environment. Retrieves real-time campaign status and customer account information to support integrated order-to-production workflows.",
+                "entityTypes": [
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerAccount:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [
+                  "execute-campaign-orders",
+                  "coordinate-customer-communication",
+                  "manage-order-intake"
+                ],
+                "useCases": [
+                  "Marketing launches coordinated customer campaigns announcing production transition.",
+                  "Sales operations synchronize order management with transitioned product capabilities.",
+                  "Customer service prepares for increased order volume during transition period."
+                ],
+                "tags": [
+                  "product-configuration",
+                  "campaign-management",
+                  "customer-segmentation"
+                ],
+                "partOfGroups": [
+                  "proc_ProductionTransitionMarketReadiness_v1"
+                ],
+                "processNext": [
+                  "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1"
+                ],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CampaignContactStateOrchestration:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:apiResource:CampaignContactStateOrchestration:v1",
+                "type": "apiResource",
+                "namespace": "sap.crm",
+                "title": "Customer Interaction Journey API",
+                "shortDescription": "Retrieves and synchronizes customer touchpoint data across marketing campaigns and multi-channel communications.",
+                "description": "Exposes customer interaction records and engagement metadata from campaigns to support dynamic orchestration of personalized marketing experiences. Enables access to contact journey progression, historical engagement patterns, and account attributes for real-time routing decisions across marketing channels. Facilitates unified view of customer communications to drive consistent omnichannel messaging and campaign performance optimization.",
+                "entityTypes": [
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerAccount:v1"
+                ],
+                "lineOfBusiness": [
+                  "Marketing and Customer Experience"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "campaign-orchestration",
+                  "customer-interactions",
+                  "multi-channel-marketing",
+                  "engagement-routing"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1",
+                "reason": "This API explicitly exposes coordinate-customer-communication capability and manages campaign coordination with customer accounts for orchestrating marketing outreach to affected customers."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1",
+          "picked_reason": "This API explicitly exposes coordinate-customer-communication capability and manages campaign coordination with customer accounts for orchestrating marketing outreach to affected customers.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 26203,
+          "latency_s": 11.293,
+          "llm_calls": 9
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_032",
+      "skill_id_expected": "proc_032",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Identify affected customer accounts\",\n    \"Develop communication strategy for stakeholders\",\n    \"Coordinate marketing outreach for affected customers\"\n  ],\n  \"reason\": \"The skill covers cross-functional impact assessment, design modifications, supply chain validation, and resource planning across product, manufacturing, and procurement departments. However, it does not explicitly address customer account identification, stakeholder communication strategy development, or marketing outreach coordination\u2014all of which are concrete activities explicitly named in the user request.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers cross-functional impact assessment, design modifications, supply chain validation, and resource planning across product, manufacturing, and procurement departments. However, it does not explicitly address customer account identification, stakeholder communication strategy developmen",
+      "tokens": 621,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 87488,
+    "latency_s": 33.822,
+    "llm_calls": 28
+  },
+  "wall_s": 33.849
+}

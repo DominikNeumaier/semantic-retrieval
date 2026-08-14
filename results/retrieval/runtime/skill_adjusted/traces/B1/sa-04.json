@@ -1,0 +1,197 @@
+{
+  "case_id": "sa-04",
+  "user_prompt": "We're launching a new product line next quarter and need to orchestrate the entire go-to-market process\u2014including provisioning our key customers, qualifying our supplier network, analyzing the cost structure, managing our engineering modifications, and ensuring our teams are ready. As part of this, we also need to identify which customer segments from our marketing campaigns should be prioritized for this launch, including pulling their account details and engagement history. We'll also need to assess whether our current staff has the right skills and capacity to support the new product specifications and training requirements. Can you help us coordinate all these moving pieces into one comprehensive launch workflow?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "B",
+  "state": "enriched",
+  "condition": "B1",
+  "skill_expected": "proc_031",
+  "skill_picked": "proc_031",
+  "expected_gaps": [
+    "emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1",
+    "workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Identify priority customer segments from marketing campaigns",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "emarsys.cx",
+            "sap.crm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"emarsys.cx\", \"sap.crm\"],\n  \"reason\": \"Both namespaces contain Campaign and CustomerAccount entities with direct marketing and customer experience line-of-business focus needed to identify priority customer segments from marketing campaigns.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Identifying priority customer segments from marketing campaigns is a read-only analytical task that analyzes campaign data and customer metrics to derive insights, requiring data products and event resources rather than operational execution.\"\n}\n```",
+          "stage2_pool_size": 17,
+          "stage3_entity_types": [
+            "sap.odm:entityType:CustomerSegment:v1",
+            "sap.odm:entityType:Campaign:v1",
+            "sap.odm:entityType:CustomerAccount:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerSegment:v1\",\n    \"sap.odm:entityType:Campaign:v1\",\n    \"sap.odm:entityType:CustomerAccount:v1\"\n  ],\n  \"reason\": \"The activity identifies priority customer segments from marketing campaigns, directly involving customer segmentation and campaign data to analyze customer accounts.\"\n}\n```",
+          "stage3_pool_size": 4,
+          "stage4_raw": "```json\n[\n  \"sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1\",\n  \"emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 2,
+          "refused": false,
+          "tokens": 2102,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Pull customer account details and engagement history",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:OpportunitySalesForecasting:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.crm",
+            "emarsys.cx"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.crm\", \"emarsys.cx\"],\n  \"reason\": \"SAP CRM holds customer account data and sales interactions, while Emarsys CX provides engagement history and marketing campaign data.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Pulling customer account details and engagement history is a read-only lookup activity that supports reporting, analysis, and decision-making without executing transactional changes.\"\n}\n```",
+          "stage2_pool_size": 17,
+          "stage3_entity_types": [
+            "sap.odm:entityType:CustomerAccount:v1",
+            "sap.odm:entityType:Incident:v1",
+            "sap.odm:entityType:SalesOpportunity:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:CustomerAccount:v1\", \"sap.odm:entityType:Incident:v1\", \"sap.odm:entityType:SalesOpportunity:v1\"],\n  \"reason\": \"The activity reads customer account details (CustomerAccount) and engagement history which encompasses incidents and sales opportunities.\"\n}\n```",
+          "stage3_pool_size": 7,
+          "stage4_raw": "```json\n[\n  \"emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1\",\n  \"sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1\",\n  \"emarsys.cx:dataProduct:OpportunitySalesForecasting:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2371,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Assess staff skills and capacity alignment with new product specifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:WorkforceCapacityAndTimeOffManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "workday.hcm",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"workday.hcm\", \"sap.s4\"],\n  \"reason\": \"Staff skills assessment requires HR data (workday.hcm for employee capabilities), and product specification alignment requires manufacturing/product data (sap.s4 for materials and engineering changes).\"\n}\n```",
+          "stage2_modalities": [
+            "analytical",
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\", \"operational\"],\n  \"reason\": \"Requires analytical assessment of skills/capacity data against specs, then operational execution to allocate or develop staff accordingly.\"\n}\n```",
+          "stage2_pool_size": 54,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Employee:v1",
+            "sap.odm:entityType:ProductItem:v1",
+            "sap.odm:entityType:EngineeringChange:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Employee:v1\", \"sap.odm:entityType:ProductItem:v1\", \"sap.odm:entityType:EngineeringChange:v1\"],\n  \"reason\": \"Assessing staff skills and capacity alignment requires evaluating employees against new product specifications, which involves product items and engineering changes.\"\n}\n```",
+          "stage3_pool_size": 29,
+          "stage4_raw": "```json\n[\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"workday.hcm:dataProduct:WorkforceChangeImpactAnalytics:v1\",\n  \"workday.hcm:apiResource:WorkforceCompensationDataManagement:v1\",\n  \"sap.s4:apiResource:WorkforceCapacityAndTimeOffManagement:v1\",\n  \"workday.hcm:apiResource:CompensationStructureDataExposure:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 5017,
+          "latency_s": 2.188,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_031",
+      "skill_id_expected": "proc_031",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Identify priority customer segments from marketing campaigns\",\n    \"Pull customer account details and engagement history\",\n    \"Assess staff skills and capacity alignment with new product specifications\"\n  ],\n  \"reason\": \"The skill covers core launch orchestration (provisioning, supply chain, cost analysis, engineering, workforce readiness) but explicitly lacks the marketing segmentation analysis, customer data retrieval, and skills-gap assessment activities that the request concretely names.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers core launch orchestration (provisioning, supply chain, cost analysis, engineering, workforce readiness) but explicitly lacks the marketing segmentation analysis, customer data retrieval, and skills-gap assessment activities that the request concretely names.",
+      "tokens": 636,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 10126,
+    "latency_s": 2.188,
+    "llm_calls": 13
+  },
+  "wall_s": 2.215
+}

@@ -1,0 +1,391 @@
+{
+  "case_id": "sa-03",
+  "user_prompt": "We need to prepare for launching our new product revision and ensure everything is ready for manufacturing. This includes validating that all our materials and components meet regulatory requirements and that our suppliers are properly verified. We also need to make sure our production team is properly staffed and compensated according to our updated labor requirements for this new revision. Can you orchestrate the complete preparation phase, including workforce readiness assessment and ensuring our financial structures align with the production needs?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0",
+  "skill_expected": "proc_029",
+  "skill_picked": "proc_029",
+  "expected_gaps": [
+    "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+    "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.5,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Verify supplier qualifications and certifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "reason": "Validates material specifications against supplier qualifications and regulatory requirements, directly fulfilling supplier certification and qualification verification."
+              },
+              "result_preview": {
+                "committed": "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+          "picked_reason": "Validates material specifications against supplier qualifications and regulatory requirements, directly fulfilling supplier certification and qualification verification.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 1,
+          "tokens": 2546,
+          "latency_s": 4.376,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Assess and plan workforce staffing levels",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1099
+              }
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.sf:package:Core:v1\",\n      \"title\": \"sap.sf Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1072
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a workforce staffing level planning resource; available HR agents focus on compensation, performance reviews, talent acquisition, and skills matching, but not headcount/staffing capacity assessment and planning."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape lacks a workforce staffing level planning resource; available HR agents focus on compensation, performance reviews, talent acquisition, and skills matching, but not headcount/staffing capacity assessment and planning."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a workforce staffing level planning resource; available HR agents focus on compensation, performance reviews, talent acquisition, and skills matching, but not headcount/staffing capacity assessment and planning.",
+          "tool_calls": 5,
+          "tokens": 29705,
+          "latency_s": 13.395,
+          "llm_calls": 5
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Review and align compensation structures with labor requirements",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE OVERVIEW (11 systems):\n- corp.itsm: IT Service Management (incident analysis, asset provisioning, change automation, safety)\n- emarsys.cx: Customer Experience/Marketing (campaign optimizatio \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.sf:package:Core:v1\",\n      \"title\": \"sap.sf Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1072
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1099
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (11 systems):\n- corp.itsm: IT Service Management (incident analysis, asset provisioning, change automation, safety)\n- emarsys.cx: Customer Experience/Marketing (campaign optimization, opportunity engagement)\n- my.mes: Manufacturing Execution (quality monitoring, production coordination)\n- sap.ariba: Procurement (vendor invoicing, compliance, material coordination)\n- sap.crm: Sales/CRM (opportunity qualification, campaign targeting, sales compensation) - NO customer service/grievance\n- sap.ehs: Environment, Health, Safety - Not examined yet\n- sap.odm: Not examined yet\n- sap.s4: ERP (procurement matching, BOM compliance, order automation)\n- sap.sf: SuccessFactors HR (performance reviews, compensation, talent acquisition)\n- siemens.plm: Product Lifecycle Management (BOM validation, engineering changes)\n- workday.hcm: Human Capital Management (compensation, performance reviews, safety)\n\nKEY RESOURCES:\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 \u2014 Three-way invoice/PO/contract matching\n- sap.s4:agent:BOMComplianceAutomationAgent:v1 \u2014 BOM validation, material compliance\n- sap.s4:agent:ProcurementMatchingAgent:v1 \u2014 Autonomous vendor matching\n- workday.hcm:agent:CompensationStructureAutomationEngine:v1 \u2014 Monitors org structure changes, automates compensation plan updates, ensures competitiveness\n\nRESOLVED ACTIVITIES:\n1. Handle customer grievances \u2192 REFUSED (no grievance handling capability)\n2. Reconcile disagreements during fulfillment \u2192 sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n3. Verify material specifications against master records \u2192 sap.s4:agent:BOMComplianceAutomationAgent:v1\n4. Review and align compensation structures with labor requirements \u2192 workday.hcm:agent:CompensationStructureAutomationEngine:v1"
+              },
+              "result_preview": {
+                "stored_bytes": 1777,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+                "reason": "Automates compensation plan updates tied to organizational structure changes and material cost fluctuations, directly aligning compensation structures with labor requirements."
+              },
+              "result_preview": {
+                "committed": "workday.hcm:agent:CompensationStructureAutomationEngine:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+          "picked_reason": "Automates compensation plan updates tied to organizational structure changes and material cost fluctuations, directly aligning compensation structures with labor requirements.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 5,
+          "tokens": 24005,
+          "latency_s": 16.942,
+          "llm_calls": 5
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Validate financial structures against production budget needs",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1276
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1099
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (11 systems):\n- corp.itsm: IT Service Management (incident analysis, asset provisioning, change automation, safety)\n- emarsys.cx: Customer Experience/Marketing (campaign optimization, opportunity engagement)\n- my.mes: Manufacturing Execution (quality monitoring, production coordination) - agents: ProductionQualityMonitor, SupplierQualityComplianceOrchestrator, ProductionChangeOrchestrator, BillOfMaterialsComplianceValidator, HazmatIncidentComplianceMonitor\n- sap.ariba: Procurement (vendor invoicing, compliance, material coordination)\n- sap.crm: Sales/CRM (opportunity qualification, campaign targeting, sales compensation)\n- sap.ehs: Environment, Health, Safety - agents: IncidentRootCauseAnalyzer, VendorComplianceAutomationOrchestrator, IncidentResponseCoordinator, VendorComplianceInvoiceAutomation, ComplianceCampaignOrchestrator, SafetyComplianceAutomationCoordinator\n- sap.odm: Not examined\n- sap.s4: ERP (procurement matching, BOM compliance, order automation) - agents: ProcurementMatchingAgent, BOMComplianceAutomationAgent, AssetLifecycleChangeOrchestrator, OpportunityToOrderAutomationEngine\n- sap.sf: SuccessFactors HR (performance reviews, compensation, talent acquisition)\n- siemens.plm: Product Lifecycle Management (BOM validation, engineering changes)\n- workday.hcm: Human Capital Management (compensation, performance reviews, safety) - agents: CompensationAdjustmentAutomation, OccupationalSafetyIncidentMonitoring, PerformanceReviewCoordination, PerformanceReviewOrchestrator, CompensationChangeProcessor, CompensationStructureAutomationEngine\n\nKEY RESOURCES:\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 \u2014 Three-way invoice/PO/contract matching\n- sap.s4:agent:BOMComplianceAutomationAgent:v1 \u2014 BOM validation, material compliance\n- sap.s4:agent:ProcurementMatchingAgent:v1 \u2014 Autonomous vendor matching\n- workday.hcm:agent:CompensationStructureAutomationEngine:v1 \u2014 Monitors org structure changes, automates compensation plan updates, ensures competitiveness\n\nRESOLVED ACTIVITIES:\n1. Handle customer grievances \u2192 REFUSED (no grievance handling capability)\n2. Reconcile disagreements during fulfillment \u2192 sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n3. Verify material specifications against master records \u2192 sap.s4:agent:BOMComplianceAutomationAgent:v1\n4. Review and align compensation structures with labor requirements \u2192 workday.hcm:agent:CompensationStructureAutomationEngine:v1\n5. Validate financial structures against production budget needs \u2192 REFUSED (no production budget validation capability found)\n\nNOTE: Landscape contains compensation/payroll structure automation (workday.hcm) and procurement cost optimization (sap.s4) but no agent specifically validates financial structures against production budgets. This is a distinct operational finance/budgeting capability not present."
+              },
+              "result_preview": {
+                "stored_bytes": 2861,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "No ORD resource in the landscape provides production budget validation or financial structure reconciliation against production needs."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "No ORD resource in the landscape provides production budget validation or financial structure reconciliation against production needs."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "No ORD resource in the landscape provides production budget validation or financial structure reconciliation against production needs.",
+          "tool_calls": 7,
+          "tokens": 72599,
+          "latency_s": 31.316,
+          "llm_calls": 7
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_029",
+      "skill_id_expected": "proc_029",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Verify supplier qualifications and certifications\",\n    \"Assess and plan workforce staffing levels\",\n    \"Review and align compensation structures with labor requirements\",\n    \"Validate financial structures against production budget needs\"\n  ],\n  \"reason\": \"The skill covers material/component regulatory validation and safety hazard identification, but the step list is incomplete and explicitly omits supplier verification, workforce staffing assessment, compensation planning, and financial alignment\u2014all concretely named in the request.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers material/component regulatory validation and safety hazard identification, but the step list is incomplete and explicitly omits supplier verification, workforce staffing assessment, compensation planning, and financial alignment\u2014all concretely named in the request.",
+      "tokens": 606,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 129461,
+    "latency_s": 66.029,
+    "llm_calls": 19
+  },
+  "wall_s": 66.101
+}

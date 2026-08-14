@@ -1,0 +1,138 @@
+{
+  "case_id": "sg-17",
+  "user_prompt": "Our manufacturing operations need a full cycle \u2014 supplier qualification, production incident monitoring, inbound material inspections, and engineering change provisioning.",
+  "mode_expected": "skill_guided",
+  "difficulty": "easy",
+  "method": "A",
+  "state": "enriched",
+  "condition": "A1",
+  "skill_expected": "proc_021",
+  "skill_picked": "proc_021",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": 0.25,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Supplier qualification",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:agent:SupplierQualificationAndMaterialCoordinator:v1",
+            "score": 0.6241
+          },
+          {
+            "ordId": "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+            "score": 0.5669
+          },
+          {
+            "ordId": "siemens.plm:agent:MaterialAndVendorQualificationOrchestrator:v1",
+            "score": 0.5537
+          },
+          {
+            "ordId": "siemens.plm:apiResource:SupplierQualificationAndServiceManagement:v1",
+            "score": 0.5438
+          },
+          {
+            "ordId": "workday.hcm:apiResource:VendorMaterialSafetyComplianceExposure:v1",
+            "score": 0.5295
+          }
+        ],
+        "method_trace": {
+          "embedding_model": "text-embedding-3-large",
+          "resource_count": 273,
+          "tokens": 2,
+          "landscape_setup_tokens": 29264,
+          "latency_s": 0.953
+        },
+        "expected": {
+          "step_name": "step_1",
+          "expected_ordIds": [
+            "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Engineering change provisioning",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": 0.6349
+          },
+          {
+            "ordId": "sap.s4:agent:EngineeringChangeOrchestrator:v1",
+            "score": 0.562
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": 0.5562
+          },
+          {
+            "ordId": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "score": 0.5514
+          },
+          {
+            "ordId": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+            "score": 0.5409
+          }
+        ],
+        "method_trace": {
+          "embedding_model": "text-embedding-3-large",
+          "resource_count": 273,
+          "tokens": 3,
+          "landscape_setup_tokens": 29264,
+          "latency_s": 0.723
+        },
+        "expected": {
+          "step_name": "step_2",
+          "expected_ordIds": [
+            "siemens.plm:apiResource:MachineProductionOrderIntegration:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_021",
+      "skill_id_expected": "proc_021",
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_021\",\n  \"reason\": \"proc_021 explicitly orchestrates end-to-end manufacturing operations covering supplier management, material procurement, quality validation, and production execution \u2014 the core cycle requested.\"\n}\n```",
+      "reason": "proc_021 explicitly orchestrates end-to-end manufacturing operations covering supplier management, material procurement, quality validation, and production execution \u2014 the core cycle requested.",
+      "tokens": 1644,
+      "latency_s": 1.812,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Supplier qualification\",\n    \"Engineering change provisioning\"\n  ],\n  \"reason\": \"The skill covers production incident monitoring, inbound material inspections, and general supplier management, but explicitly lacks supplier qualification processes and engineering change provisioning as concrete distinct activities.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers production incident monitoring, inbound material inspections, and general supplier management, but explicitly lacks supplier qualification processes and engineering change provisioning as concrete distinct activities.",
+      "tokens": 492,
+      "latency_s": 1.734,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 2141,
+    "latency_s": 5.222,
+    "llm_calls": 2
+  },
+  "wall_s": 5.623
+}

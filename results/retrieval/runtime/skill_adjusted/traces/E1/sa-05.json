@@ -1,0 +1,277 @@
+{
+  "case_id": "sa-05",
+  "user_prompt": "We need to orchestrate our complete manufacturing workflow from securing materials with our suppliers through final production execution and ensuring all our compliance documentation is properly filed. As part of this end-to-end process, we also need to track and reconcile all the financial documents coming in from our vendors that are tied to our material orders. Additionally, please include monitoring our production line performance metrics so we can evaluate how efficiently our equipment is running and identify any bottlenecks in our output. Make sure quality validation checkpoints are integrated throughout to catch any issues early, and we'll need comprehensive reporting at each stage to maintain our regulatory compliance standards.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "E",
+  "state": "enriched",
+  "condition": "E1",
+  "skill_expected": "proc_021",
+  "skill_picked": "proc_021",
+  "expected_gaps": [
+    "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+    "sap.s4:apiResource:ProductionPerformanceAPI:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track and reconcile vendor financial documents",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "reason": "Directly reconciles vendor invoices against POs and contracts, automating the core workflow for tracking and reconciling vendor financial documents."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+          "picked_reason": "Directly reconciles vendor invoices against POs and contracts, automating the core workflow for tracking and reconciling vendor financial documents.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 1,
+          "tokens": 3312,
+          "latency_s": 4.581,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Monitor production line performance metrics",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm: IT Service Management\n- emarsys.cx: Customer Experience/Marketing\n- my.mes: Manufacturing Execution\n- sap.ariba: Procurement\n- sap.crm: Sales/CRM\n- sap.eh \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.odm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 11
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1057
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1057
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm: IT Service Management\n- emarsys.cx: Customer Experience/Marketing\n- my.mes: Manufacturing Execution\n- sap.ariba: Procurement\n- sap.crm: Sales/CRM\n- sap.ehs: Environment, Health, Safety\n- sap.odm: ODM entity type taxonomy (40 canonical entity types)\n- sap.s4: ERP\n- sap.sf: SuccessFactors HR\n- siemens.plm: Product Lifecycle Management\n- workday.hcm: Human Capital Management\n\nKEY PRODUCTION & MANUFACTURING RESOURCES (my.mes):\n- my.mes:apiResource:EquipmentOEEAnalytics:v1 \u2014 REST API for real-time machine performance metrics, OEE calculations, availability/performance/quality rates, dashboarding, historical trends, predictive maintenance, aggregates machine telemetry\n- my.mes:agent:ProductionQualityMonitor:v1 \u2014 Monitors quality inspections, detects quality deviations, defect detection, escalation workflows, production-optimization\n- my.mes:agent:SupplierQualityComplianceOrchestrator:v1 \u2014 Monitors supplier quality metrics, vendor compliance\n- my.mes:agent:ProductionChangeOrchestrator:v1 \u2014 Coordinates engineering changes across production\n- my.mes:agent:BillOfMaterialsComplianceValidator:v1 \u2014 BOM validation\n- my.mes:agent:HazmatIncidentComplianceMonitor:v1 \u2014 Hazmat incident monitoring\n\nKEY MARKETING & CAMPAIGN RESOURCES:\n- emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1 \u2014 Identifies high-value customer segments, optimizes campaign targeting/messaging, analyzes segment performance, adjusts audience targeting, generates personalized recommendations\n- emarsys.cx:agent:OpportunityEngagementOrchestrator:v1 \u2014 Monitors customer interactions, lead scoring, sales automation, processes engagement data to identify prospect transitions across customer journey\n- emarsys.cx:agent:ProductLifecycleOrchestrator:v1 \u2014 Coordinates product changes with customer engagement campaigns\n\nKEY COMPLIANCE & REGULATORY RESOURCES:\n- emarsys.cx:agent:IncidentComplianceOrchestrator:v1 \u2014 Detects regulatory risks, orchestrates mitigation protocols, validates adherence during customer engagement, tracks adverse events and regulatory exposures, analyzes event information to satisfy regulatory mandates, maintains real-time visibility into regulatory posture\n\nKEY SUPPLIER & MATERIAL RESOURCES:\n- siemens.plm:agent:SupplierQualificationAndMaterialCoordinator:v1 \u2014 Validates materials against engineering specs, manages material-to-vendor mappings\n- siemens.plm:agent:BOMComplianceValidator:v1 \u2014 Validates BOMs against regulatory standards and supplier requirements\n- sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1 \u2014 Coordinates material updates and engineering changes\n\nKEY PROCUREMENT & AUDIT RESOURCES:\n- sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1 \u2014 Manages PO lifecycle, vendor collaboration, order creation/approval, real-time status tracking, maintains procurement records for audit\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 \u2014 Reconciles vendor invoices against POs/contracts, maintains vendor records\n- sap.ariba:agent:SupplierComplianceAndIncidentMonitor:v1 \u2014 Tracks hazardous material declarations, safety events, compliance verification\n- sap.s4:agent:ProcurementMatchingAgent:v1 \u2014 Matches requisitions to vendors, evaluates pricing/lead times/quality/contracts\n\nKEY EQUIPMENT & CHANGE COORDINATION RESOURCES:\n- siemens.plm:agent:EngineeringChangeAndComplianceOrchestrator:v1 \u2014 Automates change workflows, compliance validation\n- corp.itsm:agent:AssetProvisioningOrchestrator:v1 \u2014 Coordinates asset provisioning following engineering changes\n\nKEY WORKFORCE & COMPENSATION RESOURCES:\n- sap.sf:agent:CompensationPolicyAutomationEngine:v1\n- workday.hcm:agent:CompensationStructureAutomationEngine:v1\n- workday.hcm:agent:CompensationAdjustmentAutomation:v1\n\nKEY SKILLS & CAPABILITY RESOURCES:\n- sap.sf:agent:SkillsAndCapabilityMatchingOrchestrator:v1 \u2014 Automates workforce capability alignment with project resource requirements, monitors employee competencies and engineering changes, processes material/product item requirements, coordinates optimal resource allocation, evaluates capability gaps and recommends development/reassignment\n\nKEY MANAGER PERFORMANCE TRACKING & COMPLIANCE:\n- workday.hcm:agent:PerformanceReviewOrchestrator:v1 \u2014 Manages end-to-end evaluation processes, orchestrates assessment workflows involving supervisors, tracks employee development checkpoints, aggregates 360-degree evaluations enterprise-wide, handles timeline management and escalations\n\nRESOLVED ACTIVITIES (30 total):\n24. Verify regulatory requirements compliance with customers \u2192 emarsys.cx:agent:IncidentComplianceOrchestrator:v1\n25. Track supplier sourcing and maintain procurement records for audit \u2192 sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1\n26. Enable manager-level compliance tracking for direct reports \u2192 workday.hcm:agent:PerformanceReviewOrchestrator:v1\n27. Identify priority customer segments from marketing campaigns \u2192 emarsys.cx (truncated)\n28. Monitor production line performance metrics \u2192 my.mes:apiResource:EquipmentOEEAnalytics:v1"
+              },
+              "result_preview": {
+                "stored_bytes": 4096,
+                "truncated": true,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                "reason": "REST API providing real-time machine performance metrics, OEE calculations (availability/performance/quality), dashboarding, and predictive maintenance insights for production lines."
+              },
+              "result_preview": {
+                "committed": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+          "picked_reason": "REST API providing real-time machine performance metrics, OEE calculations (availability/performance/quality), dashboarding, and predictive maintenance insights for production lines.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 6,
+          "tokens": 43021,
+          "latency_s": 26.915,
+          "llm_calls": 6
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Identify equipment bottlenecks",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                "reason": "EquipmentOEEAnalytics provides real-time machine performance metrics and OEE calculations that directly identify equipment bottlenecks through availability, performance, and quality rate analysis."
+              },
+              "result_preview": {
+                "committed": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+          "picked_reason": "EquipmentOEEAnalytics provides real-time machine performance metrics and OEE calculations that directly identify equipment bottlenecks through availability, performance, and quality rate analysis.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 1,
+          "tokens": 3485,
+          "latency_s": 5.08,
+          "llm_calls": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_021",
+      "skill_id_expected": "proc_021",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track and reconcile vendor financial documents\",\n    \"Monitor production line performance metrics\",\n    \"Identify equipment bottlenecks\"\n  ],\n  \"reason\": \"The skill covers core manufacturing orchestration, supplier management, quality validation, production execution, and compliance reporting, but explicitly lacks vendor invoice/financial reconciliation, equipment performance monitoring, and bottleneck identification\u2014all of which are concretely named requirements in the request.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers core manufacturing orchestration, supplier management, quality validation, production execution, and compliance reporting, but explicitly lacks vendor invoice/financial reconciliation, equipment performance monitoring, and bottleneck identification\u2014all of which are concretely named ",
+      "tokens": 628,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 50446,
+    "latency_s": 36.576,
+    "llm_calls": 9
+  },
+  "wall_s": 36.599
+}

@@ -25,10 +25,10 @@ import json
 import time
 from pathlib import Path
 
-from src.core import config
-from src.design_time import dt_cases
-from src.core import ord_loader
-from src.methods import method_a, method_b, method_c, method_d, method_e, method_s, method_f
+from src import config
+from src.eval import dt_cases
+from src import loader as ord_loader
+from src.methods import method_embedding, method_progressive, method_graph, method_tools, method_raw, method_baseline, method_hybrid
 
 # GT-eligible ordIds for P@1_gt / R@5_gt split
 def _load_gt_eligible() -> set[str]:
@@ -44,13 +44,13 @@ _GT_ELIGIBLE: set[str] = _load_gt_eligible()
 
 
 METHODS = {
-    "A": method_a.retrieve,
-    "B": lambda label, resources, **kw: method_b.retrieve(label, resources, allow_refuse=False, **kw),
-    "C": lambda label, resources, **kw: method_c.retrieve(label, resources, allow_refuse=False, **kw),
-    "D": lambda label, resources, **kw: method_d.retrieve(label, resources, allow_refuse=False, **kw),
-    "E": lambda label, resources, **kw: method_e.retrieve(label, resources, allow_refuse=False, **kw),
-    "S": method_s.retrieve,
-    "F": lambda label, resources, **kw: method_f.retrieve(label, resources, allow_refuse=False, **kw),
+    "A": method_embedding.retrieve,
+    "B": lambda label, resources, **kw: method_progressive.retrieve(label, resources, allow_refuse=False, **kw),
+    "C": lambda label, resources, **kw: method_graph.retrieve(label, resources, allow_refuse=False, **kw),
+    "D": lambda label, resources, **kw: method_tools.retrieve(label, resources, allow_refuse=False, **kw),
+    "E": lambda label, resources, **kw: method_raw.retrieve(label, resources, allow_refuse=False, **kw),
+    "S": method_baseline.retrieve,
+    "F": lambda label, resources, **kw: method_hybrid.retrieve(label, resources, allow_refuse=False, **kw),
 }
 
 
@@ -404,7 +404,7 @@ def main() -> None:
     # the start of every benchmark run so the order in which cases are
     # processed produces a reproducible result.
     if "E" in args.methods:
-        method_e.reset_notes()
+        method_raw.reset_notes()
         print("Reset E's persistent notes.")
 
     records: list[dict] = []

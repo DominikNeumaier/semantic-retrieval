@@ -1,0 +1,458 @@
+{
+  "case_id": "dy-39",
+  "user_prompt": "I need to simultaneously pull together our current spending commitments with a specific vendor and cross-reference that against our latest payroll records to reconcile Q4 budget allocations and ensure our procurement expenses align with employee compensation costs for audit purposes.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull our current spending commitments with a specific vendor",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:agent:VendorContractLifecycleOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 11824,
+          "latency_s": 7.822,
+          "llm_calls": 7,
+          "use_graph": true,
+          "picked_ord_id": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+          "picked_reason": "Vendor Spend Intelligence is the optimal resource for pulling current spending commitments with a specific vendor. It aggregates Contract, PurchaseOrder, and Vendor data to provide comprehensive spend visibility, including contract utilization and vendor performance metrics. This directly satisfies the requirement to retrieve current spending commitments for a specific vendor in the Procurement domain.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "spending commitments vendor",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                "siemens.plm:agent:VendorContractLifecycleOrchestrator:v1",
+                "sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-vendor-commitments"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "retrieve-spending-commitments"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:dataProduct:VendorSpendIntelligence:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "pull retrieve current vendor commitments purchase agreements",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                "sap.crm:agent:VendorMaterialProcurementCoordinator:v1",
+                "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                "sap.sf:apiResource:ProcurementVendorManagement:v1",
+                "sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Contract:v1"
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1",
+                "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+                "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+                "sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                "reason": "Vendor Spend Intelligence is the optimal resource for pulling current spending commitments with a specific vendor. It aggregates Contract, PurchaseOrder, and Vendor data to provide comprehensive spend visibility, including contract utilization and vendor performance metrics. This directly satisfies the requirement to retrieve current spending commitments for a specific vendor in the Procurement domain."
+              },
+              "result": {
+                "committed": "corp.itsm:dataProduct:VendorSpendIntelligence:v1"
+              }
+            }
+          ]
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "workday.hcm:apiResource:PayrollDataExposure:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Retrieve our latest payroll records",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:PayrollDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 7108,
+          "latency_s": 4.835,
+          "llm_calls": 4,
+          "use_graph": true,
+          "picked_ord_id": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+          "picked_reason": "This API resource has the explicit \"retrieve-payroll\" capability and provides comprehensive payroll data access including compensation, deductions, and tax information for employees, which directly fulfills the requirement to retrieve latest payroll records.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "retrieve latest payroll records",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "workday.hcm:apiResource:PayrollDataExposure:v1",
+                "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+                "sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1",
+                "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+                "workday.hcm:apiResource:BenefitsEnrollmentDataManagement:v1",
+                "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+                "workday.hcm:apiResource:ServiceRequestOrderManagement:v1",
+                "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "retrieve-payroll"
+              },
+              "result_summary": "1 items",
+              "result_ord_ids": [
+                "sap.s4:apiResource:EmployeePayrollDataAPI:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EmployeePayrollDataAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "reason": "This API resource has the explicit \"retrieve-payroll\" capability and provides comprehensive payroll data access including compensation, deductions, and tax information for employees, which directly fulfills the requirement to retrieve latest payroll records."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:EmployeePayrollDataAPI:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Cross-reference vendor spending commitments against payroll records to reconcile Q4 budget allocations and ensure procurement expenses align with employee compensation costs for audit purposes",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 16391,
+          "latency_s": 9.894,
+          "llm_calls": 11,
+          "use_graph": true,
+          "picked_ord_id": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+          "picked_reason": "Directly reconciles vendor spending commitments against payroll/compensation data. Exposes align-vendor-compensation and analyze-workforce-spend capabilities essential for cross-referencing vendor expenses with employee compensation costs. Manages both procurement and payroll integration needed for Q4 budget allocation audit.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "vendor spending payroll reconciliation budget allocation audit",
+                "top_k": 8
+              },
+              "result_summary": "8 items",
+              "result_ord_ids": [
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "sap.ariba:dataProduct:VendorPerformanceAndSegmentationAnalytics:v1",
+                "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+                "sap.crm:agent:VendorMaterialProcurementCoordinator:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "reconcile-budget"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "reconcile-payroll"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-procurement"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "reconcile-vendor-expenses"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "audit-expenses"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "reconcile payroll compensation procurement expense audit Q4 budget",
+                "top_k": 8
+              },
+              "result_summary": "8 items",
+              "result_ord_ids": [
+                "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+                "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "workday.hcm:agent:CompensationChangeProcessor:v1",
+                "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+                "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "graph_walk",
+              "args": {
+                "anchor_ord_ids": [
+                  "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1"
+                ],
+                "top_k": 5
+              },
+              "result_summary": "4 items",
+              "result_ord_ids": [
+                "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+                "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+                "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+                "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+                "reason": "Directly reconciles vendor spending commitments against payroll/compensation data. Exposes align-vendor-compensation and analyze-workforce-spend capabilities essential for cross-referencing vendor expenses with employee compensation costs. Manages both procurement and payroll integration needed for Q4 budget allocation audit."
+              },
+              "result": {
+                "committed": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\"best_skill_id\": null, \"reason\": \"The request requires combining vendor spending data with payroll records for a custom financial reconciliation and audit analysis, which is a one-off analytical task that doesn't match a standard multi-step process skill.\"}\n```",
+      "reason": "The request requires combining vendor spending data with payroll records for a custom financial reconciliation and audit analysis, which is a one-off analytical task that doesn't match a standard multi-step process skill.",
+      "tokens": 349,
+      "latency_s": 1.278,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 36034,
+    "latency_s": 23.829,
+    "llm_calls": 24
+  },
+  "wall_s": 34.692
+}

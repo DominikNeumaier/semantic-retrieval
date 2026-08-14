@@ -1,0 +1,243 @@
+{
+  "case_id": "sa-12",
+  "user_prompt": "I need to submit a new infrastructure update request that will impact multiple departments, and I need the system to automatically assess whether this change requires executive approval based on the business scope. Can you walk me through the entire process from when I submit the request through final implementation, including tracking any related equipment modifications and service dependencies? I also need documentation of all regulatory requirements that apply to this change, as well as any existing maintenance schedules we should coordinate with during rollout.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "C",
+  "state": "enriched",
+  "condition": "C1",
+  "skill_expected": "proc_007",
+  "skill_picked": "proc_007",
+  "expected_gaps": [
+    "sap.ehs:apiResource:ComplianceChangeServiceIntegration:v1",
+    "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track related equipment modifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": 75.5
+          },
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": 74.5
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": 70.5
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Machine:v1",
+              "sap.odm:entityType:EngineeringChange:v1",
+              "sap.odm:entityType:ChangeRequest:v1"
+            ],
+            "business_groups": [
+              "proc_ManufacturingChangeCompliance_v1",
+              "proc_EngChangeAndProcurement_v1",
+              "proc_ProductLifecycleCompliance_v1"
+            ],
+            "lines_of_business": [
+              "Manufacturing",
+              "Product Lifecycle Management"
+            ],
+            "reason": "Tracking equipment modifications involves managing engineering changes to machines and related assets within manufacturing and product lifecycle compliance processes."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_ManufacturingChangeCompliance_v1\",\n    \"proc_EngChangeAndProcurement_v1\",\n    \"proc_ProductLifecycleCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Product Lifecycle Management\"\n  ],\n  \"reason\": \"Tracking equipment modifications involves managing engineering changes to machines and related assets within manufacturing and product lifecycle compliance processes.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 3671,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Document regulatory requirements",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": 78.0
+          },
+          {
+            "ordId": "siemens.plm:agent:BOMComplianceValidator:v1",
+            "score": 75.75
+          },
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": 76.5
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Contract:v1",
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:ProductItem:v1",
+              "sap.odm:entityType:HazardousSubstance:v1"
+            ],
+            "business_groups": [
+              "proc_ProductComplianceManufacturing_v1",
+              "proc_SafetyComplianceOrchestration_v1",
+              "proc_ProcurementSafetyCompliance_v1"
+            ],
+            "lines_of_business": [
+              "Product Lifecycle Management",
+              "Environment, Health & Safety"
+            ],
+            "reason": "Documenting regulatory requirements typically involves contracts, materials, products, and hazardous substances across compliance, safety, and procurement-related business processes."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Contract:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:HazardousSubstance:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_ProductComplianceManufacturing_v1\",\n    \"proc_SafetyComplianceOrchestration_v1\",\n    \"proc_ProcurementSafetyCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Product Lifecycle Management\",\n    \"Environment, Health & Safety\"\n  ],\n  \"reason\": \"Documenting regulatory requirements typically involves contracts, materials, products, and hazardous substances across compliance, safety, and procurement-related business processes.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1",
+            "siemens.plm:agent:BOMComplianceValidator:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\",\n  \"siemens.plm:agent:BOMComplianceValidator:v1\",\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+          ],
+          "tokens": 3585,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Review existing maintenance schedules for coordination",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Machine:v1",
+              "sap.odm:entityType:ServiceTicket:v1",
+              "sap.odm:entityType:Employee:v1"
+            ],
+            "business_groups": [
+              "proc_ManufacturingChangeCompliance_v1",
+              "proc_SafetyComplianceOrchestration_v1"
+            ],
+            "lines_of_business": [
+              "Manufacturing",
+              "Operations"
+            ],
+            "reason": "Maintenance scheduling review involves coordinating machine assets and service activities across operational and manufacturing processes."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:Employee:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_ManufacturingChangeCompliance_v1\",\n    \"proc_SafetyComplianceOrchestration_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Operations\"\n  ],\n  \"reason\": \"Maintenance scheduling review involves coordinating machine assets and service activities across operational and manufacturing processes.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity \"Review existing maintenance schedules for coordination\" requires reading and analyzing maintenance schedules to coordinate them\u2014a capability none of these candidates provide. The candidates are focused on engineering changes, material provisioning, production orchestration, compliance, and safety validation. While some agents mention \"schedule\" or \"coordinate\" capabilities, they address production scheduling, work-order sequencing, and engineering change workflows\u2014not maintenance schedule review. No candidate has maintenance scheduling, maintenance plan analysis, or preventive maintenance coordination capabilities.",
+          "refused": true,
+          "previous_resolved": [
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+          ],
+          "tokens": 3821,
+          "latency_s": 4.45,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_007",
+      "skill_id_expected": "proc_007",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track related equipment modifications\",\n    \"Document regulatory requirements\",\n    \"Review existing maintenance schedules for coordination\"\n  ],\n  \"reason\": \"The skill covers submission, impact assessment, approval workflows, and implementation coordination, but explicitly lacks steps for tracking equipment modifications, documenting regulatory compliance, and coordinating with existing maintenance schedules\u2014three concrete activities the request names.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers submission, impact assessment, approval workflows, and implementation coordination, but explicitly lacks steps for tracking equipment modifications, documenting regulatory compliance, and coordinating with existing maintenance schedules\u2014three concrete activities the request names.",
+      "tokens": 582,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 11659,
+    "latency_s": 4.45,
+    "llm_calls": 7
+  },
+  "wall_s": 4.519
+}

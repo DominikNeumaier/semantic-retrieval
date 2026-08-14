@@ -21,10 +21,10 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
-from src.core import config
+from src import config
 
 
-SKILLS_DIR = config.ROOT / "benchmark" / "test_cases" / "design_time" / "output" / "skills"
+SKILLS_DIR = config.DT_OUTPUT_DIR / "skills"
 
 _HEADER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
 _STEP_RE = re.compile(r"^###\s+\d+\.\s+(.+?)\s*$", re.MULTILINE)

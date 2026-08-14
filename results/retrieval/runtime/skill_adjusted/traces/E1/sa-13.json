@@ -1,0 +1,337 @@
+{
+  "case_id": "sa-13",
+  "user_prompt": "We need to process an engineering change request for one of our key products that involves design modifications and supply chain validation. The change impacts multiple departments, so we'll need to coordinate the assessment across product design, manufacturing, and procurement to evaluate resource requirements and timeline implications. As part of this, we also need to identify which customer accounts are affected by this change so we can incorporate them into our communication strategy and any related marketing outreach. Can you help us orchestrate this entire workflow from initial change submission through cross-functional impact analysis and stakeholder notification?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "E",
+  "state": "enriched",
+  "condition": "E1",
+  "skill_expected": "proc_032",
+  "skill_picked": "proc_032",
+  "expected_gaps": [
+    "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+    "emarsys.cx:apiResource:CustomerAccountCampaignManagementAPI:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Identify affected customer accounts",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.crm:agent:SalesProductChangeCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:Opportunit \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.crm:package:Core:v1\",\n      \"title\": \"sap.crm Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1080
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:OpportunityToOrderAutomationEngine:v1 \u2014 converts qualified opportunities to orders\n2. sap.crm:agent:OpportunityQualificationAdvisor:v1 \u2014 evaluates opportunities against CustomerAccount characteristics\n\nPROCUREMENT AGENTS (sap.s4, sap.ariba):\n- sap.s4:agent:ProcurementMatchingAgent:v1 \u2014 matches purchase requisitions to vendors\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 \u2014 reconciles invoices to POs\n\nPRODUCT LIFECYCLE & MATERIALS TRACKING (siemens.plm, sap.s4):\n- siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1 \u2014 coordinates engineering changes across product items/materials, syncs config updates, tracks material lifecycle\n- siemens.plm:agent:BOMComplianceValidator:v1 \u2014 validates BOM against regulatory/supplier standards\n- sap.s4:agent:AssetLifecycleChangeOrchestrator:v1 \u2014 coordinates engineering changes across materials & product items with asset provisioning\n- sap.s4:agent:BOMComplianceAutomationAgent:v1 \u2014 validates material specs & automates BOM updates\n\nINCIDENT MGMT & EQUIPMENT (corp.itsm):\n- corp.itsm:agent:IncidentRootCauseAnalyzer:v1 \u2014 analyzes incidents to identify root causes, references ITEquipment entity\n- corp.itsm:agent:AssetProvisioningOrchestrator:v1 \u2014 manages asset lifecycle provisioning, not documentation\n- corp.itsm:agent:ChangeAutomationOrchestrator:v1 \u2014 automates change coordination across materials/product items\n- corp.itsm:agent:IncidentSafetyCoordinator:v1 \u2014 manages safety incidents\n- corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1 \u2014 manages occupational safety incidents\n\n**CUSTOMER ACCOUNT IMPACT IDENTIFICATION** (sap.crm):\n- sap.crm:agent:SalesProductChangeCoordinator:v1 \u2014 identifies affected customer accounts when engineering changes/material updates occur; processes product item modifications and automates notification workflows to affected accounts\n\nMISSING CAPABILITIES:\n1. Maintenance schedule review/coordination \u2014 NO resource found that reviews or coordinates maintenance schedules\n2. Equipment documentation updates (no agent found that updates equipment metadata/docs post-incident)\n3. Order fulfillment checkpoint tracking\n4. Customer grievance/complaint handling\n5. Customer billing dispute resolution\n6. Accounts receivable management\n7. Customer service management\n8. Claims and resolutions documentation\n"
+              },
+              "result_preview": {
+                "stored_bytes": 2499,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.crm:agent:SalesProductChangeCoordinator:v1",
+                "reason": "This agent automates identification of affected customer accounts by processing product item modifications and material updates, coordinating impact assessment and notification workflows to affected accounts."
+              },
+              "result_preview": {
+                "committed": "sap.crm:agent:SalesProductChangeCoordinator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.crm:agent:SalesProductChangeCoordinator:v1",
+          "picked_reason": "This agent automates identification of affected customer accounts by processing product item modifications and material updates, coordinating impact assessment and notification workflows to affected accounts.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 5,
+          "tokens": 26125,
+          "latency_s": 19.022,
+          "llm_calls": 5
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Develop communication strategy for stakeholders",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "landscape"
+              },
+              "result_preview": {
+                "error": "path not allowed: 'landscape'. Allowed roots: ('benchmark',)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.odm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 11
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/emarsys.cx/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/emarsys.cx/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"emarsys.cx:package:Core:v1\",\n      \"title\": \"emarsys.cx Core Package\",\n      \"shortDescri \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1221
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/emarsys.cx/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/emarsys.cx/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"emarsys.cx:package:Core:v1\",\n      \"title\": \"emarsys.cx Core Package\",\n      \"shortDescri \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1221
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:OpportunityToOrderAutomationEngine:v1 \u2014 converts qualified opportunities to orders\n2. sap.crm:agent:OpportunityQualificationAdvisor:v1 \u2014 evaluates opportunities against CustomerAccount characteristics\n\nPROCUREMENT AGENTS (sap.s4, sap.ariba):\n- sap.s4:agent:ProcurementMatchingAgent:v1 \u2014 matches purchase requisitions to vendors\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 \u2014 reconciles invoices to POs\n\nPRODUCT LIFECYCLE & MATERIALS TRACKING (siemens.plm, sap.s4):\n- siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1 \u2014 coordinates engineering changes across product items/materials, syncs config updates, tracks material lifecycle\n- siemens.plm:agent:BOMComplianceValidator:v1 \u2014 validates BOM against regulatory/supplier standards\n- sap.s4:agent:AssetLifecycleChangeOrchestrator:v1 \u2014 coordinates engineering changes across materials & product items with asset provisioning\n- sap.s4:agent:BOMComplianceAutomationAgent:v1 \u2014 validates material specs & automates BOM updates\n\nINCIDENT MGMT & EQUIPMENT (corp.itsm):\n- corp.itsm:agent:IncidentRootCauseAnalyzer:v1 \u2014 analyzes incidents to identify root causes, references ITEquipment entity\n- corp.itsm:agent:AssetProvisioningOrchestrator:v1 \u2014 manages asset lifecycle provisioning, not documentation\n- corp.itsm:agent:ChangeAutomationOrchestrator:v1 \u2014 automates change coordination across materials/product items\n- corp.itsm:agent:IncidentSafetyCoordinator:v1 \u2014 manages safety incidents\n- corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1 \u2014 manages occupational safety incidents\n\n**CUSTOMER ACCOUNT IMPACT IDENTIFICATION** (sap.crm):\n- sap.crm:agent:SalesProductChangeCoordinator:v1 \u2014 identifies affected customer accounts when engineering changes/material updates occur; processes product item modifications and automates notification workflows to affected accounts\n\n**COMMUNICATION STRATEGY DEVELOPMENT** (emarsys.cx):\n- emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1 \u2014 identifies high-value customer segments, optimizes campaign targeting/messaging, generates personalized messaging recommendations; works with affected customer accounts to develop communication strategy\n\nMISSING CAPABILITIES:\n1. Maintenance schedule review/coordination\n2. Equipment documentation updates post-incident\n3. Order fulfillment checkpoint tracking\n4. Customer grievance/complaint handling\n5. Customer billing dispute resolution\n6. Accounts receivable management\n7. Customer service management\n8. Claims and resolutions documentation\n"
+              },
+              "result_preview": {
+                "stored_bytes": 2687,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                "reason": "This agent develops communication strategy by identifying high-value customer segments, optimizing campaign targeting/messaging, and generating personalized messaging recommendations for affected stakeholders identified in the prior step."
+              },
+              "result_preview": {
+                "committed": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+          "picked_reason": "This agent develops communication strategy by identifying high-value customer segments, optimizing campaign targeting/messaging, and generating personalized messaging recommendations for affected stakeholders identified in the prior step.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 6,
+          "tokens": 34293,
+          "latency_s": 24.141,
+          "llm_calls": 6
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Coordinate marketing outreach for affected customers",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+                "reason": "Coordinates and optimizes marketing campaign targeting and messaging for affected customer segments, executing the communication strategy."
+              },
+              "result_preview": {
+                "committed": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+          "picked_reason": "Coordinates and optimizes marketing campaign targeting and messaging for affected customer segments, executing the communication strategy.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 1,
+          "tokens": 3256,
+          "latency_s": 6.459,
+          "llm_calls": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_032",
+      "skill_id_expected": "proc_032",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Identify affected customer accounts\",\n    \"Develop communication strategy for stakeholders\",\n    \"Coordinate marketing outreach for affected customers\"\n  ],\n  \"reason\": \"The skill covers cross-functional impact assessment, design modifications, supply chain validation, and resource planning across product, manufacturing, and procurement departments. However, it does not explicitly address customer account identification, stakeholder communication strategy development, or marketing outreach coordination\u2014all of which are concrete activities explicitly named in the user request.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers cross-functional impact assessment, design modifications, supply chain validation, and resource planning across product, manufacturing, and procurement departments. However, it does not explicitly address customer account identification, stakeholder communication strategy developmen",
+      "tokens": 621,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 64295,
+    "latency_s": 49.622,
+    "llm_calls": 13
+  },
+  "wall_s": 49.638
+}

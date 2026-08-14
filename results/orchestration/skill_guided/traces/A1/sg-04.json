@@ -1,0 +1,138 @@
+{
+  "case_id": "sg-04",
+  "user_prompt": "There was a workplace hazard event. Run through our complete safety and compliance workflow \u2014 exposure assessment, equipment checks, and verify our compliance status is intact.",
+  "mode_expected": "skill_guided",
+  "difficulty": "easy",
+  "method": "A",
+  "state": "enriched",
+  "condition": "A1",
+  "skill_expected": "proc_030",
+  "skill_picked": "proc_004",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": 0.0,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Check/inspect safety equipment condition",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:dataProduct:EquipmentComplianceAndMaintenanceInsights:v1",
+            "score": 0.4232
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1",
+            "score": 0.4116
+          },
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": 0.363
+          },
+          {
+            "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+            "score": 0.3533
+          },
+          {
+            "ordId": "sap.ehs:apiResource:SafetyChangeGovernanceManagement:v1",
+            "score": 0.3462
+          }
+        ],
+        "method_trace": {
+          "embedding_model": "text-embedding-3-large",
+          "resource_count": 273,
+          "tokens": 6,
+          "landscape_setup_tokens": 29264,
+          "latency_s": 0.572
+        },
+        "expected": {
+          "step_name": "step_1",
+          "expected_ordIds": [
+            "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Verify compliance status",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:apiResource:ComplianceRiskAssessmentAPI:v1",
+            "score": 0.4878
+          },
+          {
+            "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+            "score": 0.4577
+          },
+          {
+            "ordId": "sap.ehs:apiResource:ComplianceChangeServiceIntegration:v1",
+            "score": 0.4466
+          },
+          {
+            "ordId": "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+            "score": 0.4385
+          },
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": 0.435
+          }
+        ],
+        "method_trace": {
+          "embedding_model": "text-embedding-3-large",
+          "resource_count": 273,
+          "tokens": 3,
+          "landscape_setup_tokens": 29264,
+          "latency_s": 0.625
+        },
+        "expected": {
+          "step_name": "step_2",
+          "expected_ordIds": [
+            "workday.hcm:apiResource:PayrollDataExposure:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_004",
+      "skill_id_expected": "proc_030",
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_004\",\n  \"reason\": \"This skill directly manages hazardous substance compliance and employee safety with exposure assessment, and coordinates the safety workflow elements the user needs\u2014identification, exposure assessment, and compliance verification.\"\n}\n```",
+      "reason": "This skill directly manages hazardous substance compliance and employee safety with exposure assessment, and coordinates the safety workflow elements the user needs\u2014identification, exposure assessment, and compliance verification.",
+      "tokens": 1650,
+      "latency_s": 1.646,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Check/inspect safety equipment condition\",\n    \"Verify compliance status\"\n  ],\n  \"reason\": \"The skill covers hazard identification and exposure assessment, but explicitly lacks concrete steps for equipment checks (inspection/verification of safety equipment condition) and compliance status verification that the user request specifically names as required activities.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers hazard identification and exposure assessment, but explicitly lacks concrete steps for equipment checks (inspection/verification of safety equipment condition) and compliance status verification that the user request specifically names as required activities.",
+      "tokens": 507,
+      "latency_s": 3.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 2166,
+    "latency_s": 5.843,
+    "llm_calls": 2
+  },
+  "wall_s": 6.255
+}
