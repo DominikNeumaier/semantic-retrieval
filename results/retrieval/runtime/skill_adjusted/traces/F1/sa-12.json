@@ -1,0 +1,467 @@
+{
+  "case_id": "sa-12",
+  "user_prompt": "I need to submit a new infrastructure update request that will impact multiple departments, and I need the system to automatically assess whether this change requires executive approval based on the business scope. Can you walk me through the entire process from when I submit the request through final implementation, including tracking any related equipment modifications and service dependencies? I also need documentation of all regulatory requirements that apply to this change, as well as any existing maintenance schedules we should coordinate with during rollout.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": "proc_007",
+  "skill_picked": "proc_007",
+  "expected_gaps": [
+    "sap.ehs:apiResource:ComplianceChangeServiceIntegration:v1",
+    "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track related equipment modifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:EquipmentComplianceAndMaintenanceInsights:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 15782,
+          "latency_s": 9.559,
+          "llm_calls": 10,
+          "use_graph": true,
+          "picked_ord_id": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+          "picked_reason": "Change Request Approval Workflow API provides comprehensive change lifecycle management, approval routing, and impact assessment across dependent IT equipment. It directly enables tracking of equipment modifications through change request management, scheduling validation, and rollback planning\u2014core requirements for tracking related equipment modifications.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "track related equipment modifications",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1",
+                "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1",
+                "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+                "sap.s4:dataProduct:EquipmentComplianceAndMaintenanceInsights:v1",
+                "sap.s4:dataProduct:AssetMaintenanceAndChangeAnalytics:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "track-equipment-modifications"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-equipment-modifications"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "track-modifications"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+              },
+              "result_summary": "20 items",
+              "result_ord_ids": [
+                "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+                "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                "corp.itsm:dataProduct:ServiceHealthMetrics:v1",
+                "corp.itsm:dataProduct:ProcurementOperationalMetrics:v1",
+                "emarsys.cx:dataProduct:ServiceDeliveryOperationalInsights:v1",
+                "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+                "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+                "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1",
+                "sap.ariba:apiResource:VendorServiceManagementAPI:v1",
+                "sap.ehs:apiResource:SafetyChangeGovernanceManagement:v1",
+                "sap.ehs:apiResource:ComplianceChangeServiceIntegration:v1",
+                "sap.ehs:agent:IncidentResponseCoordinator:v1",
+                "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1",
+                "sap.s4:dataProduct:AssetMaintenanceAndChangeAnalytics:v1",
+                "sap.s4:dataProduct:EquipmentComplianceAndMaintenanceInsights:v1",
+                "sap.sf:apiResource:EmployeeChangeAndITServiceManagement:v1",
+                "sap.sf:apiResource:EmployeeITServiceManagement:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-changes"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                "reason": "Change Request Approval Workflow API provides comprehensive change lifecycle management, approval routing, and impact assessment across dependent IT equipment. It directly enables tracking of equipment modifications through change request management, scheduling validation, and rollback planning\u2014core requirements for tracking related equipment modifications."
+              },
+              "result": {
+                "committed": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Document regulatory requirements",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:SafetyComplianceCustomerEngagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 7787,
+          "latency_s": 6.195,
+          "llm_calls": 6,
+          "use_graph": true,
+          "picked_ord_id": "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1",
+          "picked_reason": "This agent orchestrates and monitors compliance documentation workflows across product lifecycle, directly supporting the activity of documenting regulatory requirements. It automates coordination of compliance documentation processes and tracks reviewer engagement for compliance documentation.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "document regulatory requirements",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "emarsys.cx:agent:IncidentComplianceOrchestrator:v1",
+                "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1",
+                "sap.s4:apiResource:SafetyComplianceCustomerEngagementAPI:v1",
+                "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+                "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1",
+                "siemens.plm:apiResource:HazardousSubstanceComplianceAndTrackingManagement:v1",
+                "workday.hcm:apiResource:VendorMaterialSafetyComplianceExposure:v1",
+                "siemens.plm:agent:BOMComplianceValidator:v1",
+                "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+                "siemens.plm:agent:EngineeringChangeAndComplianceOrchestrator:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "document-regulatory-requirements"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:SafetyComplianceCustomerEngagementAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:agent:IncidentComplianceOrchestrator:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1",
+                "reason": "This agent orchestrates and monitors compliance documentation workflows across product lifecycle, directly supporting the activity of documenting regulatory requirements. It automates coordination of compliance documentation processes and tracks reviewer engagement for compliance documentation."
+              },
+              "result": {
+                "committed": "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Review existing maintenance schedules for coordination",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:PerformanceReviewCoordination:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:agent:PerformanceReviewCycleCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:EquipmentComplianceAndMaintenanceInsights:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 11658,
+          "latency_s": 10.446,
+          "llm_calls": 9,
+          "use_graph": true,
+          "picked_ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+          "picked_reason": "This API resource directly supports reviewing and coordinating maintenance schedules through its schedule-maintenance capability, manages equipment changes and service requests with approval workflows and maintenance governance. It exposes ChangeRequest, ITEquipment, and ServiceTicket entities that enable tracking and coordination of maintenance activities across the organization.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "review existing maintenance schedules for coordination",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "workday.hcm:agent:PerformanceReviewCoordination:v1",
+                "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1",
+                "sap.sf:agent:PerformanceReviewCycleCoordinator:v1",
+                "sap.s4:dataProduct:EquipmentComplianceAndMaintenanceInsights:v1",
+                "corp.itsm:agent:ChangeReleaseCoordinator:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-maintenance"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "review-maintenance"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "maintenance schedule coordination",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+                "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+                "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "coordinate-maintenance"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:MaintenanceSchedule:v1"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:EquipmentComplianceAndMaintenanceInsights:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                "reason": "This API resource directly supports reviewing and coordinating maintenance schedules through its schedule-maintenance capability, manages equipment changes and service requests with approval workflows and maintenance governance. It exposes ChangeRequest, ITEquipment, and ServiceTicket entities that enable tracking and coordination of maintenance activities across the organization."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_007",
+      "skill_id_expected": "proc_007",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "gap steps injected from reference run"
+    }
+  },
+  "trace": {
+    "tokens": 35227,
+    "latency_s": 26.2,
+    "llm_calls": 25
+  },
+  "wall_s": 201.322
+}

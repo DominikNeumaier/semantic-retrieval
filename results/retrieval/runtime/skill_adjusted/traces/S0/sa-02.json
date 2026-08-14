@@ -1,0 +1,156 @@
+{
+  "case_id": "sa-02",
+  "user_prompt": "We need to orchestrate a comprehensive readiness validation for our upcoming product launch that coordinates material receipt verification, workforce capability assessment, and operational readiness evaluation. As part of this process, we also need to ensure we can track and validate all the materials coming in from our suppliers, including verifying their specifications against our master records. Additionally, we'll need to reconcile all incoming supplier billing documentation with our purchase commitments to ensure financial accuracy before we greenlight the launch. Please design a workflow that brings all these validation streams together into a single orchestrated process.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "S",
+  "state": "clean",
+  "condition": "S0",
+  "skill_expected": "proc_026",
+  "skill_picked": "proc_026",
+  "expected_gaps": [
+    "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+    "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.5,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Verify material specifications against master records",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeProductDataAPI:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "siemens.plm:apiResource:MaterialInventoryAndSupplierCatalogManagement:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13613,
+          "latency_s": 0.0,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Reconcile supplier billing documentation with purchase commitments",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13619,
+          "latency_s": 0.0,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Validate financial accuracy of invoices",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13620,
+          "latency_s": 2.276,
+          "llm_calls": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_026",
+      "skill_id_expected": "proc_026",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Verify material specifications against master records\",\n    \"Reconcile supplier billing documentation with purchase commitments\",\n    \"Validate financial accuracy of invoices\"\n  ],\n  \"reason\": \"The skill covers material receipt verification, workforce capability assessment, operational readiness evaluation, and safety compliance, but explicitly lacks the material specification validation against master records and the supplier billing reconciliation activities that the request specifically names as required components of the orchestrated process.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers material receipt verification, workforce capability assessment, operational readiness evaluation, and safety compliance, but explicitly lacks the material specification validation against master records and the supplier billing reconciliation activities that the request specifically",
+      "tokens": 616,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 41468,
+    "latency_s": 2.276,
+    "llm_calls": 4
+  },
+  "wall_s": 2.286
+}

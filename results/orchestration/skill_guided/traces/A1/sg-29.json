@@ -1,0 +1,138 @@
+{
+  "case_id": "sg-29",
+  "user_prompt": "We had a safety incident at one of our sites. Run the full response \u2014 hazard monitoring, exposure evaluation, equipment impact analysis, customer compliance check, and payroll review.",
+  "mode_expected": "skill_guided",
+  "difficulty": "easy",
+  "method": "A",
+  "state": "enriched",
+  "condition": "A1",
+  "skill_expected": "proc_030",
+  "skill_picked": "proc_030",
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 0,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": 0.25,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Equipment impact analysis",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+            "score": 0.5298
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1",
+            "score": 0.5004
+          },
+          {
+            "ordId": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1",
+            "score": 0.4953
+          },
+          {
+            "ordId": "sap.crm:dataProduct:ProductChangeImpactAnalytics:v1",
+            "score": 0.4767
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+            "score": 0.4446
+          }
+        ],
+        "method_trace": {
+          "embedding_model": "text-embedding-3-large",
+          "resource_count": 273,
+          "tokens": 3,
+          "landscape_setup_tokens": 29264,
+          "latency_s": 0.492
+        },
+        "expected": {
+          "step_name": "step_1",
+          "expected_ordIds": [
+            "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Payroll review",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:PayrollDataExposure:v1",
+            "score": 0.5108
+          },
+          {
+            "ordId": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+            "score": 0.4988
+          },
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "score": 0.4947
+          },
+          {
+            "ordId": "workday.hcm:agent:PerformanceReviewCoordination:v1",
+            "score": 0.4906
+          },
+          {
+            "ordId": "sap.sf:agent:PerformanceReviewCycleCoordinator:v1",
+            "score": 0.4575
+          }
+        ],
+        "method_trace": {
+          "embedding_model": "text-embedding-3-large",
+          "resource_count": 273,
+          "tokens": 3,
+          "landscape_setup_tokens": 29264,
+          "latency_s": 0.615
+        },
+        "expected": {
+          "step_name": "step_2",
+          "expected_ordIds": [
+            "workday.hcm:apiResource:PayrollDataExposure:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_030",
+      "skill_id_expected": "proc_030",
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": \"proc_030\",\n  \"reason\": \"proc_030 directly manages occupational safety incidents with hazard monitoring, exposure evaluation, and remediation coordination; it also integrates payroll and equipment considerations as mentioned in the user's request.\"\n}\n```",
+      "reason": "proc_030 directly manages occupational safety incidents with hazard monitoring, exposure evaluation, and remediation coordination; it also integrates payroll and equipment considerations as mentioned in the user's request.",
+      "tokens": 1660,
+      "latency_s": 1.358,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Equipment impact analysis\",\n    \"Payroll review\"\n  ],\n  \"reason\": \"The skill covers hazard monitoring, exposure evaluation, and customer compliance check, but explicitly lacks equipment impact analysis and payroll review, which the user explicitly named as required components of the full response.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers hazard monitoring, exposure evaluation, and customer compliance check, but explicitly lacks equipment impact analysis and payroll review, which the user explicitly named as required components of the full response.",
+      "tokens": 509,
+      "latency_s": 5.46,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 2175,
+    "latency_s": 7.925,
+    "llm_calls": 2
+  },
+  "wall_s": 8.328
+}

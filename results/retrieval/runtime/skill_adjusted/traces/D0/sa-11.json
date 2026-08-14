@@ -1,0 +1,955 @@
+{
+  "case_id": "sa-11",
+  "user_prompt": "We need to orchestrate a production transition that's been triggered by recent engineering changes to one of our product lines. This should coordinate assessments to ensure our workforce is ready for the transition, validate that all equipment meets the new specifications, provision the necessary assets, and communicate the changes to our affected customers. As part of this process, we'll also need to track how these product changes flow through our materials and components, including automated coordination across all related items. Can you help us manage this comprehensive transition while ensuring all service requests and equipment documentation are kept current throughout the changeover?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": "proc_023",
+  "skill_picked": "proc_023",
+  "expected_gaps": [
+    "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+    "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.5,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track product changes through materials and components",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:EngineeringChange:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Change Lifecycle API",
+                  "shortDescription": "Exposes engineering changes and product items for workforce asset management."
+                },
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                "... (37 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Material:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                  "type": "agent",
+                  "title": "Change Release Coordinator",
+                  "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+                },
+                "... (55 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Product Lifecycle Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+                  "type": "apiResource",
+                  "title": "Engineering Change & Product Item Integration API",
+                  "shortDescription": "Exposes engineering changes and product items for production scheduling validation"
+                },
+                {
+                  "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+                  "type": "apiResource",
+                  "title": "Equipment Change and Service Integration API",
+                  "shortDescription": "Manages equipment changes, service requests, and diagnostics coordination."
+                },
+                {
+                  "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor information for production planning."
+                },
+                "... (17 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Design Modification and Component Specification API",
+                "shortDescription": "Facilitates tracking and coordination of design updates and component specifications during product development and procurement cycles.",
+                "description": "Exposes design modification records and component specification data to enable integration systems to access approval statuses, impacted items, and change history throughout the product lifecycle. Supports retrieval of design update details, affected component relationships, and change request submissions to coordinate cross-functional teams. Enables real-time access to modification tracking, impact assessments, and stakeholder notifications for design changes across sourcing and manufacturing operations.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "design-modification",
+                  "product-lifecycle-management",
+                  "change-tracking",
+                  "component-management"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:EngineringChangeManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:apiResource:EngineringChangeManagement:v1",
+                "type": "apiResource",
+                "namespace": "siemens.plm",
+                "title": "Engineering Change Management API",
+                "shortDescription": "REST API for creating, approving, and tracking engineering changes across product designs.",
+                "description": "Exposes REST endpoints for managing engineering change orders (ECOs) throughout their lifecycle, including change request creation, stakeholder approval workflows, impact assessment on bill of materials, and compliance validation. Enables integration with downstream systems for synchronized product data updates and traceability.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "engineering-change",
+                  "change-management",
+                  "product-design",
+                  "workflow-approval"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EngineeringChangeProductIntegration:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Engineering Change & Product Item Integration API",
+                "shortDescription": "Exposes engineering changes and product items for production scheduling validation",
+                "description": "Provides access to engineering change records and product item data to enable real-time validation of production schedules against active design modifications. Retrieves current product configurations and change approvals to ensure manufacturing processes align with the latest engineering specifications and quality requirements.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "engineering-change",
+                  "change-management",
+                  "product-design",
+                  "workflow-approval"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+                "reason": "This API explicitly tracks design modifications and component specifications with full change history and affected component relationships throughout the product lifecycle, directly fulfilling the requirement to track product changes through materials and components."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+          "picked_reason": "This API explicitly tracks design modifications and component specifications with full change history and affected component relationships throughout the product lifecycle, directly fulfilling the requirement to track product changes through materials and components.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 27149,
+          "latency_s": 13.613,
+          "llm_calls": 10
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Automate coordination across related items",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Design Modification and Component Specification API",
+                "shortDescription": "Facilitates tracking and coordination of design updates and component specifications during product development and procurement cycles.",
+                "description": "Exposes design modification records and component specification data to enable integration systems to access approval statuses, impacted items, and change history throughout the product lifecycle. Supports retrieval of design update details, affected component relationships, and change request submissions to coordinate cross-functional teams. Enables real-time access to modification tracking, impact assessments, and stakeholder notifications for design changes across sourcing and manufacturing operations.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "design-modification",
+                  "product-lifecycle-management",
+                  "change-tracking",
+                  "component-management"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ChangeRequest:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                  "type": "apiResource",
+                  "title": "Change Request Approval Workflow API",
+                  "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Provisioning Integration API",
+                  "shortDescription": "Manages equipment provisioning requests linked to service tickets and change approvals."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                  "type": "agent",
+                  "title": "Incident Root Cause Analysis Agent",
+                  "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:EngineeringChangeAndComplianceOrchestrator:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:agent:EngineeringChangeAndComplianceOrchestrator:v1",
+                "type": "agent",
+                "namespace": "siemens.plm",
+                "title": "Engineering Change and Compliance Orchestrator",
+                "shortDescription": "Automates change request workflows, equipment impact assessments, and compliance validation across product lifecycle.",
+                "description": "Monitors and coordinates engineering change requests through design review cycles, automatically assesses affected IT equipment and digital twin configurations, and processes compliance documentation requirements. Routes service tickets to appropriate teams based on change criticality and regulatory impact, ensuring supplier qualification updates and cost estimation workflows are triggered seamlessly throughout the product development lifecycle.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "change-orchestration",
+                  "compliance-automation",
+                  "design-review-coordination"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:EngineeringChangeAndComplianceOrchestrator:v1",
+                "reason": "Agent that automates coordination of change requests across related design items, equipment, and compliance workflows, automatically assessing impacts and routing to appropriate teams."
+              },
+              "result": {
+                "committed": "siemens.plm:agent:EngineeringChangeAndComplianceOrchestrator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "siemens.plm:agent:EngineeringChangeAndComplianceOrchestrator:v1",
+          "picked_reason": "Agent that automates coordination of change requests across related design items, equipment, and compliance workflows, automatically assessing impacts and routing to appropriate teams.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 7,
+          "tokens": 21677,
+          "latency_s": 10.844,
+          "llm_calls": 7
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Update service requests documentation",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "siemens.plm:agent:EngineeringChangeAndComplianceOrchestrator:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ServiceTicket:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                  "type": "apiResource",
+                  "title": "Change Request Approval Workflow API",
+                  "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Provisioning Integration API",
+                  "shortDescription": "Manages equipment provisioning requests linked to service tickets and change approvals."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                  "type": "agent",
+                  "title": "Incident Root Cause Analysis Agent",
+                  "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "IT Service Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                  "type": "apiResource",
+                  "title": "Change Request Approval Workflow API",
+                  "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Customer Account Lifecycle API",
+                  "shortDescription": "Manages campaign-driven customer account provisioning and lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                  "type": "agent",
+                  "title": "Incident Root Cause Analysis Agent",
+                  "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+                },
+                "... (6 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+                "type": "apiResource",
+                "namespace": "siemens.plm",
+                "title": "Engineering Change and Service Management API",
+                "shortDescription": "Manages product changes, equipment tracking, and service request workflows.",
+                "description": "Exposes engineering change requests, IT equipment configurations, and service ticket management to coordinate product modifications across the PLM lifecycle. Retrieves change request status, equipment dependencies, and service ticket escalations to support compliance documentation and digital twin synchronization. Manages service ticket assignments and change approvals to enable real-time collaboration between engineering, quality, and supplier teams.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "change-management",
+                  "service-operations",
+                  "compliance-tracking"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Service Ticket & Change Request Management API",
+                "shortDescription": "Manages and retrieves service tickets, change requests, and equipment maintenance records.",
+                "description": "Exposes endpoints to retrieve, create, and update service tickets and engineering change requests tied to manufacturing equipment. Provides access to maintenance workflows, change request status tracking, and equipment diagnostics correlation for compliance and supplier management purposes.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "supplier-management",
+                  "service-operations",
+                  "compliance-tracking"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+                "reason": "This API manages service ticket workflows and compliance documentation, providing the update capabilities for service requests following the engineering change orchestration step."
+              },
+              "result": {
+                "committed": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+          "picked_reason": "This API manages service ticket workflows and compliance documentation, providing the update capabilities for service requests following the engineering change orchestration step.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 27994,
+          "latency_s": 14.544,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Update equipment documentation",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:apiResource:DigitalTwinAndConfigurationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Machine:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                  "type": "apiResource",
+                  "title": "Equipment OEE Analytics API",
+                  "shortDescription": "REST API for real-time machine performance metrics and OEE calculations."
+                },
+                {
+                  "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+                  "type": "agent",
+                  "title": "Production Quality Monitor Agent",
+                  "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Order Fulfillment API",
+                  "shortDescription": "Retrieves and manages production order status and equipment data for procurement operations."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ITEquipment:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                  "type": "apiResource",
+                  "title": "Change Request Approval Workflow API",
+                  "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Provisioning Integration API",
+                  "shortDescription": "Manages equipment provisioning requests linked to service tickets and change approvals."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                  "type": "agent",
+                  "title": "Incident Root Cause Analysis Agent",
+                  "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:EngineeringChange:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Change Lifecycle API",
+                  "shortDescription": "Exposes engineering changes and product items for workforce asset management."
+                },
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                "... (37 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:DigitalTwinAndConfigurationManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:apiResource:DigitalTwinAndConfigurationManagement:v1",
+                "type": "apiResource",
+                "namespace": "siemens.plm",
+                "title": "Digital Twin and Product Configuration API",
+                "shortDescription": "Manages digital twin instances, product configurations, and design review artifacts.",
+                "description": "Exposes endpoints to retrieve and manage digital twin data, product configurations, and design review documentation. Provides access to configuration hierarchies, design metadata, and change impact analysis across engineering and manufacturing domains. Manages relationships between ChangeRequests, ITEquipment assets, and ServiceTickets for coordinated product lifecycle updates.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "digital-twin",
+                  "product-configuration",
+                  "design-review"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Equipment Change and Service Management API",
+                "shortDescription": "Manages equipment changes, service requests, and maintenance governance.",
+                "description": "Exposes change requests, IT equipment records, and service tickets to coordinate equipment modifications and maintenance activities across the manufacturing facility. Retrieves approval workflows and risk assessments for equipment changes while managing service ticket lifecycle and equipment diagnostics integration.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "IT Service Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "change-management",
+                  "approval-workflow",
+                  "governance",
+                  "risk-assessment"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:DigitalTwinAndConfigurationManagement:v1",
+                "reason": "Manages design review artifacts, product configurations, and digital twin documentation for equipment\u2014the natural successor to engineering changes to formalize and document updated equipment specifications."
+              },
+              "result": {
+                "committed": "siemens.plm:apiResource:DigitalTwinAndConfigurationManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "siemens.plm:apiResource:DigitalTwinAndConfigurationManagement:v1",
+          "picked_reason": "Manages design review artifacts, product configurations, and digital twin documentation for equipment\u2014the natural successor to engineering changes to formalize and document updated equipment specifications.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 27365,
+          "latency_s": 12.686,
+          "llm_calls": 9
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_023",
+      "skill_id_expected": "proc_023",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track product changes through materials and components\",\n    \"Automate coordination across related items\",\n    \"Update service requests documentation\",\n    \"Update equipment documentation\"\n  ],\n  \"reason\": \"The skill covers the core production transition orchestration (workforce assessments, equipment validation, asset provisioning, and customer communications), but the request explicitly requires tracking material/component impact flows, automated cross-item coordination, and maintaining current service requests and equipment documentation\u2014concrete activities not listed in the skill's steps.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers the core production transition orchestration (workforce assessments, equipment validation, asset provisioning, and customer communications), but the request explicitly requires tracking material/component impact flows, automated cross-item coordination, and maintaining current servi",
+      "tokens": 632,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 104817,
+    "latency_s": 51.687,
+    "llm_calls": 36
+  },
+  "wall_s": 51.726
+}

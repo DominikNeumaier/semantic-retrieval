@@ -1,0 +1,770 @@
+{
+  "case_id": "oos-19",
+  "user_prompt": "We need a way to automatically match employees who are commuting from the same neighborhoods during similar time windows so we can subsidize shared rides and reduce our transportation budget, and ideally the system would integrate with our payroll to track subsidy eligibility by department and cost center.",
+  "mode_expected": "out_of_scope",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 0,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": 0,
+    "falsely_picked": 1,
+    "falsely_picked_ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Create a system to automatically match employees who are commuting from the same neighborhoods during similar time windows for ride-sharing coordination",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "coordinate-employee-availability"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Sales Capacity and Time Off Management API",
+                  "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:WorkforcePerson:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Workforce Compensation API",
+                  "shortDescription": "Manages employee compensation and payroll data for procurement personnel."
+                },
+                {
+                  "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                  "type": "apiResource",
+                  "title": "Sales Employee Hierarchy and Capability Directory API",
+                  "shortDescription": "Exposes employee organizational structure and sales capabilities for CRM operations."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (16 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "match-service-requirements"
+              },
+              "result_preview": [
+                {
+                  "ordId": "siemens.plm:apiResource:SupplierQualificationAndServiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Supplier Qualification and Service Management API",
+                  "shortDescription": "Manages supplier qualifications, service requests, and equipment compliance tracking."
+                }
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks any resource for location-based employee matching or ride-sharing coordination; available HR resources focus on compensation, hierarchy, and time-off management rather than geographic commute coordination."
+              },
+              "result": {
+                "refused": true,
+                "reason": "The landscape lacks any resource for location-based employee matching or ride-sharing coordination; available HR resources focus on compensation, hierarchy, and time-off management rather than geographic commute coordination."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks any resource for location-based employee matching or ride-sharing coordination; available HR resources focus on compensation, hierarchy, and time-off management rather than geographic commute coordination.",
+          "tool_calls": 8,
+          "tokens": 33120,
+          "latency_s": 13.257,
+          "llm_calls": 8
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Implement a subsidy calculation and tracking system for shared rides to reduce transportation budget",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Finance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Procurement Automation Orchestrator",
+                  "shortDescription": "Automates vendor engagement and procurement workflows through targeted marketing communications."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                "... (10 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "calculate-benefit-liability"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:BenefitsEnrollmentDataManagement:v1",
+                  "type": "apiResource",
+                  "title": "Benefits Enrollment Data Management API",
+                  "shortDescription": "Manages and retrieves employee benefits enrollment records and eligibility data."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "allocate-workforce"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:PayrollDataExposure:v1",
+                  "type": "apiResource",
+                  "title": "Payroll Data Exposure API",
+                  "shortDescription": "Exposes payroll records, earnings, deductions, and tax information for employees."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Capital Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+                  "type": "agent",
+                  "title": "Occupational Safety Incident Coordinator",
+                  "shortDescription": "Monitors and coordinates safety incidents with hazardous substance involvement for compliance."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:SafetyIncidentComplianceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Incident Compliance Analytics",
+                  "shortDescription": "Aggregates and analyzes incident data to provide safety compliance metrics and trends."
+                },
+                {
+                  "ordId": "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                  "type": "apiResource",
+                  "title": "Sales Employee Hierarchy and Capability Directory API",
+                  "shortDescription": "Exposes employee organizational structure and sales capabilities for CRM operations."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:BenefitsEnrollmentDataManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:apiResource:BenefitsEnrollmentDataManagement:v1",
+                "type": "apiResource",
+                "namespace": "workday.hcm",
+                "title": "Benefits Enrollment Data Management API",
+                "shortDescription": "Manages and retrieves employee benefits enrollment records and eligibility data.",
+                "description": "This API exposes comprehensive benefits enrollment information for employees and workforce persons, enabling external systems to retrieve current enrollment status, plan selections, and eligibility determinations. It provides access to historical enrollment decisions and allows querying of benefits coverage details tied to individual workforce members.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Finance"
+                ],
+                "capabilities": [
+                  "assess-benefits",
+                  "reconcile-enrollment",
+                  "calculate-benefit-liability"
+                ],
+                "useCases": [
+                  "Reconcile benefits enrollment data with compensation budgets",
+                  "Calculate total cost of employment including benefit obligations",
+                  "Validate benefit-related compensation adjustments for open enrollment"
+                ],
+                "tags": [
+                  "payroll",
+                  "workforce",
+                  "compensation"
+                ],
+                "partOfGroups": [
+                  "proc_workforce_comp_benefits_v1"
+                ],
+                "processNext": [
+                  "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1"
+                ],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-pay-adjustments"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Compensation Management API",
+                  "shortDescription": "REST API for managing employee compensation, salary structures, and merit adjustments."
+                }
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeCompensationManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.sf",
+                "title": "Employee Compensation Management API",
+                "shortDescription": "REST API for managing employee compensation, salary structures, and merit adjustments.",
+                "description": "Exposes employee compensation data and salary management capabilities, enabling integration with payroll systems and HR analytics platforms. Supports CRUD operations on compensation records, salary bands, and merit increase workflows. Essential for enterprises managing complex compensation structures across multiple organizational units.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [
+                  "manage-pay-adjustments",
+                  "adjust-compensation",
+                  "validate-compensation-alignment",
+                  "forecast-labor-costs",
+                  "approve-salary-adjustments",
+                  "apply-hazard-allowances"
+                ],
+                "useCases": [
+                  "Compensation team applies duty-based pay differentials for restricted material handling assignments.",
+                  "HR confirms employee compensation budgets align with transition financial model",
+                  "Finance validates that labor cost changes support the product transition ROI projection",
+                  "Payroll specialist ensures workers on hazardous material production receive appropriate hazard pay premiums."
+                ],
+                "tags": [
+                  "compensation",
+                  "salary-management",
+                  "payroll-integration",
+                  "employee-lifecycle"
+                ],
+                "partOfGroups": [
+                  "proc_ProductTransitionCompliance_v1",
+                  "proc_ProductComplianceWorkforceSafety_v1"
+                ],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a specialized resource for ride-sharing subsidy calculation and transportation expense tracking; available resources focus on payroll and employee benefits rather than commute/mobility subsidies."
+              },
+              "result": {
+                "refused": true,
+                "reason": "The landscape lacks a specialized resource for ride-sharing subsidy calculation and transportation expense tracking; available resources focus on payroll and employee benefits rather than commute/mobility subsidies."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a specialized resource for ride-sharing subsidy calculation and transportation expense tracking; available resources focus on payroll and employee benefits rather than commute/mobility subsidies.",
+          "tool_calls": 11,
+          "tokens": 41487,
+          "latency_s": 13.334,
+          "llm_calls": 11
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Integrate the ride-sharing subsidy system with payroll to track subsidy eligibility by department and cost center",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Compensation:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Production Labor Productivity Metrics",
+                  "shortDescription": "Aggregates employee compensation and performance data to analyze production labor efficiency."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Compensation and Safety Risk Correlation Analytics",
+                  "shortDescription": "Aggregates compensation patterns and safety incident data to identify risk correlations."
+                },
+                {
+                  "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Sales Compensation Orchestrator",
+                  "shortDescription": "Automates compensation calculations and dispute resolution for sales teams."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "type": "apiResource",
+                "namespace": "workday.hcm",
+                "title": "Payroll Processing Data Management",
+                "shortDescription": "Manages and exposes payroll calculations, earnings, and deductions data.",
+                "description": "This API resource provides access to payroll processing data including employee earnings, tax withholdings, deductions, and gross-to-net calculations. It retrieves and manages payroll records for Employee and WorkforcePerson entities, enabling integration with downstream payroll systems and financial consolidation platforms. The resource exposes real-time payroll snapshots and historical payroll records for compliance and audit purposes.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [
+                  "validate-employee-payments",
+                  "process-payroll",
+                  "manage-workforce-compensation-execution",
+                  "resource-allocation-scheduling",
+                  "identify-available-workforce",
+                  "integrate-payroll-with-scheduling"
+                ],
+                "useCases": [
+                  "Workforce scheduling integrates with payroll to ensure accurate compensation tracking for assigned service activities.",
+                  "Payroll and workforce data identifies two available technicians; their availability is checked and the nearest one is assigned to the job.",
+                  "HR payroll administrator executes end-to-end payroll processing with full control over employee and workforce person payment records",
+                  "Payroll system ensures accurate, timely compensation delivery while maintaining audit trail for regulatory compliance"
+                ],
+                "tags": [
+                  "compensation",
+                  "salary-management",
+                  "payroll-integration",
+                  "employee-lifecycle"
+                ],
+                "partOfGroups": [
+                  "proc_ServiceToProduction_v1",
+                  "proc_talent_compliance_ops_v1"
+                ],
+                "processNext": [
+                  "workday.hcm:agent:CompensationAdjustmentAutomation:v1"
+                ],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.sf",
+                "title": "Compensation and Salary Management API",
+                "shortDescription": "Manages employee compensation structures, salary data, and payroll integration.",
+                "description": "Exposes comprehensive compensation and salary information for employees and workforce persons. Retrieves salary bands, variable compensation, bonuses, and payroll-relevant attributes. Manages compensation planning data and provides access to salary history and payroll integration touchpoints.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [
+                  "recalculate-compensation",
+                  "manage-employee-incentives",
+                  "adjust-salary-bands"
+                ],
+                "useCases": [
+                  "Payroll and HR systems update employee earnings to reflect overtime, new role classifications, or performance adjustments tied to production change success.",
+                  "Workforce planners align compensation structures with modified labor requirements in manufacturing operations."
+                ],
+                "tags": [
+                  "compensation",
+                  "salary-management",
+                  "payroll-integration",
+                  "employee-lifecycle"
+                ],
+                "partOfGroups": [
+                  "proc_ManufacturingChangeCompliance_v1"
+                ],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollDataExposure:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:apiResource:PayrollDataExposure:v1",
+                "type": "apiResource",
+                "namespace": "workday.hcm",
+                "title": "Payroll Data Exposure API",
+                "shortDescription": "Exposes payroll records, earnings, deductions, and tax information for employees.",
+                "description": "This API retrieves and manages payroll-related data including earnings history, deduction details, tax withholdings, and compensation components for workforce members. It provides access to detailed payroll records that integrate with downstream HR and financial systems, enabling real-time payroll status queries and historical compensation data retrieval.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [
+                  "allocate-workforce",
+                  "review-payroll-impact",
+                  "calculate-production-labor-costs",
+                  "assess-incident-costs",
+                  "quantify-staffing-impact",
+                  "track-labor-hours"
+                ],
+                "useCases": [
+                  "Calculate financial burden of safety incidents on payroll and benefits",
+                  "HR manager ensures production team members are assigned and their labor hours are tracked for payroll and cost accounting.",
+                  "Assess cost implications of employee reassignment for incident investigation",
+                  "Determine budget impact of compliance remediation on HR operations",
+                  "Production workforce allocation and payroll integration ensures accurate labor cost attribution to customer orders."
+                ],
+                "tags": [
+                  "compensation",
+                  "salary-management",
+                  "payroll-integration",
+                  "employee-lifecycle"
+                ],
+                "partOfGroups": [
+                  "proc_order_to_production_v1",
+                  "proc_SafetyComplianceOrchestration_v1"
+                ],
+                "processNext": [
+                  "sap.ehs:agent:IncidentRootCauseAnalyzer:v1"
+                ],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "reason": "Payroll Processing Data Management API manages payroll calculations, earnings, and deductions by employee, enabling ride-sharing subsidy tracking and cost attribution by department and cost center through compensation execution capabilities."
+              },
+              "result": {
+                "committed": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+          "picked_reason": "Payroll Processing Data Management API manages payroll calculations, earnings, and deductions by employee, enabling ride-sharing subsidy tracking and cost attribution by department and cost center through compensation execution capabilities.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 25762,
+          "latency_s": 11.048,
+          "llm_calls": 9
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": false,
+      "stage": "intent_resolver",
+      "raw": "```json\n{\n  \"best_skill_id\": null,\n  \"reason\": \"This request describes a new employee transportation subsidy matching system with payroll integration\u2014a novel HR/benefits initiative that doesn't align with any registered skill, which focus on product lifecycle, manufacturing, procurement, and compliance processes.\"\n}\n```",
+      "reason": "This request describes a new employee transportation subsidy matching system with payroll integration\u2014a novel HR/benefits initiative that doesn't align with any registered skill, which focus on product lifecycle, manufacturing, procurement, and compliance processes.",
+      "tokens": 1682,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "skipped": true,
+      "reason": "no skill matched at stage 1",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 102434,
+    "latency_s": 37.639,
+    "llm_calls": 30
+  },
+  "wall_s": 37.668
+}

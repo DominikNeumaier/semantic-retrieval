@@ -20,7 +20,7 @@ from __future__ import annotations
 import json
 import re
 
-from src.core import config
+from src import config
 
 
 def _load_process_titles() -> dict[str, str]:

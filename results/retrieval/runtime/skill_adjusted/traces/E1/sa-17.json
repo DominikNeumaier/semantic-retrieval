@@ -1,0 +1,328 @@
+{
+  "case_id": "sa-17",
+  "user_prompt": "We need to conduct a comprehensive review of our current compensation structure and analyze our total workforce costs across the organization. This should include validating our organizational structure to ensure accuracy, processing our benefits enrollment data, and coordinating with our procurement team on vendor costs. As part of this analysis, we also need to understand our employee hierarchy and their respective capability levels to ensure compensation aligns with roles and responsibilities. Additionally, we'll need to review our salary bands and grade levels to confirm they're being applied consistently across the company.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "E",
+  "state": "enriched",
+  "condition": "E1",
+  "skill_expected": "proc_018",
+  "skill_picked": "proc_018",
+  "expected_gaps": [
+    "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+    "workday.hcm:apiResource:CompensationStructureDataExposure:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Analyze employee hierarchy and capability levels",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/workday.hcm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/workday.hcm",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/workday.hcm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/workday.hcm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 921
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.odm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.odm",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.odm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.odm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-independent\",\n  \"description\": \"SAP One Domain Model entity type taxonomy for the benchmark landscape. 40 canonical business objects servi \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 667
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape contains no agent specifically designed to analyze employee hierarchy and capability levels; available HR agents focus on compensation, performance workflows, and safety incident management."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape contains no agent specifically designed to analyze employee hierarchy and capability levels; available HR agents focus on compensation, performance workflows, and safety incident management."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape contains no agent specifically designed to analyze employee hierarchy and capability levels; available HR agents focus on compensation, performance workflows, and safety incident management.",
+          "tool_calls": 5,
+          "tokens": 26534,
+          "latency_s": 29.093,
+          "llm_calls": 5
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Review and validate salary bands and grade levels for consistency",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1099
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 10
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.sf:package:Core:v1\",\n      \"title\": \"sap.sf Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1072
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape contains compensation automation and policy enforcement agents but no dedicated resource for reviewing and validating salary bands and grade levels for consistency governance."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape contains compensation automation and policy enforcement agents but no dedicated resource for reviewing and validating salary bands and grade levels for consistency governance."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape contains compensation automation and policy enforcement agents but no dedicated resource for reviewing and validating salary bands and grade levels for consistency governance.",
+          "tool_calls": 4,
+          "tokens": 23950,
+          "latency_s": 24.961,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Confirm compensation alignment with roles and responsibilities",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:Opportunit \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1099
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+                "reason": "Automates compensation plan updates tied to organizational structure changes and job family classifications, directly aligning compensation with roles and responsibilities."
+              },
+              "result_preview": {
+                "committed": "workday.hcm:agent:CompensationStructureAutomationEngine:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+          "picked_reason": "Automates compensation plan updates tied to organizational structure changes and job family classifications, directly aligning compensation with roles and responsibilities.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 3,
+          "tokens": 14052,
+          "latency_s": 15.77,
+          "llm_calls": 3
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_018",
+      "skill_id_expected": "proc_018",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Analyze employee hierarchy and capability levels\",\n    \"Review and validate salary bands and grade levels for consistency\",\n    \"Confirm compensation alignment with roles and responsibilities\"\n  ],\n  \"reason\": \"The skill covers payroll data integration, organizational structure validation, benefits enrollment, and procurement spend analysis, but the step list is incomplete and does not explicitly include activities for assessing employee hierarchy/capability levels, reviewing salary band consistency, or validating compensation-to-role alignment\u2014all of which are concretely named in the request.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers payroll data integration, organizational structure validation, benefits enrollment, and procurement spend analysis, but the step list is incomplete and does not explicitly include activities for assessing employee hierarchy/capability levels, reviewing salary band consistency, or va",
+      "tokens": 624,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 65160,
+    "latency_s": 69.824,
+    "llm_calls": 13
+  },
+  "wall_s": 69.843
+}

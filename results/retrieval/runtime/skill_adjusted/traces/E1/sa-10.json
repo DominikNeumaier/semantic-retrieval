@@ -1,0 +1,841 @@
+{
+  "case_id": "sa-10",
+  "user_prompt": "We need to streamline our complete purchasing workflow to examine incoming client requests, evaluate buyer participation levels and regulatory standards, vet potential vendors, and give the green light for transaction completion with appropriate authorizations. As orders move through each phase, we also need to track their progression through various completion checkpoints and monitor delivery timelines. Additionally, include functionality to handle any customer grievances or billing disagreements that may arise during the transaction lifecycle, ensuring we can document claims and work through resolutions efficiently within our existing business platform.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "E",
+  "state": "enriched",
+  "condition": "E1",
+  "skill_expected": "proc_008",
+  "skill_picked": "proc_008",
+  "expected_gaps": [
+    "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+    "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track order progression through completion checkpoints",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:Opportunit \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1276
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.crm:package:Core:v1\",\n      \"title\": \"sap.crm Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1080
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 10
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 8,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:OpportunityToOrderAutomationEngine:v1 \u2014 converts qualified opportunities to orders\n2. sap.crm:agent:OpportunityQualificationAdvisor:v1 \u2014 evaluates opportunities against CustomerAccount characteristics; feeds account data for qualification\n\nPROCUREMENT AGENTS (sap.s4, sap.ariba):\n- sap.s4:agent:ProcurementMatchingAgent:v1 \u2014 matches purchase requisitions to vendors\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 \u2014 reconciles invoices to POs\n- sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1 \u2014 REST API for PO lifecycle & real-time status tracking (but not fulfillment checkpoint tracking)\n\nORDER TRACKING CAPABILITY SEARCH RESULT:\nNo resource found that explicitly tracks order progression through completion checkpoints. Landscape focuses on:\n- Order creation/opportunity-to-order conversion\n- Procurement matching & vendor reconciliation\n- Quality & compliance monitoring during production\n- BOM validation & engineering changes\nLacks: Fulfillment progression tracking, delivery milestone tracking, order status checkpoint monitoring.\n"
+              },
+              "result_preview": {
+                "stored_bytes": 1241,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 9,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a dedicated resource for tracking order progression through completion checkpoints; it focuses on order creation (OpportunityToOrderAutomationEngine) and manufacturing/compliance monitoring, but not fulfillment milestone tracking."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape lacks a dedicated resource for tracking order progression through completion checkpoints; it focuses on order creation (OpportunityToOrderAutomationEngine) and manufacturing/compliance monitoring, but not fulfillment milestone tracking."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a dedicated resource for tracking order progression through completion checkpoints; it focuses on order creation (OpportunityToOrderAutomationEngine) and manufacturing/compliance monitoring, but not fulfillment milestone tracking.",
+          "tool_calls": 11,
+          "tokens": 128289,
+          "latency_s": 34.836,
+          "llm_calls": 11
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Monitor delivery timelines",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:Opportunit \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a resource that explicitly monitors delivery timelines or fulfillment milestones; while sap.ariba provides PO status tracking, there is no delivery timeline or fulfillment progression monitoring capability."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape lacks a resource that explicitly monitors delivery timelines or fulfillment milestones; while sap.ariba provides PO status tracking, there is no delivery timeline or fulfillment progression monitoring capability."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a resource that explicitly monitors delivery timelines or fulfillment milestones; while sap.ariba provides PO status tracking, there is no delivery timeline or fulfillment progression monitoring capability.",
+          "tool_calls": 2,
+          "tokens": 5377,
+          "latency_s": 6.418,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Handle customer grievances or complaints",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:Opportunit \u2026(truncated)"
+              }
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "landscape"
+              },
+              "result_preview": {
+                "error": "path not allowed: 'landscape'. Allowed roots: ('benchmark',)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.odm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 11
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.crm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.crm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.crm:package:Core:v1\",\n      \"title\": \"sap.crm Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 938
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/emarsys.cx/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/emarsys.cx/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"emarsys.cx:package:Core:v1\",\n      \"title\": \"emarsys.cx Core Package\",\n      \"shortDescri \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1008
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1021
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.crm:package:Core:v1\",\n      \"title\": \"sap.crm Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1080
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/workday.hcm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/workday.hcm",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/workday.hcm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/workday.hcm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 921
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:OpportunityToOrderAutomationEngine:v1 \u2014 converts qualified opportunities to orders\n2. sap.crm:agent:OpportunityQualificationAdvisor:v1 \u2014 evaluates opportunities against CustomerAccount characteristics; feeds account data for qualification\n\nPROCUREMENT AGENTS (sap.s4, sap.ariba):\n- sap.s4:agent:ProcurementMatchingAgent:v1 \u2014 matches purchase requisitions to vendors\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 \u2014 reconciles invoices to POs\n- sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1 \u2014 REST API for PO lifecycle & real-time status tracking (but not fulfillment checkpoint tracking)\n\nORDER TRACKING CAPABILITY SEARCH RESULT:\nNo resource found that explicitly tracks order progression through completion checkpoints. Landscape focuses on:\n- Order creation/opportunity-to-order conversion\n- Procurement matching & vendor reconciliation\n- Quality & compliance monitoring during production\n- BOM validation & engineering changes\nLacks: Fulfillment progression tracking, delivery milestone tracking, order status checkpoint monitoring.\n\nCUSTOMER GRIEVANCE/COMPLAINT HANDLING SEARCH RESULT:\nNO RESOURCE FOUND. Checked sap.crm, emarsys.cx, corp.itsm, workday.hcm.\n- corp.itsm:agent:IncidentRootCauseAnalyzer handles IT service tickets (internal)\n- sap.crm agents: opportunity qualification, sales campaigns, compensation (NOT customer complaints)\n- emarsys.cx agents: campaign optimization, vendor engagement (NOT customer complaints)\n- workday.hcm agents: employee compensation, performance reviews, safety incidents (NOT customer complaints)\nLandscape lacks customer service/complaint management capability.\n"
+              },
+              "result_preview": {
+                "stored_bytes": 1813,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape contains no resource for handling customer grievances or complaints; available resources focus on sales opportunities, internal IT incidents, campaigns, and HR processes, not customer service complaint management."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape contains no resource for handling customer grievances or complaints; available resources focus on sales opportunities, internal IT incidents, campaigns, and HR processes, not customer service complaint management."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape contains no resource for handling customer grievances or complaints; available resources focus on sales opportunities, internal IT incidents, campaigns, and HR processes, not customer service complaint management.",
+          "tool_calls": 12,
+          "tokens": 93418,
+          "latency_s": 28.031,
+          "llm_calls": 12
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Manage billing disagreements",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "landscape/systems"
+              },
+              "result_preview": {
+                "error": "path not allowed: 'landscape/systems'. Allowed roots: ('benchmark',)"
+              }
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.crm:package:Core:v1\",\n      \"title\": \"sap.crm Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1080
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/workday.hcm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"workday.hcm:package:Core:v1\",\n      \"title\": \"workday.hcm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1099
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:OpportunityToOrderAutomationEngine:v1 \u2014 converts qualified opportunities to orders\n2. sap.crm:agent:OpportunityQualificationAdvisor:v1 \u2014 evaluates opportunities against CustomerAccount characteristics\n\nPROCUREMENT AGENTS (sap.s4, sap.ariba):\n- sap.s4:agent:ProcurementMatchingAgent:v1 \u2014 matches purchase requisitions to vendors\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 \u2014 reconciles invoices to POs (3-way matching, SUPPLIER-FACING, not customer billing)\n\nMISSING CAPABILITIES:\n1. Order fulfillment checkpoint tracking\n2. Customer grievance/complaint handling\n3. **Customer billing dispute resolution** \u2014 no resource found\n4. Accounts receivable management\n5. Customer service management\n\nFinancial/Billing systems checked:\n- sap.ariba: invoice reconciliation only handles supplier invoices (payables), not customer billing\n- sap.crm: sales compensation disputes (employee-facing), not customer billing\n- workday.hcm: employee compensation only\n- corp.itsm: IT service tickets, not customer billing"
+              },
+              "result_preview": {
+                "stored_bytes": 1205,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape has no resource for managing customer billing disputes or accounts receivable; it focuses on procurement invoice reconciliation (supplier-facing), not customer billing."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape has no resource for managing customer billing disputes or accounts receivable; it focuses on procurement invoice reconciliation (supplier-facing), not customer billing."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape has no resource for managing customer billing disputes or accounts receivable; it focuses on procurement invoice reconciliation (supplier-facing), not customer billing.",
+          "tool_calls": 8,
+          "tokens": 56521,
+          "latency_s": 19.222,
+          "llm_calls": 8
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Document claims and resolutions",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:Opportunit \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "landscape/systems"
+              },
+              "result_preview": {
+                "error": "path not allowed: 'landscape/systems'. Allowed roots: ('benchmark',)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.crm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.crm:package:Core:v1\",\n      \"title\": \"sap.crm Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1080
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.sf/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.sf:package:Core:v1\",\n      \"title\": \"sap.sf Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1072
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 10
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:OpportunityToOrderAutomationEngine:v1 \u2014 converts qualified opportunities to orders\n2. sap.crm:agent:OpportunityQualificationAdvisor:v1 \u2014 evaluates opportunities against CustomerAccount characteristics\n\nPROCUREMENT AGENTS (sap.s4, sap.ariba):\n- sap.s4:agent:ProcurementMatchingAgent:v1 \u2014 matches purchase requisitions to vendors\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 \u2014 reconciles invoices to POs (3-way matching, SUPPLIER-FACING, not customer billing)\n\nMISSING CAPABILITIES:\n1. Order fulfillment checkpoint tracking\n2. Customer grievance/complaint handling\n3. Customer billing dispute resolution\n4. Accounts receivable management\n5. Customer service management\n6. **Claims and resolutions documentation** \u2014 NO RESOURCE FOUND (insurance/warranty/service claims)\n\nFinancial/Billing systems checked:\n- sap.ariba: invoice reconciliation only handles supplier invoices (payables), not customer billing\n- sap.crm: sales compensation disputes (employee-facing), not customer claims\n- workday.hcm: employee compensation only\n- corp.itsm: IT service tickets, not customer claims\n- sap.ehs: safety incidents & vendor compliance, not customer claims\n- sap.sf: performance management, recruitment, not customer claims\n- sap.s4: procurement & order processing, not customer claims"
+              },
+              "result_preview": {
+                "stored_bytes": 1477,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape contains no resource for documenting customer claims and resolutions; related capabilities like incident management, vendor disputes, and IT ticketing exist but do not cover customer claims workflows."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape contains no resource for documenting customer claims and resolutions; related capabilities like incident management, vendor disputes, and IT ticketing exist but do not cover customer claims workflows."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape contains no resource for documenting customer claims and resolutions; related capabilities like incident management, vendor disputes, and IT ticketing exist but do not cover customer claims workflows.",
+          "tool_calls": 10,
+          "tokens": 75564,
+          "latency_s": 28.366,
+          "llm_calls": 10
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_008",
+      "skill_id_expected": "proc_008",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track order progression through completion checkpoints\",\n    \"Monitor delivery timelines\",\n    \"Handle customer grievances or complaints\",\n    \"Manage billing disagreements\",\n    \"Document claims and resolutions\"\n  ],\n  \"reason\": \"The skill covers the core purchasing workflow (order validation, compliance assessment, vendor qualification, authorization) but explicitly lacks order tracking/monitoring capabilities and customer dispute/complaint resolution functionality that the request concretely names as required components.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers the core purchasing workflow (order validation, compliance assessment, vendor qualification, authorization) but explicitly lacks order tracking/monitoring capabilities and customer dispute/complaint resolution functionality that the request concretely names as required components.",
+      "tokens": 621,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 359790,
+    "latency_s": 116.873,
+    "llm_calls": 44
+  },
+  "wall_s": 116.944
+}

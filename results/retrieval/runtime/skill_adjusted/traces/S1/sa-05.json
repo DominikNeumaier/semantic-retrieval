@@ -1,0 +1,156 @@
+{
+  "case_id": "sa-05",
+  "user_prompt": "We need to orchestrate our complete manufacturing workflow from securing materials with our suppliers through final production execution and ensuring all our compliance documentation is properly filed. As part of this end-to-end process, we also need to track and reconcile all the financial documents coming in from our vendors that are tied to our material orders. Additionally, please include monitoring our production line performance metrics so we can evaluate how efficiently our equipment is running and identify any bottlenecks in our output. Make sure quality validation checkpoints are integrated throughout to catch any issues early, and we'll need comprehensive reporting at each stage to maintain our regulatory compliance standards.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "S",
+  "state": "enriched",
+  "condition": "S1",
+  "skill_expected": "proc_021",
+  "skill_picked": "proc_021",
+  "expected_gaps": [
+    "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+    "sap.s4:apiResource:ProductionPerformanceAPI:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track and reconcile vendor financial documents",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13618,
+          "latency_s": 0.0,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Monitor production line performance metrics",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "my.mes:dataProduct:CustomerOrderFulfillmentAndOEECorrelation:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.s4:apiResource:ProductionPerformanceAPI:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "siemens.plm:apiResource:ProductionPerformanceMetrics:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13602,
+          "latency_s": 0.0,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Identify equipment bottlenecks",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.s4:dataProduct:AssetMaintenanceAndChangeAnalytics:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "siemens.plm:apiResource:ProductionPerformanceMetrics:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13610,
+          "latency_s": 0.0,
+          "llm_calls": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_021",
+      "skill_id_expected": "proc_021",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track and reconcile vendor financial documents\",\n    \"Monitor production line performance metrics\",\n    \"Identify equipment bottlenecks\"\n  ],\n  \"reason\": \"The skill covers core manufacturing orchestration, supplier management, quality validation, production execution, and compliance reporting, but explicitly lacks vendor invoice/financial reconciliation, equipment performance monitoring, and bottleneck identification\u2014all of which are concretely named requirements in the request.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers core manufacturing orchestration, supplier management, quality validation, production execution, and compliance reporting, but explicitly lacks vendor invoice/financial reconciliation, equipment performance monitoring, and bottleneck identification\u2014all of which are concretely named ",
+      "tokens": 628,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 41458,
+    "latency_s": 0.0,
+    "llm_calls": 4
+  },
+  "wall_s": 0.006
+}

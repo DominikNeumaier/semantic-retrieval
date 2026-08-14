@@ -19,7 +19,7 @@ from __future__ import annotations
 import json
 import re
 
-from src.core import llm
+from src import llm
 
 
 _SYS = """You decide whether any registered skill covers a user request end-to-end.

@@ -1,0 +1,242 @@
+{
+  "case_id": "sa-02",
+  "user_prompt": "We need to orchestrate a comprehensive readiness validation for our upcoming product launch that coordinates material receipt verification, workforce capability assessment, and operational readiness evaluation. As part of this process, we also need to ensure we can track and validate all the materials coming in from our suppliers, including verifying their specifications against our master records. Additionally, we'll need to reconcile all incoming supplier billing documentation with our purchase commitments to ensure financial accuracy before we greenlight the launch. Please design a workflow that brings all these validation streams together into a single orchestrated process.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "C",
+  "state": "clean",
+  "condition": "C0",
+  "skill_expected": "proc_026",
+  "skill_picked": "proc_026",
+  "expected_gaps": [
+    "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+    "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.5,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Verify material specifications against master records",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "score": 67.0
+          },
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": 67.0
+          },
+          {
+            "ordId": "siemens.plm:agent:BOMComplianceValidator:v1",
+            "score": 67.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:QualityInspection:v1",
+              "sap.odm:entityType:ProductionOrder:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Manufacturing",
+              "Product Lifecycle Management"
+            ],
+            "reason": "Activity verifies material specifications against master records, directly involving Material entities and quality control in manufacturing and product lifecycle contexts."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:QualityInspection:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Product Lifecycle Management\"\n  ],\n  \"reason\": \"Activity verifies material specifications against master records, directly involving Material entities and quality control in manufacturing and product lifecycle contexts.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 179,
+          "walk_top_ids": [
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+            "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+            "siemens.plm:agent:BOMComplianceValidator:v1",
+            "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\",\n  \"siemens.plm:agent:BOMComplianceValidator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 1910,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Reconcile supplier billing documentation with purchase commitments",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": 43.5
+          },
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": 43.5
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": 43.5
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": 48.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Invoice:v1",
+              "sap.odm:entityType:PurchaseOrder:v1",
+              "sap.odm:entityType:Vendor:v1",
+              "sap.odm:entityType:Contract:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Procurement",
+              "Finance"
+            ],
+            "reason": "Reconciling supplier billing against purchase commitments involves invoices, purchase orders, and vendor contracts in the procurement and finance domains."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:Contract:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Finance\"\n  ],\n  \"reason\": \"Reconciling supplier billing against purchase commitments involves invoices, purchase orders, and vendor contracts in the procurement and finance domains.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 249,
+          "walk_top_ids": [
+            "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+            "sap.s4:agent:ProcurementMatchingAgent:v1",
+            "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1\",\n  \"sap.s4:apiResource:MaterialReceiptInboundAPI:v1\",\n  \"sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1\",\n  \"sap.s4:dataProduct:ProcurementMetricsHub:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+          ],
+          "tokens": 1940,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Validate financial accuracy of invoices",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": 43.25
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Invoice:v1",
+              "sap.odm:entityType:PurchaseOrder:v1",
+              "sap.odm:entityType:Vendor:v1",
+              "sap.odm:entityType:Contract:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Finance",
+              "Procurement"
+            ],
+            "reason": "Invoice validation is a core financial accounting activity involving invoices from vendors and purchase orders, central to finance and procurement processes."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:Contract:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Finance\",\n    \"Procurement\"\n  ],\n  \"reason\": \"Invoice validation is a core financial accounting activity involving invoices from vendors and purchase orders, central to finance and procurement processes.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 249,
+          "walk_top_ids": [
+            "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+            "sap.s4:agent:ProcurementMatchingAgent:v1",
+            "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "emarsys.cx:apiResource:VendorMaterialSupplyChainAPI:v1"
+          ],
+          "rerank_raw": "```json\n[\"sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1\"]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+          ],
+          "tokens": 1855,
+          "latency_s": 2.902,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_026",
+      "skill_id_expected": "proc_026",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Verify material specifications against master records\",\n    \"Reconcile supplier billing documentation with purchase commitments\",\n    \"Validate financial accuracy of invoices\"\n  ],\n  \"reason\": \"The skill covers material receipt verification, workforce capability assessment, operational readiness evaluation, and safety compliance, but explicitly lacks the material specification validation against master records and the supplier billing reconciliation activities that the request specifically names as required components of the orchestrated process.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers material receipt verification, workforce capability assessment, operational readiness evaluation, and safety compliance, but explicitly lacks the material specification validation against master records and the supplier billing reconciliation activities that the request specifically",
+      "tokens": 616,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 6321,
+    "latency_s": 2.902,
+    "llm_calls": 7
+  },
+  "wall_s": 2.942
+}
