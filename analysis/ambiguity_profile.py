@@ -43,7 +43,7 @@ import os
 from collections import Counter, defaultdict
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-RT = os.path.join(ROOT, "results", "runtime")
+RT = os.path.join(ROOT, "results", "retrieval", "runtime")
 
 NAMES = {"S": "Baseline", "A": "Embedding", "B": "Progressive",
          "C": "Graph", "D": "Agentic Tools", "E": "Agentic Raw",
@@ -103,8 +103,11 @@ def _tier(sim: float | None, th: dict) -> str:
 # trace normalisation: (method, state, target, top5) records
 # ---------------------------------------------------------------------------
 def _iter_dy_single(m: str, state_digit: str):
-    """Dynamic single-intent: <M><state>f, target in step.expected."""
-    for fp in glob.glob(os.path.join(RT, "dynamic", "traces", f"{m}{state_digit}f", "*.json")):
+    """Dynamic single-intent: dy-NN.json in <M><state>, target in step.expected."""
+    d = os.path.join(RT, "dynamic", "traces", f"{m}{state_digit}")
+    for fp in glob.glob(os.path.join(d, "*.json")):
+        if "_sub" in os.path.basename(fp):
+            continue  # sub-query files are multi-intent, handled separately
         t = json.load(open(fp))
         for st in t.get("plan", {}).get("steps", []):
             exp = (st.get("expected") or {}).get("expected_ordIds") or []
@@ -114,9 +117,10 @@ def _iter_dy_single(m: str, state_digit: str):
 
 
 def _iter_dy_multi(m: str, state_digit: str):
-    """Dynamic multi-intent: <M><state>mh, one file per sub-query, gt_id +
-    top5_candidates (flat list of ordId strings)."""
-    for fp in glob.glob(os.path.join(RT, "dynamic", "traces", f"{m}{state_digit}mh", "*.json")):
+    """Dynamic multi-intent: dy-NN_subX.json in <M><state>, one file per
+    sub-query, gt_id + top5_candidates (flat list of ordId strings)."""
+    d = os.path.join(RT, "dynamic", "traces", f"{m}{state_digit}")
+    for fp in glob.glob(os.path.join(d, "*_sub*.json")):
         t = json.load(open(fp))
         gt = t.get("gt_id")
         cands = t.get("top5_candidates") or []
@@ -125,24 +129,21 @@ def _iter_dy_multi(m: str, state_digit: str):
 
 
 def _iter_sa(m: str, state_digit: str):
-    """Skill-Adjusted gap-forced: <M><state>gf (or ...f for Hybrid). Targets are
-    the top-level expected_gaps, aligned by step index to plan.steps."""
-    base = os.path.join(RT, "skill_adjusted", "traces")
-    for suffix in ("gf", "f"):
-        d = os.path.join(base, f"{m}{state_digit}{suffix}")
-        if not os.path.isdir(d):
-            continue
-        for fp in glob.glob(os.path.join(d, "*.json")):
-            t = json.load(open(fp))
-            gaps = t.get("expected_gaps") or []
-            steps = t.get("plan", {}).get("steps", [])
-            for i, st in enumerate(steps):
-                if i >= len(gaps):
-                    break
-                cands = [c["ordId"] for c in st.get("candidates", [])]
-                if gaps[i] and cands:
-                    yield gaps[i], cands
-        break  # only one of gf/f exists per method
+    """Skill-Adjusted: sa-NN.json in <M><state>. Targets are the top-level
+    expected_gaps, aligned by step index to plan.steps."""
+    d = os.path.join(RT, "skill_adjusted", "traces", f"{m}{state_digit}")
+    if not os.path.isdir(d):
+        return
+    for fp in glob.glob(os.path.join(d, "*.json")):
+        t = json.load(open(fp))
+        gaps = t.get("expected_gaps") or []
+        steps = t.get("plan", {}).get("steps", [])
+        for i, st in enumerate(steps):
+            if i >= len(gaps):
+                break
+            cands = [c["ordId"] for c in st.get("candidates", [])]
+            if gaps[i] and cands:
+                yield gaps[i], cands
 
 
 def iter_records(m: str, state_digit: str):
