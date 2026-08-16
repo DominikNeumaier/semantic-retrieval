@@ -22,7 +22,6 @@ src/
 results/      Runtime and design-time evaluation traces and summaries
 analysis/     Reproduction scripts (numbers.py, statistics.py)
 paper/        Conference paper LaTeX source and PDF
-docs/         Design documentation
 web/          Interactive results browser (traces, R@1/R@5, enrichment delta, cost)
 ```
 
