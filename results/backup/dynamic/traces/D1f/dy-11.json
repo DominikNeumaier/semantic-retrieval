@@ -1,0 +1,359 @@
+{
+  "case_id": "dy-11",
+  "user_prompt": "I need to submit a maintenance request for our server infrastructure and track its progress through approval. Can you help me get this logged in the system and see what the current status is?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to submit a maintenance request for our server infrastructure and track its progress through approval. Can you help me get this logged in the system and see what the current status is?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "IT Service Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                  "type": "apiResource",
+                  "title": "Change Request Approval Workflow API",
+                  "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:CampaignCustomerAccountLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Customer Account Lifecycle API",
+                  "shortDescription": "Manages campaign-driven customer account provisioning and lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                  "type": "agent",
+                  "title": "Incident Root Cause Analysis Agent",
+                  "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+                },
+                "... (6 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ServiceTicket:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                  "type": "apiResource",
+                  "title": "Change Request Approval Workflow API",
+                  "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Provisioning Integration API",
+                  "shortDescription": "Manages equipment provisioning requests linked to service tickets and change approvals."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                  "type": "agent",
+                  "title": "Incident Root Cause Analysis Agent",
+                  "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "capture-service-request"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Access Management API",
+                  "shortDescription": "Manages provisioning and access control for campaign-related customer accounts."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Equipment Change and Service Management API",
+                "shortDescription": "Manages equipment changes, service requests, and maintenance governance.",
+                "description": "Exposes change requests, IT equipment records, and service tickets to coordinate equipment modifications and maintenance activities across the manufacturing facility. Retrieves approval workflows and risk assessments for equipment changes while managing service ticket lifecycle and equipment diagnostics integration.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "IT Service Management"
+                ],
+                "capabilities": [
+                  "schedule-maintenance",
+                  "request-protective-upgrades",
+                  "monitor-service-tickets",
+                  "manage-equipment-services",
+                  "manage-safety-equipment-changes",
+                  "track-change-requests"
+                ],
+                "useCases": [
+                  "IT Service Management ensures production equipment remains operational during peak order fulfillment.",
+                  "Facility operations teams must plan and execute maintenance of safety systems that protect workers from identified hazardous substances",
+                  "Operations teams prioritize critical equipment service requests affecting fulfillment SLAs.",
+                  "Manufacturing facilities schedule preventive maintenance to minimize unplanned downtime."
+                ],
+                "tags": [
+                  "change-management",
+                  "approval-workflow",
+                  "governance",
+                  "risk-assessment"
+                ],
+                "partOfGroups": [
+                  "proc_SafetyComplianceWorkforce_v1",
+                  "proc_procure_fulfill_v1"
+                ],
+                "processNext": [
+                  "sap.ehs:apiResource:VendorSafetyComplianceOrders:v1"
+                ],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+              },
+              "result_preview": {
+                "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                "type": "apiResource",
+                "namespace": "corp.itsm",
+                "title": "Change Request Approval Workflow API",
+                "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment.",
+                "description": "Exposes change request lifecycle management including approval routing, scheduling validation, and rollback planning. Enables IT governance teams to automate change controls and track approval chains across dependent service tickets and IT equipment impacts.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ServiceTicket:v1",
+                  "sap.odm:entityType:ITEquipment:v1"
+                ],
+                "lineOfBusiness": [
+                  "IT Service Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "change-management",
+                  "approval-workflow",
+                  "governance",
+                  "risk-assessment"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "corp.itsm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Service Ticket & Change Request Management API",
+                "shortDescription": "Manages and retrieves service tickets, change requests, and equipment maintenance records.",
+                "description": "Exposes endpoints to retrieve, create, and update service tickets and engineering change requests tied to manufacturing equipment. Provides access to maintenance workflows, change request status tracking, and equipment diagnostics correlation for compliance and supplier management purposes.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [
+                  "track-implementation-tasks",
+                  "track-equipment-issues",
+                  "create-change-request-tickets",
+                  "log-change-requests",
+                  "ingest-service-tickets",
+                  "manage-approval-workflows"
+                ],
+                "useCases": [
+                  "An IT technician receives a customer report of equipment failure and logs it as a service ticket for tracking.",
+                  "Change management leadership gains real-time visibility into transition status across all functional teams.",
+                  "IT and operational dependencies are tracked end-to-end through ticketing system to prevent implementation gaps.",
+                  "Operations teams create formal change requests and service tickets to establish audit trail and task accountability for product transitions.",
+                  "Change requests from engineering teams are centralized for impact analysis and approval workflows."
+                ],
+                "tags": [
+                  "supplier-management",
+                  "service-operations",
+                  "compliance-tracking"
+                ],
+                "partOfGroups": [
+                  "proc_ServiceToProduction_v1",
+                  "proc_product_transition_compliance_v1"
+                ],
+                "processNext": [
+                  "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+                ],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                "reason": "This API manages equipment changes, service requests, maintenance governance, and tracks approval workflows\u2014directly supporting both logging server infrastructure maintenance requests and monitoring their approval status."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+          "picked_reason": "This API manages equipment changes, service requests, maintenance governance, and tracks approval workflows\u2014directly supporting both logging server infrastructure maintenance requests and monitoring their approval status.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 26648,
+          "latency_s": 11.04,
+          "llm_calls": 10
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 26648,
+    "latency_s": 11.04,
+    "llm_calls": 10
+  },
+  "wall_s": 11.047
+}

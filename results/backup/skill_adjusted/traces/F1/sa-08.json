@@ -1,0 +1,732 @@
+{
+  "case_id": "sa-08",
+  "user_prompt": "We're launching a new product line next quarter and need to orchestrate our entire organization's preparedness across departments. Can you help us establish a workflow that identifies promising market opportunities, categorizes our customer base for targeted outreach, and confirms our manufacturing and logistics infrastructure can handle the volume? We'll also need to validate that all component specifications and vendor partnerships meet our compliance standards throughout the supply chain. Additionally, as we scale up staffing to support this launch, we need to ensure our financial records\u2014including compensation structures, benefit deductions, and withholding obligations\u2014are properly documented and accessible to our HR and finance teams.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": "proc_020",
+  "skill_picked": "proc_020",
+  "expected_gaps": [
+    "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+    "workday.hcm:apiResource:PayrollDataExposure:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Set up payroll and compensation documentation",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:PayrollDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 17891,
+          "latency_s": 11.94,
+          "llm_calls": 11,
+          "use_graph": true,
+          "picked_ord_id": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+          "picked_reason": "Manages employee compensation structures, salary data, and provides access to compensation planning data essential for setting up payroll and compensation documentation. Its capabilities include recalculating compensation, managing employee incentives, and adjusting salary bands\u2014all core requirements for establishing a documentation framework.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "payroll compensation documentation setup",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "workday.hcm:apiResource:PayrollDataExposure:v1",
+                "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+                "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-payroll"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-compensation"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "setup-documentation"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "payroll compensation documentation setup",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+                "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+                "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+                "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "setup configure payroll compensation documentation structure",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+                "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+                "workday.hcm:agent:CompensationChangeProcessor:v1",
+                "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+                "sap.sf:apiResource:EmployeeCompensationManagement:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "payroll configuration documentation template structure",
+                "top_k": 3
+              },
+              "result_summary": "3 items",
+              "result_ord_ids": [
+                "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "workday.hcm:apiResource:PayrollDataExposure:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "graph_walk",
+              "args": {
+                "anchor_ord_ids": [
+                  "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+                  "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+                ],
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+                "reason": "Manages employee compensation structures, salary data, and provides access to compensation planning data essential for setting up payroll and compensation documentation. Its capabilities include recalculating compensation, managing employee incentives, and adjusting salary bands\u2014all core requirements for establishing a documentation framework."
+              },
+              "result": {
+                "committed": "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Configure benefit deduction structures",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:BenefitsEnrollmentDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 8740,
+          "latency_s": 7.421,
+          "llm_calls": 8,
+          "use_graph": true,
+          "picked_ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+          "picked_reason": "This resource manages payroll calculations, earnings, and deductions data, providing the necessary infrastructure to configure benefit deduction structures. It exposes capabilities for managing deductions and workforce compensation execution, making it the most appropriate resource for configuring benefit deduction structures in the payroll system.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "configure benefit deduction structures",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+                "workday.hcm:apiResource:BenefitsEnrollmentDataManagement:v1",
+                "workday.hcm:apiResource:CompensationStructureDataExposure:v1",
+                "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+                "workday.hcm:agent:CompensationChangeProcessor:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "configure-benefit-deduction"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "configure benefit deduction structures",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+                "workday.hcm:apiResource:BenefitsEnrollmentDataManagement:v1",
+                "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+                "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-benefit-deduction"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "configure-benefits"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:BenefitsEnrollmentDataManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "reason": "This resource manages payroll calculations, earnings, and deductions data, providing the necessary infrastructure to configure benefit deduction structures. It exposes capabilities for managing deductions and workforce compensation execution, making it the most appropriate resource for configuring benefit deduction structures in the payroll system."
+              },
+              "result": {
+                "committed": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Establish tax withholding compliance tracking",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:agent:OccupationalSafetyComplianceMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:PayrollDataExposure:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 25680,
+          "latency_s": 13.425,
+          "llm_calls": 12,
+          "use_graph": true,
+          "picked_ord_id": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+          "picked_reason": "This API is purpose-built for managing comprehensive payroll data including tax information and statutory compliance. It retrieves employee payroll for financial processing and reporting, has capabilities to retrieve-payroll and validate-compensation, and integrates with financial accounting systems\u2014all essential for establishing tax withholding compliance tracking.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "tax withholding compliance tracking",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                "sap.sf:agent:OccupationalSafetyComplianceMonitor:v1",
+                "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "workday.hcm:apiResource:PayrollDataExposure:v1",
+                "sap.s4:apiResource:EmployeePayrollDataAPI:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-tax-compliance"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "track-withholding"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-tax-reporting"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "establish-compliance"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "tax withholding compliance tracking",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "workday.hcm:apiResource:PayrollDataExposure:v1",
+                "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+                "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+                "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollDataExposure:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "track-compliance"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "graph_walk",
+              "args": {
+                "anchor_ord_ids": [
+                  "workday.hcm:apiResource:PayrollDataExposure:v1"
+                ],
+                "top_k": 8
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "tax compliance withholding reporting financial",
+                "top_k": 8
+              },
+              "result_summary": "8 items",
+              "result_ord_ids": [
+                "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "sap.ehs:dataProduct:MaterialInvoiceComplianceCostAnalytics:v1",
+                "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+                "workday.hcm:apiResource:PayrollDataExposure:v1",
+                "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "siemens.plm:dataProduct:MaterialInvoiceFinancialMetrics:v1",
+                "sap.ehs:dataProduct:EmployeeCompensationSafetyRiskAnalytics:v1"
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EmployeePayrollDataAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "reason": "This API is purpose-built for managing comprehensive payroll data including tax information and statutory compliance. It retrieves employee payroll for financial processing and reporting, has capabilities to retrieve-payroll and validate-compensation, and integrates with financial accounting systems\u2014all essential for establishing tax withholding compliance tracking."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:EmployeePayrollDataAPI:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Document HR-finance team access and reporting",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:PayrollDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:dataProduct:IncidentResolutionAndComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:WorkforceOrgStructureAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 15214,
+          "latency_s": 11.319,
+          "llm_calls": 12,
+          "use_graph": true,
+          "picked_ord_id": "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+          "picked_reason": "Access Provisioning Orchestrator automates and coordinates access requests across organizational changes, monitors access provisioning workflows, and coordinates compensation system access - making it the most suitable resource for documenting HR-finance team access and reporting requirements.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "Document HR-finance team access and reporting",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "workday.hcm:apiResource:PayrollDataExposure:v1",
+                "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+                "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "sap.sf:dataProduct:IncidentResolutionAndComplianceAnalytics:v1",
+                "sap.s4:apiResource:WorkforceOrgStructureAPI:v1",
+                "sap.crm:apiResource:SalesEmployeeHierarchyAndCapabilityDirectory:v1",
+                "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1",
+                "workday.hcm:apiResource:ServiceRequestOrderManagement:v1",
+                "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                "workday.hcm:apiResource:CompensationStructureDataExposure:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-access"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "document-reporting"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "report-access"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-user-access"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "HR finance team access reporting",
+                "top_k": 5
+              },
+              "result_summary": "2 items",
+              "result_ord_ids": [
+                "workday.hcm:dataProduct:CompensationTrendAnalytics:v1",
+                "workday.hcm:dataProduct:PerformanceMetricsAggregation:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:AccessProvisioningOrchestrator:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "provision-access"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "document-access"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "access control audit reporting documentation",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+                "workday.hcm:apiResource:VendorMaterialSafetyComplianceExposure:v1",
+                "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+                "sap.s4:apiResource:SafetyComplianceCustomerEngagementAPI:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "audit-access"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+                "reason": "Access Provisioning Orchestrator automates and coordinates access requests across organizational changes, monitors access provisioning workflows, and coordinates compensation system access - making it the most suitable resource for documenting HR-finance team access and reporting requirements."
+              },
+              "result": {
+                "committed": "corp.itsm:agent:AccessProvisioningOrchestrator:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_020",
+      "skill_id_expected": "proc_020",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "gap steps injected from reference run"
+    }
+  },
+  "trace": {
+    "tokens": 67525,
+    "latency_s": 44.105,
+    "llm_calls": 43
+  },
+  "wall_s": 82.737
+}

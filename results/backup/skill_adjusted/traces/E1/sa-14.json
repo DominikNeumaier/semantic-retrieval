@@ -1,0 +1,286 @@
+{
+  "case_id": "sa-14",
+  "user_prompt": "I need to launch a new product campaign that coordinates with our vendors, validates compliance requirements, and ensures production is ready to fulfill orders. We're provisioning new customers across multiple regions, so we'll need to qualify vendors and manage the entire supply chain orchestration. As part of this rollout, we also need to track any product modifications we're making and manage the associated equipment and service requests that come with the deployment. Can you help us coordinate all of these moving parts together so nothing falls through the cracks?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "E",
+  "state": "enriched",
+  "condition": "E1",
+  "skill_expected": "proc_015",
+  "skill_picked": "proc_015",
+  "expected_gaps": [
+    "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+    "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track product modifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:Opportunit \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "reason": "Directly tracks product modifications by coordinating engineering changes across product items and materials while syncing configuration updates throughout the lifecycle."
+              },
+              "result_preview": {
+                "committed": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+          "picked_reason": "Directly tracks product modifications by coordinating engineering changes across product items and materials while syncing configuration updates throughout the lifecycle.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 2,
+          "tokens": 6682,
+          "latency_s": 5.426,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Manage equipment requests",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:OpportunityToOrderAutomationEngine:v1 \u2014 converts qualified opportunities to orders\n2. sap.crm:agent:OpportunityQualificationAdvisor:v1 \u2014 evaluates opportunities against CustomerAccount characteristics\n\nPROCUREMENT AGENTS (sap.s4, sap.ariba):\n- sap.s4:agent:ProcurementMatchingAgent:v1 \u2014 matches purchase requisitions to vendors\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 \u2014 reconciles invoices to POs\n\nPRODUCT LIFECYCLE & MATERIALS TRACKING (siemens.plm, sap.s4):\n- siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1 \u2014 coordinates engineering changes across product items/materials, syncs config updates, tracks material lifecycle\n- siemens.plm:agent:BOMComplianceValidator:v1 \u2014 validates BOM against regulatory/supplier standards\n- sap.s4:agent:AssetLifecycleChangeOrchestrator:v1 \u2014 coordinates engineering changes across materials & product items with asset provisioning\n- sap.s4:agent:BOMComplianceAutomationAgent:v1 \u2014 validates material specs & automates BOM updates\n\nINCIDENT MGMT & EQUIPMENT (corp.itsm):\n- corp.itsm:agent:IncidentRootCauseAnalyzer:v1 \u2014 analyzes incidents to identify root causes, references ITEquipment entity\n- corp.itsm:agent:AssetProvisioningOrchestrator:v1 \u2014 manages asset lifecycle provisioning; automates IT asset coordination following engineering changes; handles equipment allocation & provisioning workflows; capabilities: allocate-equipment, orchestrate-asset-provisioning, coordinate-equipment-assignment\n- corp.itsm:agent:ChangeAutomationOrchestrator:v1 \u2014 automates change coordination across materials/product items\n- corp.itsm:agent:IncidentSafetyCoordinator:v1 \u2014 manages safety incidents\n- corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1 \u2014 manages occupational safety incidents\n\n**CUSTOMER ACCOUNT IMPACT IDENTIFICATION** (sap.crm):\n- sap.crm:agent:SalesProductChangeCoordinator:v1 \u2014 identifies affected customer accounts when engineering changes/material updates occur; processes product item modifications and automates notification workflows to affected accounts\n\n**COMMUNICATION STRATEGY DEVELOPMENT** (emarsys.cx):\n- emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1 \u2014 identifies high-value customer segments, optimizes campaign targeting/messaging, generates personalized messaging recommendations; works with affected customer accounts to develop communication strategy\n\nMISSING CAPABILITIES:\n1. Maintenance schedule review/coordination\n2. Equipment documentation updates post-incident\n3. Order fulfillment checkpoint tracking\n4. Customer grievance/complaint handling\n5. Customer billing dispute resolution\n6. Accounts receivable management\n7. Customer service management\n8. Claims and resolutions documentation\n"
+              },
+              "result_preview": {
+                "stored_bytes": 2885,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "reason": "Orchestrates IT asset lifecycle provisioning and equipment allocation workflows following engineering changes and material provisioning."
+              },
+              "result_preview": {
+                "committed": "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+          "picked_reason": "Orchestrates IT asset lifecycle provisioning and equipment allocation workflows following engineering changes and material provisioning.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 3,
+          "tokens": 16311,
+          "latency_s": 16.652,
+          "llm_calls": 3
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Manage service requests",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/corp.itsm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/corp.itsm",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1021
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/corp.itsm"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/corp.itsm",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm, emarsys.cx, my.mes, sap.ariba, sap.crm, sap.ehs, sap.odm, sap.s4, sap.sf, siemens.plm, workday.hcm\n\nKEY ORDER PROCESSING CHAIN:\n1. sap.s4:agent:OpportunityToOrderAutomationEngine:v1 \u2014 converts qualified opportunities to orders\n2. sap.crm:agent:OpportunityQualificationAdvisor:v1 \u2014 evaluates opportunities against CustomerAccount characteristics\n\nPROCUREMENT AGENTS (sap.s4, sap.ariba):\n- sap.s4:agent:ProcurementMatchingAgent:v1 \u2014 matches purchase requisitions to vendors\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 \u2014 reconciles invoices to POs\n\nPRODUCT LIFECYCLE & MATERIALS TRACKING (siemens.plm, sap.s4):\n- siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1 \u2014 coordinates engineering changes across product items/materials, syncs config updates, tracks material lifecycle\n- siemens.plm:agent:BOMComplianceValidator:v1 \u2014 validates BOM against regulatory/supplier standards\n- sap.s4:agent:AssetLifecycleChangeOrchestrator:v1 \u2014 coordinates engineering changes across materials & product items with asset provisioning\n- sap.s4:agent:BOMComplianceAutomationAgent:v1 \u2014 validates material specs & automates BOM updates\n\nINCIDENT MGMT & EQUIPMENT (corp.itsm):\n- corp.itsm:agent:IncidentRootCauseAnalyzer:v1 \u2014 analyzes service tickets to identify root causes, references ServiceTicket/ITEquipment entities, core service request management\n- corp.itsm:agent:AssetProvisioningOrchestrator:v1 \u2014 manages asset lifecycle provisioning; automates IT asset coordination following engineering changes; handles equipment allocation & provisioning workflows; capabilities: allocate-equipment, orchestrate-asset-provisioning, coordinate-equipment-assignment\n- corp.itsm:agent:ChangeAutomationOrchestrator:v1 \u2014 automates change coordination across materials/product items\n- corp.itsm:agent:IncidentSafetyCoordinator:v1 \u2014 manages safety incidents\n- corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1 \u2014 manages occupational safety incidents\n- corp.itsm:agent:VendorContractComplianceOrchestrator:v1 \u2014 vendor contract/PO compliance monitoring\n- corp.itsm:agent:ChangeReleaseCoordinator:v1 \u2014 automates product releases\n\n**CUSTOMER ACCOUNT IMPACT IDENTIFICATION** (sap.crm):\n- sap.crm:agent:SalesProductChangeCoordinator:v1 \u2014 identifies affected customer accounts when engineering changes/material updates occur; processes product item modifications and automates notification workflows to affected accounts\n\n**COMMUNICATION STRATEGY DEVELOPMENT** (emarsys.cx):\n- emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1 \u2014 identifies high-value customer segments, optimizes campaign targeting/messaging, generates personalized messaging recommendations; works with affected customer accounts to develop communication strategy\n\nMISSING CAPABILITIES:\n1. Maintenance schedule review/coordination\n2. Equipment documentation updates post-incident\n3. Order fulfillment checkpoint tracking\n4. Customer grievance/complaint handling\n5. Customer billing dispute resolution\n6. Accounts receivable management\n7. Customer service management\n8. Claims and resolutions documentation\n"
+              },
+              "result_preview": {
+                "stored_bytes": 3116,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                "reason": "Directly processes service tickets to manage, analyze, and resolve service requests through root cause analysis and automation."
+              },
+              "result_preview": {
+                "committed": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+          "picked_reason": "Directly processes service tickets to manage, analyze, and resolve service requests through root cause analysis and automation.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 6,
+          "tokens": 42054,
+          "latency_s": 32.277,
+          "llm_calls": 6
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_015",
+      "skill_id_expected": "proc_015",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track product modifications\",\n    \"Manage equipment requests\",\n    \"Manage service requests\"\n  ],\n  \"reason\": \"The skill covers vendor management, compliance validation, customer provisioning, vendor qualification, and production fulfillment, but the request explicitly requires tracking product modifications and managing associated equipment and service requests\u2014concrete activities not represented in the step list.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers vendor management, compliance validation, customer provisioning, vendor qualification, and production fulfillment, but the request explicitly requires tracking product modifications and managing associated equipment and service requests\u2014concrete activities not represented in the ste",
+      "tokens": 594,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 65641,
+    "latency_s": 54.355,
+    "llm_calls": 12
+  },
+  "wall_s": 54.365
+}

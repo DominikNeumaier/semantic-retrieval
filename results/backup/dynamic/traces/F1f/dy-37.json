@@ -1,0 +1,302 @@
+{
+  "case_id": "dy-37",
+  "user_prompt": "I need to pull current production schedules and equipment status to finalize our procurement forecast for next quarter, and simultaneously submit a maintenance request for our assembly line since we're seeing performance degradation that needs urgent attention from our service team.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1.0,
+    "acceptable": 1.0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull current production schedules and equipment status to finalize our procurement forecast for next quarter",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:ProductionOrderMachineInventoryService:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:ProductionOrderAndMachineAllocationService:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 8336,
+          "latency_s": 8.17,
+          "llm_calls": 9,
+          "use_graph": true,
+          "picked_ord_id": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+          "picked_reason": "Directly retrieves production order details and machine status for procurement planning. Exposes real-time data on production schedules and equipment status with capabilities for production planning and machine scheduling. Designed specifically to support procurement decision-making and purchase order optimization for forecasting.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "production schedules equipment status procurement forecast",
+                "top_k": 8
+              },
+              "result_summary": "8 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-production-scheduling"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "view-equipment-status"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "ProductionSchedule"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-procurement-forecast"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+                "reason": "Directly retrieves production order details and machine status for procurement planning. Exposes real-time data on production schedules and equipment status with capabilities for production planning and machine scheduling. Designed specifically to support procurement decision-making and purchase order optimization for forecasting."
+              },
+              "result": {
+                "committed": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1"
+              }
+            }
+          ]
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+            "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Submit a maintenance request for our assembly line due to performance degradation that needs urgent attention from our service team",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 17849,
+          "latency_s": 12.055,
+          "llm_calls": 10,
+          "use_graph": true,
+          "picked_ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+          "picked_reason": "This API has the core capabilities to schedule-maintenance and manage-equipment-services. It manages ServiceTickets, ChangeRequests, and ITEquipment entities needed to coordinate urgent maintenance requests for assembly line performance degradation. The API is designed to handle equipment modifications and maintenance activities across manufacturing facilities with approval workflows and governance.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "submit maintenance request assembly line performance degradation urgent",
+                "top_k": 5
+              },
+              "result_summary": "5 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "submit-maintenance-request"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-maintenance"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "create-service-ticket"
+              },
+              "result_summary": "1 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ServiceTicket:v1"
+              },
+              "result_summary": "20 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:SupplierQualificationAndServiceManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "maintenance request assembly line",
+                "top_k": 5
+              },
+              "result_summary": "5 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                "reason": "This API has the core capabilities to schedule-maintenance and manage-equipment-services. It manages ServiceTickets, ChangeRequests, and ITEquipment entities needed to coordinate urgent maintenance requests for assembly line performance degradation. The API is designed to handle equipment modifications and maintenance activities across manufacturing facilities with approval workflows and governance."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 26530,
+    "latency_s": 20.225,
+    "llm_calls": 20
+  },
+  "wall_s": 29.814
+}

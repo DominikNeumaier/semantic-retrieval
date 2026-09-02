@@ -1,0 +1,199 @@
+{
+  "case_id": "dy-06",
+  "user_prompt": "I need to schedule some updates to our manufacturing workflow next week and make sure all the dependent systems get notified at the right time. We have a few service components that need to be rolled out together, and I want to avoid any conflicts or downtime. Can you help me figure out what tool handles coordinating these kinds of synchronized deployments?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "enriched",
+  "condition": "E1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to schedule some updates to our manufacturing workflow next week and make sure all the dependent systems get notified at the right time. We have a few service components that need to be rolled out together, and I want to avoid any conflicts or downtime. Can you help me figure out what tool handles coordinating these kinds of synchronized deployments?",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "landscape"
+              },
+              "result_preview": {
+                "error": "path not allowed: 'landscape'. Allowed roots: ('benchmark',)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.odm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 11
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1276
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\n- corp.itsm: IT service management (incident analysis, asset provisioning) - INTERNAL focus\n- sap.ariba: Procurement/supply chain\n- sap.s4: ERP (procurement, BOM compliance, asset lifecycle)\n- siemens.plm: PLM systems (BOM compliance, engineering change coordination)\n- sap.ehs: Safety/EHS (safety compliance automation for engineering changes & materials)\n- workday.hcm: HR/HCM\n- sap.sf: SuccessFactors - workforce planning\n- emarsys.cx: CX/engagement (marketing campaigns, vendor engagement orchestration)\n- my.mes: MES (manufacturing execution, production change, quality monitoring)\n- sap.crm: Sales/CRM (opportunity qualification, sales compensation)\n- sap.odm: Entity type taxonomy\n\nKEY FINDINGS:\n- SafetyComplianceAutomationCoordinator (sap.ehs) = primary for safety validation on engineering changes + materials\n- BOMComplianceValidator (siemens.plm, my.mes, sap.s4) = BOM-specific compliance validation\n- ProductionChangeOrchestrator (my.mes) = production change coordination & work order sequencing\n- ChangeAutomationOrchestrator (corp.itsm) = engineering change orchestration across material/product items\n- AssetProvisioningOrchestrator (corp.itsm) = asset provisioning workflow orchestration\n\nCONFIRMED GAPS:\n- No customer issue tracking/case management/support ticketing\n- No maintenance management system / service work order tracking for equipment maintenance & regulatory compliance logging\n- Landscape lacks dedicated PM (Plant Maintenance) or service work order capability for general equipment/regulatory tracking\n- NO DEPLOYMENT/CI-CD/RELEASE MANAGEMENT: No software deployment orchestration, no service component rollout coordination, no deployment pipeline automation"
+              },
+              "result_preview": {
+                "stored_bytes": 1711,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a deployment orchestration or CI/CD system to coordinate synchronized service component rollouts and avoid conflicts during software deployments."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape lacks a deployment orchestration or CI/CD system to coordinate synchronized service component rollouts and avoid conflicts during software deployments."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a deployment orchestration or CI/CD system to coordinate synchronized service component rollouts and avoid conflicts during software deployments.",
+          "tool_calls": 6,
+          "tokens": 25957,
+          "latency_s": 18.093,
+          "llm_calls": 6
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 25957,
+    "latency_s": 18.093,
+    "llm_calls": 6
+  },
+  "wall_s": 18.099
+}

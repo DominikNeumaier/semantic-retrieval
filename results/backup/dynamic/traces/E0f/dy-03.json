@@ -1,0 +1,239 @@
+{
+  "case_id": "dy-03",
+  "user_prompt": "I need to set up automated safety checks for our engineering change orders and material updates before they go to production. We've been manually validating everything against our compliance requirements, but it's slowing down our releases. Can you help me automate this validation process?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1,
+    "acceptable": 1,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to set up automated safety checks for our engineering change orders and material updates before they go to production. We've been manually validating everything against our compliance requirements, but it's slowing down our releases. Can you help me automate this validation process?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE INVENTORY:\n- corp.itsm: Internal IT service management (incident analysis, asset provisioning, safety incidents)\n- sap.crm: Sales/marketing (opportunities, campaigns, compensation)\n- sap.odm \u2026(truncated)"
+              }
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "landscape"
+              },
+              "result_preview": {
+                "error": "path not allowed: 'landscape'. Allowed roots: ('benchmark',)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.odm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 11
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.ehs/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.ehs/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1075
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/siemens.plm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/siemens.plm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"siemens.plm:package:Core:v1\",\n      \"title\": \"siemens.plm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 940
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1057
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE INVENTORY:\n- corp.itsm: Internal IT service management (incident analysis, asset provisioning, safety incidents)\n- sap.crm: Sales/marketing (opportunities, campaigns, compensation)\n- sap.odm: Entity type taxonomy (40 canonical business objects)\n- emarsys.cx: Likely customer experience/engagement\n- workday.hcm: HR/HCM system with compensation and benefits data\n- sap.ehs: Safety/EHS with agents for:\n  - SafetyComplianceAutomationCoordinator: Automates safety validation on engineering changes, materials, product items\n  - IncidentRootCauseAnalyzer, IncidentResponseCoordinator\n- siemens.plm: PLM with BOM validation, engineering change orchestration agents\n- my.mes: Manufacturing execution with production change orchestration, BOM compliance\n- Other systems: sap.ariba, sap.ehs, sap.sf, siemens.plm\n\nKEY PATTERN:\nEngineering change & material automation \u2192 Check sap.ehs (safety focus) or siemens.plm (change focus)"
+              },
+              "result_preview": {
+                "stored_bytes": 929,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "reason": "This agent automates safety validation across engineering changes and materials, enforcing compliance requirements and preventing safety risks before production release."
+              },
+              "result_preview": {
+                "committed": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+          "picked_reason": "This agent automates safety validation across engineering changes and materials, enforcing compliance requirements and preventing safety risks before production release.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 31236,
+          "latency_s": 14.405,
+          "llm_calls": 8
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 31236,
+    "latency_s": 14.405,
+    "llm_calls": 8
+  },
+  "wall_s": 14.412
+}

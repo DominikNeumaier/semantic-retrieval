@@ -1,0 +1,482 @@
+{
+  "case_id": "dy-31",
+  "user_prompt": "I need to pull together our current safety performance metrics across all reported events while simultaneously ensuring our chemical inventory documentation stays current with regulatory standards\u2014can I get both of those data sets integrated into one dashboard view?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull together our current safety performance metrics across all reported events",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:IncidentSafetyAnalyticsHub:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "collect-safety-metrics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes safety incidents with compliance tracking."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "review-safety-metrics"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:dataProduct:IncidentSafetyAnalyticsHub:v1",
+                  "type": "dataProduct",
+                  "title": "Incident & Safety Analytics Hub",
+                  "shortDescription": "Aggregates and analyzes incident and safety data across manufacturing operations."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "aggregate-incident-data"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Safety Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes safety incidents with compliance tracking."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1"
+              },
+              "result_preview": {
+                "ordId": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+                "type": "dataProduct",
+                "namespace": "corp.itsm",
+                "title": "Safety Incident Metrics",
+                "shortDescription": "Aggregates and analyzes safety incidents with compliance tracking.",
+                "description": "Summarizes safety incident patterns and incident data to provide comprehensive metrics on organizational safety performance and regulatory compliance. Delivers real-time dashboards and historical trend analysis across all safety-related incidents and standard incident records.",
+                "entityTypes": [
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [
+                  "collect-safety-metrics",
+                  "aggregate-incident-data",
+                  "establish-safety-baseline"
+                ],
+                "useCases": [
+                  "Risk management team establishes pre-transition safety baseline to measure post-transition safety performance.",
+                  "Compliance officer validates incident trending and determines if safety protocols require update for new materials."
+                ],
+                "tags": [
+                  "safety-analytics",
+                  "incident-management",
+                  "compliance-monitoring"
+                ],
+                "partOfGroups": [
+                  "proc_ProductTransitionSafetyCoordination_v1"
+                ],
+                "processNext": [
+                  "sap.ariba:apiResource:VendorServiceManagementAPI:v1"
+                ],
+                "partOfPackage": "corp.itsm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:dataProduct:IncidentSafetyAnalyticsHub:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:dataProduct:IncidentSafetyAnalyticsHub:v1",
+                "type": "dataProduct",
+                "namespace": "sap.s4",
+                "title": "Incident & Safety Analytics Hub",
+                "shortDescription": "Aggregates and analyzes incident and safety data across manufacturing operations.",
+                "description": "This data product aggregates incident and safety incident records throughout the production lifecycle to provide comprehensive safety metrics and compliance insights. It summarizes trends in workplace incidents, hazardous events, and safety violations to enable proactive risk mitigation and regulatory compliance monitoring. The hub provides actionable analytics on incident patterns, root causes, and safety performance indicators across all manufacturing facilities.",
+                "entityTypes": [
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [
+                  "analyze-incidents-safety",
+                  "review-safety-metrics",
+                  "identify-operational-risks"
+                ],
+                "useCases": [
+                  "Operations team examines incident patterns and safety metrics to mitigate production risks.",
+                  "Historical safety analysis for vendor and material risk scoring.",
+                  "Trend analysis of production incidents to inform sourcing decisions."
+                ],
+                "tags": [
+                  "safety-analytics",
+                  "incident-management",
+                  "compliance-monitoring"
+                ],
+                "partOfGroups": [
+                  "proc_supplychain_risk_compliance_v1"
+                ],
+                "processNext": [
+                  "sap.sf:apiResource:WorkforceProductionCapabilityManagement:v1"
+                ],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+                "reason": "This data product directly collects and aggregates safety metrics across all incident types, providing comprehensive real-time dashboards and historical trend analysis of organizational safety performance."
+              },
+              "result": {
+                "committed": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1",
+          "picked_reason": "This data product directly collects and aggregates safety metrics across all incident types, providing comprehensive real-time dashboards and historical trend analysis of organizational safety performance.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 22238,
+          "latency_s": 11.467,
+          "llm_calls": 9
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "corp.itsm:dataProduct:IncidentEngagementReliability:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Ensure our chemical inventory documentation stays current with regulatory standards",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorServiceManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "corp.itsm:dataProduct:SafetyIncidentMetrics:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:VendorServiceManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Service Management API",
+                  "shortDescription": "Manages vendor service tickets, equipment requests, and change approvals."
+                }
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "assess-hazardous-compliance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Compliance API",
+                  "shortDescription": "Retrieves and manages hazardous substance data for regulatory compliance."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Environment, Health & Safety"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                  "type": "apiResource",
+                  "title": "Safety Compliance Customer Management API",
+                  "shortDescription": "Manages customer accounts and safety campaigns with compliance tracking integration."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+                  "type": "apiResource",
+                  "title": "Safety Inspection Campaign Management API",
+                  "shortDescription": "Manages and retrieves safety inspection campaigns linked to customer accounts."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Storage Tracking API",
+                  "shortDescription": "Manages and retrieves hazardous substance storage locations and inventory status."
+                },
+                "... (2 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Hazardous Substance Compliance API",
+                "shortDescription": "Retrieves and manages hazardous substance data for regulatory compliance.",
+                "description": "Exposes hazardous substance inventory, classification, and safety attributes across the enterprise. Provides access to material hazard profiles, regulatory mappings, and compliance documentation to support marketing compliance and product safety validation. Manages hazardous substance declarations and exposure limits for procurement and manufacturing workflows.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1"
+                ],
+                "lineOfBusiness": [
+                  "marketing-compliance"
+                ],
+                "capabilities": [
+                  "assess-hazardous-compliance",
+                  "validate-substance-restrictions"
+                ],
+                "useCases": [
+                  "Assure no restricted or regulated substances are present in customer orders",
+                  "Confirm product materials comply with hazardous substance regulations and customer restrictions"
+                ],
+                "tags": [
+                  "compliance",
+                  "hazard-management",
+                  "regulatory-validation"
+                ],
+                "partOfGroups": [
+                  "proc_product_compliance_workforce_v1"
+                ],
+                "processNext": [
+                  "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1"
+                ],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+                "type": "apiResource",
+                "namespace": "sap.ehs",
+                "title": "Hazardous Substance Storage Tracking API",
+                "shortDescription": "Manages and retrieves hazardous substance storage locations and inventory status.",
+                "description": "Exposes real-time hazardous substance storage data including location tracking, quantity monitoring, and container condition status. Retrieves comprehensive storage facility information and provides access to geospatial mapping of hazardous material warehouses. Manages storage compliance validations across multiple facilities and environmental zones.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1"
+                ],
+                "lineOfBusiness": [
+                  "Environment, Health & Safety"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "hazardous-materials",
+                  "storage-management",
+                  "environmental-compliance"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+                "reason": "Directly manages hazardous substance inventory compliance documentation and regulatory mappings to keep chemical records current with standards."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+          "picked_reason": "Directly manages hazardous substance inventory compliance documentation and regulatory mappings to keep chemical records current with standards.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 21035,
+          "latency_s": 10.062,
+          "llm_calls": 8
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 43596,
+    "latency_s": 21.529,
+    "llm_calls": 18
+  },
+  "wall_s": 21.55
+}

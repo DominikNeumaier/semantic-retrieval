@@ -1,0 +1,260 @@
+{
+  "case_id": "sa-09",
+  "user_prompt": "We need to orchestrate the launch of our new product line, ensuring that procurement sources quality raw materials that meet our standards, engineering designs and validates the components, operations sets up manufacturing processes, and sales prepares go-to-market strategies. As we ramp up production, we'll also need to seamlessly integrate with our systems to retrieve and manage incoming customer orders and account information for processing. Additionally, the process should include coordinating any engineering modifications and material lifecycle changes across departments to keep everything synchronized. Can you help us design a workflow that handles all of these moving parts together?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "B",
+  "state": "enriched",
+  "condition": "B1",
+  "skill_expected": "proc_012",
+  "skill_picked": "proc_012",
+  "expected_gaps": [
+    "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+    "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.5,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Integrate with systems to retrieve customer orders",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.crm",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.crm\", \"sap.s4\"],\n  \"reason\": \"Customer orders are primarily managed in CRM (sap.crm) for sales and customer data, with fulfillment/inventory coordination through ERP (sap.s4).\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Retrieving customer orders is a live data access operation that supports downstream transaction processing and fulfillment workflows.\"\n}\n```",
+          "stage2_pool_size": 38,
+          "stage3_entity_types": [
+            "sap.odm:entityType:CustomerOrder:v1",
+            "sap.odm:entityType:CustomerAccount:v1",
+            "sap.odm:entityType:Material:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:CustomerOrder:v1\", \"sap.odm:entityType:CustomerAccount:v1\", \"sap.odm:entityType:Material:v1\"],\n  \"reason\": \"Retrieving customer orders involves reading CustomerOrder records linked to CustomerAccount entities and associated Material/ProductItem details.\"\n}\n```",
+          "stage3_pool_size": 20,
+          "stage4_raw": "```json\n[\n  \"sap.s4:apiResource:CustomerOrderManagementAPI:v1\",\n  \"sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1\",\n  \"sap.crm:apiResource:CustomerAccountDisputeManagement:v1\",\n  \"sap.s4:apiResource:CustomerAccountFinancialAPI:v1\"\n]\n```",
+          "stage4_valid_count": 4,
+          "refused": false,
+          "tokens": 3664,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Manage account information for order processing",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:CustomerAccountFinancialAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.crm",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.crm\", \"sap.s4\"],\n  \"reason\": \"Account information management for order processing requires customer account data (sap.crm) and inventory/material data for fulfillment (sap.s4).\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Managing account information for order processing requires creating, updating, and maintaining master data that directly drives live order execution.\"\n}\n```",
+          "stage2_pool_size": 38,
+          "stage3_entity_types": [
+            "sap.odm:entityType:CustomerAccount:v1",
+            "sap.odm:entityType:CustomerOrder:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:CustomerAccount:v1\", \"sap.odm:entityType:CustomerOrder:v1\"],\n  \"reason\": \"Managing account information for order processing primarily involves reading and writing customer account details and customer order data.\"\n}\n```",
+          "stage3_pool_size": 12,
+          "stage4_raw": "```json\n[\n  \"sap.s4:apiResource:CustomerOrderManagementAPI:v1\",\n  \"sap.s4:apiResource:CustomerAccountFinancialAPI:v1\",\n  \"sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1\",\n  \"sap.crm:apiResource:CustomerAccountDisputeManagement:v1\"\n]\n```",
+          "stage4_valid_count": 4,
+          "refused": false,
+          "tokens": 2844,
+          "latency_s": 2.541,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Prepare go-to-market strategies",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:SalesOpportunityPipelineAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:OpportunitySalesForecasting:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.crm",
+            "emarsys.cx"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.crm\", \"emarsys.cx\"],\n  \"reason\": \"Go-to-market strategies require sales/customer management (sap.crm) and marketing/customer experience coordination (emarsys.cx) to execute market entry and positioning.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Preparing go-to-market strategies is a planning and analysis activity that requires market research, competitive analysis, and KPI review rather than live execution or master data changes.\"\n}\n```",
+          "stage2_pool_size": 17,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ProductItem:v1",
+            "sap.odm:entityType:CustomerSegment:v1",
+            "sap.odm:entityType:SalesOpportunity:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:ProductItem:v1\", \"sap.odm:entityType:CustomerSegment:v1\", \"sap.odm:entityType:SalesOpportunity:v1\"],\n  \"reason\": \"Go-to-market strategies involve planning product positioning, targeting customer segments, and identifying sales opportunities.\"\n}\n```",
+          "stage3_pool_size": 9,
+          "stage4_raw": "```json\n[\n  \"sap.crm:dataProduct:CampaignSegmentationAndROIAnalytics:v1\",\n  \"emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1\",\n  \"sap.crm:dataProduct:SalesOpportunityPipelineAnalytics:v1\",\n  \"emarsys.cx:dataProduct:OpportunitySalesForecasting:v1\",\n  \"emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2655,
+          "latency_s": 1.846,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Design and validate product components",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:agent:BOMComplianceValidator:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "siemens.plm",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"siemens.plm\", \"sap.s4\"],\n  \"reason\": \"Product component design and validation require PLM expertise (siemens.plm) and manufacturing/inventory management capabilities (sap.s4) to manage materials and engineering changes.\"\n}\n```",
+          "stage2_modalities": [
+            "operational",
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\", \"analytical\"],\n  \"reason\": \"Design work is operational (agent creates/updates component specs), while validation requires analytical review of test data, quality metrics, and performance telemetry.\"\n}\n```",
+          "stage2_pool_size": 54,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ProductItem:v1",
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:EngineeringChange:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\"\n  ],\n  \"reason\": \"Product component design and validation directly involves managing product items, their materials, and engineering changes to specifications.\"\n}\n```",
+          "stage3_pool_size": 19,
+          "stage4_raw": "```json\n[\n  \"siemens.plm:agent:BOMComplianceValidator:v1\",\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"sap.s4:apiResource:EngineeringChangeManagementAPI:v1\",\n  \"siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 4061,
+          "latency_s": 1.505,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_012",
+      "skill_id_expected": "proc_012",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Integrate with systems to retrieve customer orders\",\n    \"Manage account information for order processing\",\n    \"Prepare go-to-market strategies\",\n    \"Design and validate product components\"\n  ],\n  \"reason\": \"The skill covers procurement quality standards, engineering change evaluation, and operational readiness, but explicitly lacks system integration for customer orders/accounts, sales go-to-market preparation, and component design/validation activities that the request names as required moving parts.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers procurement quality standards, engineering change evaluation, and operational readiness, but explicitly lacks system integration for customer orders/accounts, sales go-to-market preparation, and component design/validation activities that the request names as required moving parts.",
+      "tokens": 631,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 13855,
+    "latency_s": 5.892,
+    "llm_calls": 17
+  },
+  "wall_s": 5.936
+}

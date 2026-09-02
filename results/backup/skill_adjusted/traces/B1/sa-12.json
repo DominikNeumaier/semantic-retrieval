@@ -1,0 +1,208 @@
+{
+  "case_id": "sa-12",
+  "user_prompt": "I need to submit a new infrastructure update request that will impact multiple departments, and I need the system to automatically assess whether this change requires executive approval based on the business scope. Can you walk me through the entire process from when I submit the request through final implementation, including tracking any related equipment modifications and service dependencies? I also need documentation of all regulatory requirements that apply to this change, as well as any existing maintenance schedules we should coordinate with during rollout.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "B",
+  "state": "enriched",
+  "condition": "B1",
+  "skill_expected": "proc_007",
+  "skill_picked": "proc_007",
+  "expected_gaps": [
+    "sap.ehs:apiResource:ComplianceChangeServiceIntegration:v1",
+    "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track related equipment modifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:AssetMaintenanceAndChangeAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:EquipmentComplianceAndMaintenanceInsights:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "my.mes",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"my.mes\", \"sap.s4\"],\n  \"reason\": \"Equipment modifications require tracking through Manufacturing Execution (my.mes has ITEquipment entity) and engineering/product lifecycle changes (sap.s4 has EngineeringChange entity for material modifications).\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Tracking modifications is a monitoring and audit activity that reads historical data and reports on changes without driving live execution or creating new work.\"\n}\n```",
+          "stage2_pool_size": 17,
+          "stage3_entity_types": [
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:ChangeRequest:v1",
+            "sap.odm:entityType:ITEquipment:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:EngineeringChange:v1\", \"sap.odm:entityType:ChangeRequest:v1\", \"sap.odm:entityType:ITEquipment:v1\"],\n  \"reason\": \"Tracking equipment modifications involves managing engineering changes and change requests for IT equipment and related assets.\"\n}\n```",
+          "stage3_pool_size": 6,
+          "stage4_raw": "```json\n[\n  \"my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1\",\n  \"sap.s4:dataProduct:AssetMaintenanceAndChangeAnalytics:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1\",\n  \"sap.s4:dataProduct:EquipmentComplianceAndMaintenanceInsights:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2497,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Document regulatory requirements",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ehs",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ehs\", \"my.mes\"],\n  \"reason\": \"Regulatory documentation is primarily driven by Safety, Environment, Health & Safety (EHS) compliance and manufacturing safety standards, with secondary support from Manufacturing Execution for operational compliance.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Documenting regulatory requirements is a read-only, reference activity that supports compliance tracking and reporting rather than executing live business operations.\"\n}\n```",
+          "stage2_pool_size": 18,
+          "stage3_entity_types": [
+            "sap.odm:entityType:SafetyIncident:v1",
+            "sap.odm:entityType:Contract:v1",
+            "sap.odm:entityType:Employee:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:SafetyIncident:v1\", \"sap.odm:entityType:Contract:v1\", \"sap.odm:entityType:Employee:v1\"],\n  \"reason\": \"Documenting regulatory requirements typically involves safety compliance, contractual obligations, and employee-related regulations.\"\n}\n```",
+          "stage3_pool_size": 10,
+          "stage4_raw": "```json\n[\n  \"sap.ehs:dataProduct:IncidentComplianceEngagementAnalytics:v1\",\n  \"sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1\",\n  \"sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1\",\n  \"my.mes:dataProduct:SupplierPerformanceAndProcurementOptimization:v1\",\n  \"sap.ehs:dataProduct:SafetyIncidentMetricsAggregate:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2637,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Review existing maintenance schedules for coordination",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:ServiceHealthMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:ProcurementOperationalMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\", \"my.mes\"],\n  \"reason\": \"Maintenance schedule coordination involves IT Service Management (itsm-operations) and Manufacturing Execution (product-lifecycle-management) resources with ChangeRequest entities.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Reviewing existing schedules is a read-only examination of data to understand current state, not execution or modification of maintenance activities.\"\n}\n```",
+          "stage2_pool_size": 16,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ChangeRequest:v1",
+            "sap.odm:entityType:ServiceTicket:v1",
+            "sap.odm:entityType:Incident:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:ChangeRequest:v1\", \"sap.odm:entityType:ServiceTicket:v1\", \"sap.odm:entityType:Incident:v1\"],\n  \"reason\": \"Reviewing maintenance schedules for coordination primarily involves managing change requests, service tickets, and incidents to ensure scheduled activities align and prevent conflicts.\"\n}\n```",
+          "stage3_pool_size": 7,
+          "stage4_raw": "```json\n[\n  \"my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1\",\n  \"corp.itsm:dataProduct:ServiceHealthMetrics:v1\",\n  \"corp.itsm:dataProduct:ProcurementOperationalMetrics:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2535,
+          "latency_s": 1.23,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_007",
+      "skill_id_expected": "proc_007",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track related equipment modifications\",\n    \"Document regulatory requirements\",\n    \"Review existing maintenance schedules for coordination\"\n  ],\n  \"reason\": \"The skill covers submission, impact assessment, approval workflows, and implementation coordination, but explicitly lacks steps for tracking equipment modifications, documenting regulatory compliance, and coordinating with existing maintenance schedules\u2014three concrete activities the request names.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers submission, impact assessment, approval workflows, and implementation coordination, but explicitly lacks steps for tracking equipment modifications, documenting regulatory compliance, and coordinating with existing maintenance schedules\u2014three concrete activities the request names.",
+      "tokens": 582,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 8251,
+    "latency_s": 1.23,
+    "llm_calls": 13
+  },
+  "wall_s": 1.261
+}

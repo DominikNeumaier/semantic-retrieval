@@ -1,0 +1,763 @@
+{
+  "case_id": "sa-12",
+  "user_prompt": "I need to submit a new infrastructure update request that will impact multiple departments, and I need the system to automatically assess whether this change requires executive approval based on the business scope. Can you walk me through the entire process from when I submit the request through final implementation, including tracking any related equipment modifications and service dependencies? I also need documentation of all regulatory requirements that apply to this change, as well as any existing maintenance schedules we should coordinate with during rollout.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": "proc_007",
+  "skill_picked": "proc_007",
+  "expected_gaps": [
+    "sap.ehs:apiResource:ComplianceChangeServiceIntegration:v1",
+    "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track related equipment modifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Machine:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                  "type": "apiResource",
+                  "title": "Equipment OEE Analytics API",
+                  "shortDescription": "REST API for real-time machine performance metrics and OEE calculations."
+                },
+                {
+                  "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+                  "type": "agent",
+                  "title": "Production Quality Monitor Agent",
+                  "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Order Fulfillment API",
+                  "shortDescription": "Retrieves and manages production order status and equipment data for procurement operations."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:EngineeringChange:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Change Lifecycle API",
+                  "shortDescription": "Exposes engineering changes and product items for workforce asset management."
+                },
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                "... (37 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ITEquipment:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                  "type": "apiResource",
+                  "title": "Change Request Approval Workflow API",
+                  "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Provisioning Integration API",
+                  "shortDescription": "Manages equipment provisioning requests linked to service tickets and change approvals."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                  "type": "agent",
+                  "title": "Incident Root Cause Analysis Agent",
+                  "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Equipment Change and Service Management API",
+                "shortDescription": "Manages equipment changes, service requests, and maintenance governance.",
+                "description": "Exposes change requests, IT equipment records, and service tickets to coordinate equipment modifications and maintenance activities across the manufacturing facility. Retrieves approval workflows and risk assessments for equipment changes while managing service ticket lifecycle and equipment diagnostics integration.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "IT Service Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "change-management",
+                  "approval-workflow",
+                  "governance",
+                  "risk-assessment"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Equipment Change and Service Integration API",
+                "shortDescription": "Manages equipment changes, service requests, and diagnostics coordination.",
+                "description": "Exposes change requests, IT equipment configurations, and service tickets to coordinate equipment lifecycle management across the manufacturing execution system. Retrieves real-time equipment status, maintenance history, and change impact assessments. Provides access to integrated change workflows, equipment diagnostics data, and service scheduling for digital twin synchronization.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "digital-twin",
+                  "product-configuration",
+                  "design-review"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:dataProduct:EquipmentMaintenanceAndChangeImpactAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "my.mes",
+                "title": "Equipment Maintenance and Change Impact Analytics",
+                "shortDescription": "Aggregates equipment diagnostics, maintenance requests, and configuration changes to optimize asset performance.",
+                "description": "This data product summarizes maintenance tickets, equipment status, and change request impacts across the production floor. It provides metrics on equipment downtime, change approval workflows, and their correlation to service ticket resolution times, enabling data-driven maintenance prioritization and change management optimization.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "equipment-diagnostics",
+                  "maintenance-analytics",
+                  "change-impact"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                "reason": "This API directly manages equipment changes and modifications with integrated change requests, IT equipment records, and service tickets for coordinating equipment modifications across the facility."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+          "picked_reason": "This API directly manages equipment changes and modifications with integrated change requests, IT equipment records, and service tickets for coordinating equipment modifications across the facility.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 25257,
+          "latency_s": 10.406,
+          "llm_calls": 10
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Document regulatory requirements",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:SafetyComplianceCustomerEngagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Environment, Health & Safety"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                  "type": "apiResource",
+                  "title": "Safety Compliance Customer Management API",
+                  "shortDescription": "Manages customer accounts and safety campaigns with compliance tracking integration."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+                  "type": "apiResource",
+                  "title": "Safety Inspection Campaign Management API",
+                  "shortDescription": "Manages and retrieves safety inspection campaigns linked to customer accounts."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Storage Tracking API",
+                  "shortDescription": "Manages and retrieves hazardous substance storage locations and inventory status."
+                },
+                "... (2 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Product Lifecycle Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+                  "type": "apiResource",
+                  "title": "Engineering Change & Product Item Integration API",
+                  "shortDescription": "Exposes engineering changes and product items for production scheduling validation"
+                },
+                {
+                  "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+                  "type": "apiResource",
+                  "title": "Equipment Change and Service Integration API",
+                  "shortDescription": "Manages equipment changes, service requests, and diagnostics coordination."
+                },
+                {
+                  "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor information for production planning."
+                },
+                "... (17 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:SafetyComplianceCustomerEngagementAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:SafetyComplianceCustomerEngagementAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Customer Safety Programs and Regulatory Reporting API",
+                "shortDescription": "Provides customer profile data alongside occupational health initiatives and regulatory audit documentation.",
+                "description": "Exposes customer master records integrated with workplace safety program participation and regulatory requirement tracking. Enables retrieval of environmental, health, and safety initiative metrics, program enrollment histories, and audit documentation tied to customer relationships. Supports incident ticket linkage to customer-specific safety obligations, facilitating coordinated response procedures and regulatory compliance reporting across supply chain and asset lifecycle management domains.",
+                "entityTypes": [
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerAccount:v1"
+                ],
+                "lineOfBusiness": [
+                  "Environment, Health & Safety"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "workplace-safety",
+                  "regulatory-reporting",
+                  "customer-programs"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1",
+                "type": "agent",
+                "namespace": "siemens.plm",
+                "title": "Design Review and Compliance Coordination Agent",
+                "shortDescription": "Orchestrates design reviews and monitors compliance documentation workflows across product lifecycle.",
+                "description": "This agent automates the coordination of design review cycles and compliance documentation processes by monitoring engineering change requests and performance metrics across the product development team. It processes design review assignments, tracks reviewer engagement, and coordinates compliance sign-offs by correlating workforce performance data with document completion status. The agent intelligently routes compliance tasks based on employee qualifications and historical review performance to ensure timely product certification.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:PerformanceReview:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "design-review",
+                  "compliance-automation",
+                  "engineering-coordination"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:SafetyComplianceCustomerEngagementAPI:v1",
+                "reason": "Directly supports regulatory audit documentation and regulatory requirement tracking in the Environment, Health & Safety domain, following equipment management activities."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:SafetyComplianceCustomerEngagementAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:apiResource:SafetyComplianceCustomerEngagementAPI:v1",
+          "picked_reason": "Directly supports regulatory audit documentation and regulatory requirement tracking in the Environment, Health & Safety domain, following equipment management activities.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 21897,
+          "latency_s": 11.095,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Review existing maintenance schedules for coordination",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.s4:apiResource:SafetyComplianceCustomerEngagementAPI:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Machine:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                  "type": "apiResource",
+                  "title": "Equipment OEE Analytics API",
+                  "shortDescription": "REST API for real-time machine performance metrics and OEE calculations."
+                },
+                {
+                  "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+                  "type": "agent",
+                  "title": "Production Quality Monitor Agent",
+                  "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Order Fulfillment API",
+                  "shortDescription": "Retrieves and manages production order status and equipment data for procurement operations."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Manufacturing"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Production Order and Machine Scheduling API",
+                "shortDescription": "Retrieves and manages production orders and machine assignments for real-time scheduling.",
+                "description": "Exposes production order details and machine capacity information to enable dynamic scheduling and order execution. Provides access to machine availability, production order status, and scheduling constraints. Manages updates to order sequencing and machine allocations across manufacturing facilities.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "production-planning",
+                  "machine-scheduling",
+                  "order-execution"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:ProductionMachineAndOrderManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:apiResource:ProductionMachineAndOrderManagement:v1",
+                "type": "apiResource",
+                "namespace": "siemens.plm",
+                "title": "Manufacturing Asset and Workflow Orchestration API",
+                "shortDescription": "Coordinates industrial equipment and work item lifecycles for integrated production environments.",
+                "description": "Provides unified visibility into manufacturing equipment assets and associated work items throughout their execution lifecycle. Enables resource optimization by exposing equipment specifications, utilization metrics, and work item progression data. Supports cross-facility production workflow coordination through real-time asset availability and work sequencing capabilities.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "equipment-management",
+                  "work-order-orchestration",
+                  "production-resource-optimization"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+                "reason": "This API manages production orders and machine assignments with visibility into machine availability and scheduling constraints, directly supporting the review and coordination of maintenance schedules."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+          "picked_reason": "This API manages production orders and machine assignments with visibility into machine availability and scheduling constraints, directly supporting the review and coordination of maintenance schedules.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 23936,
+          "latency_s": 13.191,
+          "llm_calls": 9
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_007",
+      "skill_id_expected": "proc_007",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track related equipment modifications\",\n    \"Document regulatory requirements\",\n    \"Review existing maintenance schedules for coordination\"\n  ],\n  \"reason\": \"The skill covers submission, impact assessment, approval workflows, and implementation coordination, but explicitly lacks steps for tracking equipment modifications, documenting regulatory compliance, and coordinating with existing maintenance schedules\u2014three concrete activities the request names.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers submission, impact assessment, approval workflows, and implementation coordination, but explicitly lacks steps for tracking equipment modifications, documenting regulatory compliance, and coordinating with existing maintenance schedules\u2014three concrete activities the request names.",
+      "tokens": 582,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 71672,
+    "latency_s": 34.692,
+    "llm_calls": 29
+  },
+  "wall_s": 34.725
+}

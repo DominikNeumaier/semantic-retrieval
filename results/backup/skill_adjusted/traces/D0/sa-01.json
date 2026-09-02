@@ -1,0 +1,731 @@
+{
+  "case_id": "sa-01",
+  "user_prompt": "We need to establish a comprehensive procurement and delivery workflow that coordinates vendor assessment, augments customer purchases with enriched data, validates regulatory requirements, and manages incoming stock alongside staff and resource allocation. The process should also track milestone progression and delivery status throughout the entire cycle, including the ability to handle customer grievances and reconcile any disagreements that arise during fulfillment. Can you design this end-to-end supply chain orchestration to ensure seamless coordination across all these interconnected operations?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": "proc_033",
+  "skill_picked": "proc_033",
+  "expected_gaps": [
+    "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+    "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 1.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track milestone progression and delivery status",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_business_groups",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_namespaces",
+              "args": {},
+              "result_preview": [
+                "corp.itsm",
+                "emarsys.cx",
+                "my.mes",
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:CustomerOrder:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Service Ticket and Order Management API",
+                  "shortDescription": "Retrieves and manages customer service tickets and orders with status tracking."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Provisioning Order API",
+                  "shortDescription": "Exposes and manages customer account orders for ITSM provisioning workflows."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Account Order Enrichment API",
+                  "shortDescription": "Retrieves and manages integrated customer account and order data for engagement targeting."
+                },
+                "... (12 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                  "type": "apiResource",
+                  "title": "Equipment OEE Analytics API",
+                  "shortDescription": "REST API for real-time machine performance metrics and OEE calculations."
+                },
+                {
+                  "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+                  "type": "agent",
+                  "title": "Production Quality Monitor Agent",
+                  "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Production Order Quality Metrics",
+                  "shortDescription": "Aggregated quality performance and defect rates per production order."
+                },
+                "... (20 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Manufacturing"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+                "type": "apiResource",
+                "namespace": "sap.crm",
+                "title": "Customer Order Fulfillment Tracking API",
+                "shortDescription": "Retrieves and manages customer order status, fulfillment milestones, and delivery tracking data.",
+                "description": "This API exposes real-time customer order fulfillment data, enabling applications to retrieve order details, track shipment progress, and manage delivery status updates. It provides access to comprehensive order lifecycle information across customer accounts, supporting both order status queries and fulfillment event management for seamless customer service operations.",
+                "entityTypes": [
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Sales and Customer"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "dispute-resolution",
+                  "customer-service",
+                  "account-management",
+                  "crm"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+                "reason": "This API directly exposes fulfillment milestones and delivery tracking data, enabling real-time monitoring of order status and shipment progress throughout the order lifecycle."
+              },
+              "result": {
+                "committed": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+          "picked_reason": "This API directly exposes fulfillment milestones and delivery tracking data, enabling real-time monitoring of order status and shipment progress throughout the order lifecycle.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 25275,
+          "latency_s": 9.597,
+          "llm_calls": 10
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Handle customer grievances",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "customer-service"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Incident Compliance Analytics",
+                  "shortDescription": "Aggregates incident and safety incident data for compliance reporting and trend analysis."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:IncidentResolutionMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Incident Resolution Metrics",
+                  "shortDescription": "Aggregates and analyzes incident and safety incident resolution performance data."
+                },
+                {
+                  "ordId": "sap.sf:dataProduct:IncidentResolutionAndComplianceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Workplace Safety and Resolution Performance Dashboard",
+                  "shortDescription": "Consolidates HR incident records with safety metrics to enable workplace risk assessment and operational performance monitoring."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "customer-experience"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+                  "type": "dataProduct",
+                  "title": "Incident Engagement Reliability Analytics",
+                  "shortDescription": "Aggregates incident and safety incident data to measure engagement reliability and compliance metrics."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Engagement Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues."
+                },
+                {
+                  "ordId": "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Incident Risk Exposure Analytics",
+                  "shortDescription": "Aggregates incident and safety incident data to quantify organizational risk exposure."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "list_namespaces",
+              "args": {},
+              "result_preview": [
+                "corp.itsm",
+                "emarsys.cx",
+                "my.mes",
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+                "type": "apiResource",
+                "namespace": "sap.crm",
+                "title": "Customer Order Fulfillment Tracking API",
+                "shortDescription": "Retrieves and manages customer order status, fulfillment milestones, and delivery tracking data.",
+                "description": "This API exposes real-time customer order fulfillment data, enabling applications to retrieve order details, track shipment progress, and manage delivery status updates. It provides access to comprehensive order lifecycle information across customer accounts, supporting both order status queries and fulfillment event management for seamless customer service operations.",
+                "entityTypes": [
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Sales and Customer"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "dispute-resolution",
+                  "customer-service",
+                  "account-management",
+                  "crm"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "integration_dependencies",
+              "args": {
+                "namespace": "sap.crm"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ServiceTicket:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                  "type": "apiResource",
+                  "title": "Change Request Approval Workflow API",
+                  "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Provisioning Integration API",
+                  "shortDescription": "Manages equipment provisioning requests linked to service tickets and change approvals."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                  "type": "agent",
+                  "title": "Incident Root Cause Analysis Agent",
+                  "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1"
+              },
+              "result_preview": {
+                "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                "type": "agent",
+                "namespace": "corp.itsm",
+                "title": "Incident Root Cause Analysis Agent",
+                "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions.",
+                "description": "This agent automatically processes high-priority service tickets to perform root cause analysis by correlating incident patterns, examining related IT equipment status, and linking to historical change requests. It generates diagnostic reports and suggests preventive measures to reduce ticket recurrence, enabling faster resolution and improved service quality.",
+                "entityTypes": [
+                  "sap.odm:entityType:ServiceTicket:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ChangeRequest:v1"
+                ],
+                "lineOfBusiness": [
+                  "IT Service Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "incident-analysis",
+                  "root-cause",
+                  "automation",
+                  "diagnostics"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "corp.itsm:package:Core:v1"
+              }
+            },
+            {
+              "step": 8,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "No dedicated customer grievance handling agent or API resource exists in the landscape; available resources are IT service ticket handlers or analytics platforms rather than customer complaint resolution systems."
+              },
+              "result": {
+                "refused": true,
+                "reason": "No dedicated customer grievance handling agent or API resource exists in the landscape; available resources are IT service ticket handlers or analytics platforms rather than customer complaint resolution systems."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "No dedicated customer grievance handling agent or API resource exists in the landscape; available resources are IT service ticket handlers or analytics platforms rather than customer complaint resolution systems.",
+          "tool_calls": 12,
+          "tokens": 40938,
+          "latency_s": 20.203,
+          "llm_calls": 12
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Reconcile disagreements during fulfillment",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:OpportunityToOrderAutomationEngine:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:CustomerOrder:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Service Ticket and Order Management API",
+                  "shortDescription": "Retrieves and manages customer service tickets and orders with status tracking."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Provisioning Order API",
+                  "shortDescription": "Exposes and manages customer account orders for ITSM provisioning workflows."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Account Order Enrichment API",
+                  "shortDescription": "Retrieves and manages integrated customer account and order data for engagement targeting."
+                },
+                "... (12 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Sales and Order Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:agent:OpportunityToOrderAutomationEngine:v1",
+                  "type": "agent",
+                  "title": "Opportunity-to-Order Automation Engine",
+                  "shortDescription": "Monitors sales opportunities and automates order creation workflows."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.crm",
+                "title": "Customer Account Dispute Management API",
+                "shortDescription": "REST API for managing customer disputes, claims, and resolution workflows in CRM.",
+                "description": "This API enables creation, tracking, and resolution of customer disputes linked to accounts and orders. It supports dispute lifecycle management including escalation rules, SLA tracking, and resolution documentation. Essential for customer service teams to maintain account health and resolve disputes efficiently.",
+                "entityTypes": [
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Sales and Customer"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "dispute-resolution",
+                  "customer-service",
+                  "account-management",
+                  "crm"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+                "type": "apiResource",
+                "namespace": "emarsys.cx",
+                "title": "Order Fulfillment Service API",
+                "shortDescription": "Manages order lifecycle and customer account service interactions for ticket resolution.",
+                "description": "Exposes order fulfillment status and customer account details to enable service teams to retrieve, manage, and track customer orders throughout their lifecycle. Provides access to order-related service tickets and account information, facilitating coordinated fulfillment operations and customer support workflows.",
+                "entityTypes": [
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "itsm-operations"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "service-management",
+                  "order-fulfillment",
+                  "ticket-lifecycle"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "emarsys.cx:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+                "reason": "This API directly manages customer disputes and resolution workflows, with explicit support for dispute lifecycle management and escalation\u2014ideal for reconciling disagreements during order fulfillment."
+              },
+              "result": {
+                "committed": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+          "picked_reason": "This API directly manages customer disputes and resolution workflows, with explicit support for dispute lifecycle management and escalation\u2014ideal for reconciling disagreements during order fulfillment.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 20595,
+          "latency_s": 10.702,
+          "llm_calls": 9
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_033",
+      "skill_id_expected": "proc_033",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track milestone progression and delivery status\",\n    \"Handle customer grievances\",\n    \"Reconcile disagreements during fulfillment\"\n  ],\n  \"reason\": \"The skill covers vendor assessment, data enrichment, regulatory validation, and inventory/resource management, but explicitly omits milestone tracking, delivery status monitoring, customer complaint handling, and dispute resolution\u2014all concretely named in the request.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers vendor assessment, data enrichment, regulatory validation, and inventory/resource management, but explicitly omits milestone tracking, delivery status monitoring, customer complaint handling, and dispute resolution\u2014all concretely named in the request.",
+      "tokens": 598,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 87406,
+    "latency_s": 40.502,
+    "llm_calls": 32
+  },
+  "wall_s": 40.535
+}

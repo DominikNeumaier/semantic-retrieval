@@ -1,0 +1,107 @@
+{
+  "case_id": "dy-18",
+  "user_prompt": "I need to check the status of an order we placed last month and see if we can adjust the production schedule to move up the delivery date. Can you help me find where that information is tracked?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "enriched",
+  "condition": "B1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to check the status of an order we placed last month and see if we can adjust the production schedule to move up the delivery date. Can you help me find where that information is tracked?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:CustomerOrderAndAccountManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ariba",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ariba\", \"my.mes\"],\n  \"reason\": \"Order status tracking belongs in Procurement (sap.ariba for PurchaseOrder), while production schedule adjustments and delivery dates are managed in Manufacturing Execution (my.mes with ChangeRequest capability).\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Checking order status requires operational lookup, and adjusting the production schedule is an operational action that modifies master data or workflow state.\"\n}\n```",
+          "stage2_pool_size": 36,
+          "stage3_entity_types": [
+            "sap.odm:entityType:PurchaseOrder:v1",
+            "sap.odm:entityType:ProductionOrder:v1",
+            "sap.odm:entityType:CustomerOrder:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:PurchaseOrder:v1\", \"sap.odm:entityType:ProductionOrder:v1\", \"sap.odm:entityType:CustomerOrder:v1\"],\n  \"reason\": \"The activity involves checking order status, adjusting production schedules, and managing delivery dates\u2014core concerns of purchase orders, production orders, and customer orders.\"\n}\n```",
+          "stage3_pool_size": 9,
+          "stage4_raw": "```json\n[\n  \"my.mes:apiResource:CustomerOrderAndAccountManagement:v1\",\n  \"sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1\",\n  \"sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1\",\n  \"my.mes:apiResource:SupplierProcurementOrderManagement:v1\"\n]\n```",
+          "stage4_valid_count": 4,
+          "refused": false,
+          "tokens": 2914,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "my.mes:apiResource:CampaignAndCustomerOrderManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 2914,
+    "latency_s": 0.0,
+    "llm_calls": 4
+  },
+  "wall_s": 0.001
+}

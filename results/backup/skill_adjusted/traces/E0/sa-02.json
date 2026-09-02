@@ -1,0 +1,192 @@
+{
+  "case_id": "sa-02",
+  "user_prompt": "We need to orchestrate a comprehensive readiness validation for our upcoming product launch that coordinates material receipt verification, workforce capability assessment, and operational readiness evaluation. As part of this process, we also need to ensure we can track and validate all the materials coming in from our suppliers, including verifying their specifications against our master records. Additionally, we'll need to reconcile all incoming supplier billing documentation with our purchase commitments to ensure financial accuracy before we greenlight the launch. Please design a workflow that brings all these validation streams together into a single orchestrated process.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0",
+  "skill_expected": "proc_026",
+  "skill_picked": "proc_026",
+  "expected_gaps": [
+    "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+    "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Verify material specifications against master records",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (11 systems):\n- corp.itsm: IT Service Management (incident analysis, asset provisioning, change automation, safety)\n- emarsys.cx: Customer Experience/Marketing (campaign optimization, opportunity engagement)\n- my.mes: Manufacturing Execution (quality monitoring, production coordination)\n- sap.ariba: Procurement (vendor invoicing, compliance, material coordination)\n- sap.crm: Sales/CRM (opportunity qualification, campaign targeting, sales compensation) - NO customer service/grievance\n- sap.ehs: Environment, Health, Safety - Not examined yet\n- sap.odm: Not examined yet\n- sap.s4: ERP (procurement matching, BOM compliance, order automation)\n- sap.sf: SuccessFactors HR (performance reviews, compensation, talent acquisition)\n- siemens.plm: Product Lifecycle Management (BOM validation, engineering changes)\n- workday.hcm: Human Capital Management (compensation, performance reviews, safety)\n\nKEY RESOURCES:\n- sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1 \u2014 Three-way invoice/PO/contract matching, flags discrepancies, reconciles payment disputes\n- sap.s4:agent:BOMComplianceAutomationAgent:v1 \u2014 BOM validation, material compliance, validates material specs against supplier qualifications & regulatory requirements. Capabilities: validate-material-specifications, verify-material-standards\n- sap.s4:agent:ProcurementMatchingAgent:v1 \u2014 Autonomous vendor matching\n\nRESOLVED ACTIVITIES:\n1. Handle customer grievances \u2192 REFUSED (no grievance handling capability)\n2. Reconcile disagreements during fulfillment \u2192 sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n3. Verify material specifications against master records \u2192 sap.s4:agent:BOMComplianceAutomationAgent:v1 (validates specs against supplier qualifications & regulatory requirements)"
+              },
+              "result_preview": {
+                "stored_bytes": 1777,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "reason": "This agent validates material specifications against supplier qualifications and regulatory requirements, directly fulfilling the need to verify material specifications against master records."
+              },
+              "result_preview": {
+                "committed": "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+          "picked_reason": "This agent validates material specifications against supplier qualifications and regulatory requirements, directly fulfilling the need to verify material specifications against master records.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 3,
+          "tokens": 13937,
+          "latency_s": 12.659,
+          "llm_calls": 3
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Reconcile supplier billing documentation with purchase commitments",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "reason": "Performs three-way matching of invoices against purchase orders and contracts to reconcile supplier billing with purchase commitments."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+          "picked_reason": "Performs three-way matching of invoices against purchase orders and contracts to reconcile supplier billing with purchase commitments.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 1,
+          "tokens": 2667,
+          "latency_s": 3.319,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Validate financial accuracy of invoices",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "reason": "Three-way invoice/PO/contract matching that flags discrepancies and validates financial accuracy against approved documentation."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+          "picked_reason": "Three-way invoice/PO/contract matching that flags discrepancies and validates financial accuracy against approved documentation.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 1,
+          "tokens": 2734,
+          "latency_s": 4.3,
+          "llm_calls": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_026",
+      "skill_id_expected": "proc_026",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Verify material specifications against master records\",\n    \"Reconcile supplier billing documentation with purchase commitments\",\n    \"Validate financial accuracy of invoices\"\n  ],\n  \"reason\": \"The skill covers material receipt verification, workforce capability assessment, operational readiness evaluation, and safety compliance, but explicitly lacks the material specification validation against master records and the supplier billing reconciliation activities that the request specifically names as required components of the orchestrated process.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers material receipt verification, workforce capability assessment, operational readiness evaluation, and safety compliance, but explicitly lacks the material specification validation against master records and the supplier billing reconciliation activities that the request specifically",
+      "tokens": 616,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 19954,
+    "latency_s": 20.278,
+    "llm_calls": 6
+  },
+  "wall_s": 20.29
+}

@@ -1,0 +1,315 @@
+{
+  "case_id": "sa-11",
+  "user_prompt": "We need to orchestrate a production transition that's been triggered by recent engineering changes to one of our product lines. This should coordinate assessments to ensure our workforce is ready for the transition, validate that all equipment meets the new specifications, provision the necessary assets, and communicate the changes to our affected customers. As part of this process, we'll also need to track how these product changes flow through our materials and components, including automated coordination across all related items. Can you help us manage this comprehensive transition while ensuring all service requests and equipment documentation are kept current throughout the changeover?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "C",
+  "state": "clean",
+  "condition": "C0",
+  "skill_expected": "proc_023",
+  "skill_picked": "proc_023",
+  "expected_gaps": [
+    "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+    "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track product changes through materials and components",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+            "score": 71.0
+          },
+          {
+            "ordId": "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+            "score": 71.0
+          },
+          {
+            "ordId": "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+            "score": 71.0
+          },
+          {
+            "ordId": "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+            "score": 71.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:ProductItem:v1",
+              "sap.odm:entityType:EngineeringChange:v1",
+              "sap.odm:entityType:ChangeRequest:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Product Lifecycle Management",
+              "Manufacturing"
+            ],
+            "reason": "Tracking product changes through materials and components involves engineering changes, material specifications, and product items in a PLM and manufacturing context."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Product Lifecycle Management\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Tracking product changes through materials and components involves engineering changes, material specifications, and product items in a PLM and manufacturing context.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 179,
+          "walk_top_ids": [
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1",
+            "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1",
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1",
+            "siemens.plm:agent:BOMComplianceValidator:v1",
+            "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1\",\n  \"sap.s4:dataProduct:BOMCostAndComplianceAnalytics:v1\",\n  \"siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1\",\n  \"sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 1970,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Automate coordination across related items",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": 36.5
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "score": 36.5
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": 36.5
+          },
+          {
+            "ordId": "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "score": 36.5
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:ChangeRequest:v1",
+              "sap.odm:entityType:ProductionOrder:v1",
+              "sap.odm:entityType:ServiceTicket:v1",
+              "sap.odm:entityType:CustomerOrder:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Operations",
+              "Manufacturing"
+            ],
+            "reason": "Automating coordination across related items typically involves managing interconnected requests, orders, and tasks that span operational and manufacturing domains."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ChangeRequest:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:CustomerOrder:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Operations\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Automating coordination across related items typically involves managing interconnected requests, orders, and tasks that span operational and manufacturing domains.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 192,
+          "walk_top_ids": [
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "corp.itsm:dataProduct:ProcurementOperationalMetrics:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"corp.itsm:agent:ChangeAutomationOrchestrator:v1\",\n  \"corp.itsm:agent:ChangeReleaseCoordinator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"corp.itsm:agent:AccessProvisioningOrchestrator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "my.mes:dataProduct:EngineeringChangeImpactAnalytics:v1"
+          ],
+          "tokens": 1923,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Update service requests documentation",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": 37.0
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": 37.0
+          },
+          {
+            "ordId": "sap.ehs:apiResource:SafetyChangeGovernanceManagement:v1",
+            "score": 37.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:ServiceTicket:v1",
+              "sap.odm:entityType:ChangeRequest:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "IT Service Management",
+              "IT_Operations"
+            ],
+            "reason": "Updating service requests documentation directly relates to ServiceTicket and ChangeRequest entities within IT service management operations."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"IT Service Management\",\n    \"IT_Operations\"\n  ],\n  \"reason\": \"Updating service requests documentation directly relates to ServiceTicket and ChangeRequest entities within IT service management operations.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 206,
+          "walk_top_ids": [
+            "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "corp.itsm:dataProduct:ServiceHealthMetrics:v1",
+            "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "sap.ehs:apiResource:SafetyChangeGovernanceManagement:v1",
+            "sap.sf:apiResource:EmployeeChangeAndITServiceManagement:v1",
+            "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "corp.itsm:dataProduct:ProcurementOperationalMetrics:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1\",\n  \"my.mes:apiResource:EquipmentChangeAndServiceManagement:v1\",\n  \"sap.ehs:apiResource:SafetyChangeGovernanceManagement:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1"
+          ],
+          "tokens": 1869,
+          "latency_s": 2.713,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Update equipment documentation",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": 42.5
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": 42.5
+          },
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": 42.5
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Machine:v1",
+              "sap.odm:entityType:ITEquipment:v1",
+              "sap.odm:entityType:ChangeRequest:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Operations",
+              "Product Lifecycle Management"
+            ],
+            "reason": "Equipment documentation updates relate to machines and IT assets, typically managed through change control and operational/PLM processes."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:ITEquipment:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Operations\",\n    \"Product Lifecycle Management\"\n  ],\n  \"reason\": \"Equipment documentation updates relate to machines and IT assets, typically managed through change control and operational/PLM processes.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 179,
+          "walk_top_ids": [
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+            "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"corp.itsm:agent:ChangeAutomationOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1"
+          ],
+          "tokens": 1851,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_023",
+      "skill_id_expected": "proc_023",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track product changes through materials and components\",\n    \"Automate coordination across related items\",\n    \"Update service requests documentation\",\n    \"Update equipment documentation\"\n  ],\n  \"reason\": \"The skill covers the core production transition orchestration (workforce assessments, equipment validation, asset provisioning, and customer communications), but the request explicitly requires tracking material/component impact flows, automated cross-item coordination, and maintaining current service requests and equipment documentation\u2014concrete activities not listed in the skill's steps.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers the core production transition orchestration (workforce assessments, equipment validation, asset provisioning, and customer communications), but the request explicitly requires tracking material/component impact flows, automated cross-item coordination, and maintaining current servi",
+      "tokens": 632,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 8245,
+    "latency_s": 2.713,
+    "llm_calls": 9
+  },
+  "wall_s": 2.816
+}

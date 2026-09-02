@@ -1,0 +1,744 @@
+{
+  "case_id": "sa-12",
+  "user_prompt": "I need to submit a new infrastructure update request that will impact multiple departments, and I need the system to automatically assess whether this change requires executive approval based on the business scope. Can you walk me through the entire process from when I submit the request through final implementation, including tracking any related equipment modifications and service dependencies? I also need documentation of all regulatory requirements that apply to this change, as well as any existing maintenance schedules we should coordinate with during rollout.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": "proc_007",
+  "skill_picked": "proc_007",
+  "expected_gaps": [
+    "sap.ehs:apiResource:ComplianceChangeServiceIntegration:v1",
+    "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track related equipment modifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Machine:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                  "type": "apiResource",
+                  "title": "Equipment OEE Analytics API",
+                  "shortDescription": "REST API for real-time machine performance metrics and OEE calculations."
+                },
+                {
+                  "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+                  "type": "agent",
+                  "title": "Production Quality Monitor Agent",
+                  "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Order Fulfillment API",
+                  "shortDescription": "Retrieves and manages production order status and equipment data for procurement operations."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:EngineeringChange:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Change Lifecycle API",
+                  "shortDescription": "Exposes engineering changes and product items for workforce asset management."
+                },
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                "... (37 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "track-engineering-changes"
+              },
+              "result_preview": [
+                {
+                  "ordId": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Engineering Change and Service Management API",
+                  "shortDescription": "Manages product changes, equipment tracking, and service request workflows."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+                "type": "apiResource",
+                "namespace": "siemens.plm",
+                "title": "Engineering Change and Service Management API",
+                "shortDescription": "Manages product changes, equipment tracking, and service request workflows.",
+                "description": "Exposes engineering change requests, IT equipment configurations, and service ticket management to coordinate product modifications across the PLM lifecycle. Retrieves change request status, equipment dependencies, and service ticket escalations to support compliance documentation and digital twin synchronization. Manages service ticket assignments and change approvals to enable real-time collaboration between engineering, quality, and supplier teams.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [
+                  "initiate-change-request",
+                  "track-engineering-changes",
+                  "manage-service-tickets",
+                  "coordinate-it-equipment-updates"
+                ],
+                "useCases": [
+                  "Register formal change requests with engineering review and technical documentation.",
+                  "Link service tickets to change orders and IT equipment affected."
+                ],
+                "tags": [
+                  "change-management",
+                  "service-operations",
+                  "compliance-tracking"
+                ],
+                "partOfGroups": [
+                  "proc_integrated_service_change_mgmt_v1"
+                ],
+                "processNext": [
+                  "siemens.plm:agent:QualityAssuranceAndDefectPrevention:v1"
+                ],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Design Modification and Component Specification API",
+                "shortDescription": "Facilitates tracking and coordination of design updates and component specifications during product development and procurement cycles.",
+                "description": "Exposes design modification records and component specification data to enable integration systems to access approval statuses, impacted items, and change history throughout the product lifecycle. Supports retrieval of design update details, affected component relationships, and change request submissions to coordinate cross-functional teams. Enables real-time access to modification tracking, impact assessments, and stakeholder notifications for design changes across sourcing and manufacturing operations.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "design-modification",
+                  "product-lifecycle-management",
+                  "change-tracking",
+                  "component-management"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+                "reason": "This API directly tracks engineering changes and equipment modifications through its track-engineering-changes and coordinate-it-equipment-updates capabilities, managing change requests, IT equipment configurations, and equipment dependencies across the PLM lifecycle."
+              },
+              "result": {
+                "committed": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+          "picked_reason": "This API directly tracks engineering changes and equipment modifications through its track-engineering-changes and coordinate-it-equipment-updates capabilities, managing change requests, IT equipment configurations, and equipment dependencies across the PLM lifecycle.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 27820,
+          "latency_s": 8.898,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Document regulatory requirements",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:agent:QualityAssuranceAndDefectPrevention:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "siemens.plm:agent:QualityAssuranceAndDefectPrevention:v1",
+                  "type": "agent",
+                  "title": "Quality Assurance and Defect Prevention Agent",
+                  "shortDescription": "Monitors production quality, automates defect detection, and coordinates corrective actions across machines and orders."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:QualityAssuranceAndDefectPrevention:v1"
+              },
+              "result_preview": {
+                "ordId": "siemens.plm:agent:QualityAssuranceAndDefectPrevention:v1",
+                "type": "agent",
+                "namespace": "siemens.plm",
+                "title": "Quality Assurance and Defect Prevention Agent",
+                "shortDescription": "Monitors production quality, automates defect detection, and coordinates corrective actions across machines and orders.",
+                "description": "Continuously monitors machines and production orders to identify quality anomalies and coordinates real-time defect detection across the production floor. Automates quality inspection workflows by analyzing measurement data, triggering automated holds on non-conforming batches, and initiating corrective actions to prevent downstream quality issues. Processes quality inspection records to optimize production parameters and reduces scrap by coordinating machine recalibration and material rework decisions.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1",
+                  "sap.odm:entityType:QualityInspection:v1"
+                ],
+                "lineOfBusiness": [
+                  "Manufacturing Execution"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "quality-monitoring",
+                  "autonomous-control",
+                  "defect-detection",
+                  "production-optimization"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "siemens.plm:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "assess-regulatory-alignment"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Compliance API",
+                  "shortDescription": "Exposes hazardous substance inventory and regulatory compliance data for IT asset management."
+                }
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+                "type": "apiResource",
+                "namespace": "corp.itsm",
+                "title": "Hazardous Substance Compliance API",
+                "shortDescription": "Exposes hazardous substance inventory and regulatory compliance data for IT asset management.",
+                "description": "Provides access to hazardous substance records associated with IT assets and infrastructure components. Manages substance classifications, storage locations, and compliance documentation. Retrieves regulatory requirements and audit trails for environmental and occupational safety standards.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1"
+                ],
+                "lineOfBusiness": [
+                  "operations"
+                ],
+                "capabilities": [
+                  "assess-material-safety",
+                  "verify-substance-regulations",
+                  "evaluate-hazardous-materials",
+                  "validate-material-safety",
+                  "evaluate-compliance",
+                  "assess-regulatory-alignment"
+                ],
+                "useCases": [
+                  "Validate that all substances in use meet occupational safety standards",
+                  "Product teams verify materials comply with environmental and safety regulations before production begins.",
+                  "Supply chain ensures all incoming materials meet corporate hazard thresholds.",
+                  "Assess exposure risks and identify required remediation steps",
+                  "Compliance officers confirm hazardous substance documentation is complete and accessible.",
+                  "Determine hazardous material compliance status against environmental regulations"
+                ],
+                "tags": [
+                  "compliance",
+                  "asset-management",
+                  "environmental-safety"
+                ],
+                "partOfGroups": [
+                  "proc_ProductComplianceManufacturing_v1",
+                  "proc_SafetyComplianceOrchestration_v1"
+                ],
+                "processNext": [
+                  "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+                ],
+                "partOfPackage": "corp.itsm:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "coordinate-compliance-workflow"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                  "type": "agent",
+                  "title": "Safety Compliance Automation Coordinator",
+                  "shortDescription": "Automates safety validation across engineering changes, materials, and product items."
+                }
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "type": "agent",
+                "namespace": "sap.ehs",
+                "title": "Safety Compliance Automation Coordinator",
+                "shortDescription": "Automates safety validation across engineering changes, materials, and product items.",
+                "description": "Monitors and processes engineering changes, materials, and product items to enforce safety compliance requirements and automate BOM validation workflows. Coordinates supplier qualification assessments and initiates compliance remediation actions when safety risks or regulatory gaps are detected. Automates incident prevention through continuous validation of product configurations against safety standards.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [
+                  "assess-material-safety",
+                  "automate-safety-assessments",
+                  "automate-compliance-checks",
+                  "coordinate-compliance-workflow",
+                  "validate-engineering-changes",
+                  "orchestrate-compliance-checks",
+                  "coordinate-safety-compliance"
+                ],
+                "useCases": [
+                  "Safety officers ensure all engineering changes trigger integrated compliance assessments across the organization.",
+                  "EHS team automates review of engineering changes to ensure material and product modifications meet safety and regulatory requirements before production",
+                  "Compliance automation prevents unsafe or non-compliant product items from advancing to manufacturing",
+                  "Compliance teams automate material and process safety validation to reduce manual review time.",
+                  "Operations leadership maintains consistent safety standards across all product variants and manufacturing locations."
+                ],
+                "tags": [
+                  "compliance",
+                  "bom-validation",
+                  "supplier-qualification",
+                  "automation"
+                ],
+                "partOfGroups": [
+                  "proc_ProductComplianceManufacturing_v1",
+                  "proc_talent_compliance_ops_v1"
+                ],
+                "processNext": [
+                  "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+                ],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "reason": "Automates compliance workflow and documents regulatory requirements for engineering changes, materials, and product items following the engineering change management step."
+              },
+              "result": {
+                "committed": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+          "picked_reason": "Automates compliance workflow and documents regulatory requirements for engineering changes, materials, and product items following the engineering change management step.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 34837,
+          "latency_s": 16.353,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Review existing maintenance schedules for coordination",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1",
+                  "type": "apiResource",
+                  "title": "Purchase Order Network API",
+                  "shortDescription": "REST API for creating, updating, and monitoring purchase orders across supplier networks."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "schedule-maintenance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Equipment Change and Service Management API",
+                  "shortDescription": "Manages equipment changes, service requests, and maintenance governance."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Machine:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                  "type": "apiResource",
+                  "title": "Equipment OEE Analytics API",
+                  "shortDescription": "REST API for real-time machine performance metrics and OEE calculations."
+                },
+                {
+                  "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+                  "type": "agent",
+                  "title": "Production Quality Monitor Agent",
+                  "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Order Fulfillment API",
+                  "shortDescription": "Retrieves and manages production order status and equipment data for procurement operations."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Equipment Change and Service Management API",
+                "shortDescription": "Manages equipment changes, service requests, and maintenance governance.",
+                "description": "Exposes change requests, IT equipment records, and service tickets to coordinate equipment modifications and maintenance activities across the manufacturing facility. Retrieves approval workflows and risk assessments for equipment changes while managing service ticket lifecycle and equipment diagnostics integration.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "IT Service Management"
+                ],
+                "capabilities": [
+                  "schedule-maintenance",
+                  "request-protective-upgrades",
+                  "monitor-service-tickets",
+                  "manage-equipment-services",
+                  "manage-safety-equipment-changes",
+                  "track-change-requests"
+                ],
+                "useCases": [
+                  "IT Service Management ensures production equipment remains operational during peak order fulfillment.",
+                  "Facility operations teams must plan and execute maintenance of safety systems that protect workers from identified hazardous substances",
+                  "Operations teams prioritize critical equipment service requests affecting fulfillment SLAs.",
+                  "Manufacturing facilities schedule preventive maintenance to minimize unplanned downtime."
+                ],
+                "tags": [
+                  "change-management",
+                  "approval-workflow",
+                  "governance",
+                  "risk-assessment"
+                ],
+                "partOfGroups": [
+                  "proc_SafetyComplianceWorkforce_v1",
+                  "proc_procure_fulfill_v1"
+                ],
+                "processNext": [
+                  "sap.ehs:apiResource:VendorSafetyComplianceOrders:v1"
+                ],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+                "reason": "Equipment Change and Service Management API manages maintenance schedules, service tickets, and equipment maintenance governance with schedule-maintenance capability and explicit preventive maintenance use case."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+          "picked_reason": "Equipment Change and Service Management API manages maintenance schedules, service tickets, and equipment maintenance governance with schedule-maintenance capability and explicit preventive maintenance use case.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 7,
+          "tokens": 31605,
+          "latency_s": 13.337,
+          "llm_calls": 7
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_007",
+      "skill_id_expected": "proc_007",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track related equipment modifications\",\n    \"Document regulatory requirements\",\n    \"Review existing maintenance schedules for coordination\"\n  ],\n  \"reason\": \"The skill covers submission, impact assessment, approval workflows, and implementation coordination, but explicitly lacks steps for tracking equipment modifications, documenting regulatory compliance, and coordinating with existing maintenance schedules\u2014three concrete activities the request names.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers submission, impact assessment, approval workflows, and implementation coordination, but explicitly lacks steps for tracking equipment modifications, documenting regulatory compliance, and coordinating with existing maintenance schedules\u2014three concrete activities the request names.",
+      "tokens": 582,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 94844,
+    "latency_s": 38.588,
+    "llm_calls": 26
+  },
+  "wall_s": 38.609
+}

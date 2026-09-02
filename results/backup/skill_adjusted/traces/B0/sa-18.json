@@ -1,0 +1,268 @@
+{
+  "case_id": "sa-18",
+  "user_prompt": "We need to manage a comprehensive transition of our manufacturing operations whenever we implement engineering changes to our products. The process should coordinate impact assessment across all affected areas, handle workforce planning requirements, and validate compliance with all relevant regulations. As part of this transition, we also need to ensure that our supplier materials and component specifications are validated and qualified for the new product design. Additionally, we'll need to coordinate all equipment modifications, maintenance adjustments, and necessary service updates required to support the new production specifications. Can you help us set up a workflow that handles all these interconnected aspects of the changeover?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": "proc_022",
+  "skill_picked": "proc_022",
+  "expected_gaps": [
+    "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+    "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.5,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Validate and qualify supplier materials and component specifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:SupplierQualityComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialSafetyAndVendorComplianceData:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ariba",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ariba\", \"my.mes\"],\n  \"reason\": \"Supplier material validation requires procurement expertise (vendor/PO management) from SAP Ariba and manufacturing/product specification knowledge from MES.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Validating and qualifying supplier materials requires active inspection, testing, approval decisions, and updates to master data records\u2014all operational work performed by agents or quality systems.\"\n}\n```",
+          "stage2_pool_size": 36,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1",
+            "sap.odm:entityType:QualityInspection:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:Vendor:v1\", \"sap.odm:entityType:QualityInspection:v1\"],\n  \"reason\": \"Validating and qualifying supplier materials and component specifications involves assessing material properties from vendors and documenting quality inspection results.\"\n}\n```",
+          "stage3_pool_size": 15,
+          "stage4_raw": "```json\n[\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\",\n  \"my.mes:apiResource:MaterialAndVendorMasterData:v1\",\n  \"my.mes:agent:SupplierQualityComplianceOrchestrator:v1\",\n  \"sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1\",\n  \"sap.ariba:apiResource:MaterialSafetyAndVendorComplianceData:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2946,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Coordinate equipment modifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "my.mes",
+            "corp.itsm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"my.mes\", \"corp.itsm\"],\n  \"reason\": \"Equipment modifications involve manufacturing/PLM execution (MES) and formal change management coordination (ITSM ChangeRequest).\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Coordinating equipment modifications requires executing work\u2014scheduling, approving changes, and updating master data\u2014which are inherently operational actions.\"\n}\n```",
+          "stage2_pool_size": 42,
+          "stage3_entity_types": [
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:ChangeRequest:v1",
+            "sap.odm:entityType:Machine:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\",\n    \"sap.odm:entityType:Machine:v1\"\n  ],\n  \"reason\": \"Equipment modifications are primarily coordinated through engineering changes and change requests, and typically involve updating machine or equipment specifications.\"\n}\n```",
+          "stage3_pool_size": 17,
+          "stage4_raw": "```json\n[\n  \"corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1\",\n  \"corp.itsm:agent:ChangeAutomationOrchestrator:v1\",\n  \"my.mes:apiResource:EquipmentChangeAndServiceManagement:v1\",\n  \"my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1\",\n  \"corp.itsm:apiResource:AssetChangeLifecycleAPI:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 3038,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Coordinate maintenance adjustments",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm",
+            "my.mes"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\", \"my.mes\"],\n  \"reason\": \"Maintenance adjustments are primarily IT service management operations (itsm-operations, ChangeRequest) and manufacturing execution concerns (MES, material/equipment maintenance).\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Coordinating maintenance adjustments requires an agent or API to execute scheduling changes, approve work orders, and update master data in real-time systems.\"\n}\n```",
+          "stage2_pool_size": 42,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Machine:v1",
+            "sap.odm:entityType:ServiceTicket:v1",
+            "sap.odm:entityType:ChangeRequest:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Machine:v1\", \"sap.odm:entityType:ServiceTicket:v1\", \"sap.odm:entityType:ChangeRequest:v1\"],\n  \"reason\": \"Maintenance adjustments are coordinated on machines, tracked through service tickets, and managed as formal change requests.\"\n}\n```",
+          "stage3_pool_size": 9,
+          "stage4_raw": "```json\n[\n  \"my.mes:apiResource:EquipmentChangeAndServiceManagement:v1\",\n  \"my.mes:apiResource:EquipmentServiceAndChangeManagement:v1\",\n  \"my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1\",\n  \"my.mes:apiResource:ServiceTicketChangeRequestManagement:v1\",\n  \"corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 2562,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Coordinate service updates for new production specifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:EngineeringChangeOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeProductDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "my.mes",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"my.mes\", \"sap.s4\"],\n  \"reason\": \"Production specifications require coordination between manufacturing execution (MES) and supply chain/inventory management (SAP S4), both handling material and change management.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Coordinating service updates requires direct execution: agents must deploy changes, APIs must update production specifications, and systems must be notified\u2014all active work that modifies live state.\"\n}\n```",
+          "stage2_pool_size": 40,
+          "stage3_entity_types": [
+            "sap.odm:entityType:EngineeringChange:v1",
+            "sap.odm:entityType:ProductionOrder:v1",
+            "sap.odm:entityType:ServiceTicket:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:ServiceTicket:v1\"\n  ],\n  \"reason\": \"Coordinating service updates for new production specifications involves managing engineering changes, production order adjustments, and associated service tickets for implementation.\"\n}\n```",
+          "stage3_pool_size": 17,
+          "stage4_raw": "```json\n[\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:agent:EngineeringChangeOrchestrator:v1\",\n  \"sap.s4:apiResource:EngineeringChangeProductDataAPI:v1\",\n  \"my.mes:apiResource:EngineeringChangeProductIntegration:v1\",\n  \"sap.s4:agent:AssetLifecycleChangeOrchestrator:v1\"\n]\n```",
+          "stage4_valid_count": 5,
+          "refused": false,
+          "tokens": 3114,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_022",
+      "skill_id_expected": "proc_022",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Validate and qualify supplier materials and component specifications\",\n    \"Coordinate equipment modifications\",\n    \"Coordinate maintenance adjustments\",\n    \"Coordinate service updates for new production specifications\"\n  ],\n  \"reason\": \"The skill covers impact assessment, workforce planning, and compliance validation, but the request explicitly requires supplier qualification, equipment modifications, maintenance adjustments, and service updates\u2014concrete activities not represented in the step list.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers impact assessment, workforce planning, and compliance validation, but the request explicitly requires supplier qualification, equipment modifications, maintenance adjustments, and service updates\u2014concrete activities not represented in the step list.",
+      "tokens": 614,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 12274,
+    "latency_s": 0.0,
+    "llm_calls": 17
+  },
+  "wall_s": 0.06
+}

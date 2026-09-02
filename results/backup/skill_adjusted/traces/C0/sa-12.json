@@ -1,0 +1,237 @@
+{
+  "case_id": "sa-12",
+  "user_prompt": "I need to submit a new infrastructure update request that will impact multiple departments, and I need the system to automatically assess whether this change requires executive approval based on the business scope. Can you walk me through the entire process from when I submit the request through final implementation, including tracking any related equipment modifications and service dependencies? I also need documentation of all regulatory requirements that apply to this change, as well as any existing maintenance schedules we should coordinate with during rollout.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "C",
+  "state": "clean",
+  "condition": "C0",
+  "skill_expected": "proc_007",
+  "skill_picked": "proc_007",
+  "expected_gaps": [
+    "sap.ehs:apiResource:ComplianceChangeServiceIntegration:v1",
+    "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track related equipment modifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": 62.75
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": 62.75
+          },
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": 62.75
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "score": 62.75
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Machine:v1",
+              "sap.odm:entityType:EngineeringChange:v1",
+              "sap.odm:entityType:ChangeRequest:v1",
+              "sap.odm:entityType:ITEquipment:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Manufacturing",
+              "Operations"
+            ],
+            "reason": "Tracking equipment modifications involves managing changes to machines and assets through engineering or change management processes in manufacturing and operations contexts."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\",\n    \"sap.odm:entityType:ITEquipment:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Operations\"\n  ],\n  \"reason\": \"Tracking equipment modifications involves managing changes to machines and assets through engineering or change management processes in manufacturing and operations contexts.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 135,
+          "walk_top_ids": [
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+            "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"corp.itsm:agent:ChangeAutomationOrchestrator:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\",\n  \"corp.itsm:agent:ChangeReleaseCoordinator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 1904,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Document regulatory requirements",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Contract:v1",
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:HazardousSubstance:v1",
+              "sap.odm:entityType:ProductItem:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Procurement",
+              "Environment, Health & Safety"
+            ],
+            "reason": "Documenting regulatory requirements typically involves contracts, materials, hazardous substances, and products subject to compliance rules across procurement and EHS domains."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Contract:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:HazardousSubstance:v1\",\n    \"sap.odm:entityType:ProductItem:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Environment, Health & Safety\"\n  ],\n  \"reason\": \"Documenting regulatory requirements typically involves contracts, materials, hazardous substances, and products subject to compliance rules across procurement and EHS domains.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 205,
+          "walk_top_ids": [
+            "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+            "sap.ariba:dataProduct:SupplyChainProductIntelligence:v1",
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity \"Document regulatory requirements\" is a compliance/governance function that involves recording, maintaining, and potentially communicating regulatory obligations. None of the candidates directly address this capability:\n\n- The agents focus on coordinating material/engineering changes, access provisioning, asset provisioning, and product lifecycle orchestration\n- The dataProducts focus on aggregating supply chain and product data for analytics/insights\n- None have documentation, compliance, regulatory tracking, or requirements management capabilities\n\nWhile some candidates mention \"coordination\" and \"changes,\" documenting regulatory requirements is fundamentally different from orchestrating material/engineering changes or managing product lifecycles. The graph walk surfaced these candidates due to topical overlap (changes, coordination) but they don't actually fulfill the regulatory documentation activity.",
+          "refused": true,
+          "previous_resolved": [
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1"
+          ],
+          "tokens": 1975,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Review existing maintenance schedules for coordination",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": 36.5
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:ServiceHealthMetrics:v1",
+            "score": 36.5
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": 36.5
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Machine:v1",
+              "sap.odm:entityType:ServiceTicket:v1",
+              "sap.odm:entityType:ChangeRequest:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Manufacturing",
+              "Operations"
+            ],
+            "reason": "Reviewing maintenance schedules involves coordinating machine maintenance activities, service tickets, and change requests in manufacturing and operations contexts."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Operations\"\n  ],\n  \"reason\": \"Reviewing maintenance schedules involves coordinating machine maintenance activities, service tickets, and change requests in manufacturing and operations contexts.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 135,
+          "walk_top_ids": [
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "corp.itsm:dataProduct:ProcurementOperationalMetrics:v1",
+            "corp.itsm:dataProduct:ServiceHealthMetrics:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"corp.itsm:agent:IncidentRootCauseAnalyzer:v1\",\n  \"corp.itsm:dataProduct:ServiceHealthMetrics:v1\",\n  \"corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1"
+          ],
+          "tokens": 1878,
+          "latency_s": 2.844,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_007",
+      "skill_id_expected": "proc_007",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track related equipment modifications\",\n    \"Document regulatory requirements\",\n    \"Review existing maintenance schedules for coordination\"\n  ],\n  \"reason\": \"The skill covers submission, impact assessment, approval workflows, and implementation coordination, but explicitly lacks steps for tracking equipment modifications, documenting regulatory compliance, and coordinating with existing maintenance schedules\u2014three concrete activities the request names.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers submission, impact assessment, approval workflows, and implementation coordination, but explicitly lacks steps for tracking equipment modifications, documenting regulatory compliance, and coordinating with existing maintenance schedules\u2014three concrete activities the request names.",
+      "tokens": 582,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 6339,
+    "latency_s": 2.844,
+    "llm_calls": 7
+  },
+  "wall_s": 2.903
+}

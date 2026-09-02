@@ -1,0 +1,296 @@
+{
+  "case_id": "dy-03",
+  "user_prompt": "I need to set up automated safety checks for our engineering change orders and material updates before they go to production. We've been manually validating everything against our compliance requirements, but it's slowing down our releases. Can you help me automate this validation process?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1,
+    "acceptable": 1,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to set up automated safety checks for our engineering change orders and material updates before they go to production. We've been manually validating everything against our compliance requirements, but it's slowing down our releases. Can you help me automate this validation process?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:EngineeringChange:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:AssetChangeLifecycleAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Change Lifecycle API",
+                  "shortDescription": "Exposes engineering changes and product items for workforce asset management."
+                },
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                "... (37 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:QualityInspection:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+                  "type": "agent",
+                  "title": "Production Quality Monitor Agent",
+                  "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Production Order Quality Metrics",
+                  "shortDescription": "Aggregated quality performance and defect rates per production order."
+                },
+                {
+                  "ordId": "sap.ariba:dataProduct:ProductionQualityMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Procurement Quality and Vendor Performance Dashboard",
+                  "shortDescription": "Vendor compliance tracking and material quality assessment across sourced components and supplier deliverables."
+                },
+                "... (5 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Product Lifecycle Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+                  "type": "apiResource",
+                  "title": "Engineering Change & Product Item Integration API",
+                  "shortDescription": "Exposes engineering changes and product items for production scheduling validation"
+                },
+                {
+                  "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+                  "type": "apiResource",
+                  "title": "Equipment Change and Service Integration API",
+                  "shortDescription": "Manages equipment changes, service requests, and diagnostics coordination."
+                },
+                {
+                  "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor information for production planning."
+                },
+                "... (17 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "type": "agent",
+                "namespace": "sap.ehs",
+                "title": "Safety Compliance Automation Coordinator",
+                "shortDescription": "Automates safety validation across engineering changes, materials, and product items.",
+                "description": "Monitors and processes engineering changes, materials, and product items to enforce safety compliance requirements and automate BOM validation workflows. Coordinates supplier qualification assessments and initiates compliance remediation actions when safety risks or regulatory gaps are detected. Automates incident prevention through continuous validation of product configurations against safety standards.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "compliance",
+                  "bom-validation",
+                  "supplier-qualification",
+                  "automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:ProductSafetyComplianceChangeManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:apiResource:ProductSafetyComplianceChangeManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.ehs",
+                "title": "Product Safety Compliance Change Management API",
+                "shortDescription": "Manages product safety changes and compliance requirements across manufacturing items.",
+                "description": "Provides access to engineering change notifications and product item safety compliance data for manufacturing environments. Exposes safety-related modifications to product specifications and enables retrieval of compliance requirements tied to engineering changes. Manages the integration of product safety assessments with engineering change workflows to ensure regulatory adherence throughout the product lifecycle.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "product-safety",
+                  "compliance-management",
+                  "engineering-changes"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "reason": "This agent automates safety validation and compliance checks on engineering changes and material updates before production, eliminating manual validation bottlenecks."
+              },
+              "result": {
+                "committed": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+          "picked_reason": "This agent automates safety validation and compliance checks on engineering changes and material updates before production, eliminating manual validation bottlenecks.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 23388,
+          "latency_s": 9.39,
+          "llm_calls": 9
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 23388,
+    "latency_s": 9.39,
+    "llm_calls": 9
+  },
+  "wall_s": 9.392
+}

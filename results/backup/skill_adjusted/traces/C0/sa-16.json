@@ -1,0 +1,231 @@
+{
+  "case_id": "sa-16",
+  "user_prompt": "We need to adjust our production schedule due to a significant surge in Q2 demand forecasting and some critical supply constraints we're facing with our primary vendors. This will require coordinating engineering changes across our product lines, verifying compliance requirements, updating our procurement orders, and adjusting our workforce capacity planning. As part of this broader initiative, we'll also need to ensure our team members are compensated fairly for any overtime or shift changes resulting from the schedule adjustments, including updating any applicable merit considerations. Can you help us orchestrate all these moving pieces together, including the financial and compensation updates that will flow from these workforce adjustments?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "C",
+  "state": "clean",
+  "condition": "C0",
+  "skill_expected": "proc_001",
+  "skill_picked": "proc_001",
+  "expected_gaps": [
+    "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+    "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Update employee compensation and overtime pay",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Compensation:v1",
+              "sap.odm:entityType:Employee:v1",
+              "sap.odm:entityType:TimeOff:v1",
+              "sap.odm:entityType:ChangeRequest:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Human Resources",
+              "Human Capital Management"
+            ],
+            "reason": "Activity involves managing employee compensation and overtime, directly touching Compensation and Employee entities within HR/HCM domain."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Compensation:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:TimeOff:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Human Resources\",\n    \"Human Capital Management\"\n  ],\n  \"reason\": \"Activity involves managing employee compensation and overtime, directly touching Compensation and Employee entities within HR/HCM domain.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 216,
+          "walk_top_ids": [
+            "sap.sf:apiResource:EmployeeITServiceManagement:v1",
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+            "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity \"Update employee compensation and overtime pay\" requires access to payroll or human resources management systems. None of the candidates provided fulfill this requirement:\n\n- The Employee IT Service Management API manages IT infrastructure, not compensation\n- The agents (Access Provisioning, Asset Provisioning, Change Automation, Change Release, Product Lifecycle orchestrators) handle IT assets, access provisioning, and product changes\u2014not payroll\n- The data products provide analytics on products and inventory, not compensation data\n\nAll candidates are topically irrelevant to compensation and payroll management, despite potentially being surfaced through a knowledge graph walk on \"employee\" or organizational topics.",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 1948,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Process merit consideration adjustments",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:agent:PerformanceReviewOrchestrator:v1",
+            "score": 36.0
+          },
+          {
+            "ordId": "workday.hcm:agent:PerformanceReviewCoordination:v1",
+            "score": 36.0
+          },
+          {
+            "ordId": "sap.sf:agent:PerformanceReviewCycleCoordinator:v1",
+            "score": 36.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Employee:v1",
+              "sap.odm:entityType:Compensation:v1",
+              "sap.odm:entityType:PerformanceReview:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Human Resources",
+              "Human Capital Management"
+            ],
+            "reason": "Merit adjustments directly involve employee compensation decisions based on performance reviews."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Compensation:v1\",\n    \"sap.odm:entityType:PerformanceReview:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Human Resources\",\n    \"Human Capital Management\"\n  ],\n  \"reason\": \"Merit adjustments directly involve employee compensation decisions based on performance reviews.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 216,
+          "walk_top_ids": [
+            "sap.sf:agent:PerformanceReviewCycleCoordinator:v1",
+            "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1",
+            "workday.hcm:agent:PerformanceReviewCoordination:v1",
+            "workday.hcm:agent:PerformanceReviewOrchestrator:v1",
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"workday.hcm:agent:PerformanceReviewOrchestrator:v1\",\n  \"workday.hcm:agent:PerformanceReviewCoordination:v1\",\n  \"sap.sf:agent:PerformanceReviewCycleCoordinator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 1873,
+          "latency_s": 2.659,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Coordinate financial/payroll system updates",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": 36.5
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": 36.5
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+            "score": 36.5
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:ChangeRequest:v1",
+              "sap.odm:entityType:Compensation:v1",
+              "sap.odm:entityType:Employee:v1",
+              "sap.odm:entityType:ITEquipment:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Finance",
+              "Human Resources"
+            ],
+            "reason": "Financial/payroll system updates involve change management, compensation data, employee records, and IT infrastructure changes across finance and HR domains."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ChangeRequest:v1\",\n    \"sap.odm:entityType:Compensation:v1\",\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:ITEquipment:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Finance\",\n    \"Human Resources\"\n  ],\n  \"reason\": \"Financial/payroll system updates involve change management, compensation data, employee records, and IT infrastructure changes across finance and HR domains.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 213,
+          "walk_top_ids": [
+            "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "corp.itsm:dataProduct:ProcurementOperationalMetrics:v1",
+            "corp.itsm:dataProduct:ServiceHealthMetrics:v1",
+            "emarsys.cx:dataProduct:ServiceDeliveryOperationalInsights:v1",
+            "my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1",
+            "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1\",\n  \"corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1\",\n  \"my.mes:apiResource:EquipmentChangeAndServiceIntegration:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "workday.hcm:agent:PerformanceReviewOrchestrator:v1"
+          ],
+          "tokens": 1909,
+          "latency_s": 3.023,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_001",
+      "skill_id_expected": "proc_001",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Update employee compensation and overtime pay\",\n    \"Process merit consideration adjustments\",\n    \"Coordinate financial/payroll system updates\"\n  ],\n  \"reason\": \"The skill covers production schedule adjustments, engineering coordination, compliance verification, procurement updates, and workforce capacity planning, but explicitly lacks the compensation management, overtime pay updates, and merit adjustment activities that the request specifically names as required outcomes of the workforce changes.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers production schedule adjustments, engineering coordination, compliance verification, procurement updates, and workforce capacity planning, but explicitly lacks the compensation management, overtime pay updates, and merit adjustment activities that the request specifically names as re",
+      "tokens": 627,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 6357,
+    "latency_s": 5.682,
+    "llm_calls": 7
+  },
+  "wall_s": 5.739
+}

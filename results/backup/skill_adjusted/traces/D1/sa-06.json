@@ -1,0 +1,531 @@
+{
+  "case_id": "sa-06",
+  "user_prompt": "We need to establish a complete acquisition and delivery system that starts with gathering customer orders, then assesses both supplier and product safety standards, identifies appropriate sourcing partners, and ensures our logistics network remains uninterrupted. The workflow should also track how this impacts our team's compensation structures given the increased procurement workload, and we'd like visibility into any workplace safety events that occur during the fulfillment process so we can maintain our compliance records. Can you design this entire sourcing-to-delivery journey with all these considerations built in?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1",
+  "skill_expected": "proc_009",
+  "skill_picked": "proc_009",
+  "expected_gaps": [
+    "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+    "corp.itsm:dataProduct:SafetyIncidentMetrics:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track workplace safety events during fulfillment",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.sf:agent:OccupationalSafetyComplianceMonitor:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:SafetyIncident:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+                  "type": "agent",
+                  "title": "Incident Safety Coordinator",
+                  "shortDescription": "Automates safety incident detection and coordinates response workflows across ITSM."
+                },
+                {
+                  "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+                  "type": "agent",
+                  "title": "Occupational Safety Incident Coordinator",
+                  "shortDescription": "Monitors and coordinates safety incidents with hazardous substance involvement for compliance."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Incident Compliance Analytics",
+                  "shortDescription": "Aggregates incident and safety incident data for compliance reporting and trend analysis."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Health, Safety & Environment"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Compensation and Safety Risk Correlation Analytics",
+                  "shortDescription": "Aggregates compensation patterns and safety incident data to identify risk correlations."
+                },
+                {
+                  "ordId": "sap.ehs:dataProduct:MaintenanceImpactSafetyAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Maintenance Impact Safety Analytics",
+                  "shortDescription": "Aggregates maintenance changes, equipment status, and service interventions to assess safety risk exposure."
+                },
+                {
+                  "ordId": "sap.ehs:dataProduct:EmployeeCompensationSafetyRiskAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Occupational Hazard Financial Impact Assessment",
+                  "shortDescription": "Links workplace incident frequency to compensation expenditures and identifies financial risk drivers across roles."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "track-fulfillment"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+                  "type": "apiResource",
+                  "title": "Customer Order Fulfillment Tracking API",
+                  "shortDescription": "Retrieves and manages customer order status, fulfillment milestones, and delivery tracking data."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:agent:OccupationalSafetyComplianceMonitor:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:agent:OccupationalSafetyComplianceMonitor:v1",
+                "type": "agent",
+                "namespace": "sap.sf",
+                "title": "Occupational Safety Compliance Monitor",
+                "shortDescription": "Monitors and automates occupational safety incident tracking and hazard compliance.",
+                "description": "Coordinates real-time monitoring of hazardous substances and safety incidents across the workforce. Automates compliance verification workflows and processes incident reports to ensure organizational adherence to occupational safety regulations. Triggers corrective actions and escalations based on incident severity and hazard classifications.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1",
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Capital Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "occupational-safety",
+                  "incident-management",
+                  "compliance-monitoring"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:agent:IncidentRootCauseAutomationEngine:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:agent:IncidentRootCauseAutomationEngine:v1",
+                "type": "agent",
+                "namespace": "sap.s4",
+                "title": "Incident Root Cause Automation Engine",
+                "shortDescription": "Automates incident analysis, root cause identification, and corrective action workflows.",
+                "description": "This agent monitors safety incidents and hazardous substance events across production environments, automatically correlating incident data to identify root causes and trigger corrective action processes. It processes incident reports in real-time, coordinates with compliance systems, and escalates high-risk safety events to designated stakeholders for immediate remediation.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1",
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "Safety and Environment"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "incident-analysis",
+                  "root-cause",
+                  "automation",
+                  "corrective-action"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:agent:HazmatIncidentComplianceMonitor:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:agent:HazmatIncidentComplianceMonitor:v1",
+                "type": "agent",
+                "namespace": "my.mes",
+                "title": "Hazmat Incident Compliance Monitor",
+                "shortDescription": "Monitors hazardous substance incidents and coordinates supplier compliance responses.",
+                "description": "Continuously monitors hazardous substance handling and safety incidents across the production environment, automatically detecting compliance deviations and incident patterns. Coordinates incident notifications with suppliers, processes corrective actions, and automates hazmat-related compliance workflows to ensure regulatory adherence and safe material management throughout the procurement and production lifecycle.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1",
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "supplier-compliance",
+                  "hazmat-tracking",
+                  "incident-management"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.sf:agent:OccupationalSafetyComplianceMonitor:v1",
+                "reason": "This agent monitors and automates occupational safety incident tracking across the workforce, directly fulfilling the need to track workplace safety events during fulfillment operations with real-time SafetyIncident processing and compliance automation."
+              },
+              "result": {
+                "committed": "sap.sf:agent:OccupationalSafetyComplianceMonitor:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.sf:agent:OccupationalSafetyComplianceMonitor:v1",
+          "picked_reason": "This agent monitors and automates occupational safety incident tracking across the workforce, directly fulfilling the need to track workplace safety events during fulfillment operations with real-time SafetyIncident processing and compliance automation.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 25917,
+          "latency_s": 12.012,
+          "llm_calls": 10
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Maintain compliance records for safety incidents",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.sf:agent:OccupationalSafetyComplianceMonitor:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:SafetyIncident:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+                  "type": "agent",
+                  "title": "Incident Safety Coordinator",
+                  "shortDescription": "Automates safety incident detection and coordinates response workflows across ITSM."
+                },
+                {
+                  "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+                  "type": "agent",
+                  "title": "Occupational Safety Incident Coordinator",
+                  "shortDescription": "Monitors and coordinates safety incidents with hazardous substance involvement for compliance."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Incident Compliance Analytics",
+                  "shortDescription": "Aggregates incident and safety incident data for compliance reporting and trend analysis."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:dataProduct:IncidentResolutionAndComplianceAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:dataProduct:IncidentResolutionAndComplianceAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.sf",
+                "title": "Workplace Safety and Resolution Performance Dashboard",
+                "shortDescription": "Consolidates HR incident records with safety metrics to enable workplace risk assessment and operational performance monitoring.",
+                "description": "Synthesizes incident and workplace safety data across the HR ecosystem to deliver insights on incident categories, closure velocity, and regulatory adherence status. Supports occupational risk management through aggregated performance indicators, timeline analytics, and safety protocol compliance validation for enterprise reporting and operational oversight.",
+                "entityTypes": [
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "customer-service"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "workplace-safety",
+                  "incident-performance",
+                  "regulatory-adherence"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1"
+              },
+              "result_preview": {
+                "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+                "type": "agent",
+                "namespace": "corp.itsm",
+                "title": "Occupational Safety Incident Coordinator",
+                "shortDescription": "Monitors and coordinates safety incidents with hazardous substance involvement for compliance.",
+                "description": "Automates the detection and escalation of occupational safety incidents involving hazardous substances, coordinating response workflows across ITSM ticketing systems. Processes incident classification, triggers compliance notifications, and coordinates remediation actions while maintaining audit trails for regulatory requirements.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1",
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:SafetyIncident:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Capital Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "occupational-safety",
+                  "incident-management",
+                  "compliance-monitoring"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "corp.itsm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:agent:IncidentRootCauseAnalyzer:v1",
+                "type": "agent",
+                "namespace": "sap.ehs",
+                "title": "Incident Root Cause Analysis Agent",
+                "shortDescription": "Autonomously analyzes safety incidents to identify root causes and recommend corrective actions.",
+                "description": "This AI agent automatically processes reported SafetyIncidents by analyzing incident data, environmental factors, and historical patterns to determine underlying root causes. It generates structured root cause analysis reports with recommended corrective and preventive actions, prioritized by risk severity and regulatory impact. The agent accelerates investigation workflows and ensures consistent, evidence-based analysis across the enterprise.",
+                "entityTypes": [
+                  "sap.odm:entityType:SafetyIncident:v1",
+                  "sap.odm:entityType:Incident:v1",
+                  "sap.odm:entityType:HazardousSubstance:v1"
+                ],
+                "lineOfBusiness": [
+                  "Safety and Environment"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "incident-analysis",
+                  "root-cause",
+                  "automation",
+                  "corrective-action"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+                "reason": "This agent automates occupational safety incident coordination with compliance monitoring, maintains audit trails for regulatory requirements, and processes incident classification for compliance record maintenance."
+              },
+              "result": {
+                "committed": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+          "picked_reason": "This agent automates occupational safety incident coordination with compliance monitoring, maintains audit trails for regulatory requirements, and processes incident classification for compliance record maintenance.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 27264,
+          "latency_s": 13.215,
+          "llm_calls": 8
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_009",
+      "skill_id_expected": "proc_009",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track workplace safety events during fulfillment\",\n    \"Maintain compliance records for safety incidents\"\n  ],\n  \"reason\": \"The skill covers the core procurement and fulfillment workflow including customer orders, compliance evaluation, supplier sourcing, supply chain continuity, and workforce capacity/labor cost management. However, it does not explicitly address tracking workplace safety events or maintaining safety compliance records, which the user request specifically names as required visibility for fulfillment operations.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers the core procurement and fulfillment workflow including customer orders, compliance evaluation, supplier sourcing, supply chain continuity, and workforce capacity/labor cost management. However, it does not explicitly address tracking workplace safety events or maintaining safety co",
+      "tokens": 621,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 53802,
+    "latency_s": 25.227,
+    "llm_calls": 19
+  },
+  "wall_s": 25.258
+}

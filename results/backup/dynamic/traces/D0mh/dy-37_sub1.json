@@ -1,0 +1,297 @@
+{
+  "case_id": "dy-37",
+  "sub_idx": 0,
+  "sub_query": "Pull current production schedules and equipment status to finalize procurement forecast for next quarter",
+  "gt_id": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0mh",
+  "top1_acc": 0,
+  "candidate_recall": 0,
+  "top5_candidates": [
+    "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+    "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+    "my.mes:agent:ProductionQualityMonitor:v1",
+    "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+    "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1"
+  ],
+  "refused": false,
+  "tokens": 25090,
+  "wall_s": 10.627,
+  "plan": {
+    "request": "Pull current production schedules and equipment status to finalize procurement forecast for next quarter",
+    "mode": "dynamic",
+    "skill_id": null,
+    "coverage": "none",
+    "method": "D",
+    "steps": [
+      {
+        "step_name": "Pull current production schedules and equipment status to finalize procurement forecast for next quarter",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1"
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+          },
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1"
+          },
+          {
+            "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1"
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1"
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ProductionOrder:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                  "type": "apiResource",
+                  "title": "Equipment OEE Analytics API",
+                  "shortDescription": "REST API for real-time machine performance metrics and OEE calculations."
+                },
+                {
+                  "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+                  "type": "agent",
+                  "title": "Production Quality Monitor Agent",
+                  "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:ProductionOrderQualityMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Production Order Quality Metrics",
+                  "shortDescription": "Aggregated quality performance and defect rates per production order."
+                },
+                "... (20 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Machine:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                  "type": "apiResource",
+                  "title": "Equipment OEE Analytics API",
+                  "shortDescription": "REST API for real-time machine performance metrics and OEE calculations."
+                },
+                {
+                  "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+                  "type": "agent",
+                  "title": "Production Quality Monitor Agent",
+                  "shortDescription": "Autonomous agent that monitors quality inspection results and triggers corrective actions."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Order Fulfillment API",
+                  "shortDescription": "Retrieves and manages production order status and equipment data for procurement operations."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:apiResource:ProductionOrderAndMachineIntegration:v1",
+                "type": "apiResource",
+                "namespace": "sap.ariba",
+                "title": "Production Order and Machine Integration API",
+                "shortDescription": "Retrieves production order details and machine status for procurement planning.",
+                "description": "Exposes real-time production order and machine data to support procurement decision-making and supplier coordination. Manages access to machine utilization metrics and production order schedules for sourcing and purchase order optimization. Provides integration endpoints for vendors to retrieve production requirements and machine availability constraints.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "production-planning",
+                  "shop-floor-control",
+                  "machine-monitoring"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:ProductionOrderAndMachineScheduling:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Production Order and Machine Scheduling API",
+                "shortDescription": "Retrieves and manages production orders and machine assignments for real-time scheduling.",
+                "description": "Exposes production order details and machine capacity information to enable dynamic scheduling and order execution. Provides access to machine availability, production order status, and scheduling constraints. Manages updates to order sequencing and machine allocations across manufacturing facilities.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "production-planning",
+                  "machine-scheduling",
+                  "order-execution"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.ariba",
+                "title": "Procurement Order Fulfillment API",
+                "shortDescription": "Retrieves and manages production order status and equipment data for procurement operations.",
+                "description": "This API exposes real-time production order and equipment information to support procurement decision-making and vendor coordination. It provides access to machine availability, production order status, and fulfillment tracking data across the supply chain. The resource manages retrieval of asset and order details to streamline sourcing and purchase order workflows.",
+                "entityTypes": [
+                  "sap.odm:entityType:Machine:v1",
+                  "sap.odm:entityType:ProductionOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "purchase-orders",
+                  "production-planning",
+                  "vendor-coordination"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+                "reason": "This API directly retrieves production order schedules and equipment/machine status data specifically designed for procurement decision-making and purchase order workflows, making it ideal for finalizing next-quarter procurement forecasts."
+              },
+              "result": {
+                "committed": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:apiResource:ProcurementOrderFulfillmentAPI:v1",
+          "picked_reason": "This API directly retrieves production order schedules and equipment/machine status data specifically designed for procurement decision-making and purchase order workflows, making it ideal for finalizing next-quarter procurement forecasts.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 25090,
+          "latency_s": 10.621,
+          "llm_calls": 10
+        }
+      }
+    ],
+    "trace": {
+      "total_tokens": 25090,
+      "total_latency_s": 0,
+      "total_llm_calls": 10
+    }
+  }
+}

@@ -1,0 +1,431 @@
+{
+  "case_id": "dy-01",
+  "user_prompt": "I need to pull up a recent issue that one of our customers reported last week so I can see what we promised to deliver and whether we're on track. Can you help me find that and check the current status?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1,
+    "acceptable": 1,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to pull up a recent issue that one of our customers reported last week so I can see what we promised to deliver and whether we're on track. Can you help me find that and check the current status?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:ServiceTicket:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+                  "type": "apiResource",
+                  "title": "Change Request Approval Workflow API",
+                  "shortDescription": "REST API for managing change request approvals, scheduling, and impact assessment."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+                  "type": "apiResource",
+                  "title": "Asset Provisioning Integration API",
+                  "shortDescription": "Manages equipment provisioning requests linked to service tickets and change approvals."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+                  "type": "agent",
+                  "title": "Incident Root Cause Analysis Agent",
+                  "shortDescription": "Autonomously analyzes service tickets to identify root causes and recommend preventive actions."
+                },
+                "... (21 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "customer-service"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:dataProduct:IncidentComplianceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Incident Compliance Analytics",
+                  "shortDescription": "Aggregates incident and safety incident data for compliance reporting and trend analysis."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:IncidentResolutionMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Incident Resolution Metrics",
+                  "shortDescription": "Aggregates and analyzes incident and safety incident resolution performance data."
+                },
+                {
+                  "ordId": "sap.sf:dataProduct:IncidentResolutionAndComplianceAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Workplace Safety and Resolution Performance Dashboard",
+                  "shortDescription": "Consolidates HR incident records with safety metrics to enable workplace risk assessment and operational performance monitoring."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Service Ticket & Change Request Management API",
+                "shortDescription": "Manages and retrieves service tickets, change requests, and equipment maintenance records.",
+                "description": "Exposes endpoints to retrieve, create, and update service tickets and engineering change requests tied to manufacturing equipment. Provides access to maintenance workflows, change request status tracking, and equipment diagnostics correlation for compliance and supplier management purposes.",
+                "entityTypes": [
+                  "sap.odm:entityType:ChangeRequest:v1",
+                  "sap.odm:entityType:ITEquipment:v1",
+                  "sap.odm:entityType:ServiceTicket:v1"
+                ],
+                "lineOfBusiness": [
+                  "product-lifecycle-management"
+                ],
+                "capabilities": [
+                  "track-implementation-tasks",
+                  "track-equipment-issues",
+                  "create-change-request-tickets",
+                  "log-change-requests",
+                  "ingest-service-tickets",
+                  "manage-approval-workflows"
+                ],
+                "useCases": [
+                  "An IT technician receives a customer report of equipment failure and logs it as a service ticket for tracking.",
+                  "Change management leadership gains real-time visibility into transition status across all functional teams.",
+                  "IT and operational dependencies are tracked end-to-end through ticketing system to prevent implementation gaps.",
+                  "Operations teams create formal change requests and service tickets to establish audit trail and task accountability for product transitions.",
+                  "Change requests from engineering teams are centralized for impact analysis and approval workflows."
+                ],
+                "tags": [
+                  "supplier-management",
+                  "service-operations",
+                  "compliance-tracking"
+                ],
+                "partOfGroups": [
+                  "proc_ServiceToProduction_v1",
+                  "proc_product_transition_compliance_v1"
+                ],
+                "processNext": [
+                  "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+                ],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "customer-experience"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:dataProduct:IncidentEngagementReliability:v1",
+                  "type": "dataProduct",
+                  "title": "Incident Engagement Reliability Analytics",
+                  "shortDescription": "Aggregates incident and safety incident data to measure engagement reliability and compliance metrics."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:EngagementIncidentMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Engagement Incident Metrics",
+                  "shortDescription": "Aggregates and analyzes campaign incidents and safety-related engagement issues."
+                },
+                {
+                  "ordId": "sap.ehs:dataProduct:IncidentRiskExposureAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Incident Risk Exposure Analytics",
+                  "shortDescription": "Aggregates incident and safety incident data to quantify organizational risk exposure."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Sales and Customer Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:OpportunityEngagementOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Opportunity Engagement Orchestrator",
+                  "shortDescription": "Automates personalized engagement workflows to accelerate opportunity progression and sales velocity."
+                },
+                {
+                  "ordId": "emarsys.cx:agent:OpportunityScoringOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Opportunity Scoring Orchestrator",
+                  "shortDescription": "Automates lead qualification and opportunity prioritization using behavioral and account signals."
+                },
+                {
+                  "ordId": "emarsys.cx:agent:OpportunityEnrichmentOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Opportunity Enrichment Orchestrator",
+                  "shortDescription": "Automates lead scoring and opportunity prioritization through intelligent customer data correlation."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:CustomerAccount:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Access Management API",
+                  "shortDescription": "Manages provisioning and access control for campaign-related customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Service Ticket and Order Management API",
+                  "shortDescription": "Retrieves and manages customer service tickets and orders with status tracking."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Provisioning Order API",
+                  "shortDescription": "Exposes and manages customer account orders for ITSM provisioning workflows."
+                },
+                "... (54 more)"
+              ]
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.crm",
+                "title": "Customer Account Dispute Management API",
+                "shortDescription": "REST API for managing customer disputes, claims, and resolution workflows in CRM.",
+                "description": "This API enables creation, tracking, and resolution of customer disputes linked to accounts and orders. It supports dispute lifecycle management including escalation rules, SLA tracking, and resolution documentation. Essential for customer service teams to maintain account health and resolve disputes efficiently.",
+                "entityTypes": [
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "Sales and Customer"
+                ],
+                "capabilities": [
+                  "retrieve-customer-orders",
+                  "load-account-context"
+                ],
+                "useCases": [
+                  "Identify customers and orders subject to material change impact assessment",
+                  "Establish baseline customer scope for compliance workflows"
+                ],
+                "tags": [
+                  "dispute-resolution",
+                  "customer-service",
+                  "account-management",
+                  "crm"
+                ],
+                "partOfGroups": [
+                  "proc_product_compliance_workforce_v1"
+                ],
+                "processNext": [
+                  "siemens.plm:agent:BOMComplianceValidator:v1"
+                ],
+                "partOfPackage": "sap.crm:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                "type": "apiResource",
+                "namespace": "corp.itsm",
+                "title": "Service Ticket and Order Management API",
+                "shortDescription": "Retrieves and manages customer service tickets and orders with status tracking.",
+                "description": "Exposes service ticket and customer order data through a comprehensive REST interface. Manages ticket lifecycle, retrieves order details, and provides access to linked customer account information for integrated ITSM workflows.",
+                "entityTypes": [
+                  "sap.odm:entityType:CustomerAccount:v1",
+                  "sap.odm:entityType:CustomerOrder:v1"
+                ],
+                "lineOfBusiness": [
+                  "itsm-operations"
+                ],
+                "capabilities": [
+                  "receive-log-orders",
+                  "track-service-tickets",
+                  "manage-customer-accounts"
+                ],
+                "useCases": [
+                  "Service desk receives customer order for materials and logs it as a tracked service ticket.",
+                  "Order status visibility across customer accounts and fulfillment teams.",
+                  "Centralized repository for all service requests tied to customer relationships."
+                ],
+                "tags": [
+                  "service-management",
+                  "order-fulfillment",
+                  "ticket-lifecycle"
+                ],
+                "partOfGroups": [
+                  "proc_supplychain_risk_compliance_v1"
+                ],
+                "processNext": [
+                  "emarsys.cx:apiResource:ComplianceRiskAssessmentAPI:v1"
+                ],
+                "partOfPackage": "corp.itsm:package:Core:v1"
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+                "reason": "This API retrieves and manages customer service tickets with status tracking, allowing you to pull up the recent customer issue, review linked order details and promises, and check the current fulfillment status."
+              },
+              "result": {
+                "committed": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+          "picked_reason": "This API retrieves and manages customer service tickets with status tracking, allowing you to pull up the recent customer issue, review linked order details and promises, and check the current fulfillment status.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 12,
+          "tokens": 57238,
+          "latency_s": 16.999,
+          "llm_calls": 12
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 57238,
+    "latency_s": 16.999,
+    "llm_calls": 12
+  },
+  "wall_s": 17.003
+}

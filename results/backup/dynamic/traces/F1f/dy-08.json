@@ -1,0 +1,169 @@
+{
+  "case_id": "dy-08",
+  "user_prompt": "I need to pull together all our hazardous material inventory data to verify we're compliant with the latest regulations, and I'm not sure if I should be querying the system that gives me the actual substance records or the one that validates them against requirements. Can you help me figure out which endpoint I should be hitting to get the master list of substances we're tracking?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to pull together all our hazardous material inventory data to verify we're compliant with the latest regulations, and I'm not sure if I should be querying the system that gives me the actual substance records or the one that validates them against requirements. Can you help me figure out which endpoint I should be hitting to get the master list of substances we're tracking?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:HazardousSubstanceInventoryExchange:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:MaterialHazardDataExchange:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:HazardousSubstanceInventoryAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 12130,
+          "latency_s": 10.858,
+          "llm_calls": 7,
+          "use_graph": true,
+          "picked_ord_id": "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+          "picked_reason": "Primary source for master hazardous substance inventory records with real-time tracking of chemical usage and storage. Exposes actual substance records needed for regulatory compliance verification, rather than validation/compliance status endpoint.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "hazardous material inventory substance records master list",
+                "top_k": 10
+              },
+              "result_summary": "10 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-hazardous-materials"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:HazardousSubstanceInventoryExchange:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "graph_walk",
+              "args": {
+                "anchor_ord_ids": [
+                  "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+                  "my.mes:apiResource:HazardousSubstanceComplianceManagement:v1"
+                ],
+                "top_k": 5
+              },
+              "result_summary": "5 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1",
+                "reason": "Primary source for master hazardous substance inventory records with real-time tracking of chemical usage and storage. Exposes actual substance records needed for regulatory compliance verification, rather than validation/compliance status endpoint."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:HazardousSubstanceInventoryManagement:v1"
+              }
+            }
+          ]
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 12130,
+    "latency_s": 10.858,
+    "llm_calls": 7
+  },
+  "wall_s": 11.082
+}

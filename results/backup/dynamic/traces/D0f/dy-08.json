@@ -1,0 +1,296 @@
+{
+  "case_id": "dy-08",
+  "user_prompt": "I need to pull together all our hazardous material inventory data to verify we're compliant with the latest regulations, and I'm not sure if I should be querying the system that gives me the actual substance records or the one that validates them against requirements. Can you help me figure out which endpoint I should be hitting to get the master list of substances we're tracking?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to pull together all our hazardous material inventory data to verify we're compliant with the latest regulations, and I'm not sure if I should be querying the system that gives me the actual substance records or the one that validates them against requirements. Can you help me figure out which endpoint I should be hitting to get the master list of substances we're tracking?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:HazardousSubstance:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Compliance API",
+                  "shortDescription": "Exposes hazardous substance inventory and regulatory compliance data for IT asset management."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+                  "type": "agent",
+                  "title": "Incident Safety Coordinator",
+                  "shortDescription": "Automates safety incident detection and coordinates response workflows across ITSM."
+                },
+                {
+                  "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+                  "type": "agent",
+                  "title": "Occupational Safety Incident Coordinator",
+                  "shortDescription": "Monitors and coordinates safety incidents with hazardous substance involvement for compliance."
+                },
+                "... (20 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Environment, Health & Safety"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:SafetyComplianceCustomerAPI:v1",
+                  "type": "apiResource",
+                  "title": "Safety Compliance Customer Management API",
+                  "shortDescription": "Manages customer accounts and safety campaigns with compliance tracking integration."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:SafetyInspectionCampaignManagement:v1",
+                  "type": "apiResource",
+                  "title": "Safety Inspection Campaign Management API",
+                  "shortDescription": "Manages and retrieves safety inspection campaigns linked to customer accounts."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:HazardousSubstanceStorageTracking:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Storage Tracking API",
+                  "shortDescription": "Manages and retrieves hazardous substance storage locations and inventory status."
+                },
+                "... (2 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+                "type": "apiResource",
+                "namespace": "sap.ehs",
+                "title": "Chemical Inventory and Compliance API",
+                "shortDescription": "REST API for managing hazardous substance inventory and regulatory compliance tracking",
+                "description": "Exposes chemical inventory data, safety data sheet (SDS) linkages, and regulatory compliance status for hazardous substances across facilities. Enables real-time queries of substance quantities, storage locations, exposure limits, and compliance violations to support chemical management workflows and regulatory reporting requirements.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1"
+                ],
+                "lineOfBusiness": [
+                  "Safety and Environment"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "chemical-compliance",
+                  "hazmat-management",
+                  "regulatory-reporting",
+                  "substance-inventory"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:apiResource:HazardousSubstanceRegulatoryValidation:v1",
+                "type": "apiResource",
+                "namespace": "sap.ehs",
+                "title": "Hazardous Substance Regulatory Validation API",
+                "shortDescription": "Validates hazardous substances against regulatory requirements and compliance standards.",
+                "description": "Exposes hazardous substance data for real-time regulatory validation against global compliance frameworks. Retrieves substance classifications, regulatory thresholds, and restriction status to ensure materials meet current safety and environmental standards. Manages substance compliance attestation and provides access to regulatory change notifications.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1"
+                ],
+                "lineOfBusiness": [
+                  "marketing-compliance"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "compliance",
+                  "hazard-management",
+                  "regulatory-validation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:HazardousSubstanceInventoryAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:HazardousSubstanceInventoryAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Chemical Inventory Management API",
+                "shortDescription": "Manages chemical substance records and regulatory documentation across manufacturing and procurement operations.",
+                "description": "Enables tracking and administration of chemical materials used in production and supply chain activities. Maintains substance registration, hazard classifications, and location-based inventory details. Supports regulatory reporting, safety audits, and compliance verification for occupational health and environmental protection requirements across enterprise facilities.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1"
+                ],
+                "lineOfBusiness": [
+                  "operations"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "hazmat",
+                  "inventory-control",
+                  "regulatory-reporting"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+                "reason": "This API exposes the actual chemical inventory data, substance quantities, and storage locations needed to pull the master list of hazardous substances for compliance verification."
+              },
+              "result": {
+                "committed": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:apiResource:ChemicalInventoryCompliance:v1",
+          "picked_reason": "This API exposes the actual chemical inventory data, substance quantities, and storage locations needed to pull the master list of hazardous substances for compliance verification.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 19684,
+          "latency_s": 10.327,
+          "llm_calls": 9
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 19684,
+    "latency_s": 10.327,
+    "llm_calls": 9
+  },
+  "wall_s": 10.333
+}

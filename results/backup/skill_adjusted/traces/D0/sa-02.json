@@ -1,0 +1,791 @@
+{
+  "case_id": "sa-02",
+  "user_prompt": "We need to orchestrate a comprehensive readiness validation for our upcoming product launch that coordinates material receipt verification, workforce capability assessment, and operational readiness evaluation. As part of this process, we also need to ensure we can track and validate all the materials coming in from our suppliers, including verifying their specifications against our master records. Additionally, we'll need to reconcile all incoming supplier billing documentation with our purchase commitments to ensure financial accuracy before we greenlight the launch. Please design a workflow that brings all these validation streams together into a single orchestrated process.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": "proc_026",
+  "skill_picked": "proc_026",
+  "expected_gaps": [
+    "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+    "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Verify material specifications against master records",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Material:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                  "type": "agent",
+                  "title": "Change Release Coordinator",
+                  "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+                },
+                "... (55 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Manufacturing"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Inventory Management"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Material Invoice Management API",
+                  "shortDescription": "Retrieves and manages vendor invoices linked to materials and purchase orders."
+                },
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement API",
+                  "shortDescription": "Exposes material master data and vendor information for procurement operations."
+                },
+                "... (1 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.ariba",
+                "title": "Material and Vendor Master Data API",
+                "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations.",
+                "description": "This API exposes comprehensive material and vendor master data, enabling systems to retrieve standardized product information, vendor attributes, and procurement-relevant classifications. It provides access to material hierarchies, vendor certifications, compliance statuses, and sourcing preferences to support goods receipt workflows and inbound logistics processing.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement",
+                  "Inventory Management",
+                  "Manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "goods-receipt",
+                  "inbound-logistics",
+                  "material-management",
+                  "procurement-integration"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorMasterData:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Material and Vendor Master Data API",
+                "shortDescription": "Retrieves and manages material specifications and vendor information for production planning.",
+                "description": "This API exposes material master records and vendor data to support production scheduling and supply chain operations. It provides access to material attributes, vendor qualifications, and supply chain relationships that drive manufacturing execution decisions. The resource manages material classifications and vendor performance indicators used across production workflows.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "material-master",
+                  "vendor-management",
+                  "supply-chain"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+                "type": "agent",
+                "namespace": "my.mes",
+                "title": "Bill of Materials Compliance Validator",
+                "shortDescription": "Automates BOM validation and supplier qualification checks across engineering changes.",
+                "description": "Monitors engineering changes and material specifications to automatically validate bill of materials compliance against supplier qualifications. Coordinates BOM updates with product item definitions while processing supplier approval workflows. Automates compliance verification across product variants to ensure manufacturing readiness and regulatory adherence.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "compliance",
+                  "bom-validation",
+                  "supplier-qualification",
+                  "automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                "reason": "Directly retrieves and manages material specifications and vendor master records, enabling verification of material data against authoritative master sources."
+              },
+              "result": {
+                "committed": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+          "picked_reason": "Directly retrieves and manages material specifications and vendor master records, enabling verification of material data against authoritative master sources.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 21484,
+          "latency_s": 9.51,
+          "llm_calls": 10
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Reconcile supplier billing documentation with purchase commitments",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Invoice:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                {
+                  "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Invoice and Material Procurement Analytics",
+                  "shortDescription": "Aggregates invoice and material procurement metrics for spend analysis."
+                },
+                "... (4 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:PurchaseOrder:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Vendor Management API",
+                  "shortDescription": "Exposes purchase orders and vendor data for ITSM procurement workflows."
+                },
+                {
+                  "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Contract Compliance Orchestrator",
+                  "shortDescription": "Automates vendor contract and purchase order compliance monitoring across procurement lifecycle."
+                },
+                "... (18 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "type": "agent",
+                "namespace": "sap.ariba",
+                "title": "Vendor Invoice Reconciliation Agent",
+                "shortDescription": "Autonomously matches vendor invoices to POs and contracts, flags discrepancies for approval.",
+                "description": "This agent automatically reconciles incoming vendor invoices against purchase orders and master contracts using three-way matching logic. It validates line-item quantities, pricing, and terms; flags exceptions such as overbilling, duplicate invoices, or policy violations; and routes approved invoices for payment processing. This reduces manual touchpoints, accelerates cash flow, and minimizes payment disputes.",
+                "entityTypes": [
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1",
+                  "sap.odm:entityType:Contract:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "invoice-management",
+                  "three-way-matching",
+                  "vendor-reconciliation",
+                  "automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "type": "agent",
+                "namespace": "sap.ehs",
+                "title": "Safety Procurement Invoice Validator",
+                "shortDescription": "Verifies incoming supplier invoices against contractual commitments and purchase documentation, identifying anomalies for compliance review.",
+                "description": "Systematically validates supplier invoices by cross-referencing purchase orders and contractual terms using multi-point verification. Detects irregularities including billing overages, repeated submissions, and non-compliance issues; escalates flagged items to authorized personnel for determination. Streamlines payment authorization workflows, enhances vendor accountability, and mitigates procurement risk.",
+                "entityTypes": [
+                  "sap.odm:entityType:Contract:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "procurement-validation",
+                  "supplier-management",
+                  "invoice-verification",
+                  "compliance-automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+                "type": "dataProduct",
+                "namespace": "sap.ariba",
+                "title": "Contract and Procurement Compliance Analytics",
+                "shortDescription": "Aggregates contract terms, purchase order execution, and vendor compliance metrics.",
+                "description": "Aggregates contract lifecycle data, purchase order fulfillment patterns, and vendor adherence to compliance standards to provide comprehensive procurement governance insights. Summarizes contract performance indicators, PO-to-contract alignment metrics, and vendor regulatory compliance status. Provides metrics on procurement risk exposure, contract utilization rates, and vendor compliance trends across sourcing initiatives.",
+                "entityTypes": [
+                  "sap.odm:entityType:Contract:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "contract-management",
+                  "compliance-monitoring",
+                  "vendor-governance"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "reason": "This agent autonomously matches vendor invoices to purchase orders and contracts using three-way matching logic, directly fulfilling the reconciliation of supplier billing documentation with purchase commitments."
+              },
+              "result": {
+                "committed": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+          "picked_reason": "This agent autonomously matches vendor invoices to purchase orders and contracts using three-way matching logic, directly fulfilling the reconciliation of supplier billing documentation with purchase commitments.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 19632,
+          "latency_s": 10.526,
+          "llm_calls": 10
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Validate financial accuracy of invoices",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Invoice:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                {
+                  "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Invoice and Material Procurement Analytics",
+                  "shortDescription": "Aggregates invoice and material procurement metrics for spend analysis."
+                },
+                "... (4 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Finance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Procurement Automation Orchestrator",
+                  "shortDescription": "Automates vendor engagement and procurement workflows through targeted marketing communications."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                "... (10 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "list_namespaces",
+              "args": {},
+              "result_preview": [
+                "corp.itsm",
+                "emarsys.cx",
+                "my.mes",
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "integration_dependencies",
+              "args": {
+                "namespace": "sap.ariba"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "type": "agent",
+                "namespace": "sap.ariba",
+                "title": "Vendor Invoice Reconciliation Agent",
+                "shortDescription": "Autonomously matches vendor invoices to POs and contracts, flags discrepancies for approval.",
+                "description": "This agent automatically reconciles incoming vendor invoices against purchase orders and master contracts using three-way matching logic. It validates line-item quantities, pricing, and terms; flags exceptions such as overbilling, duplicate invoices, or policy violations; and routes approved invoices for payment processing. This reduces manual touchpoints, accelerates cash flow, and minimizes payment disputes.",
+                "entityTypes": [
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1",
+                  "sap.odm:entityType:Contract:v1"
+                ],
+                "lineOfBusiness": [
+                  "Procurement"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "invoice-management",
+                  "three-way-matching",
+                  "vendor-reconciliation",
+                  "automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "reason": "This agent validates invoice accuracy by matching against POs and contracts, checking pricing and terms, which directly fulfills the financial accuracy validation requirement."
+              },
+              "result": {
+                "committed": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+          "picked_reason": "This agent validates invoice accuracy by matching against POs and contracts, checking pricing and terms, which directly fulfills the financial accuracy validation requirement.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 10,
+          "tokens": 32311,
+          "latency_s": 1073.306,
+          "llm_calls": 10
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_026",
+      "skill_id_expected": "proc_026",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Verify material specifications against master records\",\n    \"Reconcile supplier billing documentation with purchase commitments\",\n    \"Validate financial accuracy of invoices\"\n  ],\n  \"reason\": \"The skill covers material receipt verification, workforce capability assessment, operational readiness evaluation, and safety compliance, but explicitly lacks the material specification validation against master records and the supplier billing reconciliation activities that the request specifically names as required components of the orchestrated process.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers material receipt verification, workforce capability assessment, operational readiness evaluation, and safety compliance, but explicitly lacks the material specification validation against master records and the supplier billing reconciliation activities that the request specifically",
+      "tokens": 616,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 74043,
+    "latency_s": 1093.342,
+    "llm_calls": 31
+  },
+  "wall_s": 1093.375
+}

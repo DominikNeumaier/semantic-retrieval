@@ -1,0 +1,517 @@
+{
+  "case_id": "dy-34",
+  "user_prompt": "I need to pull together compensation figures and tax withholdings for our quarterly reconciliation, and at the same time I'd like to grant our marketing team access to manage client engagement initiatives across our accounts. Can you help me set this up efficiently in a single request?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Pull together compensation figures and tax withholdings for our quarterly reconciliation",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Finance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Procurement Automation Orchestrator",
+                  "shortDescription": "Automates vendor engagement and procurement workflows through targeted marketing communications."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                "... (10 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "retrieve-payroll"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Payroll Data API",
+                  "shortDescription": "Exposes employee and workforce payroll information for financial processing and reporting."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EmployeePayrollDataAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Employee Payroll Data API",
+                "shortDescription": "Exposes employee and workforce payroll information for financial processing and reporting.",
+                "description": "Retrieves and manages comprehensive payroll data for employees and workforce personnel, including compensation, deductions, and tax information. Provides access to employee master data integrated with financial accounting systems for payroll processing and statutory compliance. Manages workforce-related financial attributes necessary for accurate payroll calculations and audit trails.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Finance"
+                ],
+                "capabilities": [
+                  "retrieve-payroll",
+                  "validate-compensation",
+                  "extract-earnings"
+                ],
+                "useCases": [
+                  "Establish baseline payroll records for quarterly compensation reviews",
+                  "Extract current compensation data for benefits-to-pay reconciliation",
+                  "Validate payroll adjustments before final compensation certification"
+                ],
+                "tags": [
+                  "payroll",
+                  "workforce",
+                  "compensation"
+                ],
+                "partOfGroups": [
+                  "proc_workforce_comp_benefits_v1"
+                ],
+                "processNext": [
+                  "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1"
+                ],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollDataExposure:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:apiResource:PayrollDataExposure:v1",
+                "type": "apiResource",
+                "namespace": "workday.hcm",
+                "title": "Payroll Data Exposure API",
+                "shortDescription": "Exposes payroll records, earnings, deductions, and tax information for employees.",
+                "description": "This API retrieves and manages payroll-related data including earnings history, deduction details, tax withholdings, and compensation components for workforce members. It provides access to detailed payroll records that integrate with downstream HR and financial systems, enabling real-time payroll status queries and historical compensation data retrieval.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [
+                  "allocate-workforce",
+                  "review-payroll-impact",
+                  "calculate-production-labor-costs",
+                  "assess-incident-costs",
+                  "quantify-staffing-impact",
+                  "track-labor-hours"
+                ],
+                "useCases": [
+                  "Calculate financial burden of safety incidents on payroll and benefits",
+                  "HR manager ensures production team members are assigned and their labor hours are tracked for payroll and cost accounting.",
+                  "Assess cost implications of employee reassignment for incident investigation",
+                  "Determine budget impact of compliance remediation on HR operations",
+                  "Production workforce allocation and payroll integration ensures accurate labor cost attribution to customer orders."
+                ],
+                "tags": [
+                  "compensation",
+                  "salary-management",
+                  "payroll-integration",
+                  "employee-lifecycle"
+                ],
+                "partOfGroups": [
+                  "proc_order_to_production_v1",
+                  "proc_SafetyComplianceOrchestration_v1"
+                ],
+                "processNext": [
+                  "sap.ehs:agent:IncidentRootCauseAnalyzer:v1"
+                ],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "reason": "This API exposes comprehensive payroll data including compensation, deductions, and tax withholdings, with explicit use cases for quarterly compensation reviews and financial reconciliation."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:EmployeePayrollDataAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+          "picked_reason": "This API exposes comprehensive payroll data including compensation, deductions, and tax withholdings, with explicit use cases for quarterly compensation reviews and financial reconciliation.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 24267,
+          "latency_s": 12.175,
+          "llm_calls": 8
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "corp.itsm:apiResource:CampaignAccessManagementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Grant our marketing team access to manage client engagement initiatives across our accounts",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CampaignSegmentationDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerEngagementProfileAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:VendorContractJourneyCoordinator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EmployeePayrollDataAPI:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Hierarchy and Organization Management API",
+                  "shortDescription": "Exposes employee organizational structure and hierarchical relationships."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "marketing-and-cx"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:CampaignSegmentationDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Segmentation Data API",
+                  "shortDescription": "Retrieves and manages customer segment definitions for targeted campaign execution."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:CustomerEngagementProfileAPI:v1",
+                  "type": "apiResource",
+                  "title": "Customer Engagement Profile API",
+                  "shortDescription": "Retrieves and manages customer account data and order history for engagement targeting."
+                },
+                {
+                  "ordId": "emarsys.cx:agent:VendorContractJourneyCoordinator:v1",
+                  "type": "agent",
+                  "title": "Vendor Contract Journey Coordinator",
+                  "shortDescription": "Orchestrates vendor engagement journeys tied to contract and purchase order lifecycles."
+                },
+                "... (2 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "authorize-campaign-access"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Access Management API",
+                  "shortDescription": "Manages provisioning and access control for campaign-related customer accounts."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-campaign-access"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Campaign Access Management API",
+                  "shortDescription": "Manages provisioning and access control for campaign-related customer accounts."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                "type": "apiResource",
+                "namespace": "corp.itsm",
+                "title": "Campaign Access Management API",
+                "shortDescription": "Manages provisioning and access control for campaign-related customer accounts.",
+                "description": "Exposes endpoints to retrieve and manage campaign assignments linked to customer accounts, enabling IT teams to provision access rights and synchronize account permissions across service requests. Provides real-time access to campaign-customer relationships for compliance and audit workflows.",
+                "entityTypes": [
+                  "sap.odm:entityType:Campaign:v1",
+                  "sap.odm:entityType:CustomerAccount:v1"
+                ],
+                "lineOfBusiness": [
+                  "it-service-management"
+                ],
+                "capabilities": [
+                  "grant-sales-permissions",
+                  "manage-communication-channels",
+                  "manage-campaign-access",
+                  "capture-service-request",
+                  "configure-audience-segmentation",
+                  "validate-customer-account-permissions",
+                  "control-launch-visibility",
+                  "control-campaign-permissions",
+                  "provision-campaign-access",
+                  "authorize-campaign-access"
+                ],
+                "useCases": [
+                  "Campaign administrators segment recruitment messaging by geographic region, skill level, and experience matching product change requirements",
+                  "Link campaign initiatives to IT service requests.",
+                  "Campaign manager enables customer segment targeting for new product promotion",
+                  "Marketing operations grants HR recruiting team secure access to campaign management system for talent acquisition",
+                  "IT service management enforces role-based access controls to ensure recruitment campaigns reach appropriate customer account segments",
+                  "Log and track service requests related to campaign access and system provisioning.",
+                  "Regional sales lead receives access to campaign materials and customer contact lists",
+                  "Marketing director activates go-live permissions for sales teams and campaign channels"
+                ],
+                "tags": [
+                  "access-provisioning",
+                  "campaign-management",
+                  "customer-accounts"
+                ],
+                "partOfGroups": [
+                  "proc_integrated_service_change_mgmt_v1",
+                  "proc_product_launch_compliance_v1",
+                  "proc_ChangeTalentIntegration_v1"
+                ],
+                "processNext": [
+                  "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1"
+                ],
+                "partOfPackage": "corp.itsm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+                "reason": "Manages provisioning and access control for campaign-related customer accounts, directly enabling marketing teams to access and manage client engagement initiatives across accounts."
+              },
+              "result": {
+                "committed": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "corp.itsm:apiResource:CampaignAccessManagementAPI:v1",
+          "picked_reason": "Manages provisioning and access control for campaign-related customer accounts, directly enabling marketing teams to access and manage client engagement initiatives across accounts.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 21046,
+          "latency_s": 23.092,
+          "llm_calls": 8
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 45654,
+    "latency_s": 35.267,
+    "llm_calls": 17
+  },
+  "wall_s": 35.284
+}

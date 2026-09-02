@@ -1,0 +1,246 @@
+{
+  "case_id": "dy-33",
+  "user_prompt": "I need to simultaneously log incoming shipments from our suppliers while also tracking the modifications we're making to our product line and ensuring our field technicians can submit their equipment maintenance needs through a single integrated workflow.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "C",
+  "state": "enriched",
+  "condition": "C1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Log incoming shipments from our suppliers",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:PurchaseOrder:v1",
+              "sap.odm:entityType:Vendor:v1",
+              "sap.odm:entityType:Material:v1",
+              "sap.odm:entityType:QualityInspection:v1"
+            ],
+            "business_groups": [
+              "proc_procure_fulfill_v1",
+              "proc_QualityDrivenMfgSupplyChain_v1",
+              "proc_supply_production_compliance_v1"
+            ],
+            "lines_of_business": [
+              "Procurement",
+              "Inventory Management"
+            ],
+            "reason": "Logging incoming shipments involves tracking purchase orders from vendors, material receipt, and quality checks in the procurement and supply chain processes."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:Material:v1\",\n    \"sap.odm:entityType:QualityInspection:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_procure_fulfill_v1\",\n    \"proc_QualityDrivenMfgSupplyChain_v1\",\n    \"proc_supply_production_compliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Inventory Management\"\n  ],\n  \"reason\": \"Logging incoming shipments involves tracking purchase orders from vendors, material receipt, and quality checks in the procurement and supply chain processes.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity \"Log incoming shipments from our suppliers\" describes a warehouse/receiving operation task\u2014recording the receipt of physical goods from suppliers into inventory. None of the candidates meaningfully fulfill this capability:\n\n- The agents focus on engineering changes, material provisioning coordination, production orchestration, asset provisioning, compliance validation, and BOM management\u2014all downstream planning and coordination activities, not the actual receipt logging.\n- The dataProducts analyze capability and readiness, not log transactional receipt data.\n\nWhile some candidates mention \"material\" or \"inventory,\" they address provisioning, allocation, and coordination workflows, not the fundamental inbound logistics operation of logging received shipments. This activity requires a Warehouse Management System (WMS), Inventory Management API, or Receiving/Procurement agent\u2014none of which are present in these candidates.",
+          "refused": true,
+          "previous_resolved": [],
+          "tokens": 3938,
+          "latency_s": 5.461,
+          "llm_calls": 2
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Track modifications we're making to our product line",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": 75.5
+          },
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": 75.5
+          },
+          {
+            "ordId": "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "score": 72.0
+          },
+          {
+            "ordId": "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "score": 74.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:ProductItem:v1",
+              "sap.odm:entityType:EngineeringChange:v1",
+              "sap.odm:entityType:ChangeRequest:v1"
+            ],
+            "business_groups": [
+              "proc_ProductLifecycleCompliance_v1",
+              "proc_EngChangeAndProcurement_v1",
+              "proc_ManufacturingChangeCompliance_v1"
+            ],
+            "lines_of_business": [
+              "Product Lifecycle Management",
+              "Manufacturing"
+            ],
+            "reason": "Tracking product line modifications involves managing engineering changes and product items through change management and lifecycle compliance processes."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ProductItem:v1\",\n    \"sap.odm:entityType:EngineeringChange:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_ProductLifecycleCompliance_v1\",\n    \"proc_EngChangeAndProcurement_v1\",\n    \"proc_ManufacturingChangeCompliance_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Product Lifecycle Management\",\n    \"Manufacturing\"\n  ],\n  \"reason\": \"Tracking product line modifications involves managing engineering changes and product items through change management and lifecycle compliance processes.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "siemens.plm:dataProduct:ProductCostAndComplexityAnalytics:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "sap.crm:dataProduct:BillOfMaterialsCostAndComplianceAnalytics:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\",\n  \"sap.s4:agent:BOMComplianceAutomationAgent:v1\",\n  \"sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1\",\n  \"sap.sf:dataProduct:ProductChangeAndMaterialAnalytics:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 3734,
+          "latency_s": 4.282,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Enable field technicians to submit equipment maintenance needs through an integrated workflow",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "score": 43.5
+          },
+          {
+            "ordId": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+            "score": 43.0
+          },
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": 44.25
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Employee:v1",
+              "sap.odm:entityType:Machine:v1",
+              "sap.odm:entityType:ServiceTicket:v1",
+              "sap.odm:entityType:ChangeRequest:v1"
+            ],
+            "business_groups": [
+              "proc_integrated_service_change_mgmt_v1",
+              "proc_ServiceToProduction_v1"
+            ],
+            "lines_of_business": [
+              "Manufacturing",
+              "Operations"
+            ],
+            "reason": "Field technicians submit maintenance requests through a workflow, requiring tracking of employees, equipment, service tickets, and change management across manufacturing operations."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [\n    \"proc_integrated_service_change_mgmt_v1\",\n    \"proc_ServiceToProduction_v1\"\n  ],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Operations\"\n  ],\n  \"reason\": \"Field technicians submit maintenance requests through a workflow, requiring tracking of employees, equipment, service tickets, and change management across manufacturing operations.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 274,
+          "walk_top_ids": [
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+            "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+            "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1",
+            "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"my.mes:apiResource:ServiceTicketChangeRequestManagement:v1\",\n  \"siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1\",\n  \"my.mes:agent:ProductionChangeOrchestrator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+          ],
+          "tokens": 3723,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 11729,
+    "latency_s": 9.743,
+    "llm_calls": 7
+  },
+  "wall_s": 9.802
+}

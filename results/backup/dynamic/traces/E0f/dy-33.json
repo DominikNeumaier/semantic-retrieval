@@ -1,0 +1,356 @@
+{
+  "case_id": "dy-33",
+  "user_prompt": "I need to simultaneously log incoming shipments from our suppliers while also tracking the modifications we're making to our product line and ensuring our field technicians can submit their equipment maintenance needs through a single integrated workflow.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.5,
+    "acceptable": 0.5,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Log incoming shipments from our suppliers",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.s4/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.s4/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1007
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.odm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 11
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE SYSTEMS (11 total):\n- workday.hcm: HCM with compensation agents but NO API resources\n- sap.sf: SuccessFactors HCM - INCLUDES:\n  * apiResource:EmployeeCompensationManagement:v1\n  * agent:CompensationPolicyAutomationEngine:v1\n  * agent:SkillsAndCapabilityMatchingOrchestrator:v1 (WORKFORCE SKILLS INVENTORY & CAPABILITY ANALYSIS)\n- sap.s4: ERP - INCLUDES:\n  * apiResource:MaterialReceiptInboundAPI:v1 (LOGS INCOMING SHIPMENTS - goods receipt transactions against POs)\n  * agent:AssetLifecycleChangeOrchestrator:v1 (asset/equipment tracking, change orchestration, audit-ready)\n  * agent:BOMComplianceAutomationAgent:v1\n  * agent:ProcurementMatchingAgent:v1\n  * agent:OpportunityToOrderAutomationEngine:v1\n- sap.crm: CRM - AGENTS ONLY (opportunity qualification, sales coordination, campaigns) - NO customer case management APIs/agents\n- sap.ehs: Safety/health - AGENTS INCLUDING:\n  * agent:IncidentRootCauseAnalyzer:v1 (ANALYZES SAFETY INCIDENTS, identifies root causes, trend analysis)\n  * agent:SafetyComplianceAutomationCoordinator:v1 (validates materials against safety standards, automates BOM validation, chemical inventory compliance with regulatory standards)\n  * agent:IncidentResponseCoordinator:v1 (emergency response, incident workflows)\n  * agent:VendorComplianceAutomationOrchestrator:v1 (vendor safety certifications verification)\n  * agent:VendorComplianceInvoiceAutomation:v1 (supplier invoice validation)\n  * agent:ComplianceCampaignOrchestrator:v1 (compliance campaigns, safety interventions)\n- sap.ariba: Procurement - AGENTS + APIs INCLUDING:\n  * agent:VendorInvoiceReconciliationAutomation:v1 (RETRIEVES INCOMING VENDOR INVOICES, matches to POs/contracts, reconciliation)\n  * agent:MaterialAndEngineeringChangeCoordinator:v1 (MONITORS ENGINEERING CHANGES & MATERIAL MODIFICATIONS, processes change requests, validates specs, propagates updates)\n  * agent:SupplierComplianceAndIncidentMonitor:v1 (hazmat tracking)\n  * apiResource:PurchaseOrderNetworkAPI:v1\n  * apiResource:SourceingCampaignAndAccountManagementAPI:v1\n- corp.itsm: IT service management AGENTS ONLY\n- emarsys.cx: Customer experience/marketing AGENTS ONLY\n- my.mes: Manufacturing - AGENTS ONLY\n- siemens.plm: PLM AGENTS ONLY\n- sap.odm: Entity type repository\n\nKEY ACTIVITY MATCHES:\n1. Log incoming shipments from suppliers: sap.s4:apiResource:MaterialReceiptInboundAPI:v1 (REST API for creating/managing goods receipt transactions against POs)\n2. Chemical inventory documentation regulatory compliance: sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1\n3. Retrieve incoming supplier billing data: sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n4. Get information on open change orders: sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1"
+              },
+              "result_preview": {
+                "stored_bytes": 2751,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                "reason": "REST API for creating and managing goods receipt transactions against purchase orders, enabling logging of incoming supplier shipments."
+              },
+              "result_preview": {
+                "committed": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+          "picked_reason": "REST API for creating and managing goods receipt transactions against purchase orders, enabling logging of incoming supplier shipments.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 5,
+          "tokens": 35296,
+          "latency_s": 18.579,
+          "llm_calls": 5
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Track modifications we're making to our product line",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+                "reason": "Monitors engineering changes and material modifications to product lines, processes change requests, and propagates updates across the supply chain."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:agent:MaterialAndEngineeringChangeCoordinator:v1",
+          "picked_reason": "Monitors engineering changes and material modifications to product lines, processes change requests, and propagates updates across the supply chain.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 1,
+          "tokens": 3113,
+          "latency_s": 4.215,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Enable field technicians to submit equipment maintenance needs through an integrated workflow",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE SYSTEMS (11 total):\n- workday.hcm: HCM with compensation agents but NO API resources\n- sap.sf: SuccessFactors HCM - INCLUDES:\n  * apiResource:EmployeeCompensationManagement:v1\n  * agent:Comp \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/my.mes/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1276
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4",
+                "entries": [
+                  {
+                    "name": "ord_enriched.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.s4/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.s4/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1007
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "refuse",
+              "args": {
+                "reason": "The landscape lacks a resource that enables field technicians to submit equipment maintenance needs through an integrated workflow; while asset lifecycle and change orchestration exist, no maintenance request submission capability is present."
+              },
+              "result_preview": {
+                "refused": true,
+                "reason": "The landscape lacks a resource that enables field technicians to submit equipment maintenance needs through an integrated workflow; while asset lifecycle and change orchestration exist, no maintenance request submission capability is present."
+              }
+            }
+          ],
+          "picked_ord_id": null,
+          "picked_reason": "",
+          "refused": true,
+          "refuse_reason": "The landscape lacks a resource that enables field technicians to submit equipment maintenance needs through an integrated workflow; while asset lifecycle and change orchestration exist, no maintenance request submission capability is present.",
+          "tool_calls": 8,
+          "tokens": 77805,
+          "latency_s": 23.62,
+          "llm_calls": 8
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 116548,
+    "latency_s": 46.414,
+    "llm_calls": 15
+  },
+  "wall_s": 46.445
+}

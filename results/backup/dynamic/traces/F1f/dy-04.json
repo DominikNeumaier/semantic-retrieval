@@ -1,0 +1,178 @@
+{
+  "case_id": "dy-04",
+  "user_prompt": "Our engineering team keeps pushing through design changes that require updates to our IT infrastructure, but we're struggling to keep pace with manual coordination across multiple systems. Right now, when a new component specification comes through, we have to manually track which servers need reconfiguration, which licenses need reallocation, and which hardware needs to be deployed\u2014and it's creating delays and tracking errors. We need a way to automate this entire workflow so that when engineering changes are approved, all the downstream IT infrastructure changes happen consistently and in the right sequence.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 1,
+    "acceptable": 1,
+    "candidate_recall": 1,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Our engineering team keeps pushing through design changes that require updates to our IT infrastructure, but we're struggling to keep pace with manual coordination across multiple systems. Right now, when a new component specification comes through, we have to manually track which servers need reconfiguration, which licenses need reallocation, and which hardware needs to be deployed\u2014and it's creating delays and tracking errors. We need a way to automate this entire workflow so that when engineering changes are approved, all the downstream IT infrastructure changes happen consistently and in the right sequence.",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndComplianceOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:agent:EngineeringChangeOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 13019,
+          "latency_s": 9.417,
+          "llm_calls": 8,
+          "use_graph": true,
+          "picked_ord_id": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+          "picked_reason": "Automates IT infrastructure coordination for engineering changes. Orchestrates the complete workflow: assesses engineering specifications, evaluates material/equipment impact, reallocates licenses and hardware, coordinates server reconfigurations, and sequences all changes consistently. Eliminates manual tracking errors across multiple systems by orchestrating provisioning workflows end-to-end when changes are approved.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-infrastructure-deployment"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "automate infrastructure changes workflow engineering design specifications server reconfiguration",
+                "top_k": 8
+              },
+              "result_summary": "8 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "orchestrate-configuration-changes"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:ChangeAutomationOrchestrator:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "graph_walk",
+              "args": {
+                "anchor_ord_ids": [
+                  "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1"
+                ],
+                "top_k": 6
+              },
+              "result_summary": "6 items"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                "reason": "Automates IT infrastructure coordination for engineering changes. Orchestrates the complete workflow: assesses engineering specifications, evaluates material/equipment impact, reallocates licenses and hardware, coordinates server reconfigurations, and sequences all changes consistently. Eliminates manual tracking errors across multiple systems by orchestrating provisioning workflows end-to-end when changes are approved."
+              },
+              "result": {
+                "committed": "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+              }
+            }
+          ]
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 13019,
+    "latency_s": 9.417,
+    "llm_calls": 8
+  },
+  "wall_s": 15.104
+}

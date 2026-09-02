@@ -1,0 +1,689 @@
+{
+  "case_id": "sa-16",
+  "user_prompt": "We need to adjust our production schedule due to a significant surge in Q2 demand forecasting and some critical supply constraints we're facing with our primary vendors. This will require coordinating engineering changes across our product lines, verifying compliance requirements, updating our procurement orders, and adjusting our workforce capacity planning. As part of this broader initiative, we'll also need to ensure our team members are compensated fairly for any overtime or shift changes resulting from the schedule adjustments, including updating any applicable merit considerations. Can you help us orchestrate all these moving pieces together, including the financial and compensation updates that will flow from these workforce adjustments?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "D",
+  "state": "clean",
+  "condition": "D0",
+  "skill_expected": "proc_001",
+  "skill_picked": "proc_001",
+  "expected_gaps": [
+    "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+    "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.5,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Update employee compensation and overtime pay",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Compensation:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Production Labor Productivity Metrics",
+                  "shortDescription": "Aggregates employee compensation and performance data to analyze production labor efficiency."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Compensation and Safety Risk Correlation Analytics",
+                  "shortDescription": "Aggregates compensation patterns and safety incident data to identify risk correlations."
+                },
+                {
+                  "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Sales Compensation Orchestrator",
+                  "shortDescription": "Automates compensation calculations and dispute resolution for sales teams."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.sf",
+                "title": "Compensation and Salary Management API",
+                "shortDescription": "Manages employee compensation structures, salary data, and payroll integration.",
+                "description": "Exposes comprehensive compensation and salary information for employees and workforce persons. Retrieves salary bands, variable compensation, bonuses, and payroll-relevant attributes. Manages compensation planning data and provides access to salary history and payroll integration touchpoints.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "compensation",
+                  "salary-management",
+                  "payroll-integration",
+                  "employee-lifecycle"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeCompensationManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.sf",
+                "title": "Employee Compensation Management API",
+                "shortDescription": "REST API for managing employee compensation, salary structures, and merit adjustments.",
+                "description": "Exposes employee compensation data and salary management capabilities, enabling integration with payroll systems and HR analytics platforms. Supports CRUD operations on compensation records, salary bands, and merit increase workflows. Essential for enterprises managing complex compensation structures across multiple organizational units.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "compensation",
+                  "salary-management",
+                  "payroll-integration",
+                  "employee-lifecycle"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+                "type": "agent",
+                "namespace": "workday.hcm",
+                "title": "Compensation Adjustment Automation Agent",
+                "shortDescription": "Autonomously processes merit increases and compensation adjustments based on performance ratings and organizational policies.",
+                "description": "This agent monitors employee performance ratings and tenure milestones, then automatically generates and routes compensation adjustment proposals for manager review and approval. It ensures consistent application of compensation policies across the organization, reduces manual processing overhead, and maintains audit trails for compliance. The agent integrates with payroll cycles to implement approved adjustments on schedule.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:Compensation:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "compensation",
+                  "automation",
+                  "payroll",
+                  "policy-driven"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+                "reason": "REST API that supports CRUD operations on compensation records, salary structures, and merit adjustments for updating employee compensation and overtime pay data."
+              },
+              "result": {
+                "committed": "sap.sf:apiResource:EmployeeCompensationManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+          "picked_reason": "REST API that supports CRUD operations on compensation records, salary structures, and merit adjustments for updating employee compensation and overtime pay data.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 19089,
+          "latency_s": 10.025,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Process merit consideration adjustments",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeCompensationManagement:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Compensation:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "my.mes:dataProduct:ProductionLaborProductivityMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Production Labor Productivity Metrics",
+                  "shortDescription": "Aggregates employee compensation and performance data to analyze production labor efficiency."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:EmployeeCompensationAndSafetyRiskCorrelation:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Compensation and Safety Risk Correlation Analytics",
+                  "shortDescription": "Aggregates compensation patterns and safety incident data to identify risk correlations."
+                },
+                {
+                  "ordId": "sap.crm:agent:SalesCompensationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Sales Compensation Orchestrator",
+                  "shortDescription": "Automates compensation calculations and dispute resolution for sales teams."
+                },
+                "... (7 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+                "type": "agent",
+                "namespace": "workday.hcm",
+                "title": "Compensation Adjustment Automation Agent",
+                "shortDescription": "Autonomously processes merit increases and compensation adjustments based on performance ratings and organizational policies.",
+                "description": "This agent monitors employee performance ratings and tenure milestones, then automatically generates and routes compensation adjustment proposals for manager review and approval. It ensures consistent application of compensation policies across the organization, reduces manual processing overhead, and maintains audit trails for compliance. The agent integrates with payroll cycles to implement approved adjustments on schedule.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:Compensation:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "compensation",
+                  "automation",
+                  "payroll",
+                  "policy-driven"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:agent:CompensationPolicyAutomationEngine:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+                "type": "agent",
+                "namespace": "sap.sf",
+                "title": "Compensation Policy Automation Engine",
+                "shortDescription": "Automates compensation policy enforcement and processes salary adjustments based on organizational rules.",
+                "description": "Monitors compensation changes across the workforce and automatically coordinates policy-driven salary adjustments according to defined organizational guidelines. Processes compensation events triggered by employee lifecycle transitions, performance outcomes, and market adjustments while enforcing compliance with compensation policies and payroll regulations.",
+                "entityTypes": [
+                  "sap.odm:entityType:Compensation:v1",
+                  "sap.odm:entityType:Employee:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "compensation",
+                  "automation",
+                  "payroll",
+                  "policy-driven"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+                "reason": "This agent autonomously processes merit increases and compensation adjustments based on performance ratings, directly fulfilling the merit consideration adjustment activity that follows compensation management."
+              },
+              "result": {
+                "committed": "workday.hcm:agent:CompensationAdjustmentAutomation:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+          "picked_reason": "This agent autonomously processes merit increases and compensation adjustments based on performance ratings, directly fulfilling the merit consideration adjustment activity that follows compensation management.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 22221,
+          "latency_s": 12.889,
+          "llm_calls": 9
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Coordinate financial/payroll system updates",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1"
+              },
+              "result_preview": []
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Finance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Procurement Automation Orchestrator",
+                  "shortDescription": "Automates vendor engagement and procurement workflows through targeted marketing communications."
+                },
+                {
+                  "ordId": "emarsys.cx:dataProduct:FinancialEngagementMetrics:v1",
+                  "type": "dataProduct",
+                  "title": "Financial Engagement Metrics",
+                  "shortDescription": "Aggregates invoice and material engagement data for campaign ROI analysis."
+                },
+                {
+                  "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                  "type": "dataProduct",
+                  "title": "Material Cost and Invoice Reconciliation Analytics",
+                  "shortDescription": "Aggregates material consumption and supplier invoicing data to optimize procurement ROI."
+                },
+                "... (10 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": []
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EmployeePayrollDataAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Employee Payroll Data API",
+                "shortDescription": "Exposes employee and workforce payroll information for financial processing and reporting.",
+                "description": "Retrieves and manages comprehensive payroll data for employees and workforce personnel, including compensation, deductions, and tax information. Provides access to employee master data integrated with financial accounting systems for payroll processing and statutory compliance. Manages workforce-related financial attributes necessary for accurate payroll calculations and audit trails.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Finance"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "payroll",
+                  "workforce",
+                  "compensation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:apiResource:ProcurementWorkforceCompensationAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.ariba",
+                "title": "Procurement Workforce Compensation API",
+                "shortDescription": "Manages employee compensation and payroll data for procurement personnel.",
+                "description": "Provides access to employee compensation records and workforce person details integrated within procurement workflows. Retrieves payroll information, compensation structures, and workforce assignments for personnel involved in sourcing and purchasing activities. Exposes compensation and employment data to enable accurate payroll processing and workforce resource allocation.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Finance"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "payroll",
+                  "workforce",
+                  "compensation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "reason": "Manages comprehensive payroll data for financial processing and reporting, the natural successor step to coordinate payroll system updates after compensation adjustments."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:EmployeePayrollDataAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+          "picked_reason": "Manages comprehensive payroll data for financial processing and reporting, the natural successor step to coordinate payroll system updates after compensation adjustments.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 7,
+          "tokens": 15671,
+          "latency_s": 9.626,
+          "llm_calls": 7
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_001",
+      "skill_id_expected": "proc_001",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Update employee compensation and overtime pay\",\n    \"Process merit consideration adjustments\",\n    \"Coordinate financial/payroll system updates\"\n  ],\n  \"reason\": \"The skill covers production schedule adjustments, engineering coordination, compliance verification, procurement updates, and workforce capacity planning, but explicitly lacks the compensation management, overtime pay updates, and merit adjustment activities that the request specifically names as required outcomes of the workforce changes.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers production schedule adjustments, engineering coordination, compliance verification, procurement updates, and workforce capacity planning, but explicitly lacks the compensation management, overtime pay updates, and merit adjustment activities that the request specifically names as re",
+      "tokens": 627,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 57608,
+    "latency_s": 32.54,
+    "llm_calls": 26
+  },
+  "wall_s": 32.565
+}

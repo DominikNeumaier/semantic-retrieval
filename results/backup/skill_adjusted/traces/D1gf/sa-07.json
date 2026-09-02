@@ -1,0 +1,374 @@
+{
+  "case_id": "sa-07",
+  "user_prompt": "We need to orchestrate a comprehensive transition of our product line by first evaluating whether our organization is ready for this change, then validating that we meet all regulatory compliance requirements before moving forward. The process should also manage how this impacts our procurement operations and reconfigure our production workflows accordingly. As part of this transition, we'll need to ensure we're tracking any hazardous materials in our new product specifications and managing the cost implications including how this affects our workforce compensation structures.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "?",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1gf",
+  "skill_expected": "proc_014",
+  "skill_picked": "proc_014",
+  "expected_gaps": [
+    "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+    "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": null,
+    "acceptable": null,
+    "candidate_recall": null,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 1.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Hazardous Substance Compliance API",
+        "source": "gap_forced",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:HazardousSubstance:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:HazardousSubstanceComplianceAPI:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Compliance API",
+                  "shortDescription": "Exposes hazardous substance inventory and regulatory compliance data for IT asset management."
+                },
+                {
+                  "ordId": "corp.itsm:agent:IncidentSafetyCoordinator:v1",
+                  "type": "agent",
+                  "title": "Incident Safety Coordinator",
+                  "shortDescription": "Automates safety incident detection and coordinates response workflows across ITSM."
+                },
+                {
+                  "ordId": "corp.itsm:agent:OccupationalSafetyIncidentCoordinator:v1",
+                  "type": "agent",
+                  "title": "Occupational Safety Incident Coordinator",
+                  "shortDescription": "Monitors and coordinates safety incidents with hazardous substance involvement for compliance."
+                },
+                "... (20 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "assess-hazardous-compliance"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+                  "type": "apiResource",
+                  "title": "Hazardous Substance Compliance API",
+                  "shortDescription": "Retrieves and manages hazardous substance data for regulatory compliance."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Hazardous Substance Compliance API",
+                "shortDescription": "Retrieves and manages hazardous substance data for regulatory compliance.",
+                "description": "Exposes hazardous substance inventory, classification, and safety attributes across the enterprise. Provides access to material hazard profiles, regulatory mappings, and compliance documentation to support marketing compliance and product safety validation. Manages hazardous substance declarations and exposure limits for procurement and manufacturing workflows.",
+                "entityTypes": [
+                  "sap.odm:entityType:HazardousSubstance:v1"
+                ],
+                "lineOfBusiness": [
+                  "marketing-compliance"
+                ],
+                "capabilities": [
+                  "assess-hazardous-compliance",
+                  "validate-substance-restrictions"
+                ],
+                "useCases": [
+                  "Assure no restricted or regulated substances are present in customer orders",
+                  "Confirm product materials comply with hazardous substance regulations and customer restrictions"
+                ],
+                "tags": [
+                  "compliance",
+                  "hazard-management",
+                  "regulatory-validation"
+                ],
+                "partOfGroups": [
+                  "proc_product_compliance_workforce_v1"
+                ],
+                "processNext": [
+                  "sap.crm:dataProduct:MaterialChangeReadinessAndWorkforceImpactAnalytics:v1"
+                ],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+                "reason": "Exact match: Hazardous Substance Compliance API resource exposing HazardousSubstance entity type with assess-hazardous-compliance capability for regulatory compliance management."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:apiResource:HazardousSubstanceComplianceAPI:v1",
+          "picked_reason": "Exact match: Hazardous Substance Compliance API resource exposing HazardousSubstance entity type with assess-hazardous-compliance capability for regulatory compliance management.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 7,
+          "tokens": 24251,
+          "latency_s": 21.513,
+          "llm_calls": 7
+        }
+      },
+      {
+        "step_name": "Payroll Processing Data Management",
+        "source": "gap_forced",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "process-payroll"
+              },
+              "result_preview": [
+                {
+                  "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                  "type": "apiResource",
+                  "title": "Payroll Processing Data Management",
+                  "shortDescription": "Manages and exposes payroll calculations, earnings, and deductions data."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "type": "apiResource",
+                "namespace": "workday.hcm",
+                "title": "Payroll Processing Data Management",
+                "shortDescription": "Manages and exposes payroll calculations, earnings, and deductions data.",
+                "description": "This API resource provides access to payroll processing data including employee earnings, tax withholdings, deductions, and gross-to-net calculations. It retrieves and manages payroll records for Employee and WorkforcePerson entities, enabling integration with downstream payroll systems and financial consolidation platforms. The resource exposes real-time payroll snapshots and historical payroll records for compliance and audit purposes.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Resources"
+                ],
+                "capabilities": [
+                  "validate-employee-payments",
+                  "process-payroll",
+                  "manage-workforce-compensation-execution",
+                  "resource-allocation-scheduling",
+                  "identify-available-workforce",
+                  "integrate-payroll-with-scheduling"
+                ],
+                "useCases": [
+                  "Workforce scheduling integrates with payroll to ensure accurate compensation tracking for assigned service activities.",
+                  "Payroll and workforce data identifies two available technicians; their availability is checked and the nearest one is assigned to the job.",
+                  "HR payroll administrator executes end-to-end payroll processing with full control over employee and workforce person payment records",
+                  "Payroll system ensures accurate, timely compensation delivery while maintaining audit trail for regulatory compliance"
+                ],
+                "tags": [
+                  "compensation",
+                  "salary-management",
+                  "payroll-integration",
+                  "employee-lifecycle"
+                ],
+                "partOfGroups": [
+                  "proc_ServiceToProduction_v1",
+                  "proc_talent_compliance_ops_v1"
+                ],
+                "processNext": [
+                  "workday.hcm:agent:CompensationAdjustmentAutomation:v1"
+                ],
+                "partOfPackage": "workday.hcm:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "reason": "Exact match: this apiResource manages payroll calculations, earnings, and deductions data with the process-payroll capability for Human Resources line of business."
+              },
+              "result": {
+                "committed": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+          "picked_reason": "Exact match: this apiResource manages payroll calculations, earnings, and deductions data with the process-payroll capability for Human Resources line of business.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 6,
+          "tokens": 21742,
+          "latency_s": 15.77,
+          "llm_calls": 6
+        }
+      }
+    ]
+  },
+  "trace": {
+    "tokens": 45993,
+    "latency_s": 0.0,
+    "llm_calls": 0
+  },
+  "wall_s": 0.0
+}

@@ -1,0 +1,438 @@
+{
+  "case_id": "sa-12",
+  "user_prompt": "I need to submit a new infrastructure update request that will impact multiple departments, and I need the system to automatically assess whether this change requires executive approval based on the business scope. Can you walk me through the entire process from when I submit the request through final implementation, including tracking any related equipment modifications and service dependencies? I also need documentation of all regulatory requirements that apply to this change, as well as any existing maintenance schedules we should coordinate with during rollout.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0",
+  "skill_expected": "proc_007",
+  "skill_picked": "proc_007",
+  "expected_gaps": [
+    "sap.ehs:apiResource:ComplianceChangeServiceIntegration:v1",
+    "my.mes:apiResource:ServiceTicketChangeRequestManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track related equipment modifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/siemens.plm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/siemens.plm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"siemens.plm:package:Core:v1\",\n      \"title\": \"siemens.plm Core Package\",\n      \"shortDesc \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1102
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm: IT Service Management (incident analysis, asset provisioning, change automation, safety)\n- emarsys.cx: Customer Experience/Marketing (campaign optimization, opportunity engagement)\n- my.mes: Manufacturing Execution (quality monitoring, production coordination, order sequencing)\n- sap.ariba: Procurement (vendor invoicing, compliance, material coordination)\n- sap.crm: Sales/CRM (opportunity qualification, campaign targeting, sales compensation)\n- sap.ehs: Environment, Health, Safety (incident analysis, vendor compliance, response coordination, campaign orchestration, product safety validation)\n- sap.odm: ODM entity type taxonomy (40 canonical entity types)\n- sap.s4: ERP (procurement matching, BOM compliance, order automation, opportunity-to-order)\n- sap.sf: SuccessFactors HR (performance reviews, compensation, talent acquisition)\n- siemens.plm: Product Lifecycle Management (BOM validation, engineering changes, component design)\n- workday.hcm: Human Capital Management (compensation, performance reviews, safety)\n\nKEY ORDER & CHANGE TRACKING RESOURCES:\n- my.mes:agent:ProductionChangeOrchestrator:v1 \u2014 Sequences work orders, coordinates material flow, orchestrates production execution, tracks orders through production pipeline with real-time scheduling\n- sap.s4:agent:OpportunityToOrderAutomationEngine:v1 \u2014 Monitors opportunities and automates order creation, coordinates with procurement and production to ensure fulfillment readiness\n- corp.itsm:agent:AssetProvisioningOrchestrator:v1 \u2014 Tracks product item assignments to change orders, coordinates provisioning workflows\n- siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1 \u2014 Coordinates engineering changes across product items/materials, synchronizes configuration updates, tracks change status, manages material provisioning, evaluates change impact\n\nRESOLVED ACTIVITIES (15 total):\n1. Handle customer grievances \u2192 REFUSED\n2. Reconcile disagreements during fulfillment \u2192 sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n3. Verify material specifications against master records \u2192 sap.s4:agent:BOMComplianceAutomationAgent:v1\n4. Review and align compensation structures with labor requirements \u2192 workday.hcm:agent:CompensationStructureAutomationEngine:v1\n5. Validate financial structures against production budget needs \u2192 REFUSED\n6. Identify priority customer segments from marketing campaigns \u2192 emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1\n7. Pull customer account details and engagement history \u2192 emarsys.cx:agent:OpportunityEngagementOrchestrator:v1\n8. Track workplace safety events during fulfillment \u2192 workday.hcm:agent:OccupationalSafetyIncidentMonitoring:v1\n9. Maintain compliance records for safety incidents \u2192 workday.hcm:agent:OccupationalSafetyIncidentMonitoring:v1\n10. Set up payroll and compensation documentation \u2192 workday.hcm:agent:CompensationAdjustmentAutomation:v1\n11. Design and validate product components \u2192 siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\n12. Track order progression through completion checkpoints \u2192 my.mes:agent:ProductionChangeOrchestrator:v1\n13. Manage billing disagreements \u2192 sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n14. Update service requests documentation \u2192 REFUSED\n15. Track related equipment modifications \u2192 siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+              },
+              "result_preview": {
+                "stored_bytes": 3384,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "reason": "This agent coordinates engineering changes across product items and materials, synchronizes configuration updates, tracks change status, and manages material provisioning\u2014directly fulfilling the activity of tracking related equipment modifications."
+              },
+              "result_preview": {
+                "committed": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+          "picked_reason": "This agent coordinates engineering changes across product items and materials, synchronizes configuration updates, tracks change status, and manages material provisioning\u2014directly fulfilling the activity of tracking related equipment modifications.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 3,
+          "tokens": 16524,
+          "latency_s": 18.287,
+          "llm_calls": 3
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Document regulatory requirements",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ehs/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1154
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "reason": "Automates safety validation and compliance requirement documentation for engineering changes, validates against regulatory standards, and initiates compliance remediation when gaps are detected."
+              },
+              "result_preview": {
+                "committed": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+          "picked_reason": "Automates safety validation and compliance requirement documentation for engineering changes, validates against regulatory standards, and initiates compliance remediation when gaps are detected.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 2,
+          "tokens": 9014,
+          "latency_s": 7.679,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Review existing maintenance schedules for coordination",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:package:Core:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_notes",
+              "args": {},
+              "result_preview": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm: IT Service Management (incident analysis, asset provisioning, change automation, safety)\n- emarsys.cx: Customer Experience/Marketing (campaign optimizatio \u2026(truncated)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "landscape/systems/corp.itsm"
+              },
+              "result_preview": {
+                "error": "path not allowed: 'landscape/systems/corp.itsm'. Allowed roots: ('benchmark',)"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "landscape/systems/my.mes"
+              },
+              "result_preview": {
+                "error": "path not allowed: 'landscape/systems/my.mes'. Allowed roots: ('benchmark',)"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.odm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 11
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/corp.itsm/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1021
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1057
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/sap.ehs/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/sap.ehs/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ehs:package:Core:v1\",\n      \"title\": \"sap.ehs Core Package\",\n      \"shortDescription\" \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1075
+              }
+            },
+            {
+              "step": 6,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched",
+                "entries": [
+                  {
+                    "name": "corp.itsm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "emarsys.cx",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "my.mes",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ariba",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.crm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.ehs",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.s4",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "sap.sf",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "siemens.plm",
+                    "kind": "dir"
+                  },
+                  {
+                    "name": "workday.hcm",
+                    "kind": "dir"
+                  }
+                ],
+                "entries_count": 10
+              }
+            },
+            {
+              "step": 7,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/corp.itsm/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"corp.itsm:package:Core:v1\",\n      \"title\": \"corp.itsm Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1261
+              }
+            },
+            {
+              "step": 8,
+              "kind": "tool_call",
+              "name": "write_notes",
+              "args": {
+                "content": "LANDSCAPE OVERVIEW (10 systems):\n- corp.itsm: IT Service Management (incident analysis, asset provisioning, change automation, safety)\n- emarsys.cx: Customer Experience/Marketing (campaign optimization, opportunity engagement)\n- my.mes: Manufacturing Execution (quality monitoring, production coordination, order sequencing)\n- sap.ariba: Procurement (vendor invoicing, compliance, material coordination)\n- sap.crm: Sales/CRM (opportunity qualification, campaign targeting, sales compensation)\n- sap.ehs: Environment, Health, Safety (incident analysis, vendor compliance, response coordination, campaign orchestration, product safety validation)\n- sap.odm: ODM entity type taxonomy (40 canonical entity types)\n- sap.s4: ERP (procurement matching, BOM compliance, order automation, opportunity-to-order)\n- sap.sf: SuccessFactors HR (performance reviews, compensation, talent acquisition)\n- siemens.plm: Product Lifecycle Management (BOM validation, engineering changes, component design)\n- workday.hcm: Human Capital Management (compensation, performance reviews, safety)\n\nKEY ORDER & CHANGE TRACKING RESOURCES:\n- my.mes:agent:ProductionChangeOrchestrator:v1 \u2014 Sequences work orders, coordinates material flow, orchestrates production execution, tracks orders through production pipeline with real-time scheduling\n- sap.s4:agent:OpportunityToOrderAutomationEngine:v1 \u2014 Monitors opportunities and automates order creation, coordinates with procurement and production to ensure fulfillment readiness\n- corp.itsm:agent:AssetProvisioningOrchestrator:v1 \u2014 Tracks product item assignments to change orders, coordinates provisioning workflows\n- siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1 \u2014 Coordinates engineering changes across product items/materials, synchronizes configuration updates, tracks change status, manages material provisioning, evaluates change impact\n- corp.itsm:agent:ChangeAutomationOrchestrator:v1 \u2014 Automates/coordinates engineering changes, material updates, product item deployments; orchestrates multi-step change operations\n\nRESOLVED ACTIVITIES (16 total):\n1. Handle customer grievances \u2192 REFUSED\n2. Reconcile disagreements during fulfillment \u2192 sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n3. Verify material specifications against master records \u2192 sap.s4:agent:BOMComplianceAutomationAgent:v1\n4. Review and align compensation structures with labor requirements \u2192 workday.hcm:agent:CompensationStructureAutomationEngine:v1\n5. Validate financial structures against production budget needs \u2192 REFUSED\n6. Identify priority customer segments from marketing campaigns \u2192 emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1\n7. Pull customer account details and engagement history \u2192 emarsys.cx:agent:OpportunityEngagementOrchestrator:v1\n8. Track workplace safety events during fulfillment \u2192 workday.hcm:agent:OccupationalSafetyIncidentMonitoring:v1\n9. Maintain compliance records for safety incidents \u2192 workday.hcm:agent:OccupationalSafetyIncidentMonitoring:v1\n10. Set up payroll and compensation documentation \u2192 workday.hcm:agent:CompensationAdjustmentAutomation:v1\n11. Design and validate product components \u2192 siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\n12. Track order progression through completion checkpoints \u2192 my.mes:agent:ProductionChangeOrchestrator:v1\n13. Manage billing disagreements \u2192 sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\n14. Update service requests documentation \u2192 REFUSED\n15. Track related equipment modifications \u2192 siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1\n16. Review existing maintenance schedules for coordination \u2192 corp.itsm:agent:ChangeAutomationOrchestrator:v1"
+              },
+              "result_preview": {
+                "stored_bytes": 3674,
+                "truncated": false,
+                "cap_bytes": 4096
+              }
+            },
+            {
+              "step": 9,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                "reason": "Automates and coordinates change execution across material and equipment lifecycles, orchestrating multi-step operations including maintenance schedule synchronization following safety compliance validation."
+              },
+              "result_preview": {
+                "committed": "corp.itsm:agent:ChangeAutomationOrchestrator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+          "picked_reason": "Automates and coordinates change execution across material and equipment lifecycles, orchestrating multi-step operations including maintenance schedule synchronization following safety compliance validation.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 11,
+          "tokens": 92736,
+          "latency_s": 34.695,
+          "llm_calls": 11
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_007",
+      "skill_id_expected": "proc_007",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track related equipment modifications\",\n    \"Document regulatory requirements\",\n    \"Review existing maintenance schedules for coordination\"\n  ],\n  \"reason\": \"The skill covers submission, impact assessment, approval workflows, and implementation coordination, but explicitly lacks steps for tracking equipment modifications, documenting regulatory compliance, and coordinating with existing maintenance schedules\u2014three concrete activities the request names.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers submission, impact assessment, approval workflows, and implementation coordination, but explicitly lacks steps for tracking equipment modifications, documenting regulatory compliance, and coordinating with existing maintenance schedules\u2014three concrete activities the request names.",
+      "tokens": 582,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 118856,
+    "latency_s": 60.661,
+    "llm_calls": 17
+  },
+  "wall_s": 60.705
+}

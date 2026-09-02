@@ -1,0 +1,317 @@
+{
+  "case_id": "dy-20",
+  "user_prompt": "I need to figure out who reports to whom across our company and understand the chain of command structure. Can you help me pull together the reporting relationships and organizational breakdown?",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "I need to figure out who reports to whom across our company and understand the chain of command structure. Can you help me pull together the reporting relationships and organizational breakdown?",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:WorkforceOrgStructureAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:WorkforceScheduleAndAbsenceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Employee:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Sales Capacity and Time Off Management API",
+                  "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning."
+                },
+                {
+                  "ordId": "my.mes:apiResource:WorkforceScheduleAndAbsenceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Workforce Schedule and Absence Management API",
+                  "shortDescription": "Manages employee shift assignments and time-off requests in production operations."
+                },
+                "... (41 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Human Resources"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:EmployeeTimeOffProvisioningAPI:v1",
+                  "type": "apiResource",
+                  "title": "Employee Time Off Provisioning API",
+                  "shortDescription": "Manages employee time-off requests and absence records for service continuity planning."
+                },
+                {
+                  "ordId": "sap.crm:dataProduct:EmployeePerformanceTrendingAndInsights:v1",
+                  "type": "dataProduct",
+                  "title": "Employee Performance Trending and Insights",
+                  "shortDescription": "Aggregates employee performance reviews to provide workforce talent and capability metrics."
+                },
+                {
+                  "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+                  "type": "apiResource",
+                  "title": "Employee Safety Training Compliance Management",
+                  "shortDescription": "Manages and retrieves employee safety training records and compliance status."
+                },
+                "... (14 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "resolve-organizational-hierarchy"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.s4:apiResource:WorkforceOrgStructureAPI:v1",
+                  "type": "apiResource",
+                  "title": "Workforce Organization Structure API",
+                  "shortDescription": "Retrieves and manages employee organizational hierarchy and reporting relationships."
+                }
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:WorkforceOrgStructureAPI:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.s4:apiResource:WorkforceOrgStructureAPI:v1",
+                "type": "apiResource",
+                "namespace": "sap.s4",
+                "title": "Workforce Organization Structure API",
+                "shortDescription": "Retrieves and manages employee organizational hierarchy and reporting relationships.",
+                "description": "Exposes comprehensive workforce organizational data including employee hierarchies, reporting structures, and personnel assignments. Manages access to workforce person records and their positional relationships within the enterprise. Provides real-time queries on organizational dependencies and employee classification for planning and compliance purposes.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Capital Management"
+                ],
+                "capabilities": [
+                  "validate-approval-chain",
+                  "resolve-organizational-hierarchy",
+                  "identify-decision-makers"
+                ],
+                "useCases": [
+                  "Determine approval requirements based on employee organizational structure and authority levels.",
+                  "Map workforce roles to change request escalation paths."
+                ],
+                "tags": [
+                  "workforce-management",
+                  "organizational-structure",
+                  "employee-hierarchy"
+                ],
+                "partOfGroups": [
+                  "proc_integrated_service_change_mgmt_v1"
+                ],
+                "processNext": [
+                  "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1"
+                ],
+                "partOfPackage": "sap.s4:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1",
+                "type": "apiResource",
+                "namespace": "sap.sf",
+                "title": "Employee Hierarchy and Organization Management API",
+                "shortDescription": "Exposes employee organizational structure and hierarchical relationships.",
+                "description": "Provides access to employee organizational hierarchies, reporting relationships, and organizational unit assignments. Manages and retrieves workforce person roles within organizational structures to support workforce planning and organizational design. Exposes hierarchical data enabling integration with external organizational management systems.",
+                "entityTypes": [
+                  "sap.odm:entityType:Employee:v1",
+                  "sap.odm:entityType:WorkforcePerson:v1"
+                ],
+                "lineOfBusiness": [
+                  "Human Capital Management"
+                ],
+                "capabilities": [
+                  "identify-role-based-hazards",
+                  "assign-employee-safety-training",
+                  "map-organizational-units",
+                  "validate-hierarchy",
+                  "manage-workforce-hierarchy",
+                  "confirm-reporting-structure",
+                  "track-employee-competency"
+                ],
+                "useCases": [
+                  "Safety managers assign role-specific training requirements.",
+                  "Ensure compensation decisions align with correct organizational structure",
+                  "Validate manager approval chains for compensation changes",
+                  "HR teams enroll employees in mandatory safety programs based on organizational structure.",
+                  "Department heads track compliance across reporting hierarchies.",
+                  "Map compensation budgets to organizational cost centers"
+                ],
+                "tags": [
+                  "workforce-management",
+                  "organizational-structure",
+                  "employee-hierarchy"
+                ],
+                "partOfGroups": [
+                  "proc_workforce_comp_benefits_v1",
+                  "proc_ProcurementSafetyCompliance_v1"
+                ],
+                "processNext": [
+                  "workday.hcm:apiResource:BenefitsEnrollmentDataManagement:v1"
+                ],
+                "partOfPackage": "sap.sf:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:WorkforceOrgStructureAPI:v1",
+                "reason": "Directly retrieves and manages employee organizational hierarchy and reporting relationships with resolve-organizational-hierarchy capability, perfectly fulfilling the need to understand chain of command and reporting structure."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:WorkforceOrgStructureAPI:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.s4:apiResource:WorkforceOrgStructureAPI:v1",
+          "picked_reason": "Directly retrieves and manages employee organizational hierarchy and reporting relationships with resolve-organizational-hierarchy capability, perfectly fulfilling the need to understand chain of command and reporting structure.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 28137,
+          "latency_s": 11.021,
+          "llm_calls": 9
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.sf:apiResource:EmployeeHierarchyAndOrganizationManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 28137,
+    "latency_s": 11.021,
+    "llm_calls": 9
+  },
+  "wall_s": 11.028
+}

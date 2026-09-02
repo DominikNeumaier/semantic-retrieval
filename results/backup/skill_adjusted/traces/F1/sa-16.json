@@ -1,0 +1,456 @@
+{
+  "case_id": "sa-16",
+  "user_prompt": "We need to adjust our production schedule due to a significant surge in Q2 demand forecasting and some critical supply constraints we're facing with our primary vendors. This will require coordinating engineering changes across our product lines, verifying compliance requirements, updating our procurement orders, and adjusting our workforce capacity planning. As part of this broader initiative, we'll also need to ensure our team members are compensated fairly for any overtime or shift changes resulting from the schedule adjustments, including updating any applicable merit considerations. Can you help us orchestrate all these moving pieces together, including the financial and compensation updates that will flow from these workforce adjustments?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": "proc_001",
+  "skill_picked": "proc_001",
+  "expected_gaps": [
+    "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+    "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 1.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Update employee compensation and overtime pay",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:CompensationChangeProcessor:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 7797,
+          "latency_s": 7.965,
+          "llm_calls": 7,
+          "use_graph": true,
+          "picked_ord_id": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+          "picked_reason": "This API resource directly supports updating employee compensation with capabilities including manage-pay-adjustments, adjust-compensation, and apply-hazard-allowances. It provides CRUD operations on compensation records and salary management workflows, fully addressing the requirement to update employee compensation and overtime pay.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "update employee compensation and overtime pay",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+                "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+                "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+                "workday.hcm:agent:CompensationChangeProcessor:v1",
+                "sap.sf:agent:CompensationPolicyAutomationEngine:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-employee-compensation"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "update-compensation"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-overtime"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeCompensationManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+                "reason": "This API resource directly supports updating employee compensation with capabilities including manage-pay-adjustments, adjust-compensation, and apply-hazard-allowances. It provides CRUD operations on compensation records and salary management workflows, fully addressing the requirement to update employee compensation and overtime pay."
+              },
+              "result": {
+                "committed": "sap.sf:apiResource:EmployeeCompensationManagement:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Process merit consideration adjustments",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:CompensationChangeProcessor:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:CompensationStructureAutomationEngine:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 8000,
+          "latency_s": 7.449,
+          "llm_calls": 7,
+          "use_graph": true,
+          "picked_ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+          "picked_reason": "This agent autonomously processes merit increases and compensation adjustments based on performance ratings and organizational policies, directly matching the activity of processing merit consideration adjustments. It generates and routes compensation adjustment proposals, ensuring consistent policy application and reducing manual overhead.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "process merit consideration adjustments",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+                "workday.hcm:agent:CompensationChangeProcessor:v1",
+                "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+                "sap.sf:agent:CompensationPolicyAutomationEngine:v1",
+                "workday.hcm:agent:CompensationStructureAutomationEngine:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "process-merit"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-merit-consideration"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "adjust-compensation"
+              },
+              "result_summary": "1 items",
+              "result_ord_ids": [
+                "sap.sf:apiResource:EmployeeCompensationManagement:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:EmployeeCompensationManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+                "reason": "This agent autonomously processes merit increases and compensation adjustments based on performance ratings and organizational policies, directly matching the activity of processing merit consideration adjustments. It generates and routes compensation adjustment proposals, ensuring consistent policy application and reducing manual overhead."
+              },
+              "result": {
+                "committed": "workday.hcm:agent:CompensationAdjustmentAutomation:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Coordinate financial/payroll system updates",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:PayrollDataExposure:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:agent:CompensationChangeProcessor:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 16360,
+          "latency_s": 11.394,
+          "llm_calls": 11,
+          "use_graph": true,
+          "picked_ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+          "picked_reason": "Best resource for coordinating financial/payroll system updates. Provides payroll processing management with capabilities to process-payroll, manage-workforce-compensation-execution, and integrate-payroll-with-scheduling. Exposes Employee and WorkforcePerson entities for HR-Finance coordination.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "Coordinate financial payroll system updates",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "sap.s4:apiResource:EmployeePayrollDataAPI:v1",
+                "workday.hcm:apiResource:PayrollDataExposure:v1",
+                "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1",
+                "workday.hcm:agent:CompensationChangeProcessor:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-payroll"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "coordinate-financial-updates"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "coordinate-system-updates"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-financial-updates"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "graph_walk",
+              "args": {
+                "anchor_ord_ids": [
+                  "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+                ],
+                "top_k": 8
+              },
+              "result_summary": "8 items",
+              "result_ord_ids": [
+                "sap.s4:agent:AssetLifecycleChangeOrchestrator:v1",
+                "my.mes:agent:ProductionChangeOrchestrator:v1",
+                "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+                "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                "sap.sf:dataProduct:ProductChangeImpactAndMaterialAnalytics:v1",
+                "sap.s4:dataProduct:EngineeringChangeImpactAndWorkforceReadiness:v1",
+                "corp.itsm:agent:AssetProvisioningOrchestrator:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "progressive_filter",
+              "args": {
+                "query": "coordinate financial payroll system updates",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+                "workday.hcm:apiResource:WorkforceCompensationDataManagement:v1",
+                "workday.hcm:agent:CompensationAdjustmentAutomation:v1",
+                "workday.hcm:agent:CompensationPolicyEnforcementAutomation:v1"
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-system-updates"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.sf:apiResource:CompensationAndSalaryManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1",
+                "reason": "Best resource for coordinating financial/payroll system updates. Provides payroll processing management with capabilities to process-payroll, manage-workforce-compensation-execution, and integrate-payroll-with-scheduling. Exposes Employee and WorkforcePerson entities for HR-Finance coordination."
+              },
+              "result": {
+                "committed": "workday.hcm:apiResource:PayrollProcessingDataManagement:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_001",
+      "skill_id_expected": "proc_001",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "gap steps injected from reference run"
+    }
+  },
+  "trace": {
+    "tokens": 32157,
+    "latency_s": 26.808,
+    "llm_calls": 25
+  },
+  "wall_s": 34.777
+}

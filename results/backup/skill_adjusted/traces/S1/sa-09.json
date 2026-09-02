@@ -1,0 +1,188 @@
+{
+  "case_id": "sa-09",
+  "user_prompt": "We need to orchestrate the launch of our new product line, ensuring that procurement sources quality raw materials that meet our standards, engineering designs and validates the components, operations sets up manufacturing processes, and sales prepares go-to-market strategies. As we ramp up production, we'll also need to seamlessly integrate with our systems to retrieve and manage incoming customer orders and account information for processing. Additionally, the process should include coordinating any engineering modifications and material lifecycle changes across departments to keep everything synchronized. Can you help us design a workflow that handles all of these moving parts together?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "S",
+  "state": "enriched",
+  "condition": "S1",
+  "skill_expected": "proc_012",
+  "skill_picked": "proc_012",
+  "expected_gaps": [
+    "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+    "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.5,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Integrate with systems to retrieve customer orders",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "my.mes:apiResource:CustomerOrderAndAccountManagement:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13601,
+          "latency_s": 0.0,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Manage account information for order processing",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:CustomerOrderManagementAPI:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "corp.itsm:apiResource:CustomerProvisioningOrderAPI:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "emarsys.cx:apiResource:CustomerAccountOrderEnrichmentAPI:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13602,
+          "latency_s": 0.0,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Prepare go-to-market strategies",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:agent:SegmentDrivenCampaignOptimizer:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "emarsys.cx:agent:OpportunityEngagementOrchestrator:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.crm:agent:CampaignAudienceOptimizationAgent:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "emarsys.cx:dataProduct:CampaignPerformanceAnalytics:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "sap.crm:dataProduct:SalesOpportunityPipelineAnalytics:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13622,
+          "latency_s": 0.0,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Design and validate product components",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "siemens.plm:apiResource:EngineringChangeManagement:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeProductDataAPI:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "siemens.plm:apiResource:DigitalTwinAndConfigurationManagement:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13608,
+          "latency_s": 0.0,
+          "llm_calls": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_012",
+      "skill_id_expected": "proc_012",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Integrate with systems to retrieve customer orders\",\n    \"Manage account information for order processing\",\n    \"Prepare go-to-market strategies\",\n    \"Design and validate product components\"\n  ],\n  \"reason\": \"The skill covers procurement quality standards, engineering change evaluation, and operational readiness, but explicitly lacks system integration for customer orders/accounts, sales go-to-market preparation, and component design/validation activities that the request names as required moving parts.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers procurement quality standards, engineering change evaluation, and operational readiness, but explicitly lacks system integration for customer orders/accounts, sales go-to-market preparation, and component design/validation activities that the request names as required moving parts.",
+      "tokens": 631,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 55064,
+    "latency_s": 0.0,
+    "llm_calls": 5
+  },
+  "wall_s": 0.007
+}

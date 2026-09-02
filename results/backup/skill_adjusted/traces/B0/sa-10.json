@@ -1,0 +1,289 @@
+{
+  "case_id": "sa-10",
+  "user_prompt": "We need to streamline our complete purchasing workflow to examine incoming client requests, evaluate buyer participation levels and regulatory standards, vet potential vendors, and give the green light for transaction completion with appropriate authorizations. As orders move through each phase, we also need to track their progression through various completion checkpoints and monitor delivery timelines. Additionally, include functionality to handle any customer grievances or billing disagreements that may arise during the transaction lifecycle, ensuring we can document claims and work through resolutions efficiently within our existing business platform.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0",
+  "skill_expected": "proc_008",
+  "skill_picked": "proc_008",
+  "expected_gaps": [
+    "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+    "sap.crm:apiResource:CustomerAccountDisputeManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.5,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track order progression through completion checkpoints",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:dataProduct:ManufacturingQualityMetricsHub:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProductionQualityYieldAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ProductionQualityMetrics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ariba",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ariba\", \"sap.s4\"],\n  \"reason\": \"Order progression tracking requires purchase order management (sap.ariba) and inventory/fulfillment execution (sap.s4) to monitor completion checkpoints.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Tracking order progression through checkpoints is a read-only monitoring activity that observes workflow state rather than executing transactional changes.\"\n}\n```",
+          "stage2_pool_size": 15,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ProductionOrder:v1",
+            "sap.odm:entityType:QualityInspection:v1",
+            "sap.odm:entityType:Material:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:ProductionOrder:v1\", \"sap.odm:entityType:QualityInspection:v1\", \"sap.odm:entityType:Material:v1\"],\n  \"reason\": \"Tracking order progression through completion checkpoints involves monitoring production orders through their lifecycle stages, quality inspections at checkpoints, and material consumption.\"\n}\n```",
+          "stage3_pool_size": 8,
+          "stage4_raw": "```json\n[\n  \"sap.s4:dataProduct:ManufacturingQualityMetricsHub:v1\",\n  \"sap.s4:dataProduct:ProductionQualityYieldAnalytics:v1\",\n  \"sap.s4:dataProduct:ProcurementMetricsHub:v1\",\n  \"sap.ariba:dataProduct:ProductionQualityMetrics:v1\"\n]\n```",
+          "stage4_valid_count": 4,
+          "refused": false,
+          "tokens": 2472,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Monitor delivery timelines",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:ProcurementSpendAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ariba",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ariba\", \"sap.s4\"],\n  \"reason\": \"Delivery timeline monitoring requires procurement/purchase order tracking (sap.ariba) and inventory/supply chain coordination (sap.s4).\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Monitoring delivery timelines is a read-only, observational activity that tracks KPIs and status without driving live execution or changing master data.\"\n}\n```",
+          "stage2_pool_size": 15,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ProductionOrder:v1",
+            "sap.odm:entityType:PurchaseOrder:v1",
+            "sap.odm:entityType:Vendor:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Vendor:v1\"\n  ],\n  \"reason\": \"Monitoring delivery timelines requires tracking production orders, purchase orders, and vendor performance for on-time delivery.\"\n}\n```",
+          "stage3_pool_size": 6,
+          "stage4_raw": "```json\n[\n  \"sap.s4:dataProduct:ProcurementMetricsHub:v1\",\n  \"sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1\",\n  \"sap.ariba:dataProduct:ProcurementSpendAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2297,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Handle customer grievances or complaints",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.crm",
+            "corp.itsm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.crm\", \"corp.itsm\"],\n  \"reason\": \"Customer grievance handling requires CRM capabilities for managing customer accounts and interactions (sap.crm), with IT service management support for complaint tracking and resolution (corp.itsm).\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Handling customer grievances requires direct action\u2014logging complaints, updating case status, notifying stakeholders, and resolving issues\u2014all of which are live execution tasks.\"\n}\n```",
+          "stage2_pool_size": 40,
+          "stage3_entity_types": [
+            "sap.odm:entityType:CustomerAccount:v1",
+            "sap.odm:entityType:ServiceTicket:v1",
+            "sap.odm:entityType:CustomerOrder:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:CustomerAccount:v1\",\n    \"sap.odm:entityType:ServiceTicket:v1\",\n    \"sap.odm:entityType:CustomerOrder:v1\"\n  ],\n  \"reason\": \"Handling customer grievances involves managing customer account information, documenting service issues as tickets, and addressing complaints related to customer orders.\"\n}\n```",
+          "stage3_pool_size": 18,
+          "stage4_raw": "```json\n[\n  \"sap.crm:apiResource:CustomerAccountDisputeManagement:v1\",\n  \"corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1\",\n  \"corp.itsm:agent:IncidentRootCauseAnalyzer:v1\",\n  \"sap.crm:apiResource:CustomerOrderFulfillmentTracking:v1\"\n]\n```",
+          "stage4_valid_count": 4,
+          "refused": false,
+          "tokens": 3188,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Manage billing disagreements",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ariba",
+            "sap.crm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ariba\", \"sap.crm\"],\n  \"reason\": \"Billing disagreements involve vendor/customer accounts and purchase orders, which are core to procurement (Ariba) and customer relationship management (CRM).\"\n}\n```",
+          "stage2_modalities": [
+            "operational",
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\", \"analytical\"],\n  \"reason\": \"Resolving billing disagreements requires both operational actions (agent investigation, dispute resolution, adjustments) and analytical review (historical billing data, transaction records, KPIs to identify patterns).\"\n}\n```",
+          "stage2_pool_size": 50,
+          "stage3_entity_types": [
+            "sap.odm:entityType:CustomerAccount:v1",
+            "sap.odm:entityType:Invoice:v1",
+            "sap.odm:entityType:Contract:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:CustomerAccount:v1\", \"sap.odm:entityType:Invoice:v1\", \"sap.odm:entityType:Contract:v1\"],\n  \"reason\": \"Managing billing disagreements involves customer account records, invoices being disputed, and potentially contract terms that define billing obligations.\"\n}\n```",
+          "stage3_pool_size": 19,
+          "stage4_raw": "```json\n[\n  \"sap.crm:apiResource:CustomerAccountDisputeManagement:v1\",\n  \"sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1\",\n  \"sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 3341,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Document claims and resolutions",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.crm:apiResource:CustomerAccountDisputeManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:IncidentRootCauseAnalyzer:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "corp.itsm",
+            "sap.crm"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"corp.itsm\", \"sap.crm\"],\n  \"reason\": \"Documenting claims and resolutions is primarily an IT Service Management function (ticketing, incident resolution), with potential customer-facing aspects in CRM.\"\n}\n```",
+          "stage2_modalities": [
+            "operational"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"operational\"],\n  \"reason\": \"Documenting claims and resolutions requires creating, updating, and recording master data through agent or API actions, which is inherently operational work.\"\n}\n```",
+          "stage2_pool_size": 40,
+          "stage3_entity_types": [
+            "sap.odm:entityType:ServiceTicket:v1",
+            "sap.odm:entityType:Incident:v1",
+            "sap.odm:entityType:CustomerAccount:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:ServiceTicket:v1\", \"sap.odm:entityType:Incident:v1\", \"sap.odm:entityType:CustomerAccount:v1\"],\n  \"reason\": \"Documenting claims and resolutions typically involves recording service tickets, incidents, and associated customer account information.\"\n}\n```",
+          "stage3_pool_size": 20,
+          "stage4_raw": "```json\n[\n  \"sap.crm:apiResource:CustomerAccountDisputeManagement:v1\",\n  \"corp.itsm:apiResource:ServiceTicketOrderManagementAPI:v1\",\n  \"corp.itsm:agent:IncidentRootCauseAnalyzer:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 3275,
+          "latency_s": 0.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_008",
+      "skill_id_expected": "proc_008",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track order progression through completion checkpoints\",\n    \"Monitor delivery timelines\",\n    \"Handle customer grievances or complaints\",\n    \"Manage billing disagreements\",\n    \"Document claims and resolutions\"\n  ],\n  \"reason\": \"The skill covers the core purchasing workflow (order validation, compliance assessment, vendor qualification, authorization) but explicitly lacks order tracking/monitoring capabilities and customer dispute/complaint resolution functionality that the request concretely names as required components.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers the core purchasing workflow (order validation, compliance assessment, vendor qualification, authorization) but explicitly lacks order tracking/monitoring capabilities and customer dispute/complaint resolution functionality that the request concretely names as required components.",
+      "tokens": 621,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 15194,
+    "latency_s": 0.0,
+    "llm_calls": 21
+  },
+  "wall_s": 0.113
+}

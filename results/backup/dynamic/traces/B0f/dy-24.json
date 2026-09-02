@@ -1,0 +1,135 @@
+{
+  "case_id": "dy-24",
+  "user_prompt": "We need to verify that our current component sourcing meets all regulatory requirements while simultaneously checking our real-time inventory levels to ensure we have adequate stock from our qualified suppliers before we proceed with the next production run.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "B",
+  "state": "clean",
+  "condition": "B0f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Verify that our current component sourcing meets all regulatory requirements",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:MaterialInvoiceComplianceCostAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ehs",
+            "sap.ariba"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ehs\", \"sap.ariba\"],\n  \"reason\": \"Component sourcing regulatory compliance involves Safety/Environment regulations (EHS) and Procurement/Vendor management (Ariba).\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Verifying regulatory compliance is a read-only audit and assessment activity that requires data products and event resources to analyze sourcing data against requirements, not operational execution.\"\n}\n```",
+          "stage2_pool_size": 16,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1",
+            "sap.odm:entityType:Contract:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:Vendor:v1\", \"sap.odm:entityType:Contract:v1\"],\n  \"reason\": \"Verifying component sourcing regulatory compliance requires examining the materials being sourced, the vendors supplying them, and the contracts governing those supplier relationships.\"\n}\n```",
+          "stage3_pool_size": 6,
+          "stage4_raw": "```json\n[\n  \"sap.ariba:dataProduct:ContractAndProcurementComplianceAnalytics:v1\",\n  \"sap.ehs:dataProduct:VendorComplianceContractAnalytics:v1\",\n  \"sap.ehs:dataProduct:MaterialInvoiceComplianceCostAnalytics:v1\"\n]\n```",
+          "stage4_valid_count": 3,
+          "refused": false,
+          "tokens": 2399,
+          "latency_s": 6.972,
+          "llm_calls": 4
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "siemens.plm:agent:BOMComplianceValidator:v1",
+            "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Check our real-time inventory levels to ensure we have adequate stock from our qualified suppliers",
+        "source": "adhoc",
+        "candidates": [],
+        "method_trace": {
+          "stage1_namespaces": [
+            "sap.ariba",
+            "sap.s4"
+          ],
+          "stage1_raw": "```json\n{\n  \"namespaces\": [\"sap.ariba\", \"sap.s4\"],\n  \"reason\": \"sap.ariba handles procurement and vendor/supplier management with PurchaseOrder entities, while sap.s4 manages inventory levels and material stock.\"\n}\n```",
+          "stage2_modalities": [
+            "analytical"
+          ],
+          "stage2_raw": "```json\n{\n  \"modalities\": [\"analytical\"],\n  \"reason\": \"Checking real-time inventory levels is a read-only monitoring activity that informs decision-making rather than executing transactional work.\"\n}\n```",
+          "stage2_pool_size": 15,
+          "stage3_entity_types": [
+            "sap.odm:entityType:Material:v1",
+            "sap.odm:entityType:Vendor:v1",
+            "sap.odm:entityType:PurchaseOrder:v1"
+          ],
+          "stage3_raw": "```json\n{\n  \"entity_types\": [\"sap.odm:entityType:Material:v1\", \"sap.odm:entityType:Vendor:v1\", \"sap.odm:entityType:PurchaseOrder:v1\"],\n  \"reason\": \"The activity checks inventory levels of materials from qualified suppliers, which directly involves Material stock data, Vendor qualification, and Purchase Orders for supplier sourcing.\"\n}\n```",
+          "stage3_pool_size": 7,
+          "stage4_raw": "```json\n[]\n```\n\nNone of the candidate resources adequately address the activity of checking real-time inventory levels. The activity specifically requires:\n1. **Real-time inventory data** - current stock levels\n2. **Inventory management capability** - tracking available stock\n\nThe provided resources focus on:\n- Procurement analytics and spend analysis (not inventory levels)\n- Vendor performance and compliance (not inventory tracking)\n- Material data in procurement/engineering contexts (not real-time stock levels)\n- BOM and cost analysis (not inventory availability)\n\nA proper match would require inventory management or warehouse management data products that track actual stock quantities, which are not represented in this candidate set.",
+          "stage4_valid_count": 0,
+          "refused": true,
+          "tokens": 2480,
+          "latency_s": 8.265,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 5210,
+    "latency_s": 15.237,
+    "llm_calls": 9
+  },
+  "wall_s": 15.251
+}

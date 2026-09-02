@@ -1,0 +1,422 @@
+{
+  "case_id": "sa-02",
+  "user_prompt": "We need to orchestrate a comprehensive readiness validation for our upcoming product launch that coordinates material receipt verification, workforce capability assessment, and operational readiness evaluation. As part of this process, we also need to ensure we can track and validate all the materials coming in from our suppliers, including verifying their specifications against our master records. Additionally, we'll need to reconcile all incoming supplier billing documentation with our purchase commitments to ensure financial accuracy before we greenlight the launch. Please design a workflow that brings all these validation streams together into a single orchestrated process.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "F",
+  "state": "enriched",
+  "condition": "F1",
+  "skill_expected": "proc_026",
+  "skill_picked": "proc_026",
+  "expected_gaps": [
+    "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+    "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Verify material specifications against master records",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:agent:MaterialAndVendorQualificationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:agent:SupplierQualificationAndMaterialCoordinator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 14892,
+          "latency_s": 11.472,
+          "llm_calls": 10,
+          "use_graph": true,
+          "picked_ord_id": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+          "picked_reason": "This resource has explicit capabilities for validate-material and validate-material-master, directly supporting verification of material specifications against master records. It also includes verify-compliance capability for comprehensive material validation in procurement and inventory workflows.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "verify-material-specifications"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "verify material specifications against master records",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+                "siemens.plm:agent:MaterialAndVendorQualificationOrchestrator:v1",
+                "my.mes:apiResource:MaterialAndVendorMasterData:v1",
+                "siemens.plm:agent:SupplierQualificationAndMaterialCoordinator:v1",
+                "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "verify-material"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-material-master"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorMasterData:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "validate-material"
+              },
+              "result_summary": "1 items",
+              "result_ord_ids": [
+                "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "check-compliance"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+                "reason": "This resource has explicit capabilities for validate-material and validate-material-master, directly supporting verification of material specifications against master records. It also includes verify-compliance capability for comprehensive material validation in procurement and inventory workflows."
+              },
+              "result": {
+                "committed": "sap.s4:apiResource:MaterialReceiptInboundAPI:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Reconcile supplier billing documentation with purchase commitments",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "workday.hcm:apiResource:VendorMaterialSafetyComplianceExposure:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 7790,
+          "latency_s": 8.466,
+          "llm_calls": 6,
+          "use_graph": true,
+          "picked_ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+          "picked_reason": "This agent is purpose-built for reconciling supplier billing (invoices) with purchase commitments (POs and contracts). It implements automated three-way matching logic, validates pricing and quantities, detects discrepancies, and routes exceptions\u2014precisely fulfilling the activity requirement to reconcile supplier billing documentation with purchase commitments.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "reconcile supplier billing documentation purchase commitments",
+                "top_k": 5
+              },
+              "result_summary": "5 items",
+              "result_ord_ids": [
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+                "workday.hcm:apiResource:VendorMaterialSafetyComplianceExposure:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "reconcile-billing"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "manage-supplier-billing"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "reason": "This agent is purpose-built for reconciling supplier billing (invoices) with purchase commitments (POs and contracts). It implements automated three-way matching logic, validates pricing and quantities, detects discrepancies, and routes exceptions\u2014precisely fulfilling the activity requirement to reconcile supplier billing documentation with purchase commitments."
+              },
+              "result": {
+                "committed": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Validate financial accuracy of invoices",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:dataProduct:MaterialInvoiceComplianceCostAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "tokens": 8107,
+          "latency_s": 7.623,
+          "llm_calls": 7,
+          "use_graph": true,
+          "picked_ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+          "picked_reason": "Best resource for validating financial accuracy of invoices. Performs automated three-way matching (quantities, pricing, terms), validates line-item pricing against POs/contracts, detects overbilling and duplicate invoices, and flags financial exceptions for approval. Directly addresses invoice financial reconciliation and accuracy validation.",
+          "refused": false,
+          "refuse_reason": "",
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "embedding_search",
+              "args": {
+                "query": "validate financial accuracy of invoices",
+                "top_k": 10
+              },
+              "result_summary": "10 items",
+              "result_ord_ids": [
+                "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1",
+                "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+                "sap.ehs:dataProduct:MaterialInvoiceComplianceCostAnalytics:v1",
+                "sap.ariba:dataProduct:InvoiceAndMaterialProcurementAnalytics:v1",
+                "siemens.plm:dataProduct:MaterialInvoiceFinancialMetrics:v1",
+                "sap.crm:dataProduct:CustomerInvoiceMaterialRevenueAnalytics:v1",
+                "my.mes:dataProduct:MaterialCostAndInvoiceReconciliationAnalytics:v1",
+                "sap.ehs:agent:VendorComplianceAutomationOrchestrator:v1",
+                "corp.itsm:agent:VendorContractComplianceOrchestrator:v1"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "validate-invoice"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "validate-financial"
+              },
+              "result_summary": "0 items"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:VendorComplianceInvoiceAutomation:v1"
+              },
+              "result_summary": "object"
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "reason": "Best resource for validating financial accuracy of invoices. Performs automated three-way matching (quantities, pricing, terms), validates line-item pricing against POs/contracts, detects overbilling and duplicate invoices, and flags financial exceptions for approval. Directly addresses invoice financial reconciliation and accuracy validation."
+              },
+              "result": {
+                "committed": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              }
+            }
+          ]
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_026",
+      "skill_id_expected": "proc_026",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "note": "gap steps injected from reference run"
+    }
+  },
+  "trace": {
+    "tokens": 30789,
+    "latency_s": 27.561,
+    "llm_calls": 23
+  },
+  "wall_s": 29.255
+}

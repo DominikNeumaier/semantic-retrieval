@@ -1,0 +1,232 @@
+{
+  "case_id": "sa-20",
+  "user_prompt": "We need to set up a comprehensive process to manage hazardous substance compliance and employee safety across our manufacturing operations. This should identify all hazardous materials in our facilities, assess which departments and teams face exposure risks, and procure necessary safety equipment and protective gear. We also need to ensure that safety protocols and equipment are distributed based on our organizational structure so that each manager can track compliance for their direct reports. Additionally, the system should coordinate with our procurement team to track where safety supplies are sourced from and maintain records of all purchase orders for audit purposes. Can you help us establish a workflow that brings all these elements together?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "C",
+  "state": "clean",
+  "condition": "C0",
+  "skill_expected": "proc_004",
+  "skill_picked": "proc_004",
+  "expected_gaps": [
+    "sap.crm:apiResource:ProcurementVendorOrderManagement:v1",
+    "sap.s4:apiResource:WorkforceOrgStructureAPI:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Distribute safety equipment and protocols based on organizational structure and manager hierarchy",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+            "score": 33.0
+          },
+          {
+            "ordId": "sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1",
+            "score": 33.0
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Employee:v1",
+              "sap.odm:entityType:WorkforcePerson:v1",
+              "sap.odm:entityType:SafetyIncident:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Environment, Health & Safety",
+              "Human Resources"
+            ],
+            "reason": "Activity distributes safety equipment and protocols through organizational hierarchy, involving employees, workforce management, and safety incident prevention."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:WorkforcePerson:v1\",\n    \"sap.odm:entityType:SafetyIncident:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Environment, Health & Safety\",\n    \"Human Resources\"\n  ],\n  \"reason\": \"Activity distributes safety equipment and protocols through organizational hierarchy, involving employees, workforce management, and safety incident prevention.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 138,
+          "walk_top_ids": [
+            "sap.sf:agent:PerformanceReviewCycleCoordinator:v1",
+            "siemens.plm:agent:DesignReviewAndComplianceCoordinator:v1",
+            "workday.hcm:agent:PerformanceReviewCoordination:v1",
+            "workday.hcm:agent:PerformanceReviewOrchestrator:v1",
+            "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1",
+            "sap.sf:apiResource:CompensationAndSalaryManagement:v1",
+            "sap.sf:apiResource:EmployeeCompensationManagement:v1",
+            "sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1\",\n  \"sap.sf:apiResource:EmployeeLifecycleAndPersonnelDataManagement:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 1901,
+          "latency_s": 2.868,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Track supplier sourcing and maintain procurement records for audit purposes",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": 43.25
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "score": 43.25
+          },
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": 43.25
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": 47.75
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Vendor:v1",
+              "sap.odm:entityType:PurchaseOrder:v1",
+              "sap.odm:entityType:Contract:v1",
+              "sap.odm:entityType:Invoice:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Procurement",
+              "Finance"
+            ],
+            "reason": "Activity involves tracking suppliers, procurement records, and maintaining audit documentation which are core to vendor and purchase order management."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Contract:v1\",\n    \"sap.odm:entityType:Invoice:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Finance\"\n  ],\n  \"reason\": \"Activity involves tracking suppliers, procurement records, and maintaining audit documentation which are core to vendor and purchase order management.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 249,
+          "walk_top_ids": [
+            "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+            "sap.s4:agent:ProcurementMatchingAgent:v1",
+            "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "emarsys.cx:apiResource:VendorMaterialSupplyChainAPI:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1\",\n  \"sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1\",\n  \"sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1\",\n  \"sap.s4:dataProduct:ProcurementMetricsHub:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "sap.ehs:apiResource:EmployeeSafetyTrainingComplianceManagement:v1"
+          ],
+          "tokens": 1941,
+          "latency_s": 2.842,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Enable manager-level compliance tracking for direct reports",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Employee:v1",
+              "sap.odm:entityType:PerformanceReview:v1",
+              "sap.odm:entityType:ChangeRequest:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Human Resources",
+              "Human Capital Management"
+            ],
+            "reason": "Manager-level compliance tracking involves monitoring direct reports (employees) and their compliance status through performance management and change oversight."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Employee:v1\",\n    \"sap.odm:entityType:PerformanceReview:v1\",\n    \"sap.odm:entityType:ChangeRequest:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Human Resources\",\n    \"Human Capital Management\"\n  ],\n  \"reason\": \"Manager-level compliance tracking involves monitoring direct reports (employees) and their compliance status through performance management and change oversight.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 216,
+          "walk_top_ids": [
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+            "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nNone of these candidates are meaningful matches for manager-level compliance tracking of direct reports. The activity requires HR/workforce management and performance monitoring capabilities\u2014specifically tracking employee compliance metrics and behaviors at a manager level.\n\nThe candidates are exclusively focused on:\n- IT asset and access provisioning\n- Engineering changes and product lifecycle\n- Supply chain/BOM compliance\n- Sales and inventory analytics\n\nNone address workforce compliance, employee performance tracking, or manager dashboards for direct report oversight. This is a HR/talent management activity that the graph walk failed to surface appropriately.",
+          "refused": true,
+          "previous_resolved": [
+            "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1"
+          ],
+          "tokens": 1918,
+          "latency_s": 4.034,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_004",
+      "skill_id_expected": "proc_004",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Distribute safety equipment and protocols based on organizational structure and manager hierarchy\",\n    \"Track supplier sourcing and maintain procurement records for audit purposes\",\n    \"Enable manager-level compliance tracking for direct reports\"\n  ],\n  \"reason\": \"The skill covers hazardous material identification, exposure assessment, and safety equipment procurement, but does not explicitly address organizational distribution structures, manager-based compliance tracking, supplier sourcing documentation, or audit-trail maintenance for purchase orders.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers hazardous material identification, exposure assessment, and safety equipment procurement, but does not explicitly address organizational distribution structures, manager-based compliance tracking, supplier sourcing documentation, or audit-trail maintenance for purchase orders.",
+      "tokens": 635,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 6395,
+    "latency_s": 9.744,
+    "llm_calls": 7
+  },
+  "wall_s": 9.791
+}

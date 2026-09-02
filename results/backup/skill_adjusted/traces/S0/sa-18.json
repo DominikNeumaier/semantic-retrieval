@@ -1,0 +1,188 @@
+{
+  "case_id": "sa-18",
+  "user_prompt": "We need to manage a comprehensive transition of our manufacturing operations whenever we implement engineering changes to our products. The process should coordinate impact assessment across all affected areas, handle workforce planning requirements, and validate compliance with all relevant regulations. As part of this transition, we also need to ensure that our supplier materials and component specifications are validated and qualified for the new product design. Additionally, we'll need to coordinate all equipment modifications, maintenance adjustments, and necessary service updates required to support the new production specifications. Can you help us set up a workflow that handles all these interconnected aspects of the changeover?",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "S",
+  "state": "clean",
+  "condition": "S0",
+  "skill_expected": "proc_022",
+  "skill_picked": "proc_022",
+  "expected_gaps": [
+    "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+    "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Validate and qualify supplier materials and component specifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:SupplierProcurementOrderManagement:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "sap.ariba:apiResource:Material and Vendor Master Data API:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "siemens.plm:apiResource:MaterialAndVendorQualificationManagement:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeManagementAPI:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13612,
+          "latency_s": 2.501,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Coordinate equipment modifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "corp.itsm:apiResource:AssetProvisioningIntegrationAPI:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "sap.s4:agent:EngineeringChangeOrchestrator:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13604,
+          "latency_s": 2.644,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Coordinate maintenance adjustments",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentChangeAndServiceManagement:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "my.mes:apiResource:EquipmentServiceAndChangeManagement:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.s4:apiResource:ProductionExecutionAPI:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ChangeRequestApprovalWorkflow:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "siemens.plm:apiResource:EngineeringChangeAndServiceManagement:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13602,
+          "latency_s": 2.46,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Coordinate service updates for new production specifications",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EngineeringChangeProductIntegration:v1",
+            "score": 1.0
+          },
+          {
+            "ordId": "my.mes:agent:ProductionChangeOrchestrator:v1",
+            "score": 0.9
+          },
+          {
+            "ordId": "sap.s4:apiResource:EngineeringChangeProductDataAPI:v1",
+            "score": 0.8
+          },
+          {
+            "ordId": "sap.s4:agent:EngineeringChangeOrchestrator:v1",
+            "score": 0.7
+          },
+          {
+            "ordId": "siemens.plm:apiResource:EngineringChangeManagement:v1",
+            "score": 0.6
+          }
+        ],
+        "method_trace": {
+          "tokens": 13603,
+          "latency_s": 2.149,
+          "llm_calls": 1
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_022",
+      "skill_id_expected": "proc_022",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Validate and qualify supplier materials and component specifications\",\n    \"Coordinate equipment modifications\",\n    \"Coordinate maintenance adjustments\",\n    \"Coordinate service updates for new production specifications\"\n  ],\n  \"reason\": \"The skill covers impact assessment, workforce planning, and compliance validation, but the request explicitly requires supplier qualification, equipment modifications, maintenance adjustments, and service updates\u2014concrete activities not represented in the step list.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers impact assessment, workforce planning, and compliance validation, but the request explicitly requires supplier qualification, equipment modifications, maintenance adjustments, and service updates\u2014concrete activities not represented in the step list.",
+      "tokens": 614,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 55035,
+    "latency_s": 9.754,
+    "llm_calls": 5
+  },
+  "wall_s": 9.767
+}

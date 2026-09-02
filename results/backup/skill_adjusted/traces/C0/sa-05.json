@@ -1,0 +1,232 @@
+{
+  "case_id": "sa-05",
+  "user_prompt": "We need to orchestrate our complete manufacturing workflow from securing materials with our suppliers through final production execution and ensuring all our compliance documentation is properly filed. As part of this end-to-end process, we also need to track and reconcile all the financial documents coming in from our vendors that are tied to our material orders. Additionally, please include monitoring our production line performance metrics so we can evaluate how efficiently our equipment is running and identify any bottlenecks in our output. Make sure quality validation checkpoints are integrated throughout to catch any issues early, and we'll need comprehensive reporting at each stage to maintain our regulatory compliance standards.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "C",
+  "state": "clean",
+  "condition": "C0",
+  "skill_expected": "proc_021",
+  "skill_picked": "proc_021",
+  "expected_gaps": [
+    "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+    "sap.s4:apiResource:ProductionPerformanceAPI:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.5,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track and reconcile vendor financial documents",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "score": 43.25
+          },
+          {
+            "ordId": "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "score": 47.75
+          },
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "score": 43.25
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Vendor:v1",
+              "sap.odm:entityType:Invoice:v1",
+              "sap.odm:entityType:PurchaseOrder:v1",
+              "sap.odm:entityType:Contract:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Procurement",
+              "Finance"
+            ],
+            "reason": "Vendor reconciliation involves tracking vendor documents like invoices and purchase orders against contracts to ensure financial accuracy."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Vendor:v1\",\n    \"sap.odm:entityType:Invoice:v1\",\n    \"sap.odm:entityType:PurchaseOrder:v1\",\n    \"sap.odm:entityType:Contract:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Procurement\",\n    \"Finance\"\n  ],\n  \"reason\": \"Vendor reconciliation involves tracking vendor documents like invoices and purchase orders against contracts to ensure financial accuracy.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 249,
+          "walk_top_ids": [
+            "sap.s4:dataProduct:ProcurementMetricsHub:v1",
+            "emarsys.cx:agent:VendorProcurementAutomationOrchestrator:v1",
+            "sap.s4:agent:ProcurementMatchingAgent:v1",
+            "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+            "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1",
+            "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+            "sap.s4:apiResource:MaterialReceiptInboundAPI:v1",
+            "emarsys.cx:apiResource:VendorMaterialSupplyChainAPI:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1\",\n  \"sap.s4:dataProduct:ProcurementMetricsHub:v1\",\n  \"sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [],
+          "tokens": 1906,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Monitor production line performance metrics",
+        "source": "gap",
+        "candidates": [],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Machine:v1",
+              "sap.odm:entityType:ProductionOrder:v1",
+              "sap.odm:entityType:QualityInspection:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Manufacturing",
+              "Manufacturing Execution"
+            ],
+            "reason": "Monitoring production line performance involves machines, production orders, and quality metrics in manufacturing operations."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:QualityInspection:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Manufacturing Execution\"\n  ],\n  \"reason\": \"Monitoring production line performance involves machines, production orders, and quality metrics in manufacturing operations.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 111,
+          "walk_top_ids": [
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+            "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+          ],
+          "rerank_raw": "```json\n[]\n```\n\nThe activity \"Monitor production line performance metrics\" requires a capability to collect, aggregate, and display real-time or near-real-time operational metrics from manufacturing equipment and processes. \n\nNone of the candidates fulfills this need:\n- The agents (AccessProvisioningOrchestrator, AssetProvisioningOrchestrator, ChangeAutomationOrchestrator, ChangeReleaseCoordinator, ProductLifecycleOrchestrator, BillOfMaterialsComplianceValidator) are focused on orchestration, provisioning, and change management\u2014not production monitoring.\n- The dataProducts (ProductChangeAndInventoryAnalytics, ProductImpactSalesIntelligence) aggregate product/inventory data for campaign and sales optimization, not production line performance metrics.\n\nWhile some candidates touch manufacturing/engineering domains, none actually provides production line monitoring or performance metric capabilities.",
+          "refused": true,
+          "previous_resolved": [
+            "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+          ],
+          "tokens": 1981,
+          "latency_s": 0.0,
+          "llm_calls": 2
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Identify equipment bottlenecks",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+            "score": 35.75
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": 35.75
+          },
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": 35.75
+          }
+        ],
+        "method_trace": {
+          "anchors": {
+            "entity_types": [
+              "sap.odm:entityType:Machine:v1",
+              "sap.odm:entityType:ProductionOrder:v1",
+              "sap.odm:entityType:ITEquipment:v1"
+            ],
+            "business_groups": [],
+            "lines_of_business": [
+              "Manufacturing",
+              "Operations"
+            ],
+            "reason": "Equipment bottleneck identification involves analyzing machines and production capacity constraints in manufacturing and operations contexts."
+          },
+          "stage1_raw": "```json\n{\n  \"entity_types\": [\n    \"sap.odm:entityType:Machine:v1\",\n    \"sap.odm:entityType:ProductionOrder:v1\",\n    \"sap.odm:entityType:ITEquipment:v1\"\n  ],\n  \"business_groups\": [],\n  \"lines_of_business\": [\n    \"Manufacturing\",\n    \"Operations\"\n  ],\n  \"reason\": \"Equipment bottleneck identification involves analyzing machines and production capacity constraints in manufacturing and operations contexts.\"\n}\n```",
+          "max_hops": 2,
+          "hop_decay": 0.5,
+          "edge_weights": {
+            "co_exposes": 1.0,
+            "co_partOf": 2.0,
+            "calls": 3.0,
+            "processNext": 3.0
+          },
+          "scored_resources": 135,
+          "walk_top_ids": [
+            "corp.itsm:agent:AccessProvisioningOrchestrator:v1",
+            "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "emarsys.cx:agent:ProductLifecycleOrchestrator:v1",
+            "emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1",
+            "emarsys.cx:dataProduct:ProductImpactSalesIntelligence:v1",
+            "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+          ],
+          "rerank_raw": "```json\n[\n  \"emarsys.cx:dataProduct:ProductChangeAndInventoryAnalytics:v1\",\n  \"corp.itsm:agent:AssetProvisioningOrchestrator:v1\",\n  \"my.mes:agent:BillOfMaterialsComplianceValidator:v1\"\n]\n```",
+          "refused": false,
+          "previous_resolved": [
+            "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1"
+          ],
+          "tokens": 1861,
+          "latency_s": 2.922,
+          "llm_calls": 2
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_021",
+      "skill_id_expected": "proc_021",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track and reconcile vendor financial documents\",\n    \"Monitor production line performance metrics\",\n    \"Identify equipment bottlenecks\"\n  ],\n  \"reason\": \"The skill covers core manufacturing orchestration, supplier management, quality validation, production execution, and compliance reporting, but explicitly lacks vendor invoice/financial reconciliation, equipment performance monitoring, and bottleneck identification\u2014all of which are concretely named requirements in the request.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers core manufacturing orchestration, supplier management, quality validation, production execution, and compliance reporting, but explicitly lacks vendor invoice/financial reconciliation, equipment performance monitoring, and bottleneck identification\u2014all of which are concretely named ",
+      "tokens": 628,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 6376,
+    "latency_s": 2.922,
+    "llm_calls": 7
+  },
+  "wall_s": 2.999
+}

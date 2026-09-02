@@ -1,0 +1,775 @@
+{
+  "case_id": "dy-40",
+  "user_prompt": "We need to streamline our component sourcing workflow by simultaneously validating our internal part specifications against supplier certifications and pulling current inventory levels along with vendor capabilities to ensure we're not creating bottlenecks during our quarterly supply chain review.",
+  "mode_expected": "dynamic",
+  "difficulty": "easy",
+  "method": "D",
+  "state": "enriched",
+  "condition": "D1f",
+  "skill_expected": null,
+  "skill_picked": null,
+  "expected_gaps": [],
+  "metrics": {
+    "top1_acc": 0.0,
+    "acceptable": 0.0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "dynamic",
+    "step_coverage": null,
+    "gap_detection": null,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "dynamic",
+    "coverage": "none",
+    "steps": [
+      {
+        "step_name": "Validate our internal part specifications against supplier certifications",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_lines_of_business",
+              "args": {},
+              "result_preview": [
+                "ERP",
+                "Environment, Health & Safety",
+                "Environment, Health and Safety",
+                "... (44 more)"
+              ]
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Material:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                  "type": "agent",
+                  "title": "Change Release Coordinator",
+                  "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+                },
+                "... (55 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Vendor:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Vendor Management API",
+                  "shortDescription": "Exposes purchase orders and vendor data for ITSM procurement workflows."
+                },
+                {
+                  "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Contract Compliance Orchestrator",
+                  "shortDescription": "Automates vendor contract and purchase order compliance monitoring across procurement lifecycle."
+                },
+                "... (39 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "resources_in_lob",
+              "args": {
+                "line_of_business": "Procurement"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorCampaignAccountRetrievalAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Campaign Account Retrieval API",
+                  "shortDescription": "Retrieves and manages vendor campaign data linked to customer accounts."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:dataProduct:VendorSpendIntelligence:v1",
+                  "type": "dataProduct",
+                  "title": "Vendor Spend Intelligence",
+                  "shortDescription": "Aggregates contract, purchase order, and vendor performance data for procurement analytics."
+                },
+                "... (27 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+                "type": "agent",
+                "namespace": "my.mes",
+                "title": "Bill of Materials Compliance Validator",
+                "shortDescription": "Automates BOM validation and supplier qualification checks across engineering changes.",
+                "description": "Monitors engineering changes and material specifications to automatically validate bill of materials compliance against supplier qualifications. Coordinates BOM updates with product item definitions while processing supplier approval workflows. Automates compliance verification across product variants to ensure manufacturing readiness and regulatory adherence.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [
+                  "validate-bom-compliance",
+                  "audit-component-materials",
+                  "enforce-engineering-standards"
+                ],
+                "useCases": [
+                  "Manufacturing confirms all components in the product structure meet material safety and engineering requirements.",
+                  "Engineering change management ensures BOMs remain compliant when modifications occur.",
+                  "Quality assurance validates material selections before production execution."
+                ],
+                "tags": [
+                  "compliance",
+                  "bom-validation",
+                  "supplier-qualification",
+                  "automation"
+                ],
+                "partOfGroups": [
+                  "proc_ProductComplianceManufacturing_v1"
+                ],
+                "processNext": [
+                  "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+                ],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:agent:SupplierQualityComplianceOrchestrator:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:agent:SupplierQualityComplianceOrchestrator:v1",
+                "type": "agent",
+                "namespace": "my.mes",
+                "title": "Supplier Quality Compliance Orchestrator",
+                "shortDescription": "Automates vendor performance monitoring and procurement compliance validation.",
+                "description": "Monitors supplier quality metrics and vendor compliance status by coordinating across purchase orders and contracts. Processes incoming material inspections and automatically escalates non-conformance issues to designated vendors. Orchestrates quality certifications and supplier audit schedules to maintain manufacturing standards.",
+                "entityTypes": [
+                  "sap.odm:entityType:Contract:v1",
+                  "sap.odm:entityType:PurchaseOrder:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [],
+                "useCases": [],
+                "tags": [
+                  "supplier-management",
+                  "quality-assurance",
+                  "compliance-automation"
+                ],
+                "partOfGroups": [],
+                "processNext": [],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+                "reason": "This agent automatically validates part specifications against supplier qualifications through BOM compliance checks and supplier approval workflows."
+              },
+              "result": {
+                "committed": "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:agent:BillOfMaterialsComplianceValidator:v1",
+          "picked_reason": "This agent automatically validates part specifications against supplier qualifications through BOM compliance checks and supplier approval workflows.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 33954,
+          "latency_s": 12.085,
+          "llm_calls": 9
+        },
+        "expected": {
+          "step_name": "",
+          "expected_ordIds": [
+            "sap.s4:agent:BOMComplianceAutomationAgent:v1",
+            "sap.ariba:apiResource:MaterialAndVendorProcurementAPI:v1"
+          ],
+          "acceptable_alternatives": []
+        }
+      },
+      {
+        "step_name": "Pull current inventory levels for our components",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "my.mes:agent:BillOfMaterialsComplianceValidator:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                  "type": "agent",
+                  "title": "Safety Compliance Automation Coordinator",
+                  "shortDescription": "Automates safety validation across engineering changes, materials, and product items."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ehs:agent:SafetyComplianceAutomationCoordinator:v1",
+                "type": "agent",
+                "namespace": "sap.ehs",
+                "title": "Safety Compliance Automation Coordinator",
+                "shortDescription": "Automates safety validation across engineering changes, materials, and product items.",
+                "description": "Monitors and processes engineering changes, materials, and product items to enforce safety compliance requirements and automate BOM validation workflows. Coordinates supplier qualification assessments and initiates compliance remediation actions when safety risks or regulatory gaps are detected. Automates incident prevention through continuous validation of product configurations against safety standards.",
+                "entityTypes": [
+                  "sap.odm:entityType:EngineeringChange:v1",
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:ProductItem:v1"
+                ],
+                "lineOfBusiness": [
+                  "Product Lifecycle Management"
+                ],
+                "capabilities": [
+                  "assess-material-safety",
+                  "automate-safety-assessments",
+                  "automate-compliance-checks",
+                  "coordinate-compliance-workflow",
+                  "validate-engineering-changes",
+                  "orchestrate-compliance-checks",
+                  "coordinate-safety-compliance"
+                ],
+                "useCases": [
+                  "Safety officers ensure all engineering changes trigger integrated compliance assessments across the organization.",
+                  "EHS team automates review of engineering changes to ensure material and product modifications meet safety and regulatory requirements before production",
+                  "Compliance automation prevents unsafe or non-compliant product items from advancing to manufacturing",
+                  "Compliance teams automate material and process safety validation to reduce manual review time.",
+                  "Operations leadership maintains consistent safety standards across all product variants and manufacturing locations."
+                ],
+                "tags": [
+                  "compliance",
+                  "bom-validation",
+                  "supplier-qualification",
+                  "automation"
+                ],
+                "partOfGroups": [
+                  "proc_ProductComplianceManufacturing_v1",
+                  "proc_talent_compliance_ops_v1"
+                ],
+                "processNext": [
+                  "sap.ariba:apiResource:PurchaseOrderNetworkAPI:v1"
+                ],
+                "partOfPackage": "sap.ehs:package:Core:v1"
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Material:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:agent:AssetProvisioningOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Asset Provisioning Orchestrator",
+                  "shortDescription": "Automates and coordinates IT asset lifecycle provisioning across engineering changes."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeAutomationOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Change Automation Orchestrator",
+                  "shortDescription": "Automates and coordinates engineering changes, material updates, and product item deployments."
+                },
+                {
+                  "ordId": "corp.itsm:agent:ChangeReleaseCoordinator:v1",
+                  "type": "agent",
+                  "title": "Change Release Coordinator",
+                  "shortDescription": "Automates and coordinates product releases across engineering changes and inventory."
+                },
+                "... (55 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "allocate-inventory"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:OrderFulfillmentServiceAPI:v1",
+                  "type": "apiResource",
+                  "title": "Order Fulfillment Service API",
+                  "shortDescription": "Manages order lifecycle and customer account service interactions for ticket resolution."
+                },
+                {
+                  "ordId": "siemens.plm:agent:EngineeringChangeAndMaterialProvisioning:v1",
+                  "type": "agent",
+                  "title": "Engineering Change and Material Provisioning Agent",
+                  "shortDescription": "Automates engineering change processing and material lifecycle coordination across product configurations."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1"
+              },
+              "result_preview": {
+                "ordId": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                "type": "apiResource",
+                "namespace": "my.mes",
+                "title": "Material and Vendor Inventory Management",
+                "shortDescription": "Retrieves and manages material stock levels and vendor supply chain data.",
+                "description": "Exposes real-time material inventory records and vendor information to support production scheduling and procurement workflows. Provides access to material availability, reorder points, and vendor performance metrics for optimized supply chain operations. Manages material-to-vendor relationships to ensure accurate sourcing and inventory replenishment across manufacturing facilities.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [
+                  "analyze-material-supply",
+                  "validate-vendor-capacity",
+                  "assess-inventory-impact"
+                ],
+                "useCases": [
+                  "Supply chain team confirms material availability and vendor readiness for transition.",
+                  "Procurement validates cost and timeline impact of material changes.",
+                  "Manufacturing ensures component inventory supports new production requirements."
+                ],
+                "tags": [
+                  "inventory-management",
+                  "supply-chain",
+                  "material-planning"
+                ],
+                "partOfGroups": [
+                  "proc_ProductionTransitionMarketReadiness_v1"
+                ],
+                "processNext": [
+                  "sap.crm:agent:OpportunityQualificationAdvisor:v1"
+                ],
+                "partOfPackage": "my.mes:package:Core:v1"
+              }
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+                "reason": "This API resource directly retrieves real-time material stock levels and inventory data for production planning, perfectly matching the activity to pull current inventory levels for components."
+              },
+              "result": {
+                "committed": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1",
+          "picked_reason": "This API resource directly retrieves real-time material stock levels and inventory data for production planning, perfectly matching the activity to pull current inventory levels for components.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 8,
+          "tokens": 29329,
+          "latency_s": 10.697,
+          "llm_calls": 8
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Retrieve vendor capabilities and capacity information",
+        "source": "adhoc",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.crm:agent:OpportunityQualificationAdvisor:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+            "score": null
+          },
+          {
+            "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "resources_next_after",
+              "args": {
+                "ord_id": "my.mes:apiResource:MaterialAndVendorInventoryManagement:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.crm:agent:OpportunityQualificationAdvisor:v1",
+                  "type": "agent",
+                  "title": "Opportunity Qualification Advisor",
+                  "shortDescription": "Autonomously evaluates sales opportunities against qualification criteria and recommends actions."
+                }
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_capabilities",
+              "args": {},
+              "result_preview": [
+                "activate-campaigns",
+                "activate-contact-engagement",
+                "activate-customer-accounts",
+                "... (337 more)"
+              ]
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "list_entity_types",
+              "args": {},
+              "result_preview": [
+                "sap.odm:entityType:Campaign:v1",
+                "sap.odm:entityType:ChangeRequest:v1",
+                "sap.odm:entityType:Compensation:v1",
+                "... (23 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_exposing",
+              "args": {
+                "entity_type": "sap.odm:entityType:Vendor:v1"
+              },
+              "result_preview": [
+                {
+                  "ordId": "corp.itsm:apiResource:VendorProcurementOrderAPI:v1",
+                  "type": "apiResource",
+                  "title": "Vendor Procurement Order API",
+                  "shortDescription": "Manages vendor sourcing and procurement order lifecycle operations."
+                },
+                {
+                  "ordId": "corp.itsm:apiResource:ProcurementVendorManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Procurement Vendor Management API",
+                  "shortDescription": "Exposes purchase orders and vendor data for ITSM procurement workflows."
+                },
+                {
+                  "ordId": "corp.itsm:agent:VendorContractComplianceOrchestrator:v1",
+                  "type": "agent",
+                  "title": "Vendor Contract Compliance Orchestrator",
+                  "shortDescription": "Automates vendor contract and purchase order compliance monitoring across procurement lifecycle."
+                },
+                "... (39 more)"
+              ]
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "query-vendor-master"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorMasterDataAPI:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Master Data API",
+                  "shortDescription": "Retrieves and manages material specifications and vendor master records for procurement operations."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "retrieve-vendor-specs"
+              },
+              "result_preview": [
+                {
+                  "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+                  "type": "apiResource",
+                  "title": "Material and Vendor Procurement Data API",
+                  "shortDescription": "Retrieves material specifications and vendor information for procurement workflows."
+                }
+              ]
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "resources_with_capability",
+              "args": {
+                "capability": "schedule-capacity"
+              },
+              "result_preview": [
+                {
+                  "ordId": "emarsys.cx:apiResource:SalesCapacityAndTimeOffManagementAPI:v1",
+                  "type": "apiResource",
+                  "title": "Sales Capacity and Time Off Management API",
+                  "shortDescription": "Retrieves employee availability and time-off data for sales capacity planning."
+                }
+              ]
+            },
+            {
+              "step": 4,
+              "kind": "tool_call",
+              "name": "get_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1"
+              },
+              "result_preview": {
+                "ordId": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+                "type": "apiResource",
+                "namespace": "sap.ariba",
+                "title": "Material and Vendor Procurement Data API",
+                "shortDescription": "Retrieves material specifications and vendor information for procurement workflows.",
+                "description": "Manages and provides access to material master data and vendor profiles across procurement operations. Exposes detailed material attributes and vendor capabilities to enable sourcing decisions and purchase order creation. Retrieves vendor performance indicators and material availability status for inventory planning.",
+                "entityTypes": [
+                  "sap.odm:entityType:Material:v1",
+                  "sap.odm:entityType:Vendor:v1"
+                ],
+                "lineOfBusiness": [
+                  "manufacturing"
+                ],
+                "capabilities": [
+                  "query-procurement-database",
+                  "identify-vendors-materials",
+                  "match-demand-inventory",
+                  "lookup-material-sourcing",
+                  "fetch-certification-data",
+                  "retrieve-vendor-specs"
+                ],
+                "useCases": [
+                  "Procurement specialist queries approved vendors and materials inventory to match customer demand.",
+                  "Real-time material and vendor master data for procurement planning.",
+                  "Supply chain team identifies alternative vendors for materials flagged in compliance review.",
+                  "Access to material specifications and vendor qualifications for sourcing decisions.",
+                  "Procurement specialist accesses approved material suppliers and pricing for validated BOM items."
+                ],
+                "tags": [
+                  "inventory-management",
+                  "supply-chain",
+                  "material-planning"
+                ],
+                "partOfGroups": [
+                  "proc_supplychain_risk_compliance_v1",
+                  "proc_ProductComplianceWorkforceSafety_v1"
+                ],
+                "processNext": [
+                  "emarsys.cx:apiResource:VendorMaterialSupplyChainAPI:v1"
+                ],
+                "partOfPackage": "sap.ariba:package:Core:v1"
+              }
+            },
+            {
+              "step": 5,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+                "reason": "Exposes Vendor entity type with retrieve-vendor-specs capability and provides vendor capabilities, performance indicators, and availability data for procurement planning."
+              },
+              "result": {
+                "committed": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:apiResource:MaterialAndVendorProcurementData:v1",
+          "picked_reason": "Exposes Vendor entity type with retrieve-vendor-specs capability and provides vendor capabilities, performance indicators, and availability data for procurement planning.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 9,
+          "tokens": 36580,
+          "latency_s": 14.154,
+          "llm_calls": 9
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": null,
+      "skill_id_expected": null,
+      "routing_correct": true,
+      "stage": "forced_dynamic",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "forced dynamic mode"
+    },
+    "planner_trace": {
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0
+    }
+  },
+  "trace": {
+    "tokens": 100199,
+    "latency_s": 36.936,
+    "llm_calls": 27
+  },
+  "wall_s": 36.96
+}

@@ -1,0 +1,247 @@
+{
+  "case_id": "sa-05",
+  "user_prompt": "We need to orchestrate our complete manufacturing workflow from securing materials with our suppliers through final production execution and ensuring all our compliance documentation is properly filed. As part of this end-to-end process, we also need to track and reconcile all the financial documents coming in from our vendors that are tied to our material orders. Additionally, please include monitoring our production line performance metrics so we can evaluate how efficiently our equipment is running and identify any bottlenecks in our output. Make sure quality validation checkpoints are integrated throughout to catch any issues early, and we'll need comprehensive reporting at each stage to maintain our regulatory compliance standards.",
+  "mode_expected": "skill_adjusted",
+  "difficulty": "hard",
+  "method": "E",
+  "state": "clean",
+  "condition": "E0",
+  "skill_expected": "proc_021",
+  "skill_picked": "proc_021",
+  "expected_gaps": [
+    "sap.ariba:apiResource:VendorMaterialInvoiceManagement:v1",
+    "sap.s4:apiResource:ProductionPerformanceAPI:v1"
+  ],
+  "metrics": {
+    "top1_acc": 0,
+    "acceptable": 0,
+    "candidate_recall": 0,
+    "mode_routing_ok": 1,
+    "predicted_mode": "skill_adjusted",
+    "step_coverage": null,
+    "gap_detection": 0.0,
+    "correctly_refused": null,
+    "falsely_picked": null,
+    "falsely_picked_ord_id": null
+  },
+  "plan": {
+    "mode": "skill_adjusted",
+    "coverage": "partial",
+    "steps": [
+      {
+        "step_name": "Track and reconcile vendor financial documents",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+            "score": null
+          },
+          {
+            "ordId": "sap.ariba:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.ariba/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.ariba:package:Core:v1\",\n      \"title\": \"sap.ariba Core Package\",\n      \"shortDescript \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1016
+              }
+            },
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems_enriched/sap.s4/ord_enriched.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"sap.s4:package:Core:v1\",\n      \"title\": \"sap.s4 Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1296
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+                "reason": "This agent autonomously reconciles vendor invoices against POs and contracts using three-way matching, flags exceptions, and tracks all vendor financial documents through the reconciliation process."
+              },
+              "result_preview": {
+                "committed": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "sap.ariba:agent:VendorInvoiceReconciliationAutomation:v1",
+          "picked_reason": "This agent autonomously reconciles vendor invoices against POs and contracts using three-way matching, flags exceptions, and tracks all vendor financial documents through the reconciliation process.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 3,
+          "tokens": 11728,
+          "latency_s": 8.711,
+          "llm_calls": 3
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Monitor production line performance metrics",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:agent:ProductionQualityMonitor:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:agent:ProductionQualityMonitor:v1",
+                "reason": "Production line performance metrics monitoring is a core MES capability, directly served by the ProductionQualityMonitor agent which monitors production quality and execution metrics."
+              },
+              "result_preview": {
+                "committed": "my.mes:agent:ProductionQualityMonitor:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:agent:ProductionQualityMonitor:v1",
+          "picked_reason": "Production line performance metrics monitoring is a core MES capability, directly served by the ProductionQualityMonitor agent which monitors production quality and execution metrics.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 1,
+          "tokens": 3320,
+          "latency_s": 4.207,
+          "llm_calls": 1
+        },
+        "expected": null
+      },
+      {
+        "step_name": "Identify equipment bottlenecks",
+        "source": "gap",
+        "candidates": [
+          {
+            "ordId": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+            "score": null
+          },
+          {
+            "ordId": "my.mes:package:Core:v1",
+            "score": null
+          }
+        ],
+        "method_trace": {
+          "agent_steps": [
+            {
+              "step": 0,
+              "kind": "tool_call",
+              "name": "list_dir",
+              "args": {
+                "path": "benchmark/landscape/systems/my.mes"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/my.mes",
+                "entries": [
+                  {
+                    "name": "ord.json",
+                    "kind": "file"
+                  }
+                ],
+                "entries_count": 1
+              }
+            },
+            {
+              "step": 1,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1057
+              }
+            },
+            {
+              "step": 2,
+              "kind": "tool_call",
+              "name": "read_file",
+              "args": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json"
+              },
+              "result_preview": {
+                "path": "benchmark/landscape/systems/my.mes/ord.json",
+                "content": "{\n  \"openResourceDiscovery\": \"1.16\",\n  \"perspective\": \"system-instance\",\n  \"packages\": [\n    {\n      \"ordId\": \"my.mes:package:Core:v1\",\n      \"title\": \"my.mes Core Package\",\n      \"shortDescription\":  \u2026(truncated)",
+                "truncated": true,
+                "total_lines": 1057
+              }
+            },
+            {
+              "step": 3,
+              "kind": "tool_call",
+              "name": "pick_resource",
+              "args": {
+                "ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+                "reason": "Equipment OEE Analytics API provides real-time machine performance metrics and OEE calculations to identify equipment bottlenecks and capacity constraints in production."
+              },
+              "result_preview": {
+                "committed": "my.mes:apiResource:EquipmentOEEAnalytics:v1"
+              }
+            }
+          ],
+          "picked_ord_id": "my.mes:apiResource:EquipmentOEEAnalytics:v1",
+          "picked_reason": "Equipment OEE Analytics API provides real-time machine performance metrics and OEE calculations to identify equipment bottlenecks and capacity constraints in production.",
+          "refused": false,
+          "refuse_reason": "",
+          "tool_calls": 4,
+          "tokens": 20999,
+          "latency_s": 12.0,
+          "llm_calls": 4
+        },
+        "expected": null
+      }
+    ]
+  },
+  "orchestration_trace": {
+    "intent_resolver": {
+      "skill_id_picked": "proc_021",
+      "skill_id_expected": "proc_021",
+      "routing_correct": true,
+      "stage": "hint",
+      "tokens": 0,
+      "latency_s": 0.0,
+      "llm_calls": 0,
+      "reason": "hint provided"
+    },
+    "planner_trace": {
+      "stage": "planner",
+      "raw": "```json\n{\n  \"coverage\": \"partial\",\n  \"gap_steps\": [\n    \"Track and reconcile vendor financial documents\",\n    \"Monitor production line performance metrics\",\n    \"Identify equipment bottlenecks\"\n  ],\n  \"reason\": \"The skill covers core manufacturing orchestration, supplier management, quality validation, production execution, and compliance reporting, but explicitly lacks vendor invoice/financial reconciliation, equipment performance monitoring, and bottleneck identification\u2014all of which are concretely named requirements in the request.\"\n}\n```",
+      "coverage": "partial",
+      "reason": "The skill covers core manufacturing orchestration, supplier management, quality validation, production execution, and compliance reporting, but explicitly lacks vendor invoice/financial reconciliation, equipment performance monitoring, and bottleneck identification\u2014all of which are concretely named ",
+      "tokens": 628,
+      "latency_s": 0.0,
+      "llm_calls": 1
+    }
+  },
+  "trace": {
+    "tokens": 36675,
+    "latency_s": 24.918,
+    "llm_calls": 9
+  },
+  "wall_s": 24.944
+}
