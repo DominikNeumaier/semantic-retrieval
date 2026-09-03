@@ -34,7 +34,7 @@ from src.methods import method_embedding, method_progressive, method_graph, meth
 def _load_gt_eligible() -> set[str]:
     try:
         import json
-        p = config.ROOT / "benchmark" / "ambiguity" / "landscape_ambiguity_report.json"
+        p = config.BENCHMARK_DIR / "ambiguity" / "landscape_ambiguity_report.json"
         data = json.loads(p.read_text())
         return {r["ordId"] for r in data.get("resources", []) if r.get("ground_truth_eligible")}
     except Exception:
