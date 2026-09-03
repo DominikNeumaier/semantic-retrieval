@@ -106,19 +106,20 @@ You have at most 10 tool calls. If your notes already cover the activity, you ma
 
 
 def _safe_path(rel: str) -> Path | None:
-    """Resolve `rel` under config.ROOT, refuse if it escapes the allowed
-    roots."""
+    """Map the agent's stable ``benchmark/...`` view to ORD-Bench data.
+
+    The virtual path is retained because it appears in the published traces,
+    while the physical repository is selected through ``ORD_BENCH_DIR``.
+    """
     if not rel:
         return None
-    rel = rel.strip().lstrip("/")
-    target = (config.ROOT / rel).resolve()
-    try:
-        target.relative_to(config.ROOT.resolve())
-    except ValueError:
+    virtual = Path(rel.strip().lstrip("/"))
+    if not virtual.parts or virtual.parts[0] not in ALLOWED_ROOTS:
         return None
-    # Restrict to landscape/* subtree
-    parts = target.relative_to(config.ROOT.resolve()).parts
-    if not parts or parts[0] not in ALLOWED_ROOTS:
+    target = config.BENCHMARK_DIR.joinpath(*virtual.parts[1:]).resolve()
+    try:
+        target.relative_to(config.BENCHMARK_DIR.resolve())
+    except ValueError:
         return None
     return target
 
@@ -180,11 +181,11 @@ def _schemas() -> list[dict]:
     return [
         {"type": "function", "function": {
             "name": "list_dir",
-            "description": "List entries under a directory in the landscape "
-                           "subtree. Start with path='landscape' to see the "
-                           "systems.",
-            "parameters": p(path=s("Relative path, e.g. 'landscape' or "
-                                    "'benchmark/landscape/systems/sap.s4'")),
+            "description": "List entries under a directory in the virtual "
+                           "benchmark subtree. Start with "
+                           "path='benchmark/landscape' to see the landscape.",
+            "parameters": p(path=s("Virtual path, e.g. 'benchmark/landscape' "
+                                    "or 'benchmark/landscape/systems/sap.s4'")),
         }},
         {"type": "function", "function": {
             "name": "read_file",

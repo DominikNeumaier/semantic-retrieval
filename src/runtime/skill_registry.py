@@ -27,7 +27,10 @@ from src import config
 SKILLS_DIR = config.DT_OUTPUT_DIR / "skills"
 
 _HEADER_RE = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
-_STEP_RE = re.compile(r"^###\s+\d+\.\s+(.+?)\s*$", re.MULTILINE)
+_STEP_RE = re.compile(
+    r"^###\s+(?:(?:Step\s+)?\d+[\.:])\s+(.+?)\s*$",
+    re.MULTILINE | re.IGNORECASE,
+)
 _ORD_CONFIRMED_RE = re.compile(r"<!--\s*ord_confirmed:\s*([^>]+?)-->", re.DOTALL)
 
 
@@ -96,7 +99,9 @@ def parse_skill(path: Path) -> dict:
         "skill_id": fm.get("process-id", path.stem),
         "name": fm.get("name", path.stem),
         "description": fm.get("description", ""),
-        "process": fm.get("source-file", "").replace(".bpmn", "").replace(".cmmn", ""),
+        "process": (
+            fm.get("source-file") or fm.get("process-id") or path.stem
+        ).replace(".bpmn", "").replace(".cmmn", ""),
         "process_type": fm.get("process-type", "bpmn"),
         "steps": _parse_steps(body),
     }

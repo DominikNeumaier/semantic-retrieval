@@ -24,7 +24,7 @@ cases:
 Usage:
     .venv/bin/python run_rt.py                              # baseline pass
     .venv/bin/python run_rt.py --force-mode dynamic --mode dynamic
-    .venv/bin/python -m src.runtime.run_mh_benchmark        # multi-hint pass
+    .venv/bin/python -m src.eval.run_mh_benchmark           # multi-hint pass
 
     .venv/bin/python run_rt.py --methods A                  # single method
     .venv/bin/python run_rt.py --states enriched --limit 6  # smoke test

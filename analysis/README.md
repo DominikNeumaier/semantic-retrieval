@@ -1,43 +1,30 @@
-# Reproducing the paper numbers
+# Reproducing Paper II numbers
 
-Every number and figure in the Semantic Retrieval paper is computed from the
-committed traces under `results/` — nothing is hand-entered. Run scripts from
-the repo root.
+Run all commands from the repository root. They read committed traces under `results/retrieval/` and `results/orchestration/` and do not call external models.
 
-## Numbers
-```
+```bash
 python3 analysis/numbers.py
-```
-Prints every value in the paper's tables, figures, and appendix (runtime
-R@1/R@5, out-of-scope refusal, funnel, failure modes, design-time). Deterministic
-(seed 42). Reads `results/runtime/` and `results/design-time/`.
-
-## Statistical reliability
-```
 python3 analysis/statistics.py
-```
-Reproduces the bootstrap confidence intervals and paired McNemar p-values for
-the Dynamic mode, enriched state (the author-scored combination of single-intent
-and multi-intent cases that `numbers.py` does not recompute). Deterministic
-(seed 42).
-
-## Figures 7 and 8 (cost--precision, token efficiency)
-```
 python3 analysis/figures.py
+python3 analysis/ambiguity_profile.py
 ```
-Prints the plotted coordinates of `fig:pareto` (tokens per case vs R@1) and
-`fig:token-eff` (R@1 per 1k tokens) on Dynamic, enriched. Tokens per case = the
-retrieval method's own token spend (single: `trace.tokens`; multi: sum over
-sub-queries). Embedding is the one pinned value (~1k per query): its traces
-record the one-time corpus-embedding cost, not the per-query cost, so charging
-that amortised index build to every query would misrepresent its runtime cost.
-Reads `results/retrieval/runtime/dynamic/traces/`.
 
-> `numbers.py` predates the `results/retrieval/` + `results/orchestration/`
-> restructure and still reads the old `results/runtime/` layout;
-> `statistics.py` and `figures.py` are the up-to-date reproduction scripts.
+- `numbers.py` verifies the headline runtime, Out-of-Scope, routing, and design-time values and fails if required traces are missing.
+- `statistics.py` reproduces Dynamic bootstrap confidence intervals and paired McNemar p-values.
+- `figures.py` prints the cost/precision and token-efficiency coordinates.
+- `ambiguity_profile.py` reproduces the distractor-ambiguity table using the ORD-Bench ambiguity report.
 
-## Data
-`results/runtime/<mode>/traces/<condition>/` and `results/design-time/traces/<method>/`.
-Condition = `<method><state>[variant]` (e.g. `A1f`). Method letters.
-S=Baseline, A=Embedding, B=Progressive, C=Graph, D=Agentic Tools, E=Agentic Raw, F=Agentic Hybrid.
+## Published result layout
+
+```text
+results/retrieval/design-time/                 design-time traces and summaries
+results/retrieval/runtime/skill_adjusted/      component-level gap retrieval
+results/retrieval/runtime/dynamic/             forced singles + Multi-Hint subtraces
+results/retrieval/runtime/out_of_scope/         refusal evaluation
+results/retrieval/runtime/skill_guided/         skill-selection summary
+results/orchestration/                          routing and planning traces
+```
+
+Condition labels use `<method><state>` where state `0` is Clean-ORD and state `1` is Enriched-ORD. Method letters are `S=Baseline`, `A=Embedding`, `B=Progressive`, `C=Graph`, `D=Agentic Tools`, `E=Agentic Raw`, and `F=Agentic Hybrid`.
+
+The Dynamic paper score gives each of the 40 cases one unit: forced single-intent outcomes for `dy-01` to `dy-20`, and the mean of the pre-decomposed sub-query outcomes for `dy-21` to `dy-40`.
