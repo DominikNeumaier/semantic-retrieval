@@ -28,10 +28,11 @@ from src import config
 from src import loader as ord_loader
 from src.runtime import rt_planner, skill_registry
 
-SUBQUERIES_PATH = ROOT / "benchmark" / "test_cases" / "runtime" / "output" / "dynamic_mh_subqueries.json"
-OUT_RECORDS = ROOT / "results" / "runtime" / "dynamic" / "records_mh.jsonl"
-OUT_SUMMARY = ROOT / "results" / "runtime" / "dynamic" / "summary_mh.json"
-TRACES_BASE = ROOT / "results" / "runtime" / "dynamic" / "traces"
+SUBQUERIES_PATH = config.RT_OUTPUT_DIR / "dynamic_mh_subqueries.json"
+RUN_DYNAMIC_DIR = config.RESULTS_RT / "dynamic"
+OUT_RECORDS = RUN_DYNAMIC_DIR / "records_mh.jsonl"
+OUT_SUMMARY = RUN_DYNAMIC_DIR / "summary_mh.json"
+TRACES_BASE = RUN_DYNAMIC_DIR / "traces"
 
 METHODS = ["A", "B", "C", "D", "E", "S", "F"]
 STATES = [("0", "clean"), ("1", "enriched")]

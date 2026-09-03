@@ -26,8 +26,13 @@ LLM_TEMPERATURE = 0.0
 LLM_SEED = 42
 TOP_K = 5
 
-# Paths — landscape data lives in the sibling ord-bench repo
-BENCHMARK_DIR        = ROOT.parent / "ord-bench" / "data"
+# ORD-Bench is an explicit one-way data dependency.  The environment override
+# makes independent checkouts possible; the sibling path remains a convenient
+# backwards-compatible default for local development.
+ORD_BENCH_ROOT = Path(
+    os.environ.get("ORD_BENCH_DIR", ROOT.parent / "ord-bench")
+).expanduser().resolve()
+BENCHMARK_DIR        = ORD_BENCH_ROOT / "data"
 LANDSCAPE_DIR        = BENCHMARK_DIR / "landscape" / "systems"
 LANDSCAPE_ENRICHED_DIR = BENCHMARK_DIR / "landscape" / "systems_enriched"
 DT_OUTPUT_DIR        = BENCHMARK_DIR / "test_cases" / "design_time" / "output"
